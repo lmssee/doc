@@ -1,0 +1,268 @@
+---
+slug: npm 包构建基础
+title: npm 包基础构建
+tags: [npm 包]
+keywords: [npm, package, 基础]
+description: 开始构建 npm 包前需要考虑的
+---
+
+# 基础必要的配置
+
+## 初始化 package.json
+
+### 执行初始化
+
+```bash
+npm init -y
+```
+
+{/* truncate */}
+
+### 手动配置
+
+或者手动配置相关信息（包含未提及的功能）：
+
+```json
+{
+  "name": "a-type-of-js",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "author": {
+    "name": "earthnut",
+    "email": "earthnut.dev@outlook.com",
+    "url": "https://earthunut.dev"
+  },
+  "description": "a type of js",
+  "keywords": ["js", "type"],
+  "license": "MIT",
+  "homepage": "https://earthnut.dev/a-type-of-js",
+  "bugs": {
+    "url": "https://github.com/earthnutDev/a-type-of-js/issues",
+    "email": "earthnut.dev@outlook.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/earthnutDev/a-type-of-js.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "devDependencies": {
+    "rollup": "^2.67.0",
+    "@rollup/plugin-babel": "^6.0.2",
+    "@rollup/plugin-commonjs": "^21.0.5"
+  },
+  "scripts": {
+    "build": "rollup -c rollup.config.js"
+  }
+}
+```
+
+## 代码格式化工具
+
+### 安装依赖
+
+```bash
+npm i --save-dev prettier
+```
+
+### 配置文件 .prettierrc
+
+```json
+{
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "proseWrap": "preserve",
+  "htmlWhitespaceSensitivity": "css",
+  "endOfLine": "lf"
+}
+```
+
+### 配置文件 .prettierignore
+
+```markdown
+node_modules/
+dist
+```
+
+### 执行脚本添加
+
+```json
+{
+  "scripts": {
+    "format": "prettier --write ."
+  }
+}
+```
+
+## 代码检查工具
+
+### 安装依赖
+
+```bash
+# eslint
+npm i --save-dev eslint eslint-config-prettier
+# for typescript
+npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin
+```
+
+### 配置文件 .eslintrc
+
+```json
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "prettier/eslint-config-prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+```
+
+### 添加 lint 脚本
+
+```json
+{
+  "scripts": {
+    "lint": "eslint . --fix"
+  }
+}
+```
+
+## 构建工具 git 🪝
+
+### 安装依赖
+
+```bash
+npm i --save-dev husky lint-staged
+```
+
+### 配置文件 package.json
+
+```json
+{
+  "lint-staged": {
+    "*.{js,ts}": ["prettier --write", "eslint --fix", "git add"]
+  },
+  "scripts": {
+    "prepare": "husky install"
+  }
+}
+```
+
+### 初始化 Husky
+
+```bash
+npm run prepare
+npx husky add .husky/pre-commit "npx lint-staged"
+```
+
+## 测试框架 （jest 为例）
+
+可参考 [jest](/日志/jest%20的使用)
+
+### 安装依赖
+
+```bash
+# jest
+npm i --save-dev jest
+# for typescript
+npm i --save-dev ts-jest @types/jest
+```
+
+### 配置文件 jest.config.js
+
+```js
+module.exports = {
+  testEnvironment: 'node',
+  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[tj]s?(x)'],
+  coverageDirectory: 'coverage',
+};
+```
+
+### 添加测试脚本
+
+```json
+{
+  "scripts": {
+    "test": "jest"
+  }
+}
+```
+
+## typescript 支持
+
+### 安装依赖
+
+```bash
+npm i --save-dev typescript @types/node
+```
+
+### 配置文件 tsconfig.json
+
+```json
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": ["esnext", "dom"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noImplicitOverride": true,
+    "sourceMap": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "outDir": "dist",
+    "declarationDir": "dist/types"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+}
+```
+
+## 文件模版
+
+### .gitignore
+
+```markdown
+node_modules/
+dist
+.DS_Store
+.idea/
+```
+
+### .npmignore
+
+```markdown
+node_modules/
+dist
+.DS_Store
+.idea/
+tsconfig.json
+jest.config.js
+```

@@ -1,0 +1,310 @@
+@mixin colorText($time: 6s) {
+  color: transparent;
+  background-image: linear-gradient(
+    to left,
+    #ff0,
+    #0f0,
+    #f00,
+    #0ff,
+    #00f,
+    #f0f,
+    #ff0
+  );
+  background-position: 0% 0%;
+  background-size: 10rem 100%;
+  background-clip: text;
+  animation: $time ease-in 0s infinite colorText alternate;
+}
+
+@mixin userSelect() {
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+:root {
+  --ifm-color-primary: #2e8555;
+  --ifm-color-primary-dark: #29784c;
+  --ifm-color-primary-darker: #277148;
+  --ifm-color-primary-darkest: #205d3b;
+  --ifm-color-primary-light: #33925d;
+  --ifm-color-primary-lighter: #359962;
+  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary-dark: #21af90;
+  --ifm-color-primary-darker: #1fa588;
+  --ifm-color-primary-darkest: #1a8870;
+  --ifm-color-primary-light: #29d5b0;
+  --ifm-color-primary-lighter: #32d8b4;
+  --ifm-color-primary-lightest: #4fddbf;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+*,
+a,
+body,
+abbr,
+address,
+area,
+div,
+img,
+input,
+p,
+mark,
+html,
+span {
+  box-sizing: border-box;
+  // padding: 0;
+  // margin: 0;
+  // border: 0;
+  // font-size: 14px;
+  // line-height: 1.6rem;
+  word-break: break-all;
+  vertical-align: baseline;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  // color: var(--text-primary);
+  scroll-behavior: smooth;
+  /* font-family: sans-serif, "Microsoft YaHei", Helvetica, Arial !important; */
+}
+
+body,
+html {
+  // color: var(--text-primary);
+  // background-color: var(--background-primary);
+  width: 100vw;
+  height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+}
+
+.center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.floatLeft {
+  float: left;
+}
+
+.floatRight,
+.float {
+  float: right;
+}
+
+.clear {
+  clear: both;
+}
+
+.colorText {
+  @include colorText(5s);
+}
+
+.loading {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  background-image:
+    radial-gradient(#f00, #f00 50%, transparent 50%, transparent),
+    radial-gradient(#af1, #af1 50%, transparent 50%, transparent),
+    radial-gradient(#0ff, #0ff 50%, transparent 50%, transparent),
+    radial-gradient(#f0f, #f0f 50%, transparent 50%, transparent);
+  background-repeat: no-repeat;
+  animation: 2.4s ease-in-out 0s infinite loading;
+}
+
+.user_select_text {
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+a {
+  &:link,
+  &:link span {
+    // color: var(--text-link);
+    text-decoration: none;
+  }
+
+  // &:visited,
+  // &:link span {
+  //   color: var(--text-visited);
+  // }
+
+  // &:hover {
+  //   color: var(--text-hover);
+  // }
+
+  // &:active {
+  //   color: var(--text-active);
+  // }
+}
+
+li {
+  list-style: none;
+}
+
+/**  input placeholder 的样式 */
+::-moz-placeholder {
+  color: var(--text-muted) !important;
+  opacity: 1;
+}
+
+::-ms-input-placeholder {
+  color: var(--text-muted) !important;
+}
+
+::-webkit-input-placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* 自动填充的密码的背景色设置动画已取消背景色  */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition-delay: 99999s;
+  transition:
+    color 99999s ease-out,
+    background-color 99999s ease-out;
+  -webkit-transition-delay: 99999s;
+  -webkit-transition:
+    color 99999s ease-out,
+    background-color 99999s ease-out;
+  -webkit-text-fill-color: var(--text-primary);
+}
+
+/** 隐藏滚动条 */
+::-webkit-scrollbar {
+  display: none;
+  /* Chrome Safari */
+}
+
+.list {
+  padding: 10px;
+  margin: 15px auto;
+  box-shadow: 1px 1px 5px #f366;
+  border-radius: 12px;
+  transition: all 0.6s;
+  background-color: #fff4;
+}
+
+.h1 {
+  text-align: center;
+  font-size: large;
+  color: #000;
+
+  a {
+    cursor: pointer;
+  }
+}
+
+.items {
+  margin-top: 15px;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.item {
+  padding: 5px 20px;
+  margin: 10px;
+  box-shadow: 1px 1px 5px #0006;
+  border-radius: 3.6px;
+  transition: all 0.3s;
+  cursor: pointer;
+  color: #603;
+}
+
+.text-center {
+  align-content: center;
+}
+
+@keyframes bodyBackgroundScroll {
+  0% {
+    background-position:
+      99px 0px,
+      0% 0%;
+  }
+
+  100% {
+    background-position:
+      99px 0px,
+      0% 50%;
+  }
+}
+
+@keyframes colorText {
+  0% {
+    background-position: 400% 0%;
+  }
+
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+// 小屏笔记本
+@media (max-width: 1440px) {
+}
+
+// 平板
+@media screen and (max-width: 996px) {
+}
+
+// 手持端机
+@media screen and (max-width: 576px) {
+}
+
+//  光标可触发 hover
+@media (hover: hover) and (pointer: fine) {
+  .list:hover {
+    box-shadow: 1px 1px 12px #f36a;
+    background-color: #fff9;
+    transform: translate(0, -0.5px);
+  }
+
+  .h1:hover {
+    color: #ff0;
+  }
+
+  .item:hover {
+    background-color: #000;
+    color: #3f6;
+  }
+}
+
+// 禁止 js
+@media (scripting: none) {
+  *,
+  body,
+  html,
+  .__next {
+    display: none !important;
+    &::before {
+      content: 'js 被禁用';
+    }
+  }
+}

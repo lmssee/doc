@@ -1,0 +1,106 @@
+---
+slug: GPG 签名
+title: GPG 签名
+tags: [加密]
+description: 使用 GPG 签名让 GitHub 仓库的提交和标签更安全
+---
+
+在使用命令 `git tag v0.1.0 -v` 时发现在展示的信息末尾包含了一句 “error: no signature found”。一检索，才发现是自己在查看 commit 标签时使用错了命令。正确应当是 `git show v0.1.0`。于是捎带脚的查了下 [GPG]
+
+## 安装 [GPG]
+
+### Linux
+
+```bash
+sudo apt-get install gnupg # Ubuntu/Debian
+sudo yum install gnupg # CentOS/RHEL/Fedora
+```
+
+### macOS
+
+```bash
+brew install gpg
+```
+
+### Windows
+
+- [GPG] 的安装包，[下载地址](https://gnupg.org/download/index.html)
+
+## 生成 GPG 密钥
+
+```bash
+gpg --full-generate-key
+```
+
+- 选择 RSA 和 DSA
+- 选择 1024 - 4096 位
+- 选择 0 年（无限期限）
+- 姓名：
+- 邮箱：
+
+## 其他命令
+
+### 发送密钥到公网
+
+```bash
+# 发送公钥到到服务器
+gpg --keyserver hkps://keys.openpgp.org --send-keys <GPG ID>
+# 发送到 Ubuntu，我没有成功，我用的 👆 那个
+gpg --keyserver hkps://keyserver.ubuntu.com --send-keys <GPG ID>
+```
+
+### 查看生产的 GPG 密钥
+
+```bash
+gpg --list-keys --keyid-format=long
+gpg --list-signatures --keyid-format=long
+gpg --list-public-keys --keyid-format=long
+gpg --list-secret-keys --keyid-format=long
+```
+
+### 导出 GPG 密钥
+
+```bash
+gpg --export-secret-keys --armor <GPG ID> > private.gpg # 私钥
+gpg --export --armor <GPG ID> > public.gpg # 公钥
+```
+
+## 配置 git 使用 GPG 签名
+
+```bash
+git config --global user.signingkey <GPG ID> # <GPG ID>
+git config --global commit.gpgsign true # 提交时使用 GPG 签名
+```
+
+## 添加 GPG 密钥到 GitHub
+
+```bash
+gpg --list-secret-keys --keyid-format LONG
+```
+
+- 找到 GPG 密钥的 ID，复制下来
+
+```bash
+gpg --armor --export <GPG ID>
+```
+
+- 复制 GPG 公钥到 GitHub 的 GPG 密钥中
+
+## 验证 GPG 密钥
+
+```bash
+gpg --keyserver hkp://keyserver.ubuntu.com --recv-
+keys <GPG ID>
+gpg --edit-key <GPG ID>
+```
+
+## 配置到 npm
+
+```bash
+npm config set sign-git-tag true # 提交时使用 GPG 签名
+npm config set sign-git-commit true # 提交时使用 GPG 签名
+
+```
+
+[GPG]: https://gnupg.org/
+[Homebrew]: https://brew.sh/

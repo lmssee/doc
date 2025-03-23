@@ -1,0 +1,111 @@
+---
+slug: 初用 Cloudflare Pages
+title: 初用 Cloudflare Pages
+tags: [cloudflare]
+keywords: [cloudflare, __import_unsupported]
+description: 现有 next.js 部署到 Cloudflare Pages
+---
+
+之前的 next.js 部署在自己的 [个人服务器](htttps://lmssee.com) 之中，后来就想着这域名没什么辨识度，就购买了 [earthnut.dev](https://earthnut.dev) 域名，但是国内目前不接受顶级域名 [.dev](https://www.icpbeian.gov.cn/) 的备案。
+
+一开始想着使用 `A` 记录的方式绕过备案体系，于是就喜提腾讯云的“域名未备案”提示。于是使用了 `CNAME` 记录方式指向了域名 [lmssee.com](https://lmssee.com)，通过在 nginx 中配置 `server_name` 来实现跳转，并且在实际的前后端进行配置实现接口的自由访问。
+
+{/* truncate */}
+
+一开始访问正常，然而没过两天就出现了访问提示 "嗯… 无法访问此页面 已重置连接。"，需要多次刷新页面才可以访问。
+
+嗯，如果是这样的话，这个域名好像白买了，因为多则需要数十次的刷新才可以正常访问。
+
+我可以容忍你加载慢，但是你显示无法访问那就不行了不是。
+
+于是，找大佬。Cloudflare Pages 是一个基于 GitHub Actions 的静态站点托管服务，可以快速部署 Next.js 项目。
+
+## Cloudflare Pages
+
+跟着 [官方文档开始使用](https://developers.cloudflare.com/pages/framework-guides/nextjs/ssr/get-started/) 在现有 next.js 项目中添加 Cloudflare Pages。
+
+### 安装依赖包
+
+```bash
+npm install --save-dev @cloudflare/next-on-pages
+```
+
+### 创建 wrangler.jsonc 文件
+
+```json
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "earthnut",
+  "compatibility_date": "2025-03-03",
+  "compatibility_flags": ["nodejs_compat"],
+  "pages_build_output_dir": "./.vercel/output/static",
+  "observability": {
+    "enabled": true
+  }
+}
+```
+
+### 更新 next.config.js 文件
+
+```ts
+import { setupDevPlatform } from '@cloudflare/next-on-pages/next-dev';
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {};
+
+if (process.env.NODE_ENV === 'development') {
+  await setupDevPlatform();
+}
+
+export default nextConfig;
+```
+
+### 更新 package.json 文件
+
+```json
+{
+  "scripts": {
+    "build": "next build && next-on-pages build",
+    "dev": "next dev",
+    "start": "next start",
+    "lint": "next lint",
+    "postinstall": "next-on-pages postinstall"
+  },
+  "devDependencies": {
+    "@cloudflare/next-on-pages": "^0.0.17"
+ }
+```
+
+### 确保所有的服务器渲染的路由都是使用 Edge 运行时
+
+next.js 的默认配置是使用 [Node.js 运行时](https://nextjs.org/docs/app/building-your-application/rendering/edge-and-nodejs-runtimes)，但是 Cloudflare Pages 是使用 Edge 运行时，所以需要手。
+
+所以需要在每一个页面添加：
+
+```ts
+export const runtime = 'edge';
+```
+
+## 运行项目时的 `__import_unsupported`
+
+这时候，暗照官方推荐的在已有的 next.js 项目中添加 Cloudflare Pages 就已经结束了。然而，在执行 `npm run preview` 时，会提示：
+
+```bash
+✘ [ERROR] TypeError: Cannot redefine property: __import_unsupported
+```
+
+翻译一下略了解是由于 `__import_unsupported` 这个变量已经存在，但是被重新定义了，所以报错。
+
+但是我没有定义这个变量呀，开个玩笑哈。
+
+各种翻箱倒柜，什么全球最后的 [ai 豆包](https://www.doubao.com/chat/)也问过、全球最支持开发者的[通义](https://tongyi.aliyun.com/qianwen/)咨询过，什么 ds buff 加身的满血版[元宝](https://yuanbao.tencent.com/chat/)当然也不会放过，还有目前天天送超级超级超级会员的 [文心大模型 4.0 Turbo 版](https://yiyan.baidu.com/chat/)。
+
+当然，像你想的那样，ai 加持的国产 4 大“智障”回答出奇的一致。
+
+然后就是官网加社区找答案了。然而，没有人遇见过这么智障的错误。
+
+为什么说智障呢？当然，如果你遇见了同样的问题，我说的也是你，而不是这个问题。
+
+原因是官方在推荐在现有项目中添加 [`@cloudflare/next-on-pages`](https://github.com/cloudflare/next-on-pages#readme) 时，并没有提及 `next.js` 的版本问题，我的现有项目中 `package.json` 显示为 `next.js` 版本是 `15.1.3` ，实际安装版本为 `15.2.1`。后使用 `npm install --save next@15.2.*` 版本均出现该错误，而在 `npm install --save next@15.1.*` 版本则没有问题。
+
+愚蠢如我，阿门。

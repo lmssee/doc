@@ -1,0 +1,74 @@
+---
+slug: nginx 日志更新新日期
+title: nginx 日志更新新日期
+tags: [nginx]
+description: 将 nginx 日志更新新日期，防止在同一文件记录大量访问记录
+---
+
+确实，按照通常的日志轮换逻辑，我们希望在每天的某个固定时间点（如午夜）将当前日志文件重命名为包含前一天日期的文件名。这样做可以确保日志文件在一天结束时完整记录当天的访问情况，而不是在日志轮换时刻开始记录新一天的访问。
+
+{/* truncate */}
+
+以下是实现这一逻辑的详细步骤：
+
+## 使用 Shell 脚本和定时任务
+
+1. **创建 Shell 脚本**
+
+   创建一个脚本，用于在每天的固定时间（如午夜）将当前日志文件重命名为包含前一天日期的文件名。保存为 `/path/to/rotate_logs.sh`：
+
+   ```bash
+   #!/bin/bash
+
+   LOG_DIR="/var/log/nginx"
+   YESTERDAY=$(date -d "yesterday" +'%Y-%m-%d')
+
+   # Move the old log file to a new file with yesterday's date
+   if [ -f "$LOG_DIR/access.log" ]; then
+       mv "$LOG_DIR/access.log" "$LOG_DIR/access_$YESTERDAY.log"
+   fi
+
+   # Send USR1 signal to NGINX to reopen log files
+   kill -USR1 $(cat /run/nginx.pid)
+   ```
+
+   确保脚本有可执行权限：
+
+   ```bash
+   chmod +x /path/to/rotate_logs.sh
+   ```
+
+2. **配置定时任务**
+
+   使用 `cron` 来每天执行这个脚本。编辑 `cron` 表：
+
+   ```bash
+   crontab -e
+   ```
+
+   添加如下行以每天午夜执行日志轮换：
+
+   ```cron
+   0 0 * * * /path/to/rotate_logs.sh
+   ```
+
+3. **NGINX 配置**
+
+   在 NGINX 的配置文件中，配置 `access_log` 使用一个固定的名称，例如：
+
+   ```nginx
+   http {
+       ...
+       access_log /var/log/nginx/access.log;
+       ...
+   }
+   ```
+
+## 解释
+
+- **日期计算**：脚本中使用 `date -d "yesterday" +'%Y-%m-%d'` 来获取前一天的日期。
+- **日志移动和重命名**：脚本检查是否存在 `access.log` 文件，如果存在，则将其重命名为 `access_(前一天的日期).log`。
+- **信号通知**：通过 `kill -USR1` 信号通知 NGINX 重新打开日志文件，这样 NGINX 会创建一个新的 `access.log` 文件来记录后续的访问日志。
+- **定时任务**：`cron` 表中的 `0 0 * * *` 表示每天的午夜（00:00）执行脚本。
+
+通过这种方式，你可以确保每天的日志文件都包含了前一天的完整访问记录，并且新的日志文件从每天的午夜开始记录。

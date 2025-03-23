@@ -1,0 +1,155 @@
+---
+slug: github actions
+title: github actions
+tags: [自动化]
+description: 使用 github actions 自动化部署
+---
+
+## 1. 核心运行原理
+
+GitHub Actions 是 GitHub 提供的 托管式自动化服务，其运行特点如下：
+• 按需创建：每次触发工作流程时，GitHub 会在其服务器集群中动态创建虚拟机实例（称为 `Runner`）
+• 环境隔离：每个 Job 都在全新的独立环境中执行，任务完成后销毁实例
+• 多系统支持：提供 Linux (Ubuntu)、Windows 和 macOS 三种托管运行环境
+
+---
+
+{/* truncate */}
+
+## 2. 环境配置细节
+
+| 系统类型 | 默认镜像                       | 预装软件                     | 典型用途           |
+| -------- | ------------------------------ | ---------------------------- | ------------------ |
+| Ubuntu   | `ubuntu-latest` (22.04 LTS)    | GCC, Python, Node.js, Docker | 开源项目编译/测试  |
+| Windows  | `windows-latest` (Server 2022) | PowerShell, .NET, VS Build   | Windows 应用开发   |
+| macOS    | `macos-latest` (12 Monterey)   | Xcode, Homebrew              | iOS/macOS 应用开发 |
+
+---
+
+## 3. 配置示例（显式指定系统）
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest # 明确使用 Ubuntu 系统
+    steps:
+      - run: uname -a # 输出 Linux 内核信息
+
+  windows-test:
+    runs-on: windows-latest
+    steps:
+      - run: systeminfo | findstr OS # 查看 Windows 版本
+
+  macos-build:
+    runs-on: macos-12
+    steps:
+      - run: sw_vers # 显示 macOS 版本
+```
+
+---
+
+## 4. 关键技术实现
+
+• 虚拟化技术：基于微软的 Hyper-V (Windows) 和苹果的虚拟化框架 (macOS)
+• 网络隔离：每个 Runner 使用独立虚拟网络，默认阻止入站连接
+• 缓存机制：通过 `actions/cache` 优化依赖安装速度
+• 跨平台兼容：支持在 Windows Runner 中运行 Linux 容器（基于 WSL2）
+
+---
+
+## 5. 与本地开发环境的差异
+
+| 特性     | GitHub Actions Runner         | 本地开发机    |
+| -------- | ----------------------------- | ------------- |
+| 生命周期 | 临时（最长 6 小时）           | 持久          |
+| 硬件配置 | 2 核 CPU / 7GB RAM (标准配置) | 自定义        |
+| 文件系统 | 极速 SSD + 网络存储           | 本地磁盘      |
+| 网络出口 | 共享 GitHub 的 IP 段          | 本地运营商 IP |
+
+---
+
+## 6. 高级用法
+
+### 自托管运行器（Self-hosted Runner）
+
+```yaml
+runs-on: self-hosted # 使用自己管理的物理机/虚拟机
+```
+
+• 适用场景：需要 GPU 加速/特殊硬件/内网资源访问
+• 管理方式：通过 `actions-runner` 客户端程序接入
+
+### 矩阵测试（多环境并行）
+
+```yaml
+strategy:
+  matrix:
+    os: [ubuntu-latest, windows-latest, macos-latest]
+runs-on: ${{ matrix.os }}
+```
+
+---
+
+## 7. 监控与调试
+
+• 实时日志：在 GitHub 仓库的 Actions 标签页查看
+• SSH 调试（需企业版）：通过 `actions/runner/debug` 接入
+• 性能分析：使用 `Benchmark Action` 测量各步骤耗时
+
+---
+
+## 总结
+
+GitHub Actions 本质上是按需创建的 临时云虚拟机，通过声明式配置实现跨平台自动化任务。开发者无需关心底层基础设施，只需专注业务流程设计。
+
+## 与本地开发的区别
+
+## 触发器
+
+触发器分为两种：
+
+- `workflow_dispatch`：手动触发，需要手动输入参数
+- `push`：自动触发，当有代码提交时触发
+
+## 示例
+
+```yaml
+name: build
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type'
+        required: true
+        default: 'Debug'
+        type: choice
+       options:
+        description: 'Build options'
+        required: true
+        default: '--build-tests'
+        type: choice
+        options:
+          - '--build-tests'
+          - '--no-build-tests'
+          - '--build-examples'
+          - '--no-build-examples'
+          - '--build-docs'
+          - '--no-build-docs'
+          - '--build-tools'
+          - '--no-build-tools'
+
+jobs:
+  build:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ inputs.build_type }} ${{ inputs.options }}
+          cmake --build build
+          cmake --build build --target test
+```
+
+[github]: https://github.com/

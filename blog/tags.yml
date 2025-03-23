@@ -1,0 +1,28 @@
+建站:
+  label: 建站
+  permalink: /build_website/
+  description: 建站历程
+测试:
+  label: 测试
+  permalink: /test/
+  description: 学习测试
+nginx:
+  label: nginx
+  permalink: /nginx/
+  description: nginx 相关
+cloudflare:
+  label: cloudflare
+  permalink: /cloudflare/
+  description: Cloudflare 相关
+npm 包:
+  label: npm 包
+  permalink: /npm_package/
+  description: npm 包相关
+自动化:
+  label: 自动化
+  permalink: /automation/
+  description: 自动化相关
+加密:
+  label: 加密
+  permalink: /encryption/
+  description: 加密相关

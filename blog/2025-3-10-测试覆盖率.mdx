@@ -1,0 +1,364 @@
+---
+slug: 测试覆盖率
+title: 测试覆盖率
+tags: [测试]
+description: 使用 Coverage、Codecov 或 SonarCloud 生成测试覆盖率
+---
+
+# 测试覆盖率
+
+测试覆盖率是测试代码的质量，它表示代码被测试的百分比。
+
+在系统学习构建 npm 包时，发现在推荐的徽章展示中包含测试覆盖率的徽章，有助于帮助用户了解代码的质量。
+
+但是貌似遇见了我的知识盲区，遂学且记之。
+
+{/* truncate */}
+
+## 🔧
+
+| 🔧          | 特点                                            |
+| ----------- | ----------------------------------------------- |
+| [Coveralls] | 支持多种语言，与 github 集成简单，适合开源项目  |
+| [codecov]   | 支持 更详细的报告分析，适合复杂的项目           |
+| SonarCloud  | 提供代码质量 + 覆盖率综合报告，适合企业级的项目 |
+
+这里以 [coveralls] 及 [codecov] 为例。
+
+## 🔧 [Coveralls]
+
+### 1. 安装
+
+```bash
+npm install --save-dev jest jest-junit coveralls # 生成 JUnit 格式测试报告
+npm install --save-dev ts-jest ts-node @types/jest
+npm install --save-dev jest-environment-jsdom
+```
+
+### 2. 配置
+
+#### 在 `package.json` 文件中添加 `scripts` 配置
+
+```json title="package.json"
+"scripts": {
+  "test": "jest --coverage",
+  "report": "cat ./coverage/lcov.info | coveralls"
+}
+```
+
+#### 在 `jest.config.js` 文件中添加配置
+
+```bash
+node --eval="fs.mkdirSync('.github/workflows', { recursive: true })"
+```
+
+```js title="jest.config.js"
+module.exports = {
+  collectCoverage: true,
+  coverageDirectory: 'coverage',
+  coverageReporters: ['lcov', 'text-summary'],
+  collectCoverageFrom: [
+    'src/**/*.{js,jsx}',
+    '!**/node_modules/**',
+    '!**/vendor/**',
+  ],
+};
+```
+
+#### github actions 配置
+
+创建（已有可修改）.github/workflows/coverage.yml 文件
+
+```bash
+node --eval "fs.mkdirSync('.github/workflows/', { recursive: true })"
+```
+
+```yaml title=".github/workflows/coverage.yml"
+name: Run tests and upload coverage
+
+on:
+  push:
+    branches: [main]
+    # tags: ['*']
+
+jobs:
+  test:
+    name: Run tests and collect coverage
+    runs-on: ubuntu-latest
+    # 仅当提交消息包含 "version" 时运行自动化测试
+    if: contains(github.event.head_commit.message, 'version')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npx jest --coverage
+
+      - name: copy coverage to test-coverage directory
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN}} # ${{ secrets.COVERALLS_REPO_TOKEN }}
+          path-to-lcov: ./coverage/lcov.info
+```
+
+### 3. coveralls 集成
+
+- 获取 token（开源仓库可以使用 `GITHUB_TOKEN` 代替）
+  - 登录 [https://coveralls.io/]
+  - 点击 `Add Repo` 按钮，添加仓库
+  - 获取 COVERALLS_REPO_TOKEN (自动生成)
+- 配置 github secrets
+  - 在 Settings ➡️ secrets ➡️ Actions 添加： `COVERALLS_REPO_TOKEN: <your_token>`
+
+```yaml
+COVERALLS_REPO_TOKEN: <your-token>
+```
+
+### 4. 本地调试命令
+
+```bash
+COVERALLS_REPO_TOKEN=your_token npm run report
+```
+
+### 5. 测试覆盖率报告
+
+下面是 [a-type-of-js] 的 [coveralls] 测试覆盖率报告 [![Coverage Status](https://coveralls.io/repos/github/earthnutDev/a-type-of-js/badge.svg?branch=main)](https://coveralls.io/github/earthnutDev/a-type-of-js?branch=main)
+
+## 🔧 [Codecov]
+
+[Codecov] 是一个开源的代码覆盖率平台，它提供了详细的报告分析，适合复杂的项目。
+[Codecov] 支持多种语言，包括 JavaScript、Python、Ruby、Java、C++、C#、Go、Swift、Kotlin、Rust、PHP、R、Scala、Perl、Lua、Erlang、Haskell、OCaml、Clojure、Elixir、Pascal、Dart、Racket、Lisp、Fortran、Ada、Prolog、VBScript、VBA、Visual Basic、Objective-C、Objective-C++、Assembly、C。
+
+### 1. 安装
+
+```bash
+npm install --save-dev jest jest-junit codecov # 生成 JUnit 格式测试报告
+npm install --save-dev ts-jest ts-node @types/jest
+npm install --save-dev jest-environment-jsdom
+```
+
+### 2. 配置
+
+#### 在 `package.json` 文件中添加 `scripts` 配置
+
+```json title="package.json"
+"scripts": {
+  "test": "jest --coverage",
+  "coverage": "codecov"
+}
+```
+
+#### 在 `jest.config.js` 文件中添加配置 (同 [coveralls])
+
+```js title="jest.config.js"
+module.exports = {
+  collectCoverage: true,
+  coverageDirectory: 'coverage',
+  coverageReporters: ['lcov', 'text-summary'],
+  collectCoverageFrom: [
+    'src/**/*.{js,jsx}',
+    '!**/node_modules/**',
+    '!**/vendor/**',
+  ],
+};
+```
+
+#### github actions 配置
+
+创建（已有可修改）.github/workflows/coverage.yml 文件
+
+```bash
+node --eval "fs.mkdirSync('.github/workflows/', { recursive: true })"
+```
+
+```yaml title=".github/workflows/coverage.yml"
+name: Run tests and upload coverage
+
+on:
+  push:
+    branches: [main]
+    # tags: ['*']
+
+jobs:
+  test:
+    name: Run tests and collect coverage
+    runs-on: ubuntu-latest
+    # 仅当提交消息包含 "version" 时运行自动化测试
+    if: contains(github.event.head_commit.message, 'version')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npx jest --coverage
+
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          # token: ${{ secrets.CODECOV_TOKEN }} # 仅私人仓库需要
+          files: ./coverage/lcov.info
+          verbose: true
+```
+
+### 3. codecov 集成
+
+- 获取 `token`（公开仓库可以省略 `token`）
+  - 登录 [codecov]
+  - 点击 `Add Repo` 按钮，添加仓库
+  - 获取 CODECOV_TOKEN (自动生成)
+- 配置 github secrets
+  - 在 Settings ➡️ secrets ➡️ Actions 添加： `CODECOV_TOKEN: <your_token>`
+
+```yaml
+CODECOV_TOKEN: <your-token>
+```
+
+### 4. 本地调试命令
+
+```bash
+CODECOV_TOKEN=your_token npm run coverage
+```
+
+### 5. 测试覆盖率报告
+
+下面是 [a-type-of-js] 的 [codecov] 测试覆盖率报告 [![codecov](https://codecov.io/gh/earthnutDev/a-type-of-js/branch/main/graph/badge.svg)](https://codecov.io/gh/earthnutDev/a-type-of-js)
+
+## 完整的示例
+
+### 安装
+
+```bash
+npm install --save-dev jest jest-junit coveralls codecov # 生成 JUnit 格式测试报告
+npm install --save-dev ts-jest ts-node @types/jest
+npm install --save-dev jest-environment-jsdom
+```
+
+### 配置 jest.config.js
+
+```js title="jest.config.js"
+/** @type {import('ts-jest').JestConfigWithTsJest} **/
+export default () => {
+  return {
+    collectCoverage: true,
+    collectCoverageFrom: ['index.ts', '!**/node_modules/**', '!**/vendor/**'],
+    coveragePathIgnorePatterns: ['/node_modules/', '/dist/', 'test', '.*.d.ts'],
+    coverageReporters: ['text', 'lcov', 'html', 'text-summary'],
+    coverageDirectory: 'coverage',
+    preset: 'ts-jest',
+    verbose: true,
+    testEnvironment: 'node',
+    transform: {
+      '^.+\\.tsx?$': [
+        'ts-jest',
+        {
+          isolatedModules: true,
+          tsconfig: 'tsconfig.json',
+        },
+      ],
+    },
+    testMatch: ['**/*.test.(js|ts|tsx)'],
+  };
+};
+```
+
+### 配置 package.json
+
+```json title="package.json"
+{
+  "scripts": {
+    "test": "jest --coverage",
+    "report": "cat ./coverage/lcov.info | coveralls",
+    "coverage": "codecov"
+  }
+}
+```
+
+### 集成 [codecov]、[coveralls]
+
+- 使用 github 账号分别登录 [codecov]、[coveralls]
+- 添加仓库
+- 获取 token （非私人仓库可以省略 `token`）
+- 配置 github secrets
+
+### 最终的 coverage.yml
+
+{/* node --eval "$(curl -sL https://raw.githubusercontent.com/codecov/codecov-bash/master/codecov)" */}
+
+```bash
+node --eval "fs.mkdirSync('.github/workflows/', { recursive: true })"
+```
+
+```yml title=".github/workflows/coverage.yml"
+name: Run tests and upload coverage
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    name: Run tests and collect coverage
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'version')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npx jest --coverage
+
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          # token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          verbose: true
+
+      - name: copy coverage to test-coverage directory
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./coverage/lcov.info
+```
+
+## 参考资料
+
+- [Coveralls]
+- [Codecov]
+- [a-type-of-js]
+
+[coveralls]: https://coveralls.io/
+[Coveralls]: https://coveralls.io/
+[codecov]: https://codecov.io/
+[Codecov]: https://codecov.io/
+[a-type-of-js]: https://www.npmjs.com/a-type-of-js

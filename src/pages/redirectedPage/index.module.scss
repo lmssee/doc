@@ -1,0 +1,46 @@
+//  加载中显示样式
+.container {
+  width: 100vw;
+  height: 100vh;
+  line-height: 100%;
+  font-weight: 800;
+  background-image: linear-gradient(var(--primary-green), var(--primary-red));
+
+  div {
+    line-height: 22px;
+    padding: 5px;
+
+    &:first-child {
+      font-size: 22px;
+    }
+  }
+}
+
+.loading {
+  width: 800px;
+  height: 800px;
+}
+
+// 小屏笔记本
+@media (max-width: 1440px) {
+  .loading {
+    width: 600px;
+    height: 600px;
+  }
+}
+
+// 平板
+@media screen and (max-width: 996px) {
+  .loading {
+    width: 500px;
+    height: 500px;
+  }
+}
+
+// 手持端机
+@media screen and (max-width: 576px) {
+  .loading {
+    width: 400px;
+    height: 400px;
+  }
+}

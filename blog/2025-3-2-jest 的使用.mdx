@@ -1,0 +1,70 @@
+---
+slug: jest 的使用
+title: jest 的使用
+tags: [测试]
+description: 使用 jest 进行单元测试
+---
+
+## 在 node 中使用 jest
+
+### 安装
+
+```bash
+npm install --save-dev jest ts-jest @types/jest
+```
+
+{/* truncate */}
+
+### 初始化 jest 配置
+
+```bash
+npx ts-jest config:init
+```
+
+生成的配置文件如下：
+
+```js
+/** @type {import('ts-jest').JestConfigWithTSConfig} **/
+export default {
+  testEnvironment: "node",
+ -  transform: {
+ -   "^.+.tsx?$": ["ts-jest", {}],
+ - },
+ // 为了匹配我们的测试文件
+ + testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[tj]s?(x)'],
+};
+```
+
+### babel
+
+如果需要 `babel` 支持，可以安装 `babel-jest` 和 `@babel/core` 和 `@babel/preset-env`。
+
+```bash
+npm install --save-dev babel-jest @babel/core @babel/preset-env
+```
+
+### 创建测试文件
+
+```bash
+touch test/test_name_.ts
+```
+
+### 编写测试代码
+
+跟据实际需求编写测试代码
+
+### 运行测试
+
+```bash
+npx jest
+```
+
+也可以将 jest 配置文件添加到 package.json 中，这样在运行测试时，就不需要每次都输入 npx jest 了
+
+```json
+{
+  "scripts": {
+    "test": "jest"
+  }
+}
+```

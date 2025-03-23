@@ -1,0 +1,70 @@
+---
+slug: 提交代码前自动格式化代码
+title: 提交代码前自动格式化代码
+tags: [自动化]
+description: 使用 husky + lint-staged + prettier + eslint 提交代码前自动格式化代码
+---
+
+为了保证代码风格统一，使用 husky + lint-staged + prettier + eslint 提交代码前自动格式化代码。
+
+## 背景
+
+当使用 `husky` 后，在 `git commit` 时：
+
+- 自动执行 `pre-commit` 钩子
+- 然后执行 `lint-staged`
+- 再执行 `prettier`
+- 最后执行 `eslint`
+
+操作会自动用 Prettier 和 ESLint 格式化暂存区（git add 过的文件）的代码，并检查代码是否符合规范。格式化的改动会自动添加到本次提交，无需手动操作。
+
+## 安装依赖
+
+项目下执行：
+
+```bash
+npm install --save-dev husky lint-staged prettier eslint
+```
+
+## 初始化 Husky
+
+```bash
+npm pkg set scripts.prettier="npx ixxx cls && prettier . --write"
+npm pkg set scripts.beautify="npm run prettier"
+npm pkg set scripts.eslint="npx ixxx cls && eslint src"
+npx husky init
+```
+
+## 创建 git 钩子
+
+### version < 7
+
+```bash
+npx husky add .husky/pre-commit "npx lint-staged"
+```
+
+### version >= 7
+
+从 Husky v7 版本开始，husky add 命令就已被弃用。现在创建钩子需要直接编辑 .husky 目录下的脚本文件。
+
+```bash
+## 一个 > 是写文件 两个 > 是追加文件
+printf "npx lint-staged\n" > .husky/pre-commit # 覆盖文件内容
+printf "npx lint-staged\n" >> .husky/pre-commit # 追加到文件末尾
+```
+
+## 配置 lint-staged
+
+在 `package.json` 中添加：
+
+```json
+{
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,md,mdx,json}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
+  }
+}
+```

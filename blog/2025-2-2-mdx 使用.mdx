@@ -1,0 +1,30 @@
+---
+slug: mdx 使用
+title: mdx 相关
+tags: [建站]
+description: 与 docusaurus 相关的使用说明
+---
+
+# mdx 文件头
+
+## description 文件描述
+
+文件描述用于添加到文件头，展示为当前文件的 `name="description"` 信息
+{/* truncate */}
+
+## title 标题展示
+
+title 不仅是网页的 title ，也会在[侧栏](#)数据缺失时被搜集作为左侧文本展示
+
+## tags 标签组
+
+tags 可用于标记博文或文档，归类。tag 可在根文件下进行管理
+
+```yml title="docs/tags/yml"
+docusaurus
+    label: '建站' #  tag 名，用于展示与该文件关联
+    permalink: 'build_website' # 展示在导航栏
+    description: "构建网站的相关数据信息" # 标签描述
+```
+
+##

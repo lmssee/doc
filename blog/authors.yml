@@ -1,0 +1,10 @@
+lmssee:
+  name: lmssee
+  title: 左左和右右
+  url: https://github.com/lmssee
+  image_url: https://lmssee-1307513325.cos.ap-nanjing.myqcloud.com/http/cn.ico
+  page: true
+  socials:
+    x: letmiseesee
+    github: lmssee
+    npm: https://npmjs.org/~lmssee

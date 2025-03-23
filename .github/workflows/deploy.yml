@@ -1,0 +1,100 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy: # 构建并部署
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    # 仅在 commit message 包含 "deploy" 时触发
+    if: contains(github.event.head_commit.message, 'deploy')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      # 部署到腾讯云 com 环境
+      - name: Build for com
+        env:
+          TARGET_DOMAIN: com
+          SSH_PRIVATE_KEY: ${{ secrets.TENCENT_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.TENCENT_HOST }}
+          REMOTE_USER: ${{ secrets.TENCENT_USER }}
+        run: |
+          npx docusaurus clear
+          npx docusaurus build
+          mkdir -p ~/.ssh
+          echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H $REMOTE_HOST >> ~/.ssh/known_hosts
+          rsync -avz --delete build/ $REMOTE_USER@$REMOTE_HOST:/home/com
+
+        # 部署到腾讯云 cn 环境
+      - name: Build for cn
+        env:
+          TARGET_DOMAIN: cn
+          SSH_PRIVATE_KEY: ${{ secrets.TENCENT_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.TENCENT_HOST }}
+          REMOTE_USER: ${{ secrets.TENCENT_USER }}
+        run: |
+          npx docusaurus clear
+          npx docusaurus build
+          mkdir -p ~/.ssh
+          echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H $REMOTE_HOST >> ~/.ssh/known_hosts
+          rsync -avz --delete build/ $REMOTE_USER@$REMOTE_HOST:/home/cn
+
+        # 部署到 lmssee.github.io
+      - name: Deploy to GitHub Pages
+        env:
+          TARGET_DOMAIN: lmssee
+          TARGET_TOKEN: lmssee
+          TARGET_REPO: lmssee/lmssee.github.io
+          GITHUB_TOKEN: ${{ secrets.GH_LMSSEE_TOKEN }}
+        run: |
+          npx docusaurus clear
+          npx docusaurus build
+          cd build
+          rm -rf .git
+          git init
+          git config user.name "lmssee"
+          git config user.email "lmssee@outlook.com"
+          git add .
+          git commit -m "deploy: $(date + '%Y-%m-%d %H:%M:%S')"
+          git remote add origin "https://${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git"
+          git push origin HEAD:main --force
+          cd ../
+
+      - name: build for earthnut
+        env:
+          TARGET_DOMAIN: earthnutDev
+          TARGET_TOKEN: earthnutDev
+          TARGET_REPO: earthnutDev/earthnutDev.github.io
+          GITHUB_TOKEN: ${{ secrets.GH_EARTHNUT_TOKEN }}
+        run: |
+          npx docusaurus clear
+          npx docusaurus build
+          cd build
+          rm -rf .git
+          git init
+          git config user.name "earthnutDev"
+          git config user.email "earthnut.dev@outlook.com"
+          git add .
+          git commit -m "deploy: $(date + '%Y-%m-%d %H:%M:%S')"
+          git remote add origin "https://${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git"
+          git push origin HEAD:main --force
+          cd ../
