@@ -1,15 +1,6 @@
 @mixin colorText($time: 6s) {
   color: transparent;
-  background-image: linear-gradient(
-    to left,
-    #ff0,
-    #0f0,
-    #f00,
-    #0ff,
-    #00f,
-    #f0f,
-    #ff0
-  );
+  background-image: linear-gradient(to left, #ff0, #0f0, #f00, #0ff, #00f, #f0f, #ff0);
   background-position: 0% 0%;
   background-size: 10rem 100%;
   background-clip: text;
@@ -36,7 +27,7 @@
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
-[data-theme='dark'] {
+[data-theme="dark"] {
   --ifm-color-primary: #25c2a0;
   --ifm-color-primary-dark: #21af90;
   --ifm-color-primary-darker: #1fa588;
@@ -73,11 +64,11 @@ span {
   -moz-hyphens: auto;
   -ms-hyphens: auto;
   -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  // -webkit-user-select: none;
+  // -khtml-user-select: none;
+  // -moz-user-select: none;
+  // -ms-user-select: none;
+  // user-select: none;
   // color: var(--text-primary);
   scroll-behavior: smooth;
   /* font-family: sans-serif, "Microsoft YaHei", Helvetica, Arial !important; */
@@ -126,8 +117,7 @@ html {
   width: 100%;
   height: 100%;
   background-color: transparent;
-  background-image:
-    radial-gradient(#f00, #f00 50%, transparent 50%, transparent),
+  background-image: radial-gradient(#f00, #f00 50%, transparent 50%, transparent),
     radial-gradient(#af1, #af1 50%, transparent 50%, transparent),
     radial-gradient(#0ff, #0ff 50%, transparent 50%, transparent),
     radial-gradient(#f0f, #f0f 50%, transparent 50%, transparent);
@@ -304,7 +294,7 @@ input:-webkit-autofill:active {
   .__next {
     display: none !important;
     &::before {
-      content: 'js 被禁用';
+      content: "js 被禁用";
     }
   }
 }
