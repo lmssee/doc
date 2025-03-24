@@ -2,7 +2,7 @@ import globals from 'globals';
 import pluginJs from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import pluginReact from 'eslint-plugin-react';
-import * as mdx from 'eslint-plugin-mdx';
+// import * as mdx from 'eslint-plugin-mdx';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
 /**
@@ -14,19 +14,19 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
-  {
-    ...mdx.flat,
-    processor: mdx.createRemarkProcessor({
-      lintCodeBlocks: true,
-      languageMapper: {},
-    }),
-  },
-  {
-    ...mdx.flatCodeBlocks,
-    rules: {
-      ...mdx.flatCodeBlocks.rules,
-    },
-  },
+  // {
+  //   ...mdx.flat,
+  //   processor: mdx.createRemarkProcessor({
+  //     lintCodeBlocks: true,
+  //     languageMapper: {},
+  //   }),
+  // },
+  // {
+  //   ...mdx.flatCodeBlocks,
+  //   rules: {
+  //     ...mdx.flatCodeBlocks.rules,
+  //   },
+  // },
   {
     files: ['**/*.{ts,tsx}'],
     rules: {

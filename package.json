@@ -19,7 +19,7 @@
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
     "prepare": "husky",
-    "eslint": "npx ixxx cls && eslint src",
+    "eslint": "npx ixxx cls && eslint . ",
     "prettier": "npx ixxx cls && prettier . --write"
   },
   "dependencies": {

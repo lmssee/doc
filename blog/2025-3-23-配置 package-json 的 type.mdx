@@ -1,0 +1,34 @@
+---
+slug: 'type: module ？ commonjs ？'
+title: 'type: module ? commonjs ?'
+tags: [建站]
+description: 使用 docusaurus 时配置 package.json 的 type 值
+---
+
+在项目添加单独 `eslint` 配置时，执行 `npx eslint .` 后空台台显示一个提示 `package.json` 缺失 `type` 属性。但显示并不是错误，而是提示 `package.json` 的 `type` 属性缺失，可以忽略，但建议配置 `"type": "module"`。
+
+手快的我直接在 `package.json` 文件中添加了该属性。
+
+a few days later...
+
+{/* truncate */}
+
+构建打包时，报错：
+
+```bash
+[ERROR] Error: Unable to build website for locale zh-Hans.
+    ...
+    [cause]: TypeError: require.resolveWeak is not a function
+    ...
+
+[INFO] Docusaurus version: 3.7.0
+Node version: v23.3.0
+```
+
+由于错误中包含 `node` 和 `docusaurus` 的版本信息，我尝试了更改 `node` 和 `docusaurus` 的版本，但问题仍然存在。
+
+于是怀疑是不是最近添加的 `eslint`、'prettier'、`husky`、`lint-staged` 等包导致，于是我尝试了删除这些包，但问题仍然存在。
+
+怀疑是执行了 `npm update --save` 更新依赖导致的错误，然后一个包一个包的版本回退，问题依旧。
+
+最后只能 git 回退到之前的版本，问题解决。仔细查看两个 git 版本的差异，发现 `package-lock.json` 文件中的 `type` 字段被改为 `module`，这是由 `package.json` 文件中的 `type` 字段改为 `module` 所导致的。
