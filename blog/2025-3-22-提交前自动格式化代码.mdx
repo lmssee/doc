@@ -62,11 +62,7 @@ printf "npx lint-staged\n" >> .husky/pre-commit # 追加到文件末尾
 ```json
 {
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,md,mdx,json}": [
-      "prettier --write",
-      "eslint --fix",
-      "git add"
-    ]
+    "*.{js,jsx,ts,tsx,md,mdx,json}": ["eslint --fix", "prettier --write"]
   }
 }
 ```
