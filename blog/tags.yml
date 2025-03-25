@@ -26,3 +26,7 @@ npm 包:
   label: 加密
   permalink: /encryption/
   description: 加密相关
+git:
+  label: git
+  permalink: /git/
+  description: git
