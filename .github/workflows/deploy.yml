@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: 打包构建
 
 on:
   push:
@@ -6,28 +6,28 @@ on:
 
 jobs:
   build-and-deploy: # 构建并部署
-    name: Build and Deploy
+    name: 打包构建
     runs-on: ubuntu-latest
     # 仅在 commit message 包含 "deploy" 时触发
     if: contains(github.event.head_commit.message, 'deploy')
 
     steps:
-      - name: Checkout code
+      - name: 代码检测
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up Node.js
+      - name: 设定 Node.js version
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
 
-      - name: Install dependencies
+      - name: 安装依赖
         run: |
           npm install
 
       # 部署到腾讯云 com 环境
-      - name: Build for com
+      - name: 部署到 lmssee.com/earthnut
         env:
           TARGET_DOMAIN: com
           SSH_PRIVATE_KEY: ${{ secrets.TENCENT_SSH_KEY }}
@@ -43,7 +43,7 @@ jobs:
           rsync -avz --delete build/ $REMOTE_USER@$REMOTE_HOST:/home/com
 
         # 部署到腾讯云 cn 环境
-      - name: Build for cn
+      - name: 部署到 lmssee.cn/earthnut
         env:
           TARGET_DOMAIN: cn
           SSH_PRIVATE_KEY: ${{ secrets.TENCENT_SSH_KEY }}
@@ -59,7 +59,7 @@ jobs:
           rsync -avz --delete build/ $REMOTE_USER@$REMOTE_HOST:/home/cn
 
         # 部署到 lmssee.github.io
-      - name: Deploy to GitHub Pages
+      - name: 部署到 lmssee.github.io
         env:
           TARGET_DOMAIN: lmssee
           TARGET_TOKEN: lmssee
@@ -79,7 +79,7 @@ jobs:
           git push origin HEAD:main --force
           cd ../
 
-      - name: build for earthnut
+      - name: 部署到 earthnutDev.github.io
         env:
           TARGET_DOMAIN: earthnutDev
           TARGET_TOKEN: earthnutDev
