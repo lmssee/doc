@@ -1,0 +1,56 @@
+---
+slug: github ip 直连
+title: 'github ip 直连'
+tags: [git]
+description: 在 ping github.com 不同时可选方案之 github ip 直连
+---
+
+在提交代码时遇见了点问题，以为只是暂时的网络问题，没太注意。知道后来提交尝试很多次，发现 ping github.com 也不通。于是，开始查找原因。
+
+ping 可以通过发送 ICMP 协议包检测当前设备于目标服务器之间的🛜连通性。但在 DNS 被污染时，是没有办法甄别。
+
+所以需要使用添加 IP 直连的方式，来绕过 DNS 解析。
+
+{/* truncate */}
+
+## 查看 github ip
+
+### 官网查找
+
+在 [github ip](https://docs.github.com/en/github/authenticating-to-github/about-githubs-ip-addresses) 中可以查看到 github 的 ip 地址。
+
+### 使用 Google DNS 查询
+
+```bash
+nslookup github.com 8.8.8.8
+```
+
+### 使用 dig 查询
+
+```bash
+dig @1.1.1.1 github.com +short
+```
+
+### 通过在线工具
+
+- [dnschecker](https://dnschecker.org/#A/github.com)
+- [whatsmydns ip](https://www.whatsmydns.net/#A/github.com)
+- [github ip](https://www.ipaddress.com/github.com)
+
+  _工具排名不分先后_
+
+## 添加 ip 直连
+
+在 `hosts` 文件中添加 github ip 地址，即可绕过 DNS 解析。
+
+### windows
+
+```bash
+C:/Windows/System32/drivers/etc/hosts
+```
+
+### mac/linux
+
+```bash
+sudo vim /etc/hosts
+```
