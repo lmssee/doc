@@ -17,7 +17,8 @@ jobs:
           如果可能的话，我想这不是问题，问题是没有任何问题
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: main
+          fetch-depth: 1
 
       - name: 设定 Node.js version
         uses: actions/setup-node@v4

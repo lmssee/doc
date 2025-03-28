@@ -1,0 +1,55 @@
+---
+slug: 手动触发 github actions
+title: 手动触发 github actions
+tags: [自动化]
+description: 手动触发 github actions
+---
+
+有时候由于非代码原因，需要手动触发 github actions，比如：测试、部署等。
+
+手动触发 github actions 可以通过以下两种方式：
+
+- 通过 [Actions](https://github.com/fe6/wxapp-uniapp/actions) 页面手动触发
+- 通过 [Actions](https://github.com/fe6/wxapp-uniapp/actions) 页面的 `Run workflow` 按钮触发
+
+{/* truncate */}
+
+## 通过 Actions 页面手动触发
+
+### 添加配置
+
+在 Workflow 文件夹下，添加 `workflow_dispatch` 文件，内容如下：
+
+```yaml
+name: actions 动作
+on:
+  workflow_dispatch:
+    inputs:
+      description: '触发原因'
+      required: false
+      default: '手动触发'
+```
+
+### 通过 Actions 页面的 `Run workflow` 按钮触发
+
+在 Actions 页面，点击 `Run workflow` 按钮，选择需要触发的 workflow，点击 `Run workflow` 按钮即可。
+
+```bash
+https://github.com/userName/propName/actions/workflows/
+```
+
+## 通过 GIthub API 触发
+
+### 生成 token
+
+在 [Personal access tokens](https://github.com/settings/tokens) 页面，点击 `Generate new token` 按钮，输入 token 描述，勾选 `repo` 和 `workflow` 权限，点击 `Generate token` 按钮，复制生成的 token。
+
+### 生成 curl 命令
+
+```bash
+curl -X POST \
+  -H "Authorization: token <KEY>" \
+  -H "Accept: application/vnd.github.v3+json" \
+  https://api.github.com/repos/fe6/wxapp-uniapp/actions/workflows/123456789/dispatches \
+  -d '{"ref":"main", "inputs": {"name": "手动触发"}'
+```
