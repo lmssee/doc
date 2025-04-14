@@ -63,10 +63,10 @@ jobs:
         id: set-commit-message
         run: |
           if [ "${{ github.event_name }}"  == 'push' ]; then
-            # echo "::set-output name=commit_message::$(git log -1 --pretty=%B)"
-            echo "::set-output name=commit_message::${{ github.event.head_commit.message }}"
+            # echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+            echo "commit_message=${{ github.event.head_commit.message }}" >> $GITHUB_ENV
           else
-            echo "::set-output name=commit_message::${{ github.event.inputs.commit_message }}"
+            echo "commit_message=${{ github.event.inputs.commit_message }}" >> $GITHUB_ENV
           fi
 
       - name: 配置 SSH 密钥
@@ -149,7 +149,7 @@ jobs:
           git config user.name "lmssee"
           git config user.email "lmssee@outlook.com"
           git add .
-          git commit -m "${{ steps.set-commit-message.outputs.commit_message  }}"
+          git commit -m "${{ env.commit_message  }}"
           git remote add origin "https://${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git"
           git push origin HEAD:main --force
 
@@ -169,6 +169,6 @@ jobs:
           git config user.name "earthnutDev"
           git config user.email "earthnut.dev@outlook.com"
           git add .
-          git commit -m "${{ steps.set-commit-message.outputs.commit_message  }}"
+          git commit -m "${{ env.commit_message  }}"
           git remote add origin "https://${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git"
           git push origin HEAD:main --force
