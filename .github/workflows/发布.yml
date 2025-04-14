@@ -10,16 +10,50 @@ on:
         required: false
         default: ''
         type: string
-      platforms:
-        description: '构建平台'
+        # type: choice
+      cn:
+        description: '构建平台到 cn'
         required: true
         type: choice
         options:
-          - 'com'
-          - 'cn'
-          - 'github'
-          - 'comEarthnut'
-          - 'cnEarthnut'
+          - 'true'
+          - 'false'
+        default: 'true'
+      com:
+        description: '构建平台到 cn'
+        required: true
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+        default: 'true'
+      github:
+        description: '构建平台到 cn'
+        required: true
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+        default: 'true'
+
+      comEarthnut:
+        description: '构建平台到 cn'
+        required: true
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+        default: 'true'
+
+      cnEarthnut:
+        description: '构建平台到 cn'
+        required: true
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+        default: 'true'
+
       commit_message:
         description: '发布到 github 时的 message'
         required: false
@@ -82,7 +116,7 @@ jobs:
 
       # 部署到腾讯云 com 环境
       - name: 部署到 lmssee.com
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' && contains(github.event.inputs.platforms, 'com')
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' && (github.event.inputs.com == 'true')
         env:
           TARGET_DOMAIN: com
           REMOTE_HOST: ${{ secrets.TENCENT_HOST }}
@@ -90,12 +124,12 @@ jobs:
         run: |
           npx docusaurus clear
           npx docusaurus build
-          ssh -i  ~/.ssh/id_rsa $REMOTE_USER@REMOTE_HOST "mkdir -p /home/$TARGET_DOMAIN"
+          ssh -i  ~/.ssh/id_rsa $REMOTE_USER@$REMOTE_HOST "mkdir -p /home/$TARGET_DOMAIN"
           rsync -avz --delete build/ $REMOTE_USER@$REMOTE_HOST:/home/$TARGET_DOMAIN
 
       # 部署到腾讯云 comEarthnut 环境
       - name: 部署到 lmssee.com/earthnut
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' && contains(github.event.inputs.platforms, 'comEarthnut')
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' &&  (github.event.inputs.comEarthnut == 'true')
         env:
           TARGET_DOMAIN: comEarthnut
           REMOTE_HOST: ${{ secrets.TENCENT_HOST }}
@@ -103,12 +137,12 @@ jobs:
         run: |
           npx docusaurus clear
           npx docusaurus build
-          ssh -i  ~/.ssh/id_rsa $REMOTE_USER@REMOTE_HOST "mkdir -p /home/$TARGET_DOMAIN"
+          ssh -i  ~/.ssh/id_rsa $REMOTE_USER@$REMOTE_HOST "mkdir -p /home/$TARGET_DOMAIN"
           rsync -avz --delete build/ $REMOTE_USER@$REMOTE_HOST:/home/$TARGET_DOMAIN
 
         # 部署到腾讯云 cn 环境
       - name: 部署到 lmssee.cn/earthnut
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' && contains(github.event.inputs.platforms, 'cn')
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' &&  (github.event.inputs.cn == 'true')
         env:
           TARGET_DOMAIN: cn
           REMOTE_HOST: ${{ secrets.TENCENT_HOST }}
@@ -116,12 +150,12 @@ jobs:
         run: |
           npx docusaurus clear
           npx docusaurus build
-          ssh -i  ~/.ssh/id_rsa $REMOTE_USER@REMOTE_HOST "mkdir -p /home/$TARGET_DOMAIN"
+          ssh -i  ~/.ssh/id_rsa $REMOTE_USER@$REMOTE_HOST "mkdir -p /home/$TARGET_DOMAIN"
           rsync -avz --delete build/ $REMOTE_USER@$REMOTE_HOST:/home/$TARGET_DOMAIN
 
           # 部署到腾讯云 cnEarthnut 环境
       - name: 部署到 lmssee.cn/earthnut
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' && contains(github.event.inputs.platforms, 'cnEarthnut')
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' &&  (github.event.inputs.cnEarthnut == 'true')
         env:
           TARGET_DOMAIN: cnEarthnut
           REMOTE_HOST: ${{ secrets.TENCENT_HOST }}
@@ -129,7 +163,7 @@ jobs:
         run: |
           npx docusaurus clear
           npx docusaurus build
-          ssh -i  ~/.ssh/id_rsa $REMOTE_USER@REMOTE_HOST "mkdir -p /home/$TARGET_DOMAIN"
+          ssh -i  ~/.ssh/id_rsa $REMOTE_USER@$REMOTE_HOST "mkdir -p /home/$TARGET_DOMAIN"
           rsync -avz --delete build/ $REMOTE_USER@$REMOTE_HOST:/home/$TARGET_DOMAIN
 
         # 部署到 lmssee.github.io
