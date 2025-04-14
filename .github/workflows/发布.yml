@@ -52,8 +52,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          cache: true
-          cache-dependency-path: package-lock.json
           # 推送到 npm 包时配置
           # registry-url: https://registry.npmjs.org/
 
