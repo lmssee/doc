@@ -14,16 +14,25 @@ import { publicSecurityNewWorkBadge } from './publicSecurityNewWorkBadge';
  * 打包的类型
  *
  * - com
+ * - comEarthnut
  * - cn
+ * - cnEarthnut
  * - io
  *
  **************************************/
 
 const TARGET_DOMAIN = process.env.TARGET_DOMAIN;
-
-const target_domain = ['com', 'cn', 'lmssee', 'earthnutDev'].includes(
-  TARGET_DOMAIN,
-)
+/**
+ * 构建环境
+ */
+const target_domain = [
+  'com',
+  'comEarthnut',
+  'cn',
+  'cnEarthnut',
+  'lmssee',
+  'earthnutDev',
+].includes(TARGET_DOMAIN)
   ? TARGET_DOMAIN
   : 'com';
 
@@ -33,6 +42,11 @@ const com: BuildEnv = {
   favicon: '/icon/com/favicon.ico',
   logo: '/icon/com/logo.png',
   title: '左左和右右',
+  baseUrl: '/',
+};
+
+const comEarthnut: BuildEnv = {
+  ...com,
   baseUrl: '/earthnut/',
 };
 const cn: BuildEnv = {
@@ -41,8 +55,14 @@ const cn: BuildEnv = {
   favicon: '/icon/cn/favicon.ico',
   logo: '/icon/cn/logo.png',
   title: '随笔记余生',
+  baseUrl: '/',
+};
+
+const cnEarthnut: BuildEnv = {
+  ...cn,
   baseUrl: '/earthnut/',
 };
+
 const lmssee: BuildEnv = {
   url: 'https://lmssee.github.io',
   copyright: `Copyright © ${new Date().getFullYear()} <a href="/about">earthnut</a>`,
@@ -62,7 +82,9 @@ const earthnutDev: BuildEnv = {
  **************************************/
 export const { title, url, copyright, favicon, logo, baseUrl } = {
   com,
+  comEarthnut,
   cn,
+  cnEarthnut,
   lmssee,
   earthnutDev,
 }[target_domain];

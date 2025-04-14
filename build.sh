@@ -67,9 +67,12 @@ publishToIo() {
 # printf "\n\n\n\n\n$1 \n\n"
 # printf "$2 \n\n"
 # printf "$3 \n\n"
+
 includeIo=false;
 includeCn=false;
 includeCom=false;
+includeCnEarthnut=false;
+includeComEarthnut=false;
 
 for arg in "$@"
 do
@@ -77,12 +80,16 @@ do
             'cn')
                   printf "输出到 lmssee.cn \n\n"
                   includeCn=true;
+                  includeCnEarthnut=true;
                   buildServer cn;
+                  buildServer cnEarthnut
                   ;;
             'com')
                   printf "输出到 lmssee.com\n\n"
                   includeCom=true;
+                  includeComEarthnut=true;
                   buildServer com;
+                  buildServer comEarthnut
                   ;;
             'io')
                   printf "输出到 github.io\n\n"
