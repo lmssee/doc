@@ -141,7 +141,7 @@ jobs:
           rsync -avz --delete build/ $REMOTE_USER@$REMOTE_HOST:/home/$TARGET_DOMAIN
 
         # 部署到腾讯云 cn 环境
-      - name: 部署到 lmssee.cn/earthnut
+      - name: 部署到 lmssee.cn
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' &&  (github.event.inputs.cn == 'true')
         env:
           TARGET_DOMAIN: cn

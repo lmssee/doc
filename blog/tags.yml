@@ -30,3 +30,7 @@ git:
   label: git
   permalink: /git/
   description: git
+shell:
+  label: shell
+  permalink: /shell/
+  description: shell

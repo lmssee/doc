@@ -20,6 +20,7 @@
     "typecheck": "tsc",
     "prepare": "husky",
     "eslint": "jja cls && eslint . ",
+    "vjj": "vjj -n",
     "prettier": "jja cls && prettier . --write"
   },
   "dependencies": {
@@ -59,7 +60,7 @@
     "sass-loader": "^16.0.5",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.29.1",
-    "vjj": "^0.1.2"
+    "vjj": "^0.2.0"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [
