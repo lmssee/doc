@@ -1,0 +1,70 @@
+---
+slug: node 退出事件
+title: 光标，你肿么了？怎么不见了
+tags: [npm 包]
+description: 使用  ANSI 转义码
+---
+
+在编写 [a-node-tools] 的 runOtherCode 模块时，使用 `process.on('exit', cursorShow)` 监听事件流中断，期望在程序退出时将隐藏的光标展示出来。然而，在实际的使用中，难遂人愿。
+
+在实际的运行中，在遇到 `Ctrl + C` 的这种意外事件时，触发的是 `SIGINT` 信号，触发了 `process.on('SIGINT'，()=>{})`
+
+{/* truncate */}
+
+所以，在事件的退出时，仅注册了 `process.on('exit', cursorShow)` 并没有得到想要的结果。
+
+如果仅是如此，直接将 `cursorShow` 事件作为 `SIGINT` 的回调不就完事。但，这件事没这么简单。
+
+## 为什么可以在 `a-command` 中可用？
+
+在之前的版本中，并没有等待提示的打印。后来添加了等待后，从该包的下游产品 [a-command] 摘取了这一段代码
+
+```ts
+import { cursorShow } from '../cursor';
+
+process.on('exit', cursorShow);
+```
+
+在 [a-command] 中使用该段代码能够在 `question` 和 `selection` 模块执行时正确的退出程序，而移动到 [a-node-tools] 却上演了罢工潮。所以，一定是哪里处理问题。
+
+在 [node 官方文档中](https://nodejs.org/docs/latest/api/process.html#process-events) 的信号事件中对该信号值触发进行了讲解。
+
+`SIGINT` 是比较常用的一个手动退出的信号消息，该消息直接触发退出程序，它就是大名鼎鼎的 `Ctrl` + `C`。也是导致 [a-node-tools] 在退出前没有执行 'exit' 的信号事件监听。
+
+原则上，没有监听 `Ctrl` + `C` node 将直接中止进程。
+
+而在实际的使用中，可以监听信号事件 `SIGINT` 来自定义接收信号的动作。而这，将直接覆盖原 node 在接收该信号后的退出。
+
+现在想要在程序意外接收用户的主动退出信号 `Ctrl` + `C` ,则必须监听 `SIGINT` 信号事件：
+
+```ts
+import { cursorShow } from '../cursor';
+
+process.on('exit', cursorShow);
+
+process.on('SIGINT', () => {
+  cursorShow(); // 意外退出时恢复光标的展示
+  process.exit(0); // 退出程序，该命令会再次触发 process.on('exit') 上绑定事件
+});
+```
+
+## 退出码
+
+### SIGTERM
+
+当进程接收到SIGTERM信号时触发。这个信号通常是由系统或其他进程发送给当前进程，用于请求进程正常终止。与SIGINT类似，它也是一种常见的用于终止进程的信号，但SIGINT通常是由用户通过终端输入（如Ctrl + C）产生，而SIGTERM更多是由外部系统或进程发出的终止请求。可以通过process.on('SIGTERM', () => {})来监听该事件。
+
+### uncaughtException
+
+当一个未捕获的异常在事件循环中冒泡到最顶层时触发。如果不处理这个事件，Node.js 会打印出异常堆栈信息并退出进程。可以使用process.on('uncaughtException', (err) => {})来监听该事件，在回调函数中可以进行一些紧急的错误处理，比如记录错误日志、尝试进行一些清理操作等，但不建议在这个事件中进行复杂的异步操作，因为进程可能会在这个事件处理完后立即退出。
+
+### unhandledRejection
+
+当一个 Promise 被拒绝且没有被catch块捕获时触发。这通常表示在异步操作中出现了错误，但没有进行适当的错误处理。可以通过process.on('unhandledRejection', (reason, promise) => {})来监听该事件，在回调函数中可以记录错误信息或采取一些补救措施。与uncaughtException不同，unhandledRejection不会导致进程立即退出，而是会在事件循环的下一个 tick 继续执行，这给了开发者更多的时间来处理未处理的 Promise 拒绝情况。
+
+### beforeExit
+
+在exit事件之前触发，当 Node.js 检测到没有其他工作要做，准备退出事件循环时会触发这个事件。可以使用process.on('beforeExit', (code) => {})来监听该事件，在回调函数中可以执行一些最后的清理操作，但需要注意的是，如果在beforeExit事件处理函数中启动了新的异步操作，可能会导致进程无法正常退出，因为beforeExit事件只是在检查是否可以退出时触发，而不是在确定要退出时触发。
+
+[a-node-tools]: https://www.npmjs.com/package/a-node-tools
+[a-command]: https://www.npmjs.com/package/a-command
