@@ -6,10 +6,11 @@ export default function Home() {
   return (
     <Layout>
       <div className={styles.center}>
-        <div>也不知道起个什么名字好</div>
-        <div>似若卡带碰到了卡顿</div>
-        <div>似若犯了迷糊综合症</div>
-        <div>好了，用户名 404 </div>
+        <h1 className="colorText text--center">你好，花生亻</h1>
+        <div>你好，我是花生亻，不是花生仁。</div>
+        <div>因为，</div>
+        <div>我不二！！！！！</div>
+        <div>好吧，叫我`不二花生`也可以原谅你</div>
         <BackgroundRipple></BackgroundRipple>
       </div>
     </Layout>

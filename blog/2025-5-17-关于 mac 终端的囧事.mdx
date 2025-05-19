@@ -1,0 +1,67 @@
+---
+slug: mac 终端的囧事
+title: 终端虽好，理性待之
+tags: [npm 包]
+description: 使用 mac 终端导致的笑话
+---
+
+不想说，说了都是泪。
+
+在写 [a-command] 的时候，有一件事贼尴尬。
+
+写好了之后，在发布新版本后在 [vjj]（使用的是 [a-command] 的 `question` 和 `select`） 中使用时，发现测试时总是第三次就会出现打印残影。于是翻箱倒柜问国产 ai，回答都是一致的“在使用 `emitKeypressEvents` 的时候没有清理导致的残余”。
+
+在 [a-command] 的每一次测试都没有问题，一到了 [vjj] 上就会出现这个问题。
+
+首先声明：我的代码逻辑能力很强，这个不是代码逻辑或残余事件监听导致的
+
+{/* truncate */}
+
+## 寻求五大家族的帮助
+
+五大家族（[通义千问]、[字节豆包]、[腾讯元宝]、[百度一言]、[`传说 ds`]）回答基本上没有啥区别。无非是在前两次积攒的未清理的绑定事件没有及时清理导致后面的第三次毕现 bug。
+
+神奇的是在 [a-command]中却不会出现该故障，无论多少次测试都是一致的效果。
+
+硬控一天，你懂不懂。真的是硬控一天。
+
+而且该故障在使用 mac 终端时会在调试 [vjj] 第三（必须是干净的从新打开的终端）次时必现，而在 vscode 中则没有该故障。
+
+## 初见端倪
+
+从该功能的根依赖 [a-node-tools] 到 [a-command] 再到 [vjj] ，最后没办法，做最小单元测试、功能测试，都无没有效果。
+
+直到，不小心拉长了 mac 自带终端。发现，第三次毕现的问题居然在第五次才出现！！！
+
+咦，那要是这么说的话，我一直在找的未清理的事件监听它不存在。他有可能是终端长度（行数，`process.stdout.rows`）的问题。
+
+## 找到问题，解决问题
+
+其实，在 [a-command] 的 `2.1.9` 版本之前是没有这个问题的，之前是采用打印记行数的逻辑，统计打印的行数，然后在输出内容后直接使用 [a-node-tools] 中的 `cursorModeUp` 将光标手动移动到上一次打印该问题的位置，然后进行打印清理（调用 [a-node-tools] 的 `cursorAfterClean`），之后再打印新内容，看起来就像是交互的问答或是选择。
+
+后来，在 [a-node-tools] 中添加了 `cursorPositionSave` 和 `cursorPositionUndo` 来储存光标位置和释放光标的位置。
+
+在 mac 的终端上出现问题因为在全新页面的终端，使用 `cursorPositionSave` 记录的是可视区域的光标位置，如果剩余的空间不足以打印将打印的内容，保存的位置是打印前的原位置，而实际在打印后，想打印的位置被顶到到了上面，使用 `cursorPositionUndo` 时恢复的是最后保存的光标位置，而不是实际的位置。
+
+在 [a-command] 的测试中每次都没有问题是因为每次执行 `npm test` 时，该钩子中有 `jja cls` 清理了旧的缓冲区，每次都是新的。
+
+```json
+{
+  "scripts": {
+    "test": "jja rm .eg cls && npm run dev"
+  }
+}
+```
+
+## 解决方案
+
+在下一版的 [a-command] 中做出应对方案，包括不限于监听终端尺寸变化时清理终端、终端尺寸不足渲染时提醒拉大尺寸、在 mac 终端保存光标前
+
+[a-command]: https://www.npmjs.com/package/a-command
+[vjj]: https://www.npmjs.com/package/vjj
+[通义千问]: https://www.tongyi.com/qianwen/
+[字节豆包]: https://www.doubao.com/chat/
+[百度一言]: https://yiyan.baidu.com/
+[腾讯元宝]: https://yuanbao.tencent.com/chat/naQivTmsDa
+[`传说 ds`]: https://chat.deepseek.com/
+[a-node-tools]: https://www.npmjs.com/package/a-node-tools

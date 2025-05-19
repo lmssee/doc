@@ -68,7 +68,7 @@ const lmssee: BuildEnv = {
   copyright: `Copyright © ${new Date().getFullYear()} <a href="/about">earthnut</a>`,
   favicon: '/icon/dev/favicon.ico',
   logo: '/icon/dev/logo.png',
-  title: '取名卡顿中',
+  title: '花生亻',
   baseUrl: '/',
 };
 const earthnutDev: BuildEnv = {

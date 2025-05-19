@@ -1,5 +1,5 @@
 {
-  "name": "灵土慧核",
+  "name": "花生亻",
   "short_name": "earthnut",
   "icons": [
     {
@@ -16,6 +16,6 @@
   "start_url": "/",
   "theme_color": "#000000",
   "background_color": "#ffffff",
-  "description": "Step into the spiritual earth wisdom core, this wisdom core nurtured by the spirituality of the earth. Here, the natural sciences and the arts are intertwined, expert insights collide with popular creativity, drawing inspiration from the ancient land to open the door to enlightening and enriching wisdom (well, the title and description are all  DouBao)",
+  "description": "你好，花生吃了没？没吃？没吃就算了，那玩意吃多了不好。一伤钱，二伤肾。但是，我是花生亻。",
   "display": "standalone"
 }
