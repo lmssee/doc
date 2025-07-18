@@ -1,6 +1,6 @@
 /****************************************************************************
- *  @Author lmssee
- *  @Email lmssee@outlook.com
+ *  @Author earthnut
+ *  @Email earthnut.dev@outlook.com
  *  @ProjectName doc
  *  @FileName docusaurus.build.env.ts
  *  @CreateDate  周日  02/02/2025
@@ -89,9 +89,9 @@ export const { title, url, copyright, favicon, logo, baseUrl } = {
   earthnutDev,
 }[target_domain];
 
-/**************************
+/**
  * 创建动态的页面
- **************************/
+ **/
 function createCopyright(cn: boolean = true) {
   const recordCode = cn ? 11011302002071 : 11011302003362;
   return `
@@ -125,9 +125,9 @@ type BuildEnv = {
    * 网站版权
    */
   copyright: string;
-  /**************************
+  /**
    * 网站路由的相对跟路径
-   **************************/
+   **/
   baseUrl: '/' | '/earthnut/';
   /**
    * 网站图标

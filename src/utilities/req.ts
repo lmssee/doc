@@ -1,6 +1,6 @@
 /****************************************************************************
- *  @Author lmssee
- *  @Email lmssee@outlook.com
+ *  @Author earthnut
+ *  @Email earthnut.dev@outlook.com
  *  @ProjectName website
  *  @FileName req.ts
  *  @CreateDate  周四  01/09/2025
@@ -17,21 +17,21 @@ export type RequestOptions<T> = RequestInit & {
   data?: string | object | T;
 };
 
-/**************************
+/**
  *  请求配置参数
- **************************/
+ **/
 export type ReqOptions = {
-  /**************************
+  /**
    * 域名
-   **************************/
+   **/
   domain: string;
-  /**************************
+  /**
    * 端口
-   **************************/
+   **/
   port: number;
-  /**************************
+  /**
    * headers
-   **************************/
+   **/
   headers: HeadersInit;
 };
 
@@ -60,9 +60,9 @@ export class Req {
 
   /**  私有属性，保证 beforeRequest 只能被调用一次  */
   private beforeRequestHasCalled: boolean = false;
-  /**************************
+  /**
    * 请求前要执行的逻辑
-   **************************/
+   **/
   beforeRequest(callback: (options: ReqOptions) => void) {
     // if (this.beforeRequestHasCalled === true) {
     //   // throw new Error('该方法仅且允许调用一次');
@@ -73,9 +73,9 @@ export class Req {
   }
   /**  私有属性，保证 afterResponse 只能被调用一次  */
   private afterResponseHasCalled: boolean = false;
-  /**************************
+  /**
    * 请求后的数据
-   **************************/
+   **/
   afterResponse() {
     // if (this.afterResponseHasCalled === true) {
     //   // throw new Error('该方法仅且允许调用一次');
@@ -84,9 +84,9 @@ export class Req {
     // }
   }
 
-  /**************************
+  /**
    * 使用 get 获取 text 数据
-   **************************/
+   **/
   async getText(url: string) {
     const result = await this.get(url);
     if (result === null) {
@@ -100,9 +100,9 @@ export class Req {
     }
   }
 
-  /**************************
+  /**
    * 使用 get 获取 json 数据
-   **************************/
+   **/
   async getJson<T>(url: string): Promise<T | null> {
     const result = await this.get<T>(url);
     if (result === null) {
@@ -149,10 +149,10 @@ export class Req {
     return null;
   }
 
-  /**************************
+  /**
    * - application/json
    * - application/x-www-form-urlencoded
-   **************************/
+   **/
   async post(
     url: string,
     data?: string | object,
@@ -189,10 +189,10 @@ export class Req {
     return null;
   }
 
-  /**************************
+  /**
    * 使用 get
    * @param url 请求的网址
-   **************************/
+   **/
   async get<T>(url: string, options?: { options?: RequestOptions<T> }) {
     return await this.requestData(url, options?.options);
   }
@@ -205,17 +205,17 @@ export class Req {
         method: 'get',
         mode: 'cors',
         cache: 'no-cache',
-        /**************************
+        /**
          * - include 是包含 cookie
-         **************************/
+         **/
         credentials: 'include',
         redirect: 'follow',
         referrerPolicy: 'same-origin',
         referrer: 'https://lmssee.com',
         ...options,
-        /**************************
+        /**
          * 防止非原始类型数据被覆盖
-         **************************/
+         **/
         headers: {
           referer: 'lmssee.com',
           ...this.options.headers,
@@ -228,9 +228,9 @@ export class Req {
     }
   }
 
-  /**************************
+  /**
    * 解析 url 请求
-   **************************/
+   **/
   private parseUrl(url: string) {
     url = decodeURIComponent(url);
     const { options } = this;

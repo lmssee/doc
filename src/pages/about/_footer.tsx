@@ -1,6 +1,6 @@
 /****************************************************************************
- * @Author lmssee
- * @Email lmssee@outlook.com
+ * @Author earthnut
+ * @Email earthnut.dev@outlook.com
  * @ProjectName website
  * @FileName footer.tsx
  * @CreateDate  周六  12/14/2024
@@ -13,16 +13,16 @@ import styles from './index.module.scss';
 export function Footer() {
   const list: footerList = [
     {
-      href: 'mailto:lmssee@icloud.com?subject=hello&cc=lmssee@qq.com,letmiseesee@gmail.com&bcc=lmssee@outlook.com&body=hi:',
+      href: 'mailto:earthnut.dev@icloud.com?subject=hello&cc=earthnut.dev@qq.com,letmiseesee@gmail.com&bcc=earthnut.dev@outlook.com&body=hi:',
       src: 'outlook',
-      title: 'lmssee@outlook.com',
+      title: 'earthnut.dev@outlook.com',
     },
     {
       href: 'https://github.com/lmssee',
       src: 'github',
     },
     {
-      href: 'https://www.npmjs.com/~lmssee',
+      href: 'https://www.npmjs.com/~earthnut',
       src: 'npm',
     },
     {
@@ -40,7 +40,7 @@ export function Footer() {
               <img
                 src={`/svg/${e.src}.svg`}
                 alt={`a svg of ${e.src}`}
-                title={e.title || 'lmssee'}
+                title={e.title || 'earthnut'}
               />
               {e.text || e.src}
             </>

@@ -4,19 +4,19 @@ class SysInfo {
       /:/.test(str) && !/\(|\)/.test(str) ? `(${str})` : str,
     ).matches;
   }
-  /**************************
+  /**
    * 设备振动
-   **************************/
+   **/
   vibrate() {
     if (window?.navigator?.vibrate) window.navigator.vibrate(200);
   }
-  /**************************
+  /**
    * 分享网站
    * @param [url='https://lmssee.cn']     网页地址
    * @param [text='']  text  文本
    * @param [title='随笔记余生']  title  网站标题
    * @description
-   **************************/
+   **/
   share(
     url: string = 'https://lmssee.cn',
     text: string = '',
@@ -24,9 +24,9 @@ class SysInfo {
   ) {
     if (window?.navigator?.share) window.navigator.share({ url, text, title });
   }
-  /**************************
+  /**
    * 当前是否为手机设备
-   **************************/
+   **/
   isPhone(): boolean {
     return (
       !this.#getMedia('any-hover: hover') &&
@@ -35,9 +35,9 @@ class SysInfo {
     );
   }
 
-  /**************************
+  /**
    * 当前设备是否为小平设备
-   **************************/
+   **/
   get isSmallScreen(): 'small' | 'middle' | 'large' {
     return this.#getMedia('max-width: 576px')
       ? 'small'
@@ -46,17 +46,17 @@ class SysInfo {
         : 'large';
   }
 
-  /**************************
+  /**
    * 是否为暗黑模式
-   **************************/
+   **/
   get isDark() {
     return this.#getMedia('prefers-color-scheme: dark');
   }
-  /**************************
+  /**
    * 设备当前的旋转状态
    *
    * 只返回是否旋转
-   **************************/
+   **/
   get isOrientation() {
     const orientation: OrientationType =
       (screen.orientation || {}).type ||
