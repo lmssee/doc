@@ -1,5 +1,5 @@
 import Layout from '@theme/Layout';
-import { BackgroundRipple } from 'oops-ui/BackgroundRipple';
+import { BackgroundRipple } from 'earthnut/BackgroundRipple';
 import styles from './index.module.scss';
 
 export default function Home() {

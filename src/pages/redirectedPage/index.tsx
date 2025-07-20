@@ -13,7 +13,7 @@ import CountdownBuoys from '../../components/countdownBuoys';
 import { useGetList } from './_useGetList';
 import { loadingStateContext } from './_loadingStateContext';
 import { PrintText } from './_printText';
-import { BackgroundRipple } from 'oops-ui/BackgroundRipple';
+import { BackgroundRipple } from 'earthnut/BackgroundRipple';
 
 /** 中转页面 */
 export default function Page() {
