@@ -25,8 +25,9 @@ const config: Config = {
   onBrokenMarkdownLinks: 'warn',
 
   i18n: {
-    defaultLocale: 'zh-Hans',
-    locales: ['zh-Hans'],
+    defaultLocale: 'zh',
+    locales: ['zh'],
+    // localeDetection: false,
     // locales: ['zh-Hans', 'en'],
   },
   // 预设值
