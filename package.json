@@ -7,7 +7,7 @@
     "start": "PORT=9463 NODE_OPTIONS='--max-old-space-size=768' docusaurus start",
     "dev": "TARGET_DOMAIN=lmssee  npm start",
     "push": "gvv",
-    "push:deploy": "gvv",
+    "push:d": "gvv kind=deploy",
     "diff": "jja pkg --diff",
     "build:local": "chmod +x build.sh && ./build.sh",
     "build:only": "docusaurus clear && docusaurus build",

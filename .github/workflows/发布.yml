@@ -99,10 +99,10 @@ jobs:
           if [ "${{ github.event_name }}"  == 'push' ]; then
             # echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
             MESSAGE_BASE64=$(echo -n "${{ github.event.head_commit.message }}" | base64 -w0)
-            echo "commit_message=$MESSAGE_BASE64" >> $GITHUB_ENV
           else
-            echo "commit_message=${{ github.event.inputs.commit_message }}" >> $GITHUB_ENV
+            MESSAGE_BASE64=$(echo -n "${{ github.event.inputs.commit_message }}" | base64 -w0)
           fi
+            echo "commit_message=$MESSAGE_BASE64" >> $GITHUB_ENV
 
       - name: 配置 SSH 密钥
         id: setup-ssh
@@ -169,7 +169,7 @@ jobs:
 
       - name: 转化提交信息到文件
       run: |
-        echo ${{ env.commit_message }} | base6 -d > commit-message.txt
+        echo ${{ env.commit_message }} | base64 -d > commit-message.txt
 
         # 部署到 lmssee.github.io
       - name: 部署到 lmssee.github.io
