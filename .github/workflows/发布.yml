@@ -93,17 +93,6 @@ jobs:
         run: |
           npm install
 
-      - name: 配置提交信息
-        id: set-commit-message
-        run: |
-          if [ "${{ github.event_name }}"  == 'push' ]; then
-            # echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
-            MESSAGE_BASE64=$(echo -n "${{ github.event.head_commit.message }}" | base64 -w0)
-          else
-            MESSAGE_BASE64=$(echo -n "${{ github.event.inputs.commit_message }}" | base64 -w0)
-          fi
-            echo "commit_message=$MESSAGE_BASE64" >> $GITHUB_ENV
-
       - name: 配置 SSH 密钥
         id: setup-ssh
         env:
@@ -167,10 +156,6 @@ jobs:
           ssh -i  ~/.ssh/id_rsa $REMOTE_USER@$REMOTE_HOST "mkdir -p /home/$TARGET_DOMAIN"
           rsync -avz --delete build/ $REMOTE_USER@$REMOTE_HOST:/home/$TARGET_DOMAIN
 
-      - name: 转化提交信息到文件
-      run: |
-        echo ${{ env.commit_message }} | base64 -d > commit-message.txt
-
         # 部署到 lmssee.github.io
       - name: 部署到 lmssee.github.io
         env:
@@ -188,10 +173,10 @@ jobs:
           git config user.name "lmssee"
           git config user.email "earthnut.dev@outlook.com"
           git add .
-          git commit -F "../commit-message.txt"
+          git commit -m "hello"
           git remote add origin "https://${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git"
           git push origin HEAD:main --force
-          
+
       - name: 部署到 earthnutDev.github.io
         env:
           TARGET_DOMAIN: earthnutDev
@@ -208,7 +193,6 @@ jobs:
           git config user.name "earthnutDev"
           git config user.email "earthnut.dev@outlook.com"
           git add .
-          git commit -F "../commit-message.txt"
-          # git commit -m "${{ env.commit_message  }}"
+          git commit -m "hello"
           git remote add origin "https://${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git"
           git push origin HEAD:main --force
