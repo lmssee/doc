@@ -67,9 +67,7 @@ const FeatureList: FeatureItem[] = [
     title: '一些奇怪的东西',
     href: './information',
     src: '/img/home_feature_information.png',
-    description: (
-      <>还有一些乱七八糟的东西，就当是风中的云、摇曳的植、皎洁的月、难入的眠</>
-    ),
+    description: <>还有一些乱七八糟的东西</>,
   },
 ];
 

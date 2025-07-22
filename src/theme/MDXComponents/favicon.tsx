@@ -6,14 +6,9 @@ export function Favicon({ text }: { text: string }) {
       'link[rel="icon"]',
     ) as HTMLLinkElement | null;
     if (!favicon) return;
+
     const oldHref = favicon.href;
-    console.log('====================================');
-    console.log(text);
-    console.log('====================================');
     favicon.href = text;
-
-    console.log(favicon);
-
     return () => {
       favicon.href = oldHref;
     };

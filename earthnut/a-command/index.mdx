@@ -1,0 +1,44 @@
+---
+title: 开始
+sidebar_position: 1
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<PackageInfo packageName="a-command" />
+
+别人的哪有自己的用的顺手，这是一个用户终端的交互的工具
+
+## 功能分类
+
+本工具包包含三个部分，分别是：
+
+- [args 命令行参数部分](./args%20部分) 负责解析用户使用命令行启动的参数
+- [question 问答部分](./question%20部分) 负责在终端展示一个询答形式的交互
+- [selection 选择部分](./selection%20部分) 负责在终端展示可选择的交互（可多选）
+
+## 要求
+
+- [Node.js](https://nodejs.org/zh-cn) 18.0 或更高版本（可运行 `node -v` 查看）
+
+<Tabs>
+  <TabItem value="npm" label="npm" default>
+
+    ```bash
+    npm install --save a-command
+    ```
+
+  </TabItem>
+  <TabItem value="yarn" label="yarn"> 
+    ```bash
+    yarn create a-command
+    ```
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm">
+    ```bash  
+    pnpm create a-command
+    ```
+  </TabItem>
+
+</Tabs>

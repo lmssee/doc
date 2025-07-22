@@ -1,0 +1,179 @@
+---
+sidebar_position: 4
+sidebar_label: question 部分
+title: 问答交互
+hide_title: false
+---
+
+`question` 是一个问答模式，可使用其向用户进行提问或是简单的选择使用。可引用该函数后，在需要的位置使用
+_等待用户输入的一个函数。因为要等待，所以是异步的，使用的时候应当使用 `await`_
+
+## 参数
+
+- 可使用字符串或者数值作为问题进行单问题提问
+- 也可以使用对象配置问题的细节
+- 使用以上两种混合的数组进行多问
+
+对象参数的属性：
+
+| 可用属性       |                   类型                    | 释义                                                                               |
+| :------------- | :---------------------------------------: | :--------------------------------------------------------------------------------- |
+| `text`         |            `string \| number`             | 唯一的必须属性，问题本身文本                                                       |
+| `tip`          | `string \| number\| (number \| string)[]` | 可选属性，用户输入提示，该值为数组时将转化为简单的选择模式， `yes` or `no`         |
+| `type`         |          `"text" \| "password"`           | 可选属性，当前问题的类型，缺省为 `text` ，还可使用 `password` 设定为密码模式       |
+| `private`      |                 `boolean`                 | 可选属性，缺省值为 `true`，因为默认的返回样式连我自己都不怎么喜欢就给阉了          |
+| `errorTex`     |                 `string`                  | 可选参数，在发生异常时的返回提示文本                                               |
+| `required`     |                 `boolean`                 | 可选参数，用户是否为必须，缺省值为 `true` ，默认不允许空执行输入确认               |
+| `defaultValue` |                 `string`                  | 可选参数，在允许用户不输入时使用的值                                               |
+| `canCtrlCExit` |                 `boolean`                 | 可选参数，是否可以使用 `ctrl + c` 键退出。缺省值为 `false`                         |
+| `canCtrlDExit` |                 `boolean`                 | 可选参数，是否可以使用 `ctrl + d` 键退出。缺省值为 `false`                         |
+| `minLen`       |                 `number`                  | 可选参数，输入检验，允许的最小长度（仅在确认输入时校验）                           |
+| `len`          |                 `number`                  | 可选参数，输入校验，允许的长度值，限定死数（仅在确认输入时检验）                   |
+| `maxLen`       |                 `number`                  | 可选参数，输入校验，允许的最大长度值（仅在确认输入时检验）                         |
+| `verify`       |           [`object`](#校验部分)           | 可选参数，输入检验，会在用户的每次敲击键盘时进行校验（长度限制请使用长度专有限定） |
+
+### 校验部分
+
+使用 `verify` 可以在用户使用键盘时进行回应，其验证是按绪进行的。
+
+| 验证属性  |   类型    | 释义                                                                          |
+| :-------- | :-------: | :---------------------------------------------------------------------------- |
+| `reg`     | `regexp`  | 必须参数，验证的正则                                                          |
+| `info`    | `string`  | 必须参数，验证失败（`inverse` 值未显式设置为 `true`）时显示的文本，且禁止提交 |
+| `inverse` | `boolean` | 可选参数，设置为 `true` 意味着 `reg.test(input)` 为 `true` 则显示提示         |
+| `warn`    | `boolean` | 可选参数，设置为 `true` 将在验证匹配后仅显示提示信息，而不阻止提交信息        |
+
+## 示例
+
+### 最简单的使用
+
+```js
+import { question } from 'a-command';
+const result = await question('中午吃什么');
+```
+
+### 使用自定义配置，可以给用户更好的体验。
+
+```js
+import { isUndefined } from 'a-type-of-js';
+import { question } from 'a-command';
+
+const result = await question({
+  text: '中午吃什么', // 必须的参数
+  tip: '板面还是油泼面', // 可选参数，为数组时进入选择模式
+  type: 'text', // 一个类型选择，支持 `text` 、 `password`
+  private: false, // 选择完毕后是否覆盖
+  resultText: '你想吃的是', // 可选参数，选择后展示
+  errorText: '你丫的看起来是不饿', // 可选参数，用户双击 esc 退出
+  required: true, // 可选参数，是否必填
+  default: '板面', // 可选参数，默认值
+  canCtrlCExit: true, // 可选参数，是否允许用户使用 `Ctrl + C` 退出
+  canCtrlDExit: true, // 可选参数，是否允许用户使用 `Ctrl + D` 退出
+  len: 5, // 限制用户输出长度为 5， 该值优先级高于 `minLen`、`maxLen`，却低于 `verify` 校验
+  minLen: 5, // 限制用户输入长度不低于 5，优先级高于 `maxLen`
+  maxLen: 5, // 限制用户输入长度不超过 5，校验优先级最低
+  verify: [
+    {
+      reg: /^[a-z]+$/, // 限制输入仅可以是小写英文字符
+      info: '您仅可以使用小写英文字符',
+    },
+    {
+      reg: /^.{5}$/, // 限定输入仅为长度为 5
+      info: '输入长度仅可以为 5',
+    },
+    {
+      reg: /^tom$/,
+      info: '不可以为 tom 呦',
+      inverse: true, // 禁止该正则完全匹配
+    },
+    {
+      //  当无设置 inverse 时，该正则为 false 时展示 info
+      //  设置 inverse 时，则该正则为 true 时展示 info
+      reg: /^jerry$/,
+      info: '不可以为 tom 呦',
+      inverse: true, // 禁止该正则完全匹配
+      warn: true， // 启用此项则显示提示文本而不影响最后的
+    },
+  ],
+});
+
+if (isUndefined(result)) {
+  process.exit(1);
+}
+```
+
+还可以配置 `tip` 为数组，将问答配置为简单的选择，这时候用户仅可以在 `tip` 提供的值中进行选择 **仅适用于简单选择，类似于 `yes` or `no` 或者 `男` or `女` 这种，字多的选项，建议使用 [selection](#selection-部分-选择模式-)**
+
+在使用的时候，不建议使用 `verify` 来限制字符数，更推荐使用 `len` 、`minLen`、`maxLen` 来限定输入长度。因为 `verify` 是**_输入校验_**，而 `len`、`minLen`、`maxLen` 是**_enter 确认触发校验_**。
+
+```js
+import { question } from 'a-command';
+
+const result = await question({
+  text: '中午吃什么',
+  tip: ['板面', '油泼面'],
+  resultText: '那我们就去吃',
+  errorText: '不饿，不饿算了，我自己去吃油泼面了',
+});
+```
+
+### 配置 `type` 为 `password` 即为密码模式
+
+也可以一次提供多个提问，只需放置于数组之中即可（数组与对象模式可混搭）
+
+```js
+import { question } from 'a-command';
+const result = await question([
+  {
+    text: '中午吃什么',
+    tip: ['板面', '油泼面'],
+    type: 'text',
+  },
+  {
+    text: '你最喜欢的甜点是',
+    private: true,
+  },
+  '吃完饭去哪里玩呢',
+]);
+```
+
+## question 展示效果
+
+### 一般展示效果
+
+```bash
+▶︎ 请输入你的名字:  tom
+```
+
+### 当设定必选项
+
+```bash
+▶︎ *请输入你的名字*:  tom
+```
+
+### 设定必选却没有输入时直接按 enter 键
+
+（下面的 `tom` 是提示值而非用户输入值）
+
+```bash
+▶︎ *请输入你的名字*:  tom
+   请输入你的名字    👆
+```
+
+### 包含检验时
+
+```bash
+▶︎ *请输入你的名字*:  1
+仅允许 a-z 小写英文字符
+```
+
+### 输入较长而终端显示不足
+
+```bash
+# 此时光标位置在 9 之后
+▶︎ *请输入你的名字*:  ...5468797987979788979
+# 此时光标位置在 5 之上（再次输入将输入到 5 之前）
+▶︎ *请输入你的名字*:   ...432123456789876...
+# 此时光标位置在第二个 8 之上
+▶︎ *请输入你的名字*:   1234567898765432123...
+```

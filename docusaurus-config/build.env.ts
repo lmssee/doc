@@ -7,34 +7,8 @@
  *  @Description 打包环境
  ****************************************************************************/
 
-import { publicSecurityNewWorkBadge } from './publicSecurityNewWorkBadge';
-
-/**************************************
- *
- * 打包的类型
- *
- * - com
- * - comEarthnut
- * - cn
- * - cnEarthnut
- * - io
- *
- **************************************/
-
-const TARGET_DOMAIN = process.env.TARGET_DOMAIN;
-/**
- * 构建环境
- */
-const target_domain = [
-  'com',
-  'comEarthnut',
-  'cn',
-  'cnEarthnut',
-  'lmssee',
-  'earthnutDev',
-].includes(TARGET_DOMAIN)
-  ? TARGET_DOMAIN
-  : 'com';
+import { target_domain } from './env';
+import { publicSecurityNewWorkBadge } from './public-security-new-work-badge';
 
 const com: BuildEnv = {
   url: 'https://lmssee.com',
@@ -75,11 +49,11 @@ const earthnutDev: BuildEnv = {
   ...lmssee,
   url: 'https://earthnutDev.github.io',
 };
-/**************************************
+/**
  *
  * 环境值
  *
- **************************************/
+ */
 export const { title, url, copyright, favicon, logo, baseUrl } = {
   com,
   comEarthnut,

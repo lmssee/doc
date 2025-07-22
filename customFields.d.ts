@@ -12,9 +12,9 @@ type CustomConfig = DefaultConfig & CustomFileConfig;
 type CustomDocusaurusConfig = DefaultDocusaurusConfig & CustomFileConfig;
 
 declare module '@docusaurus/types/src/config' {
-  export interface DocusaurusConfig extends CustomDocusaurusConfig {}
+  export type DocusaurusConfig = CustomDocusaurusConfig;
 }
 
 declare module '@docusaurus/types' {
-  export interface Config extends CustomConfig {}
+  export type Config = CustomConfig;
 }

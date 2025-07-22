@@ -1,0 +1,276 @@
+---
+title: args 部分
+sidebar_label: Args 部分
+sidebar_position: 3
+---
+
+`Args` 可以获取用户启动该程序传入的参数
+
+解析用户的输入参数
+
+可接受用用操作
+
+```bash
+# 直接使用命令名执行
+# 将展示默认的 npm 版本更新信息
+npx vjj
+
+# 使用命令名加子命令的形式进行执行
+# 将展示默认的 `vjj` 的版本信息
+npx vjj version
+
+# 使用命令名加子命令及选项的形式进行执行
+# `vjj` 的原始执行方式，功能与 `npx vjj` 相同
+npx jja update --npm-publish
+
+
+# 使用命令名 + 子命令 + 选项 + 选项值的形式进行执行
+# 使用 `jja` 命令的 `remove` 子命令
+# 移除 `dist` 和 `node_modules` 目录
+# 且使用 `--ignore` 选项来忽略删除文件/文件夹时的日志信息
+npx jja remove  --ignore  dist node_modules
+```
+
+**_调用 `run` 后才会开始工作，并且，请在执行 `run` 之前完成所有操作的绑定_**
+
+请注意，执行是有顺序的，当执行完毕 `run` 后，是无法执行 `bind` 操作的。如果你执意要这么做，可能用户会看到奇怪的信息，而这些信息，本来是提醒你的！！！
+
+在执行过程中，可以参看 `state` 值查看。当用户仅是参看版本号或是打印帮助时， `state.code` 会是 4 ，同时返回 `state.overText` 来说明到底是参看版本号还是打印帮助。不建议在 `state.code` 为 4 时再执行其他命令。你也可以打印一些其他好玩的
+
+示例：
+
+倘若你的执行前缀为 `jja` , 可用：
+
+- **当你有多个配置项时，可把符合规则的配置项放入数组**
+- **缩写请尽量避开 `-h`、`-v`**
+- **`-v`/`version` 的优先级要高于`-h`/`help`**
+- **使用字符串参数时，注意 `<>` 和 `()` 均为英文符号**
+
+## 实例属性及方法
+
+### 属性
+
+| 属性     | 释义                                                                |
+| :------- | :------------------------------------------------------------------ |
+| `args`   | 绑定后解析到的值                                                    |
+| `name`   | 当前程序的名，请在初始化时设定该值                                  |
+| `state`  | 当前运行的状态，绑定前为 1、解析前为 2、结束前为 3、结束时将为 4    |
+| `values` | 旧版本中用于获取用户的原始参数，先可通过 `args.$noMatch` 获取相同值 |
+
+### 方法
+
+| 属性或方法名 | 释义                                                                        |
+| :----------- | :-------------------------------------------------------------------------- |
+| `bind`       | 进行绑定参数                                                                |
+| `end`        | 比较平和的方式终结程序，等同于 `process.exit(0)`                            |
+| `error`      | 直接抛出错误中断程序，等同于 `process.exit(1)`                              |
+| `help`       | 主动使用帮助文档                                                            |
+| `isEnd`      | 判断当前进程是否完结，若正常流程已完结，且需中断程序，可使用可选参数 `true` |
+| `run`        | 绑定好参数后执行参数的解析，后续再进行绑定参数将会报错                      |
+| `version`    | 主动使用版本说明                                                            |
+
+## 绑定参数
+
+### 最简单的例子
+
+```js
+import { Args } from "a-command";
+
+const command: Args = new Args('jja');
+command.bind("init <-i> (初始化一个配置文件)").run();
+```
+
+### 不带子项的配置
+
+```js
+import { Args } from "a-command";
+const command: Args = new Args('jja');
+command
+  .bind({
+    name: "init",
+    abbr: "-i",
+    info: "初始化一个配置文件",
+  })
+  .run();
+```
+
+### 带子项配置（子项纯文本的）
+
+```js
+import { Args } from "a-command";
+const command: Args = new Args('jja');
+command.bind({
+  name: "init",
+  abbr: "-i",
+  info: "初始化一个配置文件",
+  options: [
+    "ts <-t> (初始化一个 `ts` 后缀配置文件)",
+    "js <-j> (初始化一个 `js` 后缀配置文件)",
+    "json <-o> (初始化一个 `json` 后缀配置文件)",
+  ],
+});
+command.run(); // Users can use `gig init -o`
+```
+
+### 全配置的
+
+```js
+import { Args } from "a-command";
+const command: Args = new Args('jja');
+command.bind({
+  name: "init",
+  abbr: "-i",
+  info: "初始化一个配置文件",
+  options: [
+    {
+      name: "ts",
+      abbr: "-t",
+      info: "初始化一个 `ts` 后缀配置文件",
+    },
+    {
+      name: "js",
+      abbr: "-j",
+      info: "初始化一个 `js` 后缀配置文件",
+    },
+    {
+      name: "json",
+      abbr: "-o",
+      info: "初始化一个 `json` 后缀配置文件",
+    },
+  ],
+});
+command.run(); // Users can use `gig init -o`
+```
+
+### 怪异行为绑定参数
+
+```ts
+import { Args } from 'a-command';
+const command: Args = new Args('jja');
+command.bind({
+  'init <-i> (初始化项目)': [
+    'ts  (初始化一个 ts 配置文件)',
+    'js  (初始化一个 js 配置文件)',
+    'json  (初始化一个 json 配置文件)',
+  ],
+  'create <-c> (添加一个文件)': [
+    'ts  (添加一个 ts 配置文件)',
+    'js  (添加一个 js 配置文件)',
+    'json  (添加一个 json 配置文件)',
+  ],
+});
+command.run(); // Users can use `gig init ts`
+```
+
+(四) 最后，可以使用 `args` 来获取用户实际的值输入
+
+```ts
+... // 其他代码
+ /**
+  *   获取处理后的用户输入的参数
+  *
+  *   这种模式尽可能的保留了用户输入，但是也舍弃了部分无法识别的输入
+  * */
+command.args;
+/**
+ *  获取处理后的用户输入的参数的 Object 形式
+ *
+ *  这种模式更适合用于配置文件
+ *
+ * **_在这种模式下，`subOptions` 会覆盖上级的 `value`_**
+ *
+ * */
+command.args.$map;
+/**
+ * 为了获取有序的对象值
+ *
+ * 现 可以通过 `$arrMap` 获取
+ *
+ */
+command.args.$arrMap;
+ /**
+  *   获取处理后的用户输入的参数的简单形式
+  *
+  *  这种模式适合简单的命令，仅查看命令是否有
+  * */
+command.args.$only;
+/**
+ *
+ *    是否为空，判断用户未输入命令参数
+ */
+command.args.$isVoid;
+/**
+ *
+ * 用户原始输入参数
+ */
+command.args.$original;
+```
+
+## 使用
+
+### 获取当前状态
+
+当前状态可由 `state` 来获取，当 `state.code` 为 4 时，说明用户查看了版本号或是帮助文档或是主动使用 `end` 或 `error` 方法，此时 `state.overText` 会是 `version`、`end`、`error` 或 `help` 来表示到底是查看了版本号还是帮助文档
+
+```ts
+import { Command } from 'a-command';
+
+const _p = console.log;
+const command = new Command();
+/**
+ * 当使用带 -h 或者  -v 的参数测试的时候内部解析会标记为已结束状态, 但是是否结束看具体需求
+ *
+ * `isEnd` 是一个判断当前状态的方法，返回一个布尔值，标记当前的状态是否可用。
+ *
+ * 返回 `false` 值说明当前未结束，返回 `true` 值说明当前已经结束，但是并不会主动退出程序
+ *
+ * 除非你在调用 `isEnd` 时显示传入 `true` 值，用以主动退出程序
+ *
+ */
+_p(command.isEnd()); // 打印是否结束，一个 `boolean` 值
+_p(command.isEnd(true)); // 如果想在 `-v` 或 `-h` 时主动退出程序，可传入 `true` 值
+_p(command.state); // 打印当情状态
+_p(command.state.code); // 打印当情状态
+command.state.overText; // 结束文本   "version" | "help" | "end" | "error";
+
+// 任何时刻都可以用的
+command.end(); // 主结束程序
+// 使用 `error` 是抛出错误而不是简单的退出层序
+// 在某些时候，简单是优雅退出程序会被作为层序结束的消息传递给下一个进程
+// 此时，你可以使用 `error` 来抛出错误，而不是简单的退出层序
+command.error(); /// 将抛出错误并退出 node 程序
+```
+
+### 主动使用帮助文档
+
+现在可通过调用 `help` 方法主动展示帮助文档
+
+- _主动调用的，说我希望你能用全拼_
+
+```ts
+command.help();
+command.help('init'); // 展示 init 命令信息
+command.help('init', 'vue'); // 展示 init 下的 vue 命令信息
+```
+
+### 主动使用版本说明
+
+现在可通过调用 `version` 方法主动展示版本信息
+
+```ts
+command.version();
+```
+
+### 打字稿（Typescript）支持
+
+现在支持 `Typescript` ，你可以使用 `Typescript` 来使用你的返回值
+
+```ts
+import { Args } from 'a-command';
+
+const command: Args = new Args('vjj');
+
+command.bind({});
+
+command.run().isEnd(true); // 在触发了 `-h` 或 `-v` 后，会自动结束程序
+```

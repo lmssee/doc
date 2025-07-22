@@ -1,11 +1,19 @@
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-import { baseUrl, favicon, title, url } from './docusaurus.build.env';
-import { themeConfig } from './docusaurus.theme.config';
+import { baseUrl, favicon, title, url } from './docusaurus-config/build.env';
+import { themeConfig } from './docusaurus-config/theme.config';
+import { envelopment } from './docusaurus-config/env';
 
 /**************************************
  *
  * 配置文件
+ *
+ * 包含：
+ *
+ * - 网站元数据
+ * - 部署配置
+ * - 主题、插件和预设配置
+ * - 自定义部分配置
  *
  **************************************/
 const config: Config = {
@@ -17,18 +25,16 @@ const config: Config = {
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl,
+
+  projectName: 'lmssee.github.io',
   // github 页面配置
   organizationName: 'lmssee',
-  projectName: 'lmssee.github.io',
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-
   i18n: {
     defaultLocale: 'zh',
     locales: ['zh'],
-    // localeDetection: false,
-    // locales: ['zh-Hans', 'en'],
   },
   // 预设值
   presets: [
@@ -36,21 +42,25 @@ const config: Config = {
       'classic',
       {
         docs: {
-          path: 'docs',
-          routeBasePath: 'docs',
-          sidebarPath: './sidebars.ts',
+          path: 'earthnut',
+          // 置之于根
+          routeBasePath: '/',
+          sidebarPath: './docusaurus-config/sidebars.ts',
         },
         blog: {
           path: 'blog',
+          blogTitle: '📔',
           routeBasePath: '日志',
           showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
+          blogSidebarTitle: '建站日志',
+          blogSidebarCount: 'ALL',
+          // feedOptions: {
+          //   type: ['rss', 'atom'],
+          //   xslt: true,
+          // },
+          // onInlineTags: 'warn',
+          // onInlineAuthors: 'warn',
+          // onUntruncatedBlogPosts: 'warn',
         },
         theme: {
           customCss: [
@@ -70,7 +80,7 @@ const config: Config = {
         id: 'informationSidebar',
         path: 'information',
         routeBasePath: 'information',
-        sidebarPath: './sidebars.information.ts',
+        sidebarPath: './docusaurus-config/sidebars.information.ts',
         sidebarCollapsed: true,
       },
     ],
@@ -79,12 +89,13 @@ const config: Config = {
       {
         id: 'edgeExtensionSidebar',
         path: 'edge_extension',
-        routeBasePath: '/',
-        sidebarPath: './sidebars.edge_extension.ts',
+        routeBasePath: 'edge-extension',
+        sidebarPath: './docusaurus-config/sidebars.edge_extension.ts',
       },
     ],
   ],
   themeConfig: themeConfig,
+  /**  自定义字段  */
   customFields: {
     // 添加自定义字段
     // ...
@@ -98,6 +109,7 @@ const config: Config = {
       second: '2-digit',
       hour12: false,
     }),
+    envelopment,
   },
 };
 

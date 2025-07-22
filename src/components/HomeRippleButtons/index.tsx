@@ -25,7 +25,7 @@ export function HomeRippleButtons({
         setImgUrl(null);
         break;
       case data[1]:
-        setImgUrl(['#0ff']);
+        setImgUrl(['#303']);
         break;
       case data[2]:
         setImgUrl(['#f36', '#ff3']);
