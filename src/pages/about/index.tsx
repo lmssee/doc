@@ -2,7 +2,7 @@ import Layout from '@theme/Layout';
 import styles from './index.module.scss';
 import { xcn } from 'xcn';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import { Contact } from './Contact';
+import { Contact } from './_Contact';
 import { BackgroundRipple } from 'earthnut/BackgroundRipple';
 
 export default function Home() {

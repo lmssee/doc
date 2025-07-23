@@ -77,17 +77,27 @@ const config: Config = {
     [
       '@docusaurus/plugin-content-docs',
       {
-        id: 'informationSidebar',
-        path: 'information',
-        routeBasePath: 'information',
-        sidebarPath: './docusaurus-config/sidebars.information.ts',
+        id: 'npmSidebars',
+        path: 'npm',
+        routeBasePath: 'npm',
+        sidebarPath: './docusaurus-config/sidebars.npm.ts',
         sidebarCollapsed: true,
       },
     ],
     [
       '@docusaurus/plugin-content-docs',
       {
-        id: 'edgeExtensionSidebar',
+        id: 'noteBookSidebars',
+        path: 'notebook',
+        routeBasePath: 'notebook',
+        sidebarPath: './docusaurus-config/sidebars.notebook.ts',
+        sidebarCollapsed: true,
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'edgeExtensionSidebars',
         path: 'edge_extension',
         routeBasePath: 'edge-extension',
         sidebarPath: './docusaurus-config/sidebars.edge_extension.ts',

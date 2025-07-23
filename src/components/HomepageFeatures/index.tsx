@@ -65,7 +65,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: '一些奇怪的东西',
-    href: './information',
+    href: './notebook',
     src: '/img/home_feature_information.png',
     description: <>还有一些乱七八糟的东西</>,
   },
