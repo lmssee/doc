@@ -1,0 +1,68 @@
+---
+title: 咦
+sidebar_label: pjj（禁止 publish）
+---
+
+<PackageInfo packageName="pjj" />
+
+或者你只需要在 "package.json" 文件添加 `private` 属性
+
+```json title="package.json"
+{
+  "private": true
+}
+```
+
+本来想打造成一个读取 "package.json" 文件配置的导出文件/文件夹做验证。时间不足，待完善。
+
+## 安装
+
+<InstallInfo name="pjj" dev />
+
+## 使用
+
+### 常规使用
+
+```json
+{
+  "scripts": {
+    "prepublishOnly": "pjj"
+  }
+}
+```
+
+### 替换掉默认文本
+
+```json
+{
+  "scripts": {
+    "prepublishOnly": "pjj -m '请在 dist 目录下执行 npm publish'"
+  }
+}
+```
+
+### 替换掉默认文本并使用黑色（默认）文本颜色
+
+```json
+{
+  "scripts": {
+    "prepublishOnly": "pjj -m '请在 dist 目录下执行 npm publish' -b"
+  }
+}
+```
+
+需要注意
+
+- 添加了 `-s` 命令用于替换默认 prepublishOnly，但是还不知道怎么用，慎用
+- 在使用命令 `pjj` 时，需保证在项目中进行了安装
+- 只要将该命令配置到 `"prepublishOnly": "pjj"` 时，总会在执行 `npm publish` 时阻止执行 `npm publish`
+- 该命令仅适用于 `npm publish`
+- 使用该命令请不要使用 `npx` 调用，除非配置 `-s npx` 命令
+
+```json
+{
+  "scripts": {
+    "prepublishOnly": "npx pjj -s npx"
+  }
+}
+```

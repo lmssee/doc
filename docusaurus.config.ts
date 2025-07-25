@@ -1,8 +1,8 @@
-import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import { baseUrl, favicon, title, url } from './docusaurus-config/build.env';
 import { themeConfig } from './docusaurus-config/theme.config';
 import { envelopment } from './docusaurus-config/env';
+import { CustomConfig } from '@docusaurus/types';
 
 /**************************************
  *
@@ -16,8 +16,9 @@ import { envelopment } from './docusaurus-config/env';
  * - 自定义部分配置
  *
  **************************************/
-const config: Config = {
+const config: CustomConfig = {
   title,
+  titleDelimiter: '  ​'.repeat(60).concat('for 🀪'),
   tagline: '你好，不将饶过任何人的时光依旧',
   favicon, // 网站图标设置
   // Set the production url of your site here
@@ -25,7 +26,7 @@ const config: Config = {
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl,
-
+  headTags: [],
   projectName: 'lmssee.github.io',
   // github 页面配置
   organizationName: 'lmssee',
@@ -45,7 +46,7 @@ const config: Config = {
           path: 'earthnut',
           // 置之于根
           routeBasePath: '/',
-          sidebarPath: './docusaurus-config/sidebars.ts',
+          sidebarPath: './earthnut/_sidebars.ts',
         },
         blog: {
           path: 'blog',
@@ -80,7 +81,7 @@ const config: Config = {
         id: 'npmSidebars',
         path: 'npm',
         routeBasePath: 'npm',
-        sidebarPath: './docusaurus-config/sidebars.npm.ts',
+        sidebarPath: './npm/_sidebars.ts',
         sidebarCollapsed: true,
       },
     ],
@@ -90,7 +91,7 @@ const config: Config = {
         id: 'noteBookSidebars',
         path: 'notebook',
         routeBasePath: 'notebook',
-        sidebarPath: './docusaurus-config/sidebars.notebook.ts',
+        sidebarPath: './notebook/_sidebars.ts',
         sidebarCollapsed: true,
       },
     ],
@@ -100,7 +101,7 @@ const config: Config = {
         id: 'edgeExtensionSidebars',
         path: 'edge_extension',
         routeBasePath: 'edge-extension',
-        sidebarPath: './docusaurus-config/sidebars.edge_extension.ts',
+        sidebarPath: './edge_extension/_sidebars.ts',
       },
     ],
   ],

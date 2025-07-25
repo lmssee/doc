@@ -1,20 +1,21 @@
 import type { Config as DefaultConfig } from '@docusaurus/types';
 
 import { DocusaurusConfig as DefaultDocusaurusConfig } from '@docusaurus/types/src/config';
-type CustomFileConfig = {
+export type CustomFileConfig = {
   customFields: {
     buildTime: string;
+    envelopment: boolean;
   };
 };
 
-type CustomConfig = DefaultConfig & CustomFileConfig;
+type _CustomConfig = DefaultConfig & CustomFileConfig;
 
-type CustomDocusaurusConfig = DefaultDocusaurusConfig & CustomFileConfig;
+type _CustomDocusaurusConfig = DefaultDocusaurusConfig & CustomFileConfig;
 
 declare module '@docusaurus/types/src/config' {
-  export type DocusaurusConfig = CustomDocusaurusConfig;
+  export type CustomDocusaurusConfig = _CustomDocusaurusConfig;
 }
 
 declare module '@docusaurus/types' {
-  export type Config = CustomConfig;
+  export type CustomConfig = _CustomConfig;
 }

@@ -1,6 +1,6 @@
 ---
 description: edge 扩展
-sidebar_position: 0
+
 sidebar_babel: 总页
 title: edge 扩展欢迎页
 hide_title: true

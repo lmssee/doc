@@ -1,0 +1,27 @@
+@mixin hover() {
+  text-shadow:
+    -1px -1px 3px #fff,
+    1px 1px 3px #000;
+  color: #ff0;
+}
+
+// copyright 二字
+.copyRight {
+  padding: 0px 8px;
+
+  &:hover {
+    @include hover();
+  }
+}
+
+// 有备案号的
+.icpFoot {
+  a,
+  img {
+    display: inline-block;
+    margin: auto 8px;
+    &:hover {
+      @include hover();
+    }
+  }
+}

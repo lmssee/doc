@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
+import Link from '@docusaurus/Link';
 
 type FeatureItem = {
   title: string;
@@ -19,33 +20,33 @@ const FeatureList: FeatureItem[] = [
       <>
         有一些 npm 工具包，包括不限于
         <code>
-          <a href="./a-command" title="a-command">
+          <Link href="./npm/a-command" title="a-command">
             终端工具
-          </a>
+          </Link>
         </code>
         、
         <code>
-          <a href="./nry" title="更简洁的切换 npm registry">
+          <Link href="./npm/nry" title="更简洁的切换 npm registry">
             npm 源管理
-          </a>
+          </Link>
         </code>
         、
         <code>
-          <a href="./jja" title="简单的工具">
+          <Link href="./npm/jja" title="简单的工具">
             工具包
-          </a>
+          </Link>
         </code>
         、
         <code>
-          <a href="./colored-table" title="彩色文本的表格输出">
+          <Link href="./npm/colored-table" title="彩色文本的表格输出">
             彩色表格
-          </a>
+          </Link>
         </code>
         、
         <code>
-          <a href="./color-pen" title="使用">
+          <Link href="./npm/color-pen" title="使用">
             终端输出彩色字
-          </a>
+          </Link>
         </code>
         等
       </>
@@ -54,7 +55,7 @@ const FeatureList: FeatureItem[] = [
   {
     title: 'edge 扩展',
     src: '/img/home_feature_edge_extends.png',
-    href: './reset-new-tab',
+    href: './edge-extension/',
     description: (
       <>
         目前有两款 edge
@@ -71,11 +72,13 @@ const FeatureList: FeatureItem[] = [
   },
 ];
 
-function Feature({ title, src, description }: FeatureItem) {
+function Feature({ title, src, description, href }: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
-        <img className={styles.featureImage} src={src} />
+        <Link href={href} draggable={false}>
+          <img className={styles.featureImage} src={src} draggable={false} />
+        </Link>
       </div>
       <div className="text--center padding-horiz--md">
         <Heading as="h3">{title}</Heading>

@@ -5,10 +5,13 @@ import { InfoType, PackageInfoProps } from './types';
 export function PackageInfo({
   packageName,
   githubUserName = 'earthnutDev',
+  githubRepoName,
 }: PackageInfoProps) {
   if (!packageName || !githubUserName) {
     return null;
   }
+
+  githubRepoName = githubRepoName ?? packageName;
 
   const shieldsStart = 'https://img.shields.io/';
 
@@ -27,24 +30,26 @@ export function PackageInfo({
     // },
     {
       alt: 'Monthly downloads',
-      src: `${shieldsStart}npm/dm/${packageName}.svg?logo=npm&logoColor=rgb(0,0,0)&label=%E6%9C%88%E4%B8%8B%E8%BD%BD%E9%87%8F&labelColor=rgb(194,112,210)&color=rgb(0,0,0)`,
+      src: `${shieldsStart}npm/dm/${packageName}.svg?logo=npm&logoColor=rgb(0,0,0)&label=月下质量&labelColor=rgb(194,112,210)&color=rgb(0,0,0)`,
     },
     {
       alt: 'Total downloads',
-      src: `${shieldsStart}npm/dt/${packageName}.svg?logo=npm&label=下载量&labelColor=rgb(107,187,124)&color=rgb(0,0,0)`,
+      src: `${shieldsStart}npm/dt/${packageName}.svg?logo=npm&label=总下载量&labelColor=rgb(107,187,124)&color=rgb(0,0,0)`,
     },
   ];
 
   const githubInfo: InfoType[] = [
     {
-      src: shieldsStart + 'badge/👀_%20-源码查看-rgb(12,244,39)?logo=github',
+      src:
+        shieldsStart +
+        'badge/%20👀_%20-%20源码查看-rgb(44, 14, 210)?logo=github',
       alt: '源码参看',
-      href: `https://github.com/${githubUserName}/${packageName}/`,
+      href: `https://github.com/${githubUserName}/${githubRepoName}/`,
     },
     {
       src: shieldsStart + 'badge/‼️-bug_%20_提交-rgb(255,0,63)?logo=github',
       alt: 'bug 🙋‍♂️ 提交',
-      href: `https://github.com/${githubUserName}/${packageName}/issues`,
+      href: `https://github.com/${githubUserName}/${githubRepoName}/issues`,
     },
     // {
     //   alt: 'GitHub last commit',
@@ -83,29 +88,6 @@ export function PackageInfo({
           ))}
         </p>
       ))}
-
-      {/* <p className="p_p__5vQ_t">
-        <a
-          target="_blank"
-          rel="noreferrer"
-          href="https://lmssee.com/redirectedPage?url=https%3A%2F%2Fgithub.com%2FearthnutDev%2Fa-type-of-js%2Fblob%2Fmain%2FCHANGELOG.md"
-        >
-          <img
-            alt="查看 📔 日志"
-            src="https://img.shields.io/badge/%F0%9F%91%80-%E6%97%A5_%20_%E5%BF%97-rgb(0,125,206)"
-          />
-        </a>
-        <a
-          target="_blank"
-          rel="noreferrer"
-          href="https://lmssee.com/redirectedPage?url=https%3A%2F%2Fgithub.com%2FearthnutDev%2Fa-type-of-js%2Fissues"
-        >
-          <img
-            alt="bug 🙋‍♂️ 提交"
-            src="https://img.shields.io/badge/%E2%98%A3%EF%B8%8F-bug_%20_%E6%8F%90%E4%BA%A4-rgb(255,0,63)"
-          />
-        </a>
-      </p> */}
     </div>
   );
 }

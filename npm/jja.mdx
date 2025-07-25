@@ -1,0 +1,112 @@
+---
+title: 小工具
+sidebar_label: jja （小工具）
+---
+
+<PackageInfo packageName="jja" />
+
+## 安装
+
+<InstallInfo name="jja" />
+
+## 📖 命令
+
+- `remove`：与删除文件相关
+- `package`：与 package.json 包相关
+- `dns`: 域名解析及连通性判断
+- `cls`、`clear`：清理终端屏幕，两个作用相同
+
+## 清理终端
+
+`cls` 和 `clear` 在使用时没有区别，唯一的区别就是 `cls` 是 windows 下黑窗口的清屏命令，而 `clear` 是 mac、linux 下终端的清理命令。
+
+是不是觉得既然这样，还不如直接在终端使用 `cls` 或 `clear` 更简单。但如果你想把它加进 `packages.json` 的钩子中的时候，是不是 `jja cls` 更合适些。
+
+```json
+{}
+```
+
+## remove 移除文件/文件夹
+
+可用 `npx jja  rm  <filename>  <filename>  <...>` 的模式进行移除文件或文件夹
+
+```bash
+# 标注模式
+npx jja  remove <filename>
+# 缩写模式
+npx jja  rm <filename>
+```
+
+如果不想显示该过程的 `log` 信息，可以使用 `-i` 忽略掉:
+
+```bash
+npx jja  rm  -i  filename
+```
+
+## package 与 packages.json 相关
+
+使用 `--diff` 或 `-d` 进行 `package.json` 文件内的依赖版本的检测，查看是否有更新（更新以本地安装的应用版本为准，而不是以 package.json 文件给出的范围）可用，给出反馈
+
+```bash
+npx jja package --diff
+# 或者使用缩写
+npx jjs pkg -d
+
+```
+
+### 指定源
+
+在使用的时候可以使用指定制定的源构建
+
+```bash
+# 指定源
+npx jjs pkg -d=淘宝
+npx jjs pkg -d=腾讯
+npx jjs pkg -d=中科大
+npx jjs pkg -d=yarn
+# 默认源 （指定值不存在则默认使用 `官方`）
+npx jjs pkg -d=官方
+```
+
+## dns 查询域名的解析
+
+添加了域名解析，使用线上的域名，目前仅支持 `A` 记录的查询
+
+### 简单使用
+
+因为是这样的，有一次，我的服务器突然无法从 `git@github.com` 拉取代码，我一直以为是服务器的事，甚至进行了重装服务器，都没有解决该问题，后知后觉。
+
+```bash
+# 简单使用（将返回 github.com 的解析地址）
+npx jja dns
+```
+
+### 自定义域名
+
+可通过配置参数 `--domain` （缩写 `-d`）配置为任意的域名
+
+```bash
+# 使用自定义的网址
+npx jja dns --domain=www.npmjs.com
+npx jja dns -d=www.npmjs.com
+```
+
+### 自定义端口
+
+默认使用 `443` 端口，可使用配置参数 `--port` (缩写 `-p`) 指定测试连通性的端口号
+
+```bash
+# 使用自定义的判断联通的接口（默认 443）
+npx jja dns --port=80
+npx jja dns -p=80
+```
+
+### 不覆盖校验过程
+
+在测试连通性时使用了多个 `dns` 源进行测试连通性，如果想参看细节，可使用配置参数 `--no-covered` （缩写 `-n`）
+
+```bash
+# 展示每一个测试的 dns 信息
+npx jja dns --not-covered
+npx jja dns -n
+```

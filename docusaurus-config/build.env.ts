@@ -8,11 +8,10 @@
  ****************************************************************************/
 
 import { target_domain } from './env';
-import { publicSecurityNewWorkBadge } from './public-security-new-work-badge';
 
 const com: BuildEnv = {
   url: 'https://lmssee.com',
-  copyright: createCopyright(false),
+  copyright: 'com',
   favicon: '/icon/com/favicon.ico',
   logo: '/icon/com/logo.png',
   title: '左左和右右',
@@ -25,7 +24,7 @@ const comEarthnut: BuildEnv = {
 };
 const cn: BuildEnv = {
   url: 'https://lmssee.cn',
-  copyright: createCopyright(),
+  copyright: 'cn',
   favicon: '/icon/cn/favicon.ico',
   logo: '/icon/cn/logo.png',
   title: '随笔记余生',
@@ -39,7 +38,7 @@ const cnEarthnut: BuildEnv = {
 
 const lmssee: BuildEnv = {
   url: 'https://lmssee.github.io',
-  copyright: `Copyright © ${new Date().getFullYear()} <a href="/about">earthnut</a>`,
+  copyright: 'earthnut',
   favicon: '/icon/dev/favicon.ico',
   logo: '/icon/dev/logo.png',
   title: '花生亻',
@@ -62,29 +61,6 @@ export const { title, url, copyright, favicon, logo, baseUrl } = {
   lmssee,
   earthnutDev,
 }[target_domain];
-
-/**
- * 创建动态的页面
- **/
-function createCopyright(cn: boolean = true) {
-  const recordCode = cn ? 11011302002071 : 11011302003362;
-  return `
-    <a
-    href="https://lmssee.com/redirectedPage?url=http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=${recordCode}"
-    target="_blank"
-    rel="noreferrer"
-    >
-    <img src="${publicSecurityNewWorkBadge}" height="10" alt="公安网" />
-    京公网安备 <span>${recordCode}</span> 号
-    </a>
-    <a
-    href="https://lmssee.com/redirectedPage?url=http://beian.miit.gov.cn/publish/query/indexFirst.action"
-    target="_blank"
-    rel="noreferrer"
-    >
-    京<span>ICP</span> 备 <span>20024593</span> 号 - ${Number(!cn) + 1}
-    </a> <a href="/about">lmssee</a>`;
-}
 
 type BuildEnv = {
   /**

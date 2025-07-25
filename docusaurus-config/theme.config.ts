@@ -1,20 +1,33 @@
 import { copyright, logo, title } from './build.env';
 import { themes as prismThemes } from 'prism-react-renderer';
-import type { ThemeConfig } from '@docusaurus/types';
+
 import type * as Preset from '@docusaurus/preset-classic';
-import { envelopment } from './env';
 
 /**  github 的用户名  */
-const githubUserName = envelopment ? 'earthnutDev' : 'lmssee';
+const githubUserName = 'earthnutDev';
 
 /**  npm 账户链接  */
 // const npmUrl = `https://www.npmjs.com/~${envelopment ? 'earthnut' : 'lmssee'}`;
 /**  x 的账户链接  */
 // const xUrl = `https://x.com/${envelopment ? 'earthnut_dev' : 'reset_new_tab'}`;
 //**  主题配置  */
-export const themeConfig: ThemeConfig = {
+export const themeConfig: Preset.ThemeConfig = {
+  titleSuffix: '你好',
   // 替换为项目的社交卡片
   image: 'img/background-image-for-presentation.jpg',
+  docs: {
+    sidebar: {
+      autoCollapseCategories: true,
+      hideable: true,
+    },
+  },
+  // 控制内页的标题
+  metadata: [
+    {
+      name: 'og:title',
+      content: '${title} ***',
+    },
+  ],
   //  导航栏配置
   navbar: {
     style: 'dark',
@@ -34,25 +47,25 @@ export const themeConfig: ThemeConfig = {
         to: '/npm',
         // type: 'docSidebar',
         sidebarId: 'npmSidebars',
-        label: '其他 npm 包',
+        label: 'npm 工具包',
         title: 'npm',
         position: 'left',
       },
       {
-        to: '/notebook/说明',
+        to: '/edge-extension/',
+        sidebarId: 'edgeExtensionSidebars',
+        position: 'right',
+        label: 'edge 扩展',
+      },
+      {
+        to: '/notebook/',
         // type: 'docSidebar',
         sidebarId: 'noteBookSidebars',
         label: '学习笔记',
         title: '📒',
         position: 'right',
       },
-      {
-        to: '/edge-extension/',
-        sidebarId: 'edgeExtensionSidebars',
-        position: 'left',
-        label: 'edge 扩展',
-      },
-      { to: '/日志', label: '日志', position: 'right' },
+      { to: '/日志', label: '日志', position: 'right', title: '建站日志' },
       {
         href: 'https://github.com/' + githubUserName,
         label: 'GitHub',

@@ -18,9 +18,9 @@ buildServer() {
        mkdir -p /home/$1/  \
       "
       ##  清除旧的打包文件 
-      npx docusaurus clear
+      pnpm docusaurus clear
       ### 打包并上传到  
-      TARGET_DOMAIN=$1 npx docusaurus build
+      TARGET_DOMAIN=$1 pnpm docusaurus build
       # cd $local_file
       # zip -qr ../${local_compressed_file}  .  -x .DS_Store # 压缩
       # cd ../
@@ -46,9 +46,9 @@ buildServer() {
 
 publishToIo() {
       ##  清除旧的打包文件 
-      npx docusaurus clear
+      pnpm docusaurus clear
           ### 打包并上传到  
-      TARGET_DOMAIN=$1 npx docusaurus build
+      TARGET_DOMAIN=$1 pnpm docusaurus build
       cd build 
       rm -rf .git
       git init

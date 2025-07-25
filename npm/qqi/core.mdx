@@ -1,0 +1,55 @@
+---
+title: 数据简单的读写
+
+sidebar_label: qqi （数据读写器）
+---
+
+<PackageInfo packageName="qqi" />
+
+创建用户目录下的 `~/.earthnut.dev.data/` 的读写机，在用户目录下创建 ".earthnut.dev.data" 目录，以可以储存相关的数据，在下次调用时能都读取到旧数据。
+
+## 安装
+
+<InstallInfo name="qqi" />
+
+## 读
+
+读取实例化时使用参数的目录下对应的文件。如果没有读的权限则将实例化对象的 `available` 属性值设置为 `false`。
+在写的时候也将不会执行写的动作。
+
+```ts
+import { QQI } from 'qqi';
+
+/**
+ *
+ * 创建用户目录下的 `~/.earthnut.dev.data/test/`  的读写机
+ *
+ * 若没有找到用户目录或是没有写入的权限，则不可用。 `qqi.available` 值将为 `false`
+ *
+ * 在不可用时，直接拦截读写。读将直接返回 `null`,写直接返回 `false`
+ *
+ */
+const qqi = new QQI('test');
+
+/**
+ *
+ * 读取 `~/.earthnut.dev.data/test/test` 文件，返回的是 JSON 格式
+ *
+ * 如若数据无法被 `JSON.stringify`、`JSON.parse` 则报错
+ */
+const content = qqi.read<{ test: string }>('test');
+```
+
+## 写
+
+使用实例化的对象的 `write` 写入内容，但不保证写入成功。
+
+```ts
+import { QQI } from 'qqi';
+
+// 同上
+const qqi = new QQI('test');
+
+// 将向文件 `~/.earthnut.dev.data/test/test` 写入内容 `{"a":10}`
+qqi.write('test', { a: 10 });
+```

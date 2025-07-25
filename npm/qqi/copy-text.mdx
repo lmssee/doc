@@ -1,0 +1,23 @@
+---
+title: 文本复制到剪切板
+
+sidebar_label: copy text (复制文本）
+---
+
+<PackageInfo packageName="@qqi/copy-text" githubRepoName="qqi" />
+
+将文本复制到剪切板
+
+仅支持 windows、macOs 的 node 环境
+
+## 安装
+
+<InstallInfo name="@qqi/copy-text" dev />
+
+## 使用
+
+```ts
+import { copyTextToClipboard } from '@qqi/copy-text';
+
+await copyTextToClipboard('hello world');
+```
