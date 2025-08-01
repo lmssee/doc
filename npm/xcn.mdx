@@ -1,0 +1,26 @@
+---
+title: className 的混合器
+sidebar_label: xcn（拼接字符串的工具）
+---
+
+<PackageInfo packageName="xcn" />
+
+在一开始学习 react 的时候，发现如果使用 module 样式就需要使用文本字符串，好烦人，就写了函数。好吧，都是重复的轮子而已。
+
+## 安装
+
+<InstallInfo name="xcn" />
+
+## 使用
+
+```ts
+import { xcn } from 'xcn';
+
+> xcn('a' , 'b' ,'c');
+
+// 'a b c'
+
+> xcn('a', { c: false }, true , false ,null , {d: true}, 'b');
+
+// 'a b d'
+```

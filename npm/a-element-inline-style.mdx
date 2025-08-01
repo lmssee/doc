@@ -1,0 +1,37 @@
+---
+title: 设置 html 元素节点行内样式
+sidebar_label: a element inline style（html 元素行内样式设置）
+---
+
+<PackageInfo packageName="a-element-inline-style" />
+
+简单的为 html 的元素节点设置行内样式。
+
+## 安装
+
+<InstallInfo name="a-element-inline-style" />
+
+## 使用
+
+## 使用
+
+设置行内样式
+
+```ts
+import { setStyle } from 'a-element-inline-style';
+
+setStyle(document.body, {
+  width: '100%',
+  '--custom-width': '80%',
+});
+```
+
+移除行内样式
+
+```ts
+import { removeStyle } from 'a-element-inline-style';
+
+removeStyle(document.body, ['width', '--custom-width']);
+```
+
+属性命名请使用*小驼峰*

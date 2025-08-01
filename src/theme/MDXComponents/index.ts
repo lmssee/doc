@@ -5,6 +5,7 @@ import { PackageInfo } from './package-info';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { InstallInfo } from './InstallInfo';
+import DocCardList from '../DocCardList';
 export default {
   ...MDXComponents,
   Favicon,
@@ -13,4 +14,5 @@ export default {
   Tabs,
   TabItem,
   InstallInfo,
+  DocCardList,
 };

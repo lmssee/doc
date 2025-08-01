@@ -1,5 +1,160 @@
 ---
 title: 类型检测
+sidebar_label: a type of js (js 数据类型检测)
 ---
 
-我是
+<PackageInfo packageName="a-type-of-js" />
+
+提供类型检测
+
+## 安装
+
+<InstallInfo name="a-type-of-js" />
+
+## 使用
+
+```ts
+import { typeOf } from 'a-type-of-js';
+
+const num = 1;
+
+if (typeOf(num) === 'number') {
+  console.log('num is number');
+} else {
+  console.log('num is not number');
+}
+```
+
+### 使用 `ts` 中的 is 类型判断来进行类型安全收缩
+
+```ts
+import { isString, isNumber } from 'a-type-of-js';
+
+function doSomething(value: string | number) {
+  if (isString(value)) {
+    value.toLocaleUpperCase();
+  } else if (isNumber(value)) {
+    value.toFixed(2);
+  }
+}
+
+doSomething('hello'); // HELLO
+doSomething(1); // 1.00
+```
+
+### 向 `as` 说 'no'
+
+:::warning
+
+使用 `isType` 的成本往往比仅使用 `typeof` 的成本高。尽然对于对象类型的数据其功能类似于 `as`
+
+:::
+
+```ts
+import { isType } from 'a-type-of-js';
+
+interface Person {
+    name: string;
+    age: number;
+}
+
+
+function doSomething(value: string | number | boolean | ) {
+
+    /// use judgment as a type judgment
+    if (isType<Person>(value, () => (value && value.name === 'earthnut' && value.age === 18))) {
+      console.log('value is Person');
+      return;
+    }
+
+    /// as tisType
+    if (isType<string>(value)) {
+      value.toLocaleUpperCase();
+      return;
+    }
+
+    /// use judgment
+
+    if (isType<boolean>(value, Boolean(value) === true )) {
+      console.log('value is true');
+      return;
+    }
+}
+```
+
+## 文档提供类型检测
+
+- `isString` 字符串、`String` 对象构建的字符串
+- `isEmptyString` 空字符串
+- `isBusinessEmptyString` 空字符串（去除首尾空格）
+- `isNumber` 数字、`Number` 对象构建的数字
+- `isBoolean` 布尔值、`Boolean` 对象构建的布尔值
+- `isTrue` 是否为 true
+- `isFalse` 是否为 false
+- `isNull` null
+- `isUndefined` undefined
+- `isNaN` `NaN`（`NaN` 是一个特殊的数值 `NaN !== NaN` 即便 `typeof NaN` 返回的是 `number`）
+- `isFunction` 函数
+- `isArray` 数组、`Array` 对象构建的数组
+- `isEmptyArray` 是否是空数组
+- `isSymbol` symbol
+- `isBigInt` 大整数
+- `isPlainObject` 对象（普通对象，非其他内置对象类型）
+- `isEmptyObject` 是否为空对象（没有私有键的对象）
+- `isPromise` Promise
+- `isAsyncFunction` 异步函数
+- `isDate` 时间
+- `isMap` Map
+- `isSet` Set
+- `isWeakMap` WeakMap
+- `isWeakSet` WeakSet
+- `isGenerator` 生成器
+- `isGeneratorFunction` 生成器函数
+- `isBigInt64Array` BigInt64Array
+- `isBigUint64Array` BigUint64Array
+- `isDataView` DataView
+- `isArrayBuffer` ArrayBuffer
+- `isRegExp` 正则、`RegExp` 对象构建的正则
+- `isSharedArrayBuffer` SharedArrayBuffer
+- `isUint8ClampedArray` Uint8ClampedArray
+- `isInt8Array` Int8Array
+- `isUint8Array` Uint8Array
+- `isTypedArray` TypedArray
+- `isInt16Array` Int16Array
+- `isUint16Array` Uint16Array
+- `isInt32Array` Int32Array
+- `isUint32Array` Uint32Array
+- `isFloat32Array` Float32Array
+- `isFloat64Array` Float64Array
+- `isIntlCollator` Intl.Collator
+- `isIntlDateTimeFormat` Intl.DateTimeFormat
+- `isIntlDisplayNames` Intl.DisplayNames
+- `isIntlListFormat` Intl.ListFormat
+- `isIntlLocale` Intl.Locale
+- `isIntlNumberFormat` Intl.NumberFormat
+- `isError` 错误
+- `isEvalError` eval 错误
+- `isRangeError` range 错误
+- `isReferenceError` reference 错误
+- `isSyntaxError` syntax 错误
+- `isTypeError` type 错误
+- `isURIError` uri 错误
+- `isAggregateError` aggregate 错误
+
+:::tip
+
+`isEmptyArray` 返回在 ts 下仅判断且返回的是布尔值，而非像其他方法返回的是类型的断言
+
+```ts
+/** 定义一个数组 */
+const arr: string[] = [];
+
+if (isEmptyArray(arr)) {
+  console.log('数组为空');
+  throw new Error('数组为空');
+}
+
+arr.shift(); // 此刻是安全的
+```
+
+:::

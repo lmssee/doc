@@ -33,6 +33,7 @@ function HomepageHeader() {
             </Link>
           </div>
         </div>
+
         <HomeRippleButtons imgUrl={imgUrl} setImgUrl={setImgUrl} />
       </header>
     </BackgroundRipple>

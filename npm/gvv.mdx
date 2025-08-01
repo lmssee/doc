@@ -10,7 +10,10 @@ sidebar_label: gvv（一键 git 提交）
 原来是通过一段 `shell` 命令执行推送：
 
 ```bash
-bash -c 'git add . && git commit -m \"deploy:   $(date +\"%Y-%m-%d %H:%M:%S\")${1:+ }$1\" && git push origin main' --
+bash -c 'git add . && \
+     git commit -m \"deploy:   $(date +\
+     \"%Y-%m-%d %H:%M:%S\")${1:+ }$1\" && \
+     git push origin main' --
 ```
 
 ## 安装

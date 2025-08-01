@@ -43,13 +43,12 @@ class MyPackage {
 
 输出多种格式，如： `ESM`、`CJS`、`UMD`、`IIFE`
 
-```jsonc
-// package.json
+```json title="package.json"
 {
   "main": "./dist/index.cjs", // CommonJS
   "module": "./dist/index.esm.js", // ESM
   "browser": "./dist/index.umd.js", // 浏览器环境
-  "types": "./dist/index.d.ts", // TypeScript 类型定义
+  "types": "./dist/index.d.ts" // TypeScript 类型定义
 }
 ```
 
@@ -57,10 +56,9 @@ class MyPackage {
 
 在 `package.json` 中配置 `sideEffects` 属性，来告诉 `webpack` 在构建过程中，哪些文件可以安全地被 tree shaking。
 
-```jsonc
-// package.json
+```json title="package.json"
 {
-  "sideEffects": false,
+  "sideEffects": false
 }
 ```
 
@@ -126,11 +124,11 @@ class MyPackage {
 
 使用工具 `standard-version` 或 `semantic-release` 自动化版本管理，并使用 `npm publish` 发布包。
 
-```jsonc
+```json
 {
   "scripts": {
-    "release": "standard-version && git push --follow-tags && npm publish",
-  },
+    "release": "standard-version && git push --follow-tags && npm publish"
+  }
 }
 ```
 

@@ -4,12 +4,16 @@ title: 移除 dog
 sidebar_label: 移除 dog
 ---
 
-大部分可执行的库都引入了 [@qqi/log](https://www.npmjs.com/package/@qqi/log) ，这样方便在真实使用环境或是开发中使用 `pkg_name_dev=all` （在 windows 上可能需要使用 git Bash 启动）的环境变量来启动时能够展示日志判定错误的根源。但是在浏览器环境，希望不完全打印自定义的数据。所以需要使用该 [babel](https://babeljs.io) 来移除
-
 <PackageInfo
   packageName="@qqi/babel-plugin-remove-dog-calls"
   githubRepoName="qqi"
 />
+
+大部分可执行的库都引入了 [@qqi/log](https://www.npmjs.com/package/@qqi/log)
+，这样方便在真实使用环境或是开发中使用 `pkg_name_dev=all` （在 windows
+上可能需要使用 git Bash
+启动）的环境变量来启动时能够展示日志判定错误的根源。但是在浏览器环境，希望不完全打印自定义的数据。所以需要使用该
+[babel](https://babeljs.io) 来移除
 
 如果不想移除 console 的代码，你可能需要的是 [transform-remove-console](https://www.npmjs.com/package/babel-plugin-transform-remove-console)
 

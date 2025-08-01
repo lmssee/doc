@@ -6,7 +6,7 @@ import CodeBlock from '@theme/CodeBlock';
 export function InstallInfo({ name, dev }: { name: string; dev?: boolean }) {
   return (
     <>
-      <Tabs>
+      <Tabs groupId="npm-install-of-pkg-manager">
         <TabItem value="npm" label="npm" default>
           <CodeBlock language="bash">{`npm install  ${name} --save${dev ? '-dev' : ''}`}</CodeBlock>
         </TabItem>

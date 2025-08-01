@@ -1,21 +1,59 @@
 ---
 title: 构建简单的 npm 包
-
 sidebar_label: create a npm（构建 npm 包）
+# pagination_next: null
 ---
 
 <PackageInfo packageName="create-a-npm" />
+
+构建一个简单的 npm 库包。
+
 ## 安装
 
 该库不安装亦可直接使用 `npm create a-npm` 或是 `npm create a-pkg` 全局使用，如果你非要安装的话，就：
 
 <InstallInfo name="create-a-npm" />
+
 ## 使用
 
-```sh
-# 最简单的使用方式
-npm create a-npm
-```
+<Tabs groupId="npm-install-of-pkg-manager">
+  <TabItem value="npm" label="npm" default>
+
+    ```shell
+     # 最简单的使用方式 npm create a-npm
+     npm create a-npm
+     # 指定使用 pnpm 作为 Node.js 包管理器
+     npm create a-npm -- -m=pnpm
+     # 指定使用 yarn 作为 Node.js 包管理器
+     npm create a-npm -- -m=yarn
+    ```
+
+  </TabItem>
+  <TabItem value="yarn" label="yarn">
+
+    ```shell
+     # 最简单的使用方式 npm create a-npm
+     yarn create a-npm
+     # 指定使用 pnpm 作为 Node.js 包管理器
+     yarn create a-npm -- -m=pnpm
+     # 指定使用 yarn 作为 Node.js 包管理器
+     yarn create a-npm -- -m=yarn
+    ```
+
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm">
+
+    ```shell
+     # 最简单的使用方式 npm create a-npm
+     pnpm create a-npm
+     # 指定使用 pnpm 作为 Node.js 包管理器
+     pnpm create a-npm -- -m=pnpm
+     # 指定使用 yarn 作为 Node.js 包管理器
+     pnpm create a-npm -- -m=yarn
+    ```
+
+  </TabItem>
+</Tabs>
 
 在使用中，会在用户的目录下创建 `.earthnut.dev.data/create-a-npm/config` 文件，以储存您的数据在本地（这些数据不会走网络，安全可用）方便下次使用时直接使用。_若觉得无用，可执行删除_，**_若觉得不知而误删除，下次后还需再次输入您的使用数据。_**所以，建议保留数据：
 
@@ -25,11 +63,12 @@ npm create a-npm
 
 在使用 `npm create a-npm` 命令后，即开始构建步骤
 
-- 步骤一：询问并获取输入包名
-- 步骤二：校验包名是否以有 npm 同名包。如果有同名的包存在，询问是否更改、忽略或退出
-- 步骤三：查找本地是否储存了相关的数据，没有信息将直接问询输入
-- 步骤四：选择开发的模式（是否携带 `bin` ）
-- 步骤五：选择使用的辅助工具
+- 步骤一：询问包将使用的 Node.js 包管理器（如果没有在启动时指定）
+- 步骤二：询问并获取输入包名
+- 步骤三：校验包名是否以有 npm 同名包。如果有同名的包存在，询问是否更改、忽略或退出
+- 步骤四：查找本地是否储存了相关的数据，没有信息将直接问询输入
+- 步骤五：选择开发的模式（是否携带 `bin` ）
+- 步骤六：选择使用的辅助工具
 
 ### 输入包名
 

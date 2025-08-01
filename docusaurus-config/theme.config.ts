@@ -134,8 +134,10 @@ export const themeConfig: Preset.ThemeConfig = {
     ],
     copyright,
   },
+  /**  [支持的语言](https://prismjs.com/#supported-languages)  */
   prism: {
     theme: prismThemes.github,
     darkTheme: prismThemes.dracula,
+    additionalLanguages: ['Bash', 'nginx', 'markdown'],
   },
 } satisfies Preset.ThemeConfig;
