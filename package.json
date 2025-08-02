@@ -50,6 +50,7 @@
     "@docusaurus/tsconfig": "^3.8.1",
     "@docusaurus/types": "^3.8.1",
     "@eslint/js": "^9.32.0",
+    "@types/react": "^19.1.9",
     "babel-plugin-filter-imports": "^4.0.0",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",

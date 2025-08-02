@@ -1,7 +1,28 @@
 .docCardListItem {
   margin-bottom: 2rem;
+
 }
 
-.docCardListItem > * {
+.docCardListItem>* {
   height: 100%;
+  transition: all 0.8s;
+
+  &:hover {
+    transition: all 0.3s;
+    box-shadow: 1px 1px 12px #666;
+    transform: translate(0, -0.5px);
+    animation: 0.48s ease-in-out 0.3s identifier infinite alternate;
+    border-radius: 12px;
+  }
+}
+
+
+@keyframes identifier {
+  0% {
+    box-shadow: 1px 1px 12px #666;
+  }
+
+  100% {
+    box-shadow: 1px 1px 12px #aaa;
+  }
 }

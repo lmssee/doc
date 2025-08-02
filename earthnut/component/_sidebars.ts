@@ -1,12 +1,12 @@
 import { SidebarItemConfig } from '@docusaurus/plugin-content-docs/src/sidebars/types.js';
 
-export const ColorPenSidebar: SidebarItemConfig = {
+export const ComponentSidebars: SidebarItemConfig = {
   type: 'category',
-  label: 'color pen',
+  label: '组件',
   collapsed: true,
   link: {
     type: 'doc',
-    id: 'color-pen/index',
+    id: 'component/index',
   },
-  items: ['color-pen/static'],
+  items: ['component/layout'],
 };

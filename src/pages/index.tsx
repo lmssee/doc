@@ -26,10 +26,10 @@ function HomepageHeader() {
           <p className="hero__subtitle">{/* {siteConfig.tagline} */}</p>
           <div className={styles.buttons}>
             <Link
-              className="button button--secondary button--lg"
-              to="/earthnut"
+              className="button button--secondary button--lg text--bold"
+              to="/quickUse"
             >
-              快速使用该水波涟漪背景 - 15s ⏱️
+              轻松使用花生亻ui，立刻开始
             </Link>
           </div>
         </div>

@@ -99,9 +99,9 @@ const config: CustomConfig = {
       '@docusaurus/plugin-content-docs',
       {
         id: 'edgeExtensionSidebars',
-        path: 'edge_extension',
+        path: 'edge-extension',
         routeBasePath: 'edge-extension',
-        sidebarPath: './edge_extension/_sidebars.ts',
+        sidebarPath: './edge-extension/_sidebars.ts',
       },
     ],
   ],

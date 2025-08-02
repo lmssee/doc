@@ -34,7 +34,8 @@ export default function DocCardList(props: Props): ReactNode {
     e =>
       !e.href.startsWith('http') &&
       e.docId !== 'index' &&
-      e.docId !== 'instruction',
+      e.docId !== 'instruction' &&
+      e.docId !== 'quickUse',
   );
   return (
     <section className={clsx('row', className)}>

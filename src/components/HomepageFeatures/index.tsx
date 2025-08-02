@@ -58,9 +58,12 @@ const FeatureList: FeatureItem[] = [
     href: './edge-extension/',
     description: (
       <>
-        目前有两款 edge
-        的插件在开发并已在线可用。一款是简单的页面定时刷新器，另一款是一个可自定义
-        多种样式 edge 新标签页
+        目前有两款 edge 的插件在开发并已在线可用。一款是简单的页面
+        <Link href={'/edge-extension/simple-refresh'}>定时刷新器</Link>
+        ，另一款是一个可
+        <Link href="/edge-extension/reset-new-tab">
+          自定义多种样式 edge 新标签页
+        </Link>
       </>
     ),
   },
