@@ -1,53 +1,47 @@
-import { useState, type ReactNode } from 'react';
-import Link from '@docusaurus/Link';
+import { useEffect, useState, type ReactNode } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
-import Heading from '@theme/Heading';
-import styles from './index.module.scss';
-import { BackgroundRipple } from 'earthnut/BackgroundRipple';
-import { xcn } from 'xcn';
-import { HomeRippleButtons } from '../components/HomeRippleButtons';
-
-function HomepageHeader() {
-  // 涟漪的背景配置
-  const [imgUrl, setImgUrl] = useState<null | string | string[]>(null);
-  // 配置
-  const { siteConfig } = useDocusaurusContext();
-
-  return (
-    <BackgroundRipple option={{ imgUrl, raindropsTimeInterval: 1200 }}>
-      <header className={xcn(styles.heroBanner)}>
-        {/* <header className={xcn('hero--primary', styles.heroBanner)}> */}
-        <div className="container">
-          <Heading as="h1" className="hero__title">
-            {siteConfig.title}
-          </Heading>
-          <p className="hero__subtitle">{/* {siteConfig.tagline} */}</p>
-          <div className={styles.buttons}>
-            <Link
-              className="button button--secondary button--lg text--bold"
-              to="/quickUse"
-            >
-              轻松使用花生亻ui，立刻开始
-            </Link>
-          </div>
-        </div>
-
-        <HomeRippleButtons imgUrl={imgUrl} setImgUrl={setImgUrl} />
-      </header>
-    </BackgroundRipple>
-  );
-}
+import { HomepageHeader } from '../components/HomepageHeader';
+import { BackgroundRipple } from 'earthnut';
+import { useColorMode } from '@docusaurus/theme-common';
 
 export default function Home(): ReactNode {
   const { siteConfig } = useDocusaurusContext();
+
   return (
     <Layout title={`${siteConfig.title}`}>
-      <HomepageHeader />
-      <main>
-        <HomepageFeatures />
-      </main>
+      <Content />
     </Layout>
+  );
+}
+
+function Content() {
+  const { colorMode } = useColorMode();
+
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+
+  useEffect(() => {
+    setDarkMode(colorMode === 'dark');
+  }, [colorMode]);
+
+  return (
+    <>
+      <BackgroundRipple
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 'auto',
+        }}
+        option={{
+          darkMode: darkMode,
+        }}
+      >
+        <HomepageHeader />
+        <main style={{ margin: 'auto' }}>
+          <HomepageFeatures />
+        </main>
+      </BackgroundRipple>
+    </>
   );
 }

@@ -44,16 +44,13 @@ export function HomeRippleButtons({
   useEffect(() => {
     const { data, current } = renderList.current;
     if (timeId.current) clearTimeout(timeId.current);
-    timeId.current = setTimeout(
-      () => {
-        /**  当前的下标  */
-        const subscript = data.indexOf(current);
-        /**  下一个类型  */
-        const nestType = [...data.slice(1), data[0]][subscript];
-        changeImgUrl(nestType);
-      },
-      current === data[0] ? 9000 : 6000,
-    );
+    timeId.current = setTimeout(() => {
+      /**  当前的下标  */
+      const subscript = data.indexOf(current);
+      /**  下一个类型  */
+      const nestType = [...data.slice(1), data[0]][subscript];
+      changeImgUrl(nestType);
+    }, 3000);
   }, [imgUrl]);
 
   return (
