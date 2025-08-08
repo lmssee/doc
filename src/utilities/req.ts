@@ -6,7 +6,8 @@
  *  @CreateDate  周四  01/09/2025
  *  @Description req 请求
  ****************************************************************************/
-import { typeOf } from 'a-js-tools';
+
+import { typeOf } from 'a-type-of-js';
 
 /**************************************
  *

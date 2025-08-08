@@ -10,8 +10,36 @@
   }
 }
 
+.mark {
+  background-image: linear-gradient(to right, #f03, #0f6, #6f0);
+  color: transparent;
+  background-clip: text;
+}
+
+.dust {
+  color: #6666;
+}
+
 .buttons {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.button {
+  background-color: transparent;
+  border: none;
+  text-shadow:
+    1px 1px 0.5px #fff,
+    -1px -1px 0.5px #3f6;
+
+  &:hover {
+    color: transparent;
+    text-shadow: none;
+    background-clip: text;
+    background-image: linear-gradient(to right, #f53, #6f6, #fa6);
+    box-shadow:
+      1px 1px 12px #6666,
+      -1px -1px 3px #000;
+  }
 }

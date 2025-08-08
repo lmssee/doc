@@ -25,16 +25,19 @@ export function HomepageHeader() {
     >
       <header className={xcn(styles.heroBanner)}>
         <div className="container">
-          <Heading as="h1" className="hero__title">
+          <Heading as="h1" className={xcn('hero__title', styles.mark)}>
             {siteConfig.title}
           </Heading>
-          <p className="hero__subtitle">{/* {siteConfig.tagline} */}</p>
           <div className={styles.buttons}>
             <Link
-              className="button button--secondary button--lg text--bold"
+              className={xcn(
+                'button button--secondary button--lg text--bold',
+                styles.button,
+              )}
               to="/quickUse"
             >
-              了解更多
+              一个简单到只有<span className={xcn(styles.mark)}>几个</span>组件的
+              <span className={xcn(styles.dust)}>UI</span>
             </Link>
           </div>
         </div>

@@ -1,0 +1,18 @@
+.main {
+  width: 100%;
+  height: calc(100vh - var(--ifm-navbar-height));
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  & > div {
+    div {
+      text-align: center;
+      background-image: linear-gradient(to left, #f36, #3f9);
+      color: transparent;
+      background-clip: text;
+    }
+  }
+}

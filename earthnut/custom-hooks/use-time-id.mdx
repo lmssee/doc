@@ -1,0 +1,94 @@
+---
+title: 使用定时器
+pagination_prev: null
+---
+
+难免有时候会使用 `setTimeout`、`setInterval` 这两个定时器。在使用后忘记清理是个麻烦事
+
+## 使用
+
+```ts
+import { useTimeId } from 'earthnut/useTimeId';
+import { useEffect } from 'react';
+
+export default function Home() {
+
+  const timeId = useTimeId();
+
+  useEffect(() => {
+    timeId.current = setTimeout(()=>{
+      ...
+    }, 1011);
+  });
+  return <div>...</div>
+}
+```
+
+是不是很简单，是不是很简直侮辱智商
+
+## 不使用 useTimeId
+
+其实，在真实的使用中如果仅是在 `useEffect` 此类副作用的钩子中使用，直接
+
+```ts
+import { useEffect } from 'react';
+
+export default function Home() {
+
+  useEffect(()=>{
+    const timeId = setTimeout(()=> {
+      ...
+    },  1011)
+    return ()=> timeId && clearTimeout(timeId);
+  });
+
+  return <div>...</div>
+}
+```
+
+## 当在回调中使用
+
+这样是更直接的，但如果需要在外部函数中使用时，可能就不能将 `timeId` 放到 `sueEffect` 内部，而是使用 `useRef` 进行储存，并在合适的时候进行销毁。
+
+```ts
+import { useRef } from 'react';
+
+export default function Home() {
+  const timeId = useRef<NodeJS.Timeout |null>(null);
+
+  function doSome () {
+    timeId.current = setTimeout(() => {
+      ...
+    }, 1011)
+  }
+
+  useEffect(() => {
+    // 看，这时候是不是就得单独处理 `timeId`
+    return () =>{
+      if( timeId.current )
+        clearTimeout(timeId.current);}
+  },[]);
+
+  return <div onclick={ doSome }>...</div>
+}
+```
+
+## 源码
+
+其实就是一个 `useRef` 的使用：
+
+```ts
+import { useRef, useEffect } from 'react';
+
+export function useTimeId() {
+  const timeId = useRef<NodeJS.Timeout>(undefined));
+
+  useEffect(
+    () =>
+        ()=>
+            timeId.current &&
+              clearTimeout(timeId.current), []);
+
+  return timeId;
+}
+```

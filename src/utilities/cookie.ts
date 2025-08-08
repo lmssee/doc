@@ -1,3 +1,5 @@
+import { typeOf } from 'a-type-of-js';
+
 /****************************************************************************
  *  @Author earthnut
  *  @Email earthnut.dev@outlook.com
@@ -6,9 +8,6 @@
  *  @CreateDate  周五  01/10/2025
  *  @Description cookie 管理
  ****************************************************************************/
-
-import { typeOf } from 'a-js-tools';
-
 export const manageCookie = {
   getItem(keyItem: string) {
     return (

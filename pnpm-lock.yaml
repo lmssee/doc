@@ -39,8 +39,8 @@ importers:
         specifier: ^0.2.6
         version: 0.2.6(@docusaurus/core@3.8.1(@mdx-js/react@3.1.0(@types/react@19.1.9)(react@19.1.1))(acorn@8.15.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2))(sass@1.90.0)(webpack@5.100.2)
       earthnut:
-        specifier: 0.1.5
-        version: 0.1.5(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        specifier: 0.1.6
+        version: 0.1.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       prism-react-renderer:
         specifier: ^2.4.1
         version: 2.4.1(react@19.1.1)
@@ -2756,8 +2756,8 @@ packages:
   duplexer@0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
 
-  earthnut@0.1.5:
-    resolution: {integrity: sha512-hYPB/PylNd3aRoG3j8WYUcBdWPYs3/gCrUFC4U2113Iv8MhlbKbqJKWJJFpJG8vvZIDrov3OeVtj5m+KKHWTxQ==}
+  earthnut@0.1.6:
+    resolution: {integrity: sha512-YYkNb8Rn3BhcImBSqUHQ02XhUwFWK59GdVoNbANUvmULAX0b3G4/jbpx8k9kDxttUua/x45gR6doeOZkad8SwA==}
     peerDependencies:
       react: '>= 17'
       react-dom: '>= 17'
@@ -9804,7 +9804,7 @@ snapshots:
 
   duplexer@0.1.2: {}
 
-  earthnut@0.1.5(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+  earthnut@0.1.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
     dependencies:
       a-element-inline-style: 0.1.1
       a-js-tools: 1.0.12

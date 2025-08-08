@@ -13,7 +13,7 @@ function DocCardListForCurrentSidebarCategory({ className }: Props) {
   return <DocCardList items={items} className={className} />;
 }
 
-function DocCardListItem({
+export function DocCardListItem({
   item,
 }: {
   item: ComponentProps<typeof DocCard>['item'];

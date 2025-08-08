@@ -1,5 +1,6 @@
 import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
 import { ComponentSidebars } from './component/_sidebars';
+import { CustomHooksSidebars } from './custom-hooks/_sidebars';
 
 // 执行环境为 node  - 禁止使用客户端的 api （浏览器 api、 jsx 、tsx 内容）
 
@@ -16,5 +17,5 @@ import { ComponentSidebars } from './component/_sidebars';
  *
  */
 export default {
-  earthnutUI: ['quickUse', ComponentSidebars],
+  earthnutUI: ['quickUse', ComponentSidebars, CustomHooksSidebars],
 } as SidebarsConfig;

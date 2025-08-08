@@ -23,14 +23,13 @@ const config: CustomConfig = {
   favicon, // 网站图标设置
   // Set the production url of your site here
   url,
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
+  // 设置 /<baseUrl>/ 路径您的网站在该服务下提供服务
+  // 对于 GitHub 页面部署，它通常是 '/<projectName>/'
   baseUrl,
   headTags: [],
   projectName: 'lmssee.github.io',
   // github 页面配置
   organizationName: 'lmssee',
-
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   i18n: {

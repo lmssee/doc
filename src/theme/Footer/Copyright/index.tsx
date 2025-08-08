@@ -4,15 +4,32 @@ import Link from '@docusaurus/Link';
 import styles from './index.module.scss';
 import { xcn } from 'xcn';
 import { publicSecurityNewWorkBadge } from '@site/src/theme/Footer/Copyright/public-security-new-work-badge';
+import { useLocation } from '@docusaurus/router';
 
+/**  作者  */
 function Author({ author }: { author: string }) {
+  /**  使用网页地址  */
+  const location = useLocation();
+  /**  是否是首页  */
+  const isHome = location.pathname === '/';
+  /**  链接  */
+  const href = isHome ? '/about' : '/';
+  /**  文本样式  */
+  const style: React.CSSProperties = isHome
+    ? {
+        fontStyle: 'revert-layer',
+      }
+    : {
+        fontStyle: 'italic',
+      };
   return (
-    <Link href="/about" className={xcn(styles.copyRight)}>
-      {author}
+    <Link href={href} style={style} className={xcn(styles.copyRight)}>
+      {isHome ? author : '首页'}
     </Link>
   );
 }
 
+/**  版权  */
 export default function FooterCopyright({ copyright }: Props): ReactNode {
   if (copyright === 'earthnut')
     return (

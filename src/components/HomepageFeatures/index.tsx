@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
 import Link from '@docusaurus/Link';
+import { xcn } from 'xcn';
 
 type FeatureItem = {
   title: string;
@@ -79,7 +80,7 @@ function Feature({ title, src, description, href }: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
-        <Link href={href} draggable={false}>
+        <Link href={href} draggable={false} className={xcn(styles.imgShell)}>
           <img className={styles.featureImage} src={src} draggable={false} />
         </Link>
       </div>

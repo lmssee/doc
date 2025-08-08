@@ -10,7 +10,10 @@ export default function Home(): ReactNode {
   const { siteConfig } = useDocusaurusContext();
 
   return (
-    <Layout title={`${siteConfig.title}`}>
+    <Layout
+      title={`${siteConfig.title}`}
+      description="我们不是神，只有努力才能更接近神"
+    >
       <Content />
     </Layout>
   );

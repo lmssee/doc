@@ -5,7 +5,24 @@
   width: 100%;
 }
 
-.featureImage {
+
+.imgShell {
   height: 220px;
   width: 220px;
+  overflow: hidden;
+  display: inline-block;
+
+  img {
+    height: 100%;
+    width: 100%;
+  }
+
+  &:hover {
+    border-radius: 12px;
+    box-shadow: 1px 1px 12px #6666;
+
+    img {
+      transform: scale(1.1);
+    }
+  }
 }
