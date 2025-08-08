@@ -14,7 +14,7 @@
     "swizzle": "echo 'pnpm run swizzle @docusaurus/theme-classic  Footer --eject' && docusaurus swizzle ",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
+    "serve": "pnpm run build:only && docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "beautify": "pnpm prettier",
     "write-heading-ids": "docusaurus write-heading-ids",

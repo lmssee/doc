@@ -7,8 +7,13 @@ import { xcn } from 'xcn';
 import styles from './index.module.scss';
 import { DocCardListItem } from '../../DocCardList';
 import { notFoundItems } from '@site/src/data/not-found';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
 export default function NotFoundContent({ className }: Props): ReactNode {
+  return <BrowserOnly>{() => <Content className={className} />}</BrowserOnly>;
+}
+
+function Content({ className }: { className: string }) {
   /**
    * ```ts
    *  {
@@ -21,7 +26,6 @@ export default function NotFoundContent({ className }: Props): ReactNode {
    * }
    * ```
    */
-
   return (
     <BackgroundRipple
       className={xcn(styles.content)}
