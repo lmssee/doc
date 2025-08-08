@@ -9,7 +9,7 @@ pnpm docusaurus build
 cd build
 
 # 压缩打包文件
-zip -r ../dist.zip "." -z << EOF 
+zip -qr ../dist.zip "." -z << EOF 
 
 author: earthnut .
 
