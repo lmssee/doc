@@ -1,4 +1,4 @@
-import { useTimeId } from 'earthnut/useTimeId';
+import { useTimeId } from 'earthnut';
 import { useEffect, useRef } from 'react';
 
 /**  首页的按钮组  */

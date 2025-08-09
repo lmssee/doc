@@ -4,6 +4,7 @@ import Heading from '@theme/Heading';
 import styles from './styles.module.css';
 import Link from '@docusaurus/Link';
 import { xcn } from 'xcn';
+import { Image } from 'earthnut';
 
 type FeatureItem = {
   title: string;
@@ -81,7 +82,7 @@ function Feature({ title, src, description, href }: FeatureItem) {
     <div className={clsx('col col--4')}>
       <div className="text--center">
         <Link href={href} draggable={false} className={xcn(styles.imgShell)}>
-          <img className={styles.featureImage} src={src} draggable={false} />
+          <Image className={styles.featureImage} src={src} draggable={false} />
         </Link>
       </div>
       <div className="text--center padding-horiz--md">

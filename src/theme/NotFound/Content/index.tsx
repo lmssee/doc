@@ -2,7 +2,7 @@ import React, { type ReactNode } from 'react';
 import clsx from 'clsx';
 import type { Props } from '@theme/NotFound/Content';
 import Heading from '@theme/Heading';
-import { BackgroundRipple } from 'earthnut/BackgroundRipple';
+import { LazyBackgroundRipple } from 'earthnut';
 import { xcn } from 'xcn';
 import styles from './index.module.scss';
 import { DocCardListItem } from '../../DocCardList';
@@ -27,30 +27,25 @@ function Content({ className }: { className: string }) {
    * ```
    */
   return (
-    <BackgroundRipple
-      className={xcn(styles.content)}
+    <LazyBackgroundRipple
       style={{
         height: 'calc(100vh - var(--ifm-navbar-height))',
       }}
     >
-      <main className={clsx('container margin-vert--xl', className)}>
-        <div className="row">
-          <div className="col col--6 col--offset-3">
-            <Heading as="h1" className="hero__title">
-              您访问的网站不存在
-            </Heading>
-            <p>不过也可能有其他的东西存在</p>
-            <div className={xcn(styles.itemList)}>
-              {notFoundItems.map(e => (
-                <DocCardListItem
-                  item={{ ...e, type: 'link', unlisted: false }}
-                  key={e.href}
-                />
-              ))}
-            </div>
-          </div>
+      <main className={clsx('container', className, styles.content)}>
+        <Heading as="h1" className={xcn('hero__title', styles.heading)}>
+          您访问的网站不存在
+        </Heading>
+        <p>不过也可能有其他的东西存在</p>
+        <div className={xcn(styles.itemList)}>
+          {notFoundItems.map(e => (
+            <DocCardListItem
+              item={{ ...e, type: 'link', unlisted: false }}
+              key={e.href}
+            />
+          ))}
         </div>
       </main>
-    </BackgroundRipple>
+    </LazyBackgroundRipple>
   );
 }

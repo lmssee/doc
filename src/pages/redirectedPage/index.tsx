@@ -13,7 +13,7 @@ import CountdownBuoys from '../../components/countdownBuoys';
 import { useGetList } from './_useGetList';
 import { loadingStateContext } from './_loadingStateContext';
 import { PrintText } from './_printText';
-import { BackgroundRipple } from 'earthnut/BackgroundRipple';
+import { LazyBackgroundRipple } from 'earthnut';
 
 /** 中转页面 */
 export default function Page() {
@@ -28,7 +28,7 @@ export default function Page() {
   return (
     <loadingStateContext.Provider value={{ setLoadingState, loadingState }}>
       <div className={`${styles.container}`}>
-        <BackgroundRipple>
+        <LazyBackgroundRipple>
           {(loadingState === 'parse' && (
             <div className="center">
               <div className="colorText">加载中....</div>
@@ -36,7 +36,7 @@ export default function Page() {
               <CountdownBuoys delay={10000} />
             </div>
           )) || <div className={`loading  center  ${styles.loading}`}></div>}
-        </BackgroundRipple>
+        </LazyBackgroundRipple>
       </div>
     </loadingStateContext.Provider>
   );

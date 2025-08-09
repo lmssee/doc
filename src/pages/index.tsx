@@ -3,7 +3,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import { HomepageHeader } from '../components/HomepageHeader';
-import { BackgroundRipple } from 'earthnut';
+import { LazyBackgroundRipple } from 'earthnut';
 import { useColorMode } from '@docusaurus/theme-common';
 
 export default function Home(): ReactNode {
@@ -29,22 +29,20 @@ function Content() {
   }, [colorMode]);
 
   return (
-    <>
-      <BackgroundRipple
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          flex: 'auto',
-        }}
-        option={{
-          darkMode: darkMode,
-        }}
-      >
-        <HomepageHeader />
-        <main style={{ margin: 'auto' }}>
-          <HomepageFeatures />
-        </main>
-      </BackgroundRipple>
-    </>
+    <LazyBackgroundRipple
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 'auto',
+      }}
+      option={{
+        darkMode: darkMode,
+      }}
+    >
+      <HomepageHeader />
+      <main style={{ margin: 'auto' }}>
+        <HomepageFeatures />
+      </main>
+    </LazyBackgroundRipple>
   );
 }

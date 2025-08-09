@@ -1,3 +1,20 @@
+// 外框
+.content {
+  overflow: auto;
+
+  & > p {
+    text-indent: 2rem;
+  }
+}
+
+//  头部
+.heading {
+  position: sticky;
+  top: 0px;
+  background-color: #6666;
+  border-radius: 22px;
+  box-shadow: 1px 1px 12px #111;
+}
 // 列表项
 .itemList {
   display: flex;

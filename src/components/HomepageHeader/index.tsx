@@ -1,5 +1,5 @@
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import { BackgroundRipple } from 'earthnut/BackgroundRipple';
+import { LazyBackgroundRipple } from 'earthnut';
 import { useState } from 'react';
 import { xcn } from 'xcn';
 import styles from './index.module.scss';
@@ -14,7 +14,7 @@ export function HomepageHeader() {
   /**  当前的是否为暗黑模式  */
 
   return (
-    <BackgroundRipple
+    <LazyBackgroundRipple
       option={{
         imgUrl,
         raindropsTimeInterval: 1200,
@@ -44,6 +44,6 @@ export function HomepageHeader() {
 
         <HomeRippleButtons imgUrl={imgUrl} setImgUrl={setImgUrl} />
       </header>
-    </BackgroundRipple>
+    </LazyBackgroundRipple>
   );
 }

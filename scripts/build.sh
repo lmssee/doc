@@ -15,6 +15,7 @@ clear;
 buildServer() {
       #         rm -rf /home/$1/* \
       ssh -i $ssh_key_path $server_user@$server_ip " \
+       rm -rf /home/$1 && \
        mkdir -p /home/$1/  \
       "
       ##  清除旧的打包文件 

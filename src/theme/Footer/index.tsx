@@ -12,7 +12,12 @@ function Footer(): ReactNode {
 
   const location = useLocation();
 
-  if (['/', '/about'].every(e => location.pathname !== e)) {
+  /// 允许有底部的
+  if (
+    !/^([/]|([/]?earthnut[/]?)|(\/?(earthnut\/)?about\/?))$/i.test(
+      location.pathname,
+    )
+  ) {
     return null;
   }
   if (!footer) {

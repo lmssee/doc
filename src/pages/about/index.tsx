@@ -3,7 +3,7 @@ import styles from './index.module.scss';
 import { xcn } from 'xcn';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { Contact } from './_Contact';
-import { BackgroundRipple } from 'earthnut';
+import { LazyBackgroundRipple } from 'earthnut';
 import Link from '@docusaurus/Link';
 import { CustomDocusaurusConfig } from '@docusaurus/types/src/config';
 import { useEffect, useState } from 'react';
@@ -31,7 +31,7 @@ function Content() {
 
   const time = new Date().toLocaleString();
   return (
-    <BackgroundRipple
+    <LazyBackgroundRipple
       option={{ darkMode }}
       style={{
         display: 'flex',
@@ -55,6 +55,6 @@ function Content() {
         <Link href="https://docusaurus.io/">docusaurus</Link>
       </div>
       <div>本次构建时间 ：{siteConfig?.customFields?.buildTime ?? time}</div>
-    </BackgroundRipple>
+    </LazyBackgroundRipple>
   );
 }

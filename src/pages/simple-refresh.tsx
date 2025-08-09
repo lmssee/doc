@@ -1,6 +1,5 @@
-import { RelayPageContent } from '../components/RelayPageContent';
-
+import { Redirect } from '@docusaurus/router';
 /**    */
 export default function ResetNewTabs() {
-  return <RelayPageContent url="/edge-extension/simple-refresh" />;
+  return <Redirect to="/edge-extension/simple-refresh" />;
 }
