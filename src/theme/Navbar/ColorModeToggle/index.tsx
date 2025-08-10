@@ -15,29 +15,26 @@ export default function NavbarColorModeToggle({ className }: Props): ReactNode {
   const [darkMode, setDarkMode] = useState(colorMode === 'dark');
 
   useEffect(() => {
+    const docPathname = decodeURIComponent(_location.pathname);
+    const originPathname = decodeURIComponent(location.pathname);
     // 当前路径不与实际路径相同
-    if (
-      decodeURIComponent(_location.pathname) !==
-      decodeURIComponent(location.pathname)
-    ) {
-      console.log(_location);
-      const url = `${_location.pathname}${_location.search}${_location.hash}`;
+    if (docPathname !== originPathname || docPathname.endsWith('/index')) {
+      const url = `${docPathname.replace(/\/index/, '')}${_location.search}${_location.hash}`;
       window.location.replace(url);
     }
   }, []);
 
   useEffect(() => {
     const dark = window.matchMedia('(prefers-color-scheme: dark)');
-    function changeCallback() {
-      // 根据当前的环境自己设置当前的值
-      setColorMode(dark.matches ? 'dark' : 'light');
-    }
+    // 根据当前的环境自己设置当前的值
+    const changeCallback = () => setColorMode(dark.matches ? 'dark' : 'light');
 
     dark.addEventListener('change', changeCallback);
     // 移除监听
     return () => dark.removeEventListener('change', changeCallback);
   }, []);
 
+  // 根据值设置响应的值
   useEffect(() => {
     setDarkMode(colorMode === 'dark');
   }, [colorMode]);

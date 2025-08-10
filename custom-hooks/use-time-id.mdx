@@ -1,5 +1,5 @@
 ---
-title: 使用定时器
+title: 使用定时器标志符
 pagination_prev: null
 ---
 
@@ -48,7 +48,7 @@ export default function Home() {
 
 ## 当在回调中使用
 
-这样是更直接的，但如果需要在外部函数中使用时，可能就不能将 `timeId` 放到 `sueEffect` 内部，而是使用 `useRef` 进行储存，并在合适的时候进行销毁。
+这样是更直接的，但也并不是一无是处。如果需要在外部函数中使用时，可能就不能将 `timeId` 放到 `sueEffect` 内部，而是使用 `useRef` 进行储存，并在合适的时候进行销毁。
 
 ```ts
 import { useRef } from 'react';
@@ -73,7 +73,7 @@ export default function Home() {
 }
 ```
 
-## 源码
+## 逻辑
 
 其实就是一个 `useRef` 的使用：
 
@@ -93,4 +93,4 @@ export function useTimeId() {
 }
 ```
 
-当然，在组件
+当然，如果仅是在 `useEffect` 中使用的时候，这种方法就显得有点中二。

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
-    "start": "PORT=9463 NODE_OPTIONS='--max-old-space-size=768' docusaurus start",
+    "start": "jja cls && PORT=9463 NODE_OPTIONS='--max-old-space-size=768' docusaurus start",
     "dev": "pnpm start",
     "push": "gvv",
     "push:d": "gvv kind=deploy",

@@ -39,13 +39,12 @@ export const themeConfig: Preset.ThemeConfig = {
     items: [
       {
         type: 'docSidebar',
-        sidebarId: 'earthnutUI',
+        sidebarId: 'components',
         position: 'left',
-        label: 'earthnut',
+        label: '组件',
       },
       {
         to: '/npm',
-        // type: 'docSidebar',
         sidebarId: 'npmSidebars',
         label: 'npm 工具包',
         title: 'npm',
@@ -59,7 +58,6 @@ export const themeConfig: Preset.ThemeConfig = {
       },
       {
         to: '/notebook/',
-        // type: 'docSidebar',
         sidebarId: 'noteBookSidebars',
         label: '学习笔记',
         title: '📒',

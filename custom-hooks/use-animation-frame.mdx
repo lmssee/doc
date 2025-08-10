@@ -1,0 +1,38 @@
+---
+title: 使用 animationFrame
+---
+
+类似的，与 [useTimeId](./use-time-id) 相似，使用一个统一的方法来创建 `window.requestAnimationFrame`
+
+ 
+该钩子在组件卸载时会自动调用 `window.cancelAnimationFrame` 清理传入的回调方法。
+
+
+- 默认调用及参与方法的调用
+- 回调方法比原始的方法要多一个参数，用于如果有暂停时，暂停时间不记
+
+## 示例
+
+使用：
+
+```ts
+import { useAnimationFrame } from 'earthnut';
+  ...
+
+export function Home () {
+  // 如果没有主动暂停的需要，直接使用默认的 time 最好。如果中间有使用暂停。那么 time 值是不连贯的，而 runTime 是连贯的
+  const result = useAnimationFrame((time ,runTime) => {
+     ... //
+  });
+
+
+ return <>
+
+    <button onclick={() => result.cancel()}>暂停</button>
+    <button onclick={() => result.render()}>恢复</button>
+   </>
+ }
+  ...
+
+ ```
+

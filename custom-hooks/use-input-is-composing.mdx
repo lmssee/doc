@@ -1,0 +1,32 @@
+---
+title: 使用输入框的输入状态
+---
+
+使用元素节点的 [compositionstart](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/compositionstart_event) 和 [compositionend](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/compositionend_event) 事件来判断当前是否属于输入完成阶段。
+
+因为在使用中文（开发 [reset new tab](/edge-extension/reset-new-tab/)）的时候，发现自己居然分不清自己按下 `enter` 键的是为了将待选文本选择还是完成输入框输入进行执行。
+
+
+## 使用 
+
+```ts
+ import { useInputIsComposing } from 'earthnut';
+
+ ...
+ const inputRef = useRef<HTMLInputElement>(null);
+ const inputIsComposing = useInputIsComposing(inputRef);
+ ...
+ function enterDown (e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') {
+       if (isComposing.current) {
+           console.log("此时此景，按回车键说明为了从候选词中挑选");
+       } else {
+          console.log("输入完毕，敲回车是为了看一些开发者是否绑定了其他事件");
+       }
+    }
+ }
+
+ ...
+ <input type="text" onKeyDown={ enterDown } ref={ inputRef } />
+ ...
+```

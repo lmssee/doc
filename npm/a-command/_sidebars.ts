@@ -1,4 +1,8 @@
 import { SidebarItemConfig } from '@docusaurus/plugin-content-docs/src/sidebars/types.js';
+import { isString } from 'a-type-of-js';
+
+/**  前缀  */
+const prefix = 'a-command/';
 
 export const ACommandSidebar: SidebarItemConfig = {
   type: 'category',
@@ -12,7 +16,9 @@ export const ACommandSidebar: SidebarItemConfig = {
   // keywords?: string | readonly string[];
   link: {
     type: 'doc',
-    id: 'a-command/index',
+    id: prefix + 'index',
   },
-  items: ['a-command/args', 'a-command/question', 'a-command/selection'],
+  items: ['args', 'question', 'selection'].map(e =>
+    isString(e) ? prefix + e : e,
+  ),
 };

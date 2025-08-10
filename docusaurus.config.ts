@@ -27,9 +27,9 @@ const config: CustomConfig = {
   // 对于 GitHub 页面部署，它通常是 '/<projectName>/'
   baseUrl,
   headTags: [],
-  projectName: 'lmssee.github.io',
+  projectName: 'earthnutDev.github.io',
   // github 页面配置
-  organizationName: 'lmssee',
+  organizationName: 'earthnut',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   i18n: {
@@ -42,10 +42,10 @@ const config: CustomConfig = {
       'classic',
       {
         docs: {
-          path: 'earthnut',
+          path: 'components',
           // 置之于根
           routeBasePath: '/',
-          sidebarPath: './earthnut/_sidebars.ts',
+          sidebarPath: './components/_sidebars.ts',
         },
         blog: {
           path: 'blog',
@@ -101,6 +101,15 @@ const config: CustomConfig = {
         path: 'edge-extension',
         routeBasePath: 'edge-extension',
         sidebarPath: './edge-extension/_sidebars.ts',
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'customHooksSidebars',
+        path: './custom-hooks',
+        routeBasePath: 'custom-hooks',
+        sidebarPath: './custom-hooks/_sidebars.ts',
       },
     ],
   ],
