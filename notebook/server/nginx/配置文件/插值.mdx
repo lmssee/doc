@@ -1,0 +1,69 @@
+---
+title: 插值
+pagination_prev: null
+
+---
+
+# 嵌入式变量
+
+该模块支持嵌入式变量 `ngx_http_core_module` 名称与 Apache 服务器变量匹配。 首先，这些是表示客户端请求标头的变量 字段，例如 `$http_user_agent` 、`$http_cookie` 等等。
+
+| 变量                                                                 | 示意                                                                                                                           |
+| :------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------- |
+| $arg_name                                                            | 请求行中的参数 name                                                                                                            |
+| $args                                                                | 请求行中的参数                                                                                                                 |
+| $binary_remote_addr                                                  | 二进制形式的客户端地址，值的长度始终为 4 个字节 对于 IPv4 地址或 16 字节对于 IPv6 地址                                         |
+| $body_bytes_sent                                                     | 发送到客户端的字节数，不计算响应标头; 此变量与 Apache 模块的 “%B ” 参数兼容                                                    |
+| $bytes_sent                                                          | 发送到客户端的字节数                                                                                                           |
+| $connection                                                          | 连接序列号                                                                                                                     |
+| $connection_requests                                                 | 当前通过连接发出的请求数                                                                                                       |
+| $connection_time                                                     | 连接时间（以秒为单位），分辨率为毫秒                                                                                           |
+| $content_length                                                      | “内容长度”请求标头字段                                                                                                         |
+| $content_type                                                        | “内容类型”请求标头字段                                                                                                         |
+| $cookie_name                                                         | cookie_name                                                                                                                    |
+| $document_root                                                       | 根或别名指令的值 对于当前请求                                                                                                  |
+| $document_uri                                                        | 同 $uri                                                                                                                        |
+| $host                                                                | 请求行中的主机名，或 “主机”请求标头字段中的主机名，或 与请求匹配的服务器名称                                                   |
+| $hostname                                                            | 主机名                                                                                                                         |
+| $http_name                                                           | 任意请求标头字段; 变量名称的最后一部分是转换后的字段名称 改为小写，短划线替换为下划线                                          |
+| $https                                                               | 如果连接在 SSL 模式下运行， 否则为空字符串 on                                                                                  |
+| $is_args                                                             | 如果请求行有参数， 否则为空字符串?                                                                                             |
+| $limit_rate                                                          | 设置此变量可启用响应速率限制; 见 limit_rate                                                                                    |
+| $msec                                                                | 当前时间（以秒为单位），毫秒分辨率                                                                                             |
+| $nginx_version                                                       | 版本号                                                                                                                         |
+| $pid                                                                 | 工作进程的 PID                                                                                                                 |
+| $pipe                                                                | 如果请求已通过管道传输，则 “.” 否则                                                                                            |
+| $proxy_protocol_addr                                                 | 来自 PROXY 协议标头的客户端地址 ,必须事先通过设置参数来启用代理协议 proxy_protocol 在侦听指令中                                |
+| $proxy_protocol_port                                                 | 来自 PROXY 协议标头的客户端端口...                                                                                             |
+| $proxy_protocol_server_addr                                          | 来自 PROXY 协议标头的服务器地址...                                                                                             |
+| $proxy_protocol_server_port                                          | 来自 PROXY 协议标头的服务器端口...                                                                                             |
+| $proxy_protocol_tlv_name                                             | 来自代理协议标头的 TLV 。 可以是 TLV 类型名称或其数值。 在后一种情况下，该值为十六进制 并且应以 0x 开头                        |
+| $query_string                                                        | 同 $args                                                                                                                       |
+| $realpath_root                                                       | 对应于根或别名指令值的绝对路径名 对于当前请求， 将所有符号链接解析为真实路径                                                   |
+| $remote_addr                                                         | 客户地址                                                                                                                       |
+| $remote_port                                                         | 客户端端口                                                                                                                     |
+| $remote_user                                                         | 随基本身份验证提供的用户名                                                                                                     |
+| $request                                                             | 完整的原始请求行                                                                                                               |
+| $request_body                                                        | 请求正文。变量的值在位置中可用 由 proxy_pass 、 fastcgi_pass 、 uwsgi_pass 处理， 并在读取请求正文时 scgi_pass 指令 内存缓冲区 |
+| $request_body_file                                                   | 具有请求正文的临时文件的名称                                                                                                   |
+| $request_completion                                                  | 如果请求已完成，否则为空字符串                                                                                                 |
+| $request_filename                                                    | 当前请求的文件路径，基于 root 或别名指令以及请求 URI                                                                           |
+| $request_id                                                          | 唯一请求标识符 从 16 个随机字节生成，十六进制                                                                                  |
+| $request_length                                                      | 请求长度（包括请求行、标头和请求正文）                                                                                         |
+| $request_method                                                      | 请求方法                                                                                                                       |
+| $request_time                                                        | 请求处理时间（以秒为单位），分辨率为毫秒                                                                                       |
+| $request_uri                                                         | 完整的原始请求 URI                                                                                                             |
+| $scheme                                                              | 请求方案： http 、 https                                                                                                       |
+| $sent_http_name                                                      | 任意响应标头字段; 变量名称的最后一部分是转换后的字段名称 改为小写，短划线替换为下划线                                          |
+| $sent_trailer_name                                                   | 在响应结束时发送的任意字段; 变量名称的最后一部分是转换后的字段名称 改为小写，短划线替换为下划线                                |
+| $server_addr                                                         | 接受请求的服务器的地址。计算此变量的值通常需要一次系统调用。 为了避免系统调用，侦听指令 必须指定地址并使用参数                 |
+| $server_name                                                         | 接受请求的服务器的名称                                                                                                         |
+| $server_port                                                         | 接受请求的服务器的端口                                                                                                         |
+| $server_protocol                                                     | 请求协议，通常：“ HTTP/1.0HTTP/1.1”、 “ HTTP/2.0”、 “ HTTP/3.0”                                                                |
+| $status                                                              | 响应状态                                                                                                                       |
+| $tcpinfo_rtt, $tcpinfo_rttvar, $tcpinfo_snd_cwnd, $tcpinfo_rcv_space | 有关客户端 TCP 连接的信息;在系统上可用 支持套接字选项 TCP_INFO                                                                 |
+| $time_iso8601                                                        | ISO 8601 标准格式的本地时间                                                                                                    |
+| $time_local                                                          | 通用日志格式的本地时间                                                                                                         |
+| $uri                                                                 | 请求中的当前 URI                                                                                                               |
+
+            

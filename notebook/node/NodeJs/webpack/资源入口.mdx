@@ -1,0 +1,94 @@
+---
+title: 资源入口
+
+
+---
+
+# 配置资源入口
+
+Webpack 通过 context 和 entry 这两个配置项来共同决定入口文件的路径。在配置入口时，实际上做了两件事：
+
+- 确定入口模块位置，告诉 Webpack 从哪里开始进行打包
+- 定义 chunk name 。如果工程只有一个入口，那么默认其 chunk name 为“ main ”； 如果工程有多个入口，我们需要为每个入口定义 chunk name ，来作为该 chunk 的唯一标识
+
+## context
+
+context 可以理解为资源入口的路径前缀，在配置时要求必须使用绝对路径的形式。
+
+配置 context 的主要目的是让 entry 的编写更加简洁，尤其是在多入口的情况下。 context 可以省略，默认值为当前工程的根目录。
+
+```js
+module.exports = {
+context : path.join(\_\_dirname,'./src'),
+entry:'./scripts/index.js',
+};
+```
+
+## entry
+
+与 context 只能为字符串不同， entry 的配置可以有多种形式：字符串、数组、对象、函数。可以根据不同的需求场景来选择。
+
+## string
+
+```js
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'oo.js',
+  },
+};
+```
+
+## array
+
+传入数组作用是将多个资源先和合并，在打包时将最后一个元素作为实际的入口文件：
+
+```js
+module.exports = {
+entry: ['importModule','./src/index.js'],
+```
+
+## object
+
+定义多入口，则必须使用对象的形式。对象的属性名（ key ）是 chunk name ，属性值（ value ）是入口路径:
+
+```js
+module.exports = {
+  entry: {
+    index: './src/index.js',
+    lib: './src/lib.js',
+  },
+};
+```
+
+在使用字符串或数组定义单入口时，并没有办法更改 chunk name ，只能为默认的“ main ”。在使用对象来定义多入口时，则必须为每一个入口定义 chunk name 。
+
+## 函数型入口
+
+函数定义入口，返回值为以上符合类型即可。
+
+传入一个函数的优点在于我们可以在函数体里添加一些动态的逻辑来获取工程的入口。另外，函数也支持返回一个 Promise 对象来进行异步操作。
+
+## some
+
+## 单页面应用
+
+对于单页面应用，传入单一入口即可：
+
+```js
+module.exports = {
+  entry: './src/index.js',
+};
+```
+
+当一个打包文件大于 250kb 时，就会认为过大，打包时会警示。
+
+## 多页应用
+
+使用对象引入方式进行多个引入，互不干扰。
+
+## 提取公共
+
+可以使用将公共或不经常改变的部分提取出来。
+
+            

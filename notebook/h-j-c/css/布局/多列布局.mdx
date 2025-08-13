@@ -1,0 +1,221 @@
+---
+title: 多列布局
+
+
+---
+
+# 多列布局
+
+CSS 3 的 Multiple Columns （ [http://www.w3.org/TR/css3-multicol](http://www.w3.org/TR/css3-multicol)）可以设计多列布局，将内容指定为指定的列数排列，适合纯文本版本设计。
+
+```css
+columns: column-width | column-count;
+```
+
+- column-width 每列的宽度
+- column-count 列数
+
+webkit 引擎支持 -webkit-columns 私有属性， Mozilla Gecko 引擎支持 -moz-columns 私有属性。
+
+## 设置列宽 column-width
+
+```css
+column-width: length | auto;
+```
+
+WebKit 支持 -webKit-column-width 私有属性， Mozilla Gecko 支持 -moz-column-width 私有属性， Presto 引擎和 IE 浏览器支持标准属性。
+
+colum-width 可以和其他属性一起配合使用，设计指定的固定列数、列宽的布局效果；也可以单独使用，限制模块的单列宽度、当超出宽度时，则会自动多列显示。
+
+```css
+body {
+  -webkit-column-width: 300px;
+  -moz-column-width: 300px;
+  column-width: 300px;
+}
+```
+
+## 设置列数 column-count
+
+```css
+column-count: integer | auto;
+```
+
+WebKit 支持 -webKit-column-count 私有属性， Mozilla Gecko 支持 -moz-column-count 私有属性， Presto 引擎和最新的 IE 浏览器支持标准属性。
+
+```css
+body {
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3;
+}
+```
+
+## 定义列间距 column-gap
+
+```css
+column-gap: normal | length;
+```
+
+WebKit 支持 -webKit-column-gap 私有属性， Mozilla Gecko 支持 -moz-column-gap 私有属性， Presto 引擎和最新 IE 浏览器支持标准属性。
+
+```css
+body {
+  /*定义页面内容显示为三列*/
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3; /*定义列间距为3em ，默认为1em */
+  -webkit-column-gap: 3em;
+  -moz-column-gap: 3em;
+  column-gap: 3em;
+  line-height: 2.5em; /* 定义页面文本行高
+*/
+}
+```
+
+## 定义列边框 column-rule
+
+```css
+column-rule: length | style | color | transparent;
+```
+
+column-rule 属性值根据个别属性而定，适用于多列布局元素。
+
+WebKit 支持 -webKit-column-rule 私有属性， Mozilla Gecko 支持 -moz-column-rule 私有属性， Presto 引擎和最新 IE 浏览器支持标准 column-rule 属性
+
+```css
+body {
+  /*_*定义页面内容显示为三列*_*/
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3; /*_*定义列间距为3em ，默认为1em*_*/
+  -webkit-column-gap: 3em;
+  -moz-column-gap: 3em;
+  column-gap: 3em;
+  line-height: 2.5em; /*_*定义列边框为2像素宽的灰色虚线*_*/
+  -webkit-column-rule: dashed 2px gray;
+  -moz-column-rule: dashed 2px gray;
+  column-rule: dashed 2px gray;
+}
+```
+
+## column-rule-color
+
+column-rule-color 属性规定列之间的颜色规则
+
+## column-rule-style
+
+column-rule-style 规定列之间的样式规则
+
+- none ： 无
+- hidden ： 隐藏
+- dotted ： 点状
+- dashed ： 虚线
+- solid ：实线
+- double ： 双线
+- groove ： 3D 规则
+- inset ： 同上
+- outset ： 同上
+
+## column-rule-width
+
+column-rule-width 属性规定列之间的宽的规则。
+
+```css
+column-rule-width: thin|medium|thick|length;
+```
+
+- thin ： 纤细
+- medium ： 中等规则
+- thick ： 宽厚
+- length ： 宽度
+
+## 定于跨列显示 column-span
+
+```css
+column-span: none | all;
+```
+
+```css
+body {
+  /*_*定义页面内容显示为三列*_*/
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3; /*_*定义列间距为3em ，默认为1em*_*/
+  -webkit-column-gap: 3em;
+  -moz-column-gap: 3em;
+  column-gap: 3em;
+  line-height: 2.5em; /*_*定义列边框为2像素宽的灰色虚线*_*/
+  -webkit-column-rule: dashed 2px gray;
+  -moz-column-rule: dashed 2px gray;
+  column-rule: dashed 2px gray;
+} /*_*设置一级标题跨越所有列显示*_*/
+h1 {
+  color: #333333;
+  font-size: 20px;
+  text-align: center;
+  padding: 12px;
+  -webkit-column-span: all;
+  -moz-column-span: all;
+  column-span: all;
+} /*_*设置二级标题跨越所有列显示*_*/
+h2 {
+  font-size: 16px;
+  text-align: center;
+  -webkit-column-span: all;
+  -moz-column-span: all;
+  column-span: all;
+}
+```
+
+## 定义列高度 column-fill
+
+```css
+column-fill: auto | balance;
+```
+
+column-fill 的初始值为 balance ，适用于多列布局属性。取值很简单：
+
+- auto ：各列的高度随其内容变化而变化
+- balance ：各列的高度会根据内容最多的那一列进行高度的统一
+
+WebKit 支持 -webKit-column-fill 私有属性， Mozilla Gecko 、 Presto 引擎和最新的 IE 浏览器支持标准 column-fill 属性。
+
+```css
+body {
+  /*_*定义页面内容显示为三列*_*/
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3; /*_*定义列间距为3em ，默认为1em*_*/
+  -webkit-column-gap: 3em;
+  -moz-column-gap: 3em;
+  column-gap: 3em;
+  line-height: 2.5em; /*_*定义列边框为2像素宽的灰色虚线*_*/
+  -webkit-column-rule: dashed 2px gray;
+  -moz-column-rule: dashed 2px gray;
+  column-rule: dashed 2px gray;
+  /*_*设置各列高度自动调整*_*/
+  -webkit-column-fill: auto;
+  -moz-column-fill: auto;
+  column-fill: auto;
+} /*_*设置一级标题跨越所有列显示*_*/
+h1 {
+  color: #333333;
+  font-size: 20px;
+  text-align: center;
+  padding: 12px;
+  -webkit-column-span: all;
+  -moz-column-span: all;
+  column-span: all;
+}
+/*_*设置二级标题跨越所有列显示*_*/
+h2 {
+  font-size: 16px;
+  text-align: center;
+  -webkit-column-span: all;
+  -moz-column-span: all;
+  column-span: all;
+}
+```
+
+            

@@ -1,0 +1,176 @@
+---
+title: 开关窗口
+
+
+---
+
+# 通过 open 方法打开新窗口
+
+打开窗口可以使用 JavaScript 的
+open 方法打开浏览器对话框。作为一名程序开发人员，可以基于特定的条件创建带有被装入其中的特定文档的新对话框，也可以指定新对话框的大小以及对话框中可用的选项，并且可以为引用的对话框指派名字。
+
+利用 open 方法可以打开一个新的窗口，并在窗口中装载指定 URL 地址的网页。
+
+语法格式如下：
+
+```js
+WindowVar = window.open(url, windowName, features, replace);
+```
+
+- WindowVar ：当前打开窗口的句柄。如果 open 方法成功，则 WindowVar 的值为一个 Window 对象的句柄，否则 WindowVar 的值是一个空值。
+- url ：目标窗口的 URL 。如果 URL 是一个空字符串，则浏览器将打开一个空白窗口，允许用 write 方法创建动态 HTML 。
+- windowName ： Window 对象的名称。该名称可以作为属性值在 `<a>` 和 `<form>` 标记的
+  target 属性中出现。如果指定的名称是一个已经存在的窗口名称，则返回对该窗口的引用，而不会再新打开一个窗口。
+- features: 可选字符串，声明了新窗口要显示的标准浏览器的特征。如果省略，新窗口将具有所有的标准特性
+- replace ： 可选布尔值。规定了装载窗口的 URL 是在窗口的浏览历史创建新条目，还是替换浏览器历史中的当前条目
+
+| 参数值          | 额                                 |
+| :-------------- | :--------------------------------- | --- | --- | ---------------------------------------------------- |
+| channelmode=yew | no                                 | 1   | 0   | 是否剧院模式显示窗口，默认 no                        |
+| directories=yes | no                                 | 1   | 0   | 是否添加目录按钮，默认 yes                           |
+| fullecreen=yes  | no                                 | 1   | 0   | 是否全屏显示窗口，默认 no 。处于全屏必须同时处于剧院 |
+| height          | 对话框的高度                       |
+| left            | 窗口左端离开屏幕左端的像素数       |
+| location=yes    | no                                 | 1   | 0   | 是否显示地址字段，默认 yes                           |
+| menubar=yes     | no                                 | 1   | 0   | 是否显示工具栏，默认 yes                             |
+| resizes         | 设定对话框大小是否固定             |
+| scrollbars      | 是否显示滚动条，默认 yes           |
+| status=yes      | no                                 | 1   | 0   | 是否显示状态栏，默认 yes                             |
+| titlebar=yes    | no                                 | 1   | 0   | 是否显示标题栏，默认 yes                             |
+| toolbar         | 浏览器工具条，包括后退及前进按钮等 |
+| top             | 窗口顶部离开屏幕顶部的像素数       |
+| width           | 对话框的宽度                       |
+
+例如，打开一个新窗口:
+
+```js
+window.open('new.htm', 'new');
+```
+
+```js
+var ha = window.open(
+  'https://lmssee.cn',
+  'a033',
+  'channelmode=yes,directories=no,fullscreen=yes,location=no,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,width=424px,left=0px,top=0px,width=525px',
+  true,
+);
+```
+
+例如，打开一个指定大小的窗口 。
+
+```js
+window.open('new.htm', 'new', 'height=141,width=693');
+```
+
+例如，打开一个指定位置的窗口 。
+
+```js
+window.open('new.htm', 'new', 'height=141,width=693');
+```
+
+例如，打开一个带滚动条的固定窗口 。
+
+```js
+window.open('new.htm', 'new', 'scrollbars,resizable');
+```
+
+例如，打开一个新的浏览器对话框，在该对话框中显示 bookinfo.htm 文件，设置打开对话框的名称为 "bookinfo"，并设置对话框的宽度和高度 。
+
+```js
+var win=window.open("hi.htm","hi","width=400,height=300";
+```
+
+在使用 open 方法时，需要注意以下几点：
+
+- 通常浏览器窗口中，总有一个文档是打开的，因而不需要为输出建立一个新文档
+- 在完成对 Web 文档的写操作后，要使用或调用 close 方法来实现对输出流的关闭
+- 在使用 open 方法来打开一个新流时，可为文档指定一个有效的文档类型。有效文档类型包括 text/HTML 、 text/gif 、 text/xim 、 text/plugin 等
+
+创建的 window 对象具有一个 opener 属性，引用打开它的原始窗口对象。 opener 只在弹出窗口的最外层 window 对象（ top ）中定义，而且指向调用 window.open （）方法的窗口或框架。
+
+```js
+myWindow = window.open('223. html');
+myWindow.console.log('<h1>这是新打开的窗口 </h1>');
+myWindow.focus();
+myWindow.opener.console.log('<h1>我是旧窗口</h1>');
+alert(myWindow.opener == window);
+```
+
+```js
+var url = 'https://lmssee.cn/';
+var features =
+  'height = 500, width = 800 ,top = 100 ,left = 100 ,toolbar = no, menubar = no ,scrollbars = no, resizable = no,location = no, status = no';
+console.log(
+  '<a href="https://lmssee.art.blog" target="newW" >去它妈的博客</a>',
+);
+var me = window.open(url, 'newW', features);
+setTimeout(function () {
+  if (me.closed) {
+    console.log('创建的窗口已关闭。 ');
+  } else {
+    me.close();
+  }
+}, 500);
+```
+
+有些浏览器的窗口中有一个指针（ opener ）指向打开它的原始窗口，但原始窗口并没有这样的指针指向弹出窗口。窗口并不跟踪已打开的窗口，因此需要手动实现跟踪。
+
+将 opener 属性设置为 null 时，这样建立的新标签页就无法与打开它的标签页通信。标签页之间的通信一旦切断，就再也无法恢复。
+
+```js
+var error = false;
+try {
+  var w = window.open('https:/\/lmssee.cn', '\_blank');
+  if (w == null) {
+    error = true;
+  }
+} catch (ex) {
+  error = true;
+}
+if (error) {
+  alert('浏览器禁止弹出窗口 ');
+}
+```
+
+## 弹窗屏蔽程序
+
+所有现代浏览器都内置了屏蔽弹窗的程序，因此大多数意料之外的弹窗都会被屏蔽。在浏览器屏蔽 弹窗时，可能会发生一些事。如果浏览器内置的弹窗屏蔽程序阻止了弹窗，那么 window.open()很可 能会返回
+null 。此时，只要检查这个方法的返回值就可以知道弹窗是否被屏蔽了。在浏览器扩展或其它程序屏蔽弹窗时， window.open()通常会抛出错误。因此要准确检测弹窗是 否被屏蔽，除了检测
+window.open()的返回值，还要把它用 try/catch 包装起来。
+
+## 通过 close 方法关闭窗口
+
+## 关闭当前窗口
+
+利用 Window 对象的 close 方法可以实现关闭当前窗口。
+
+语法格式如下：
+
+```js
+window.close();
+```
+
+例如，关闭当前窗口，可以用下面的任何一种语句实现。
+
+```js
+window.close();
+close();
+this.close();
+```
+
+如果窗口不是由其它窗口打开的，那么这个属性在 Netscape 中返回 null ，在 IE 中返回"未定义"（ undefined ）。 undefined 在一定程度上等于
+null 。需要说明的是， undefined 不是 JavaScript 常数；如果读者企图使用 undefined ，那就真的返回"未定义"了 。
+
+## 关闭子窗口
+
+通过 close 方法，用户可以关闭以前动态创建的窗口，也可以在窗口创建时，将窗口句柄以变量的形式进行保存，然后通过 close 方法关闭创建窗口。
+
+语法格式如下：
+
+```js
+windowName.close();
+```
+
+参数 windowName 表示已打开窗口的句柄。
+
+            

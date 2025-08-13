@@ -1,0 +1,30 @@
+---
+title: video
+
+
+---
+
+# video
+
+- autoplay ：如果存在，则一加载完文件就播放它
+- controls ：如果存在，则显示用于音频播放器的控件
+- ended: 回放暂停时，值为 true
+- height 高
+- loop ：如果存在，则继续重复播放文件，直到手动停止它为止
+- muted: 规定视频的音频输出应该被静音
+- paused ： 回放暂停时，值为 true
+- poster ： 设置影片加载时显示图像
+- preload ：具有 3 个可能的值： none 、 auto 和 metadata 。如果不希望缓冲文件，就使用 none ；如果要缓冲文件，可使用 auto ；如果希望只缓冲文件的元数据，则使用
+  metadata
+- src: 多媒体地址
+- volume ： 音量，值从 0 （静音）到 1 （最大）
+- width 宽
+
+使用 javaScript 播放，简单说明：
+
+- load() 可以加载音频或视频文件
+- play() 可以加载并播放音频或视频文件，除非已暂停，否则默认从头开始
+- pause() 暂停处于播放状态的音频或视频文件
+- canPlayType(type) 检测 vedio 元素是否支持给定的 MIME 类型的文件
+
+            

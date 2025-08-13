@@ -1,0 +1,236 @@
+---
+title: 重载和覆载
+
+
+---
+
+# 方法的重载（ overLoad ）
+
+如果一个类中有两个方法，这两个方法具有相同的方法名，并且具有相同的参数（参数的数量和数据类型完全相同），那么就称它们具有相同的方法签名。一个类中不允许存在方法签名完全相同的两个方法。
+
+如果一个类中有两个方法具有相同的方法名，但是具有不同的参数列表，那么就称一个方法是另一个方法的重载，在目前流行的大多数程序语言（例如 Java 、 C# ）中，不同的参数列表包括不同的参数数量和参数的数据类型，因为
+JavaScript 是无类型的，所以不同的参数列表仅仅是表现为不同的参数数量。
+
+例如前面介绍的 Date.UTC() 方法，可以有多种形式：
+
+```js
+Date.UTC(year, month);
+Date.UTC(year, month, day);
+Date.UTC(year, month, day, hours);
+Date.UTC(year, month, day, hours, minutes);
+Date.UTC(year, month, day, hours, minutes, seconds);
+Date.UTC(year, month, day, hours, minutes, seconds, millisecond);
+```
+
+这些都是方法的重载。
+
+例如下面的两行代码演示了如何重载：
+
+```js
+this.myMethod = function (arg_1, arg_2) {};
+this.myMethod = function (arg_1, arg_2, arg_3) {};
+```
+
+在第二种情况下，成员方法 myMethod() 接受 3 个整形变量作为它的参数，解释器根据调用时的不同参数来决定该调用哪一种成员方法，假如把两个整数提供给成员方法，就调用第一个成员方法。
+
+## 重载参数列表的数量
+
+JavaScript 不支持直接定义多个方法来实现重载，因为它不允许存在同名的两个方法。用户可以利用变参数来实现重载功能，例如下面的代码定义了一个类，实现了一个名为 myMethod() 的方法：
+
+```js
+function OverLoadTest() {}
+OverLoadTest.prototype.myMethod = function () {
+  var len = arguments.length;
+  if (len == 2) {
+    console.log('$1在调用的是两参数方法 ');
+  } else if (len == 3) {
+    console.log('$1 在调用的是三参数方法 ');
+  } else {
+    throw new Error('$1 数数量不对 ');
+  }
+};
+```
+
+该方法通过自行判断参数的数量实现重载，用户可以使用下面的方法实现调用：
+
+```js
+try {
+  var oOverLoadTest = new OverLoadTest();
+  oOverLoadTest.myMethod(1, 2);
+  oOverLoadTest.myMethod(1, 2, 3);
+} catch (err) {
+  console.log(err.message);
+}
+```
+
+返回的结果如下所示：
+
+正在调用的是两参数方。
+
+正在调用的是三参数方法。
+
+如果调用不当，将会抛出。 如下面的代码，参数数量不正确：
+
+```js
+try {
+  var oOverLoadTest = new OverLoadTest();
+  oOverLoadTest.myMethod(1, 2, 3, 4);
+} catch (err) {
+  console.log(err.message);
+}
+```
+
+## 重载参数列表的数据类型
+
+使用相似的方法，也可以实现数据类型的重载，例如我们要实现下面的 3 种重载形式，前一种的参数必须是数字类型，后两种的参数必须是字符串类型：
+
+```js
+this.myMethod = function (Number_1, Number_2) {};
+this.myMethod = function (String_1, String_2) {};
+this.myMethod = function (String_1, String_2, String_3) {};
+```
+
+那么就可以使用如下的代码来实现重载：
+
+```js
+function OverLoadTest() {}
+OverLoadTest.prototype.myMethod = function () {
+  var len = arguments.length;
+  if (len == 2) {
+    if (typeof arguments[0] == 'number' && typeof arguments[1] == 'number') {
+      console.log('s 在调用的是两 number 参数方法 ');
+    } else if (
+      typeof arguments[0] == 'string' &&
+      typeof arguments[1] == 'string'
+    ) {
+      console.log('s 在调用的是两 string 参数方法 ');
+    } else {
+      throw new Error('s 参数类型不对 ');
+    }
+  } else if (len == 3) {
+    if (
+      typeof arguments[0] == 'string' &&
+      typeof arguments[1] == 'string' &&
+      typeof arguments[2] == 'string'
+    ) {
+      console.log('s 在调用的是三 string 参数方法 ');
+    } else {
+      throw new Error('s 参数类型不对 ');
+    }
+  } else {
+    throw new Error('$1 数数量不对 ');
+  }
+};
+```
+
+该方法通过自行判断参数的数量和类型来实现重载，首先判断参数的数量，然后判断参数的类型，参数的类型可以使用 typeof 来获取
+
+用户可以使用下面的方法调用来检测重载的效果：
+
+```js
+try {
+  var oOverLoadTest = new OverLoadTest();
+  oOverLoadTest.myMethod(1, 2);
+  oOverLoadTest.myMethod('1', '; 2 ');
+  oOverLoadTest.myMethod('1', '; 2 ', '3');
+} catch (err) {
+  console.log(err.message);
+}
+```
+
+这将返回下面的结果：
+
+正在调用的是两 number 参数方法
+
+正在调用的是两 string 参数方法
+
+正在调用的是三 string 参数方法
+
+再看下面的访问方法，由于参数的类型不正确，所以会抛出异常：
+
+```js
+try {
+  var oOverLoadTest = new OverLoadTest();
+  oOverLoadTest.myMethod('1', 2);
+} catch (err) {
+  console.log(err.message);
+}
+```
+
+_注意，不可能存在具有相同的方法签名。 值类型不同的方法。因为很明显，假定存在这样的方法，程序也不知道用户的方法调用应该使用哪个方法定义_
+
+## 方法的覆载（ overRide ）
+
+从基类中继承功能时，子类可以继承基类的所有方法和属性。但是
+能会发现，在基类中编写的一些方法仅能完成子类所需的部分功能。要执行所需的全部功能，可以在新类中覆盖基类的方法，而无需使用新的名称创建一个全新的方法，这被称为方法的覆载（ overRide ）或者重写、覆写、覆盖
+
+JavaScript 完成覆载功能非常简单，只需为子类新定义一个同名的方法成员即可。例如下面的代码重写了 showInfo() 方法：
+
+```js
+function Person(myName, myAge) {
+  this.nickName = myName;
+  this.age = myAge;
+}
+Person.prototype.showInfo = function () {
+  return (
+    ' 嗨！我的名字是 ' + this.nickName + ' ，我现在 ' + this.age + ' 岁了。 '
+  );
+};
+function Child(myName, myAge) {
+  this.$super = Person;
+  this.$super(myName, myAge);
+  // 下面覆盖 showInfo() 方法
+  this.showInfo = function () {
+    return (
+      ' 嗨！我是一个小孩，我的名字是 ' +
+      this.nickName +
+      ' ，我现在 ' +
+      this.age +
+      '岁了。 '
+    );
+  };
+}
+Child.prototype = new Person();
+var child_1 = new Child('Jane ', 8);
+console.log(child_1.showInfo());
+```
+
+_静态方法和属性不能继承，也不能覆载_
+
+方法覆载（ overRide ）和方法重载（ overLoad
+）是两个不同的概念。重载是指当一个类的两个或者两个以上的方法拥有相同的名字，但是具有不同的参数列表（也称为方法签名）；覆载是指子类利用完全相同的方法名、返回类型和参数列表重新编写方法逻辑，实现基类中某一方法的功能。这
+都被称为多态
+
+## 属性的覆载
+
+如果基类使用 get 和 set 存取器方法定义属性，那么该属性可以被覆载。但是，使用 this 和 prototype 来定义的属性则不能覆盖
+
+要想覆载 get 和 set 存取器方法，就像覆载普通的方法一样，只需为子类新定义一个同名的 get 和 set 方法成员即可
+
+例如下面的代码覆载基类 Person 属性：
+
+```js
+function Person() {
+  var _sex = 'default ';
+  getSex = function () {
+    return _sex;
+  };
+  this.setSex = function (newName) {
+    _sex = newName;
+  };
+}
+function Child() {
+  var _sex = 'default';
+  this.getSex = function () {
+    return _sex;
+  };
+  this.setSex = function (newName) {
+    _sex = newName;
+  };
+}
+Child.prototype = new Person();
+```
+
+_但一般情况下是无需覆载属性的_
+
+            

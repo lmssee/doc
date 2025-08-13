@@ -1,0 +1,79 @@
+---
+title: 访问
+pagination_prev: null
+
+---
+
+# 访问表单对象
+
+表单通过 `<form>` 标签定义，在 HTML 中 `<form>` 每出现一次， form 对象就创建一次。 from 对象属于 HTMLFromElement 类型，继承于 HTMLElement ，
+HTMLFormElement 拥有专有属性。| acceptCharset | 服务器可接受的字符集。等价于 `<from accept-charset=\"UTF-8\">`
+
+|          |                                                                                                               |
+| :------- | :------------------------------------------------------------------------------------------------------------ |
+| action   | 设置或返回表单的 action 属性                                                                                  |
+| enctype  | 设置或返回表单用来编码内容的 MIME 类型，及请求的编码类型。等价于 `<form enctype=\"multipart\/form-data\">`    |
+| id       | 设置或返回表单的 id 。等价于 `<form id=\"login\">`                                                            |
+| length   | 返回表单的控制数目                                                                                            |
+| elements | 表单中所有控制的集合 \（ HTMLCollection\）                                                                    |
+| method   | 设置或返回将数据发送到服务器的 HTTP 方法，即发送的 HTTP 　请求类型。等价于 `<form method=\"get\">`            |
+| name     | 设置或返回表单的名称。等价于 `<form name=\"login\">`                                                          |
+| target   | 设置或返回表单提交结果的 frame 或 window 名称，即发送请求和接受响应的窗口名称。等价于 `<form target=\"new\">` |
+
+另外， form 对象还有两个专用方法。
+
+- reset()：将所有表单域重置为默认值
+- submit()：提交表单
+
+```html
+<form action="" id="form1"></form>
+<script>
+  var form = window.document.getElementById('form1');
+  alert(form.id); // "form1"
+</script>
+```
+
+还可以利用 HTML 的 document.forms 集合获取， document.forms 表示页面中所有的表单对象的集合，可以通过数字索引或 name 值取得特定表单。注意，同时为表单指定 id 和 name 属性，但它们值可以不同。
+
+使用 form 对象的 elements 属性。 elements 集合是一个有序列表，包含表单中所有的字段，如 `<input>`、 `<textarea>`、 `<button>`、`<select>` 和 `<fieldset>` 。每个表单字段在 elements 集合中的顺序，与它们在表单中的顺序相同。
+
+```html
+<form action="" id="form1">
+  <h3>反馈表</h3>
+  <fieldset>
+    <p>姓名： <input type="text" class="special" name="name" /></p>
+    <p>
+      性别 <input type="radio" name="sex" value="0" />男<input
+        type="radio"
+        name="sex"
+        value="1"
+      />女
+    </p>
+    <p>邮箱 <input type="text" name="email" /></p>
+    <p>网址 <input type="text" name="web" /></p>
+    <p>反馈意见 <textarea name="message" rows="10" cols="30"></textarea></p>
+    <p class="submit">
+      <button type="submit">提交表单</button>
+    </p>
+  </fieldset>
+</form>
+<script>
+  var form = document.getElementById('form1');
+  var field0 = form.elements[0]; //fieldset
+  var field2 = form.elements[1]; // input
+  var field3 = form.elements[2];
+  // input[name="sex"][value=0]
+  var field4 = form.elements[3]; // input[name="sex"][value=1]
+  var field5 = form.elements[4]; // input[name="email"]
+  var field6 = form.elements[5]; // input[name="web"]
+  var field7 = form.elements[6]; // textarea[name="message"]
+  var field8 = form.elements[7]; // button[type="submit"]
+  var field2 = form.elements['name']; // 通过 name找到姓名文本框
+  var filedCount = form.elements.length; // 获取表单字段个数
+  alert(form.elements[3] == form.elements['sex'][1]); // true
+</script>
+```
+
+尽量使用 elements ，因为表单属性只是为了兼容早期浏览器而保留的一种过渡形式。
+
+            

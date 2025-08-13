@@ -1,0 +1,36 @@
+---
+title: 快速排序
+
+
+---
+
+# 快速排序
+
+快速排序是非常高效的排序算法，采用分而治之。
+
+- 分解：将序列分为两个非空的子序列，使左边的任一项都比右边小。
+- 递归求解：通过递归快速排序
+- 合并：直接合并
+
+```js
+function quickSort(arr) {
+  let length = arr.length;
+  if (!length) return arr;
+  let base_num = arr[0],
+    left_array = [],
+    right_array = [];
+  for (let i = 1; i < length; i++) {
+    if (base_num > arr[i]) left_array.push(arr[i]);
+    else right_array.push(arr[i]);
+  }
+  left_array = quickSort(left_array);
+  right_array = quickSort(right_array);
+  return left_array.concat([base_num], right_array);
+}
+```
+
+快速算法是通过分治递归来实现的，其效率在很大程度上取决于参考元素的选择，可以选择数组的中间元素，也可以随机得到三个元素，然后选择中间的那个元素（三数中值法）。另外还有一点，就是当我们在分割时，如果分割出来的子序列的长度很小的话（小于20），通常递归的排序效率就没有诸如插入排序或希尔排序那么快了。因此可以先判断数组的长度，如果小于10的话，直接用插入排序，而不是递归调用快速排序。
+
+最佳情况： T(n) = O(nlogn)；最差情况： T(n) = O(n\*n)；平均： T(n) = O(nlogn)。
+
+            

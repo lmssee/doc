@@ -1,0 +1,53 @@
+---
+title: 更新
+
+
+---
+
+# 更细数据库版本
+
+成功连接后，还需要创建对象仓库，才能进一步检索数据库。对象数据库相当于关系数据库中的数据表。
+
+在 indexedDB 数据库中，所有的操作都必须在一个事务内执行。事务分为三种：只读事务、读写事务、版本更新事务。
+
+对于创建对象事务和索引的操作，只能在版本更新的事物内部内部进行。因为在 indexedDB API
+中不允许数据库的数据仓库在同一版本发生变化，所以当创建或删除仓库时，必须使用新的版本号更新数据库的版本，以免重复修改数据库的数据库结构。
+
+```js
+window.indexedDB =
+  window.indexedDB ||
+  window.webkitIndexedDB ||
+  window.mozIndexedDB ||
+  window.msIndexedDB;
+window.IDBTransaction =
+  window.IDBTransaction ||
+  window.webkitIDBTransaction ||
+  window.msIDBTransaction;
+window.IDBKeyRange =
+  window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+window.IDBCursor =
+  window.IDBCursor || window.webkitIDBCursor || window.msIDBCursor;
+function updateVersion() {
+  var dbName = 'indexedDBTest';
+  // 数据库名
+  var dbVersion = 20220430; // 版本号
+  var idb;
+  var dbConnect = indexedDB.open(dbName, dbVersion);
+  dbConnect.onsuccess = function (e) {
+    idb = e.target.result;
+    console.log('数据库连接成功');
+  };
+  dbConnect.onerror = function (e) {
+    console.log('连接 indexedDB 数据库失败');
+  };
+  dbConnect.onupgradeneeded = function (e) {
+    idb = e.target.result;
+    var t = e.target.transaction;
+    var o = e.oldVersion;
+    var n = e.newVersion;
+    console.log('数据库版本已更新成功，旧版本号为' + o + '新版本号为' + n);
+  };
+}
+```
+
+            

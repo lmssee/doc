@@ -1,0 +1,83 @@
+---
+title: 简介
+pagination_prev: null
+
+---
+
+# 浏览器对象模型
+
+BOM 是 Browser Object Model 的缩写，即浏览器对象模型，它提供了独立于网页内容而与浏览器窗口进行交互的 API ，这些
+API 由若干对象组成。这些对象也被称为宿主对象，它们可以用来管理浏览历史和地址、获取浏览器信息，并具有其它的一些实用功能。
+
+过去，有关 BOM 的操作没有一个国际标准，各浏览器厂商自行定义宿主对象的功能，这造成了浏览器之间的兼容性难题，也给开发者带来很大的难题。现今，随着 HTML5规范的发布，其中规定了 BOM 的所有
+API ，因此不会再存在无据可参考的尴尬局面。
+
+## BOM 之源—— window 对象
+
+BOM 是 Browser Object Model 的缩写，即浏览器对象模型，它提供了独立于网页内容而与浏览器窗口进行交互的 API ，这些 API 由若干对象组成，由于浏览器是
+JavaScript 程序的宿主，因此，这些对象也被称为宿主对象。
+
+宿主对象中最核心的就是 window 对象，该对象是浏览器最顶层的一个对象，之所以称 window 为对象而不是类，因为它其实是浏览器窗口这个类的一个实例。
+
+window 对象可以产生其它对象，例如 history 、 location 、 document 等。因为 window 对象的顶层性，所以在使用其方法和属性时，一般无需指定对象名，例如下面的调用是完全等价的：
+`alert("欢迎你的访问！请按"确定"按钮继续！" );`
+`window.alert("欢迎你的访问！请按"确定"按钮继续！" );`
+
+window 对象及其产生的对象都称为宿主对象，包括 window 、 navigator 、 history 、 location 、 document 、 screen 等，分别用来处理不同的操作。其中，
+window 代表所在的浏览器窗口，这是一个顶层的对象，其它对象都由该对象派生。
+
+BOM （浏览器对象模型）对浏览器窗口进行访问和操作，与 DOM 不同， BOM 只是 JavaScript 的一部分 。
+
+- 弹出新的浏览器窗口
+- 移动、关闭浏览器窗口以调整窗口大小
+- 提供 Web 浏览器详细的信息的定位对象
+- 提供用户屏幕分辨率详细的屏幕信息
+- 对 cookie 的支持
+- IE 扩展了 BOM,加入了 ActiveXObject 类，通过 JavaScript 实例化 ActiveX
+
+BOM (Browser Object Model, 浏览器对象模型 )主要管理浏览器窗口，提供了大量的、独立的、可以与浏览器窗口进行互动的功能，这些功能与任何网页无关。 BOM 是对象组成，其中代表浏览器窗口的
+windows 对象是 BOM 的顶层，其它对象都是其子对象。
+
+BOM 标准归 W3C 下的 HTML5。
+
+## windows 对象
+
+window 对象是 BOM 的核心，代表窗口的一个实例。在浏览器中， window 既是 JavaScript 访问窗口的接口，也是 JavaScript 的全局对象（ Global ），因此在声明的全局作用域的变量和函数也是
+window 对象的属性和方法。
+
+通过 Window 对象可以控制窗口的大小和位置、由窗口弹出的对话框、打开窗口与关闭窗口，还可以控制窗口上是否显示地址栏、工具栏和状态栏等栏目。对于窗口中的内容，
+Window 对象可以控制是否重载网页、返回上一个文档或前进到下一个文档。
+
+在框架方面， Window 对象可以处理框架与框架之间的关系，并通过这种关系在一个框架处理另一个框架中的文档。 Window 对象还是所有其它对象的顶级对象。通过对 Window 对象的子对象进行操作，可以实现更多的动态效果。
+Window 对象作为对象的一种，也有着其自己的方法和属性。
+
+## 访问浏览器窗口
+
+通过 window 访问窗口，同时与浏览器相关的其它客户端对象都是 window 的子对象，通过 window 进行引用 。
+
+- window 客户端 JavaScript 中的顶层对象。每当 `<body>` 或 `<frameset>` 标签出现时， window 对象就被自动创建
+- navigator 包含客户端有关浏览器的信息
+- screen 包含客户端显示屏的信息
+- history 包含浏览器窗口访问过的 url 信息
+- location 包含当前网页文档的 url 信息
+- document 包含整个 HTML 文档，可被用来访问文档内容，及页面所有的页面元素
+
+## 全局作用域
+
+```js
+var a = 'a';
+window.b = 'window.b';
+c = 'c';
+alert(delete window.a); // false
+alert(delete window.b); // true
+alert(delete window.c); // true
+alert(window.a); // a
+alert(window.b); // undefined
+alert(window.c); // undefined
+```
+
+使用 var 语句声明的全局变量， window 会为这个属性定义一个名为 "configurable" 的特性，设置为 false ，就无法通过 delete 删除。
+
+直接使用未声明的变量，会抛出异常。
+
+            

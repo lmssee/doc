@@ -1,0 +1,195 @@
+---
+title: 光源
+
+
+---
+
+# 光照
+
+模拟光照着物体上，影响光照与光源、材质有关。
+
+## 环境光
+
+由 AmbientLight 创建。环境光没有方向，不会产生阴影，场景内的任何一点光照强度都相同。
+
+```js
+const light = new three.AmbientLight(color, intensity);
+```
+
+- color 光照颜色
+- intensity 光强度，默认为 1
+
+## 半球光
+
+半球光（ HemisphereLight ）的颜色从天空到地面两个颜色的渐变。可以用在与其他类型的光相结合，或则作为环境光（ AmbientLight ）的代替。
+
+```s
+const light = new three.HemisphereLight(color,intensity)
+```
+
+- color 光照颜色
+- intensity 深度
+
+## 方向光
+
+方向光由 DirectionalLight 创建，常用来表示光照的效果。
+
+由于与环境光（ AmbientLight ）和半球光（ HemisphereLight ）不同，展示的位置不同，光效果不同，我们可以设置光的位置。
+
+方向光有照射目标点的位置，由光 target 属性配置
+
+```js
+const light = new three.HemisphereLight(color, intensity);
+light.position.set(x, y, z);
+light.target.position.set(x, y, z);
+```
+
+- color 光照颜色
+- intensity 深度
+
+## 点光源
+
+点光源由 PointLight 创建，可模拟太阳光的效果。但是无需设置目标元素的点位。
+
+```js
+const light = new three.PointLight(color, intensity);
+light.position.set(x, y, z);
+```
+
+- color 光照颜色
+- intensity 深度
+
+点光源不是一个点，而是光源的位置绘制了一个 Mesh 子节点，所以可以使用其他的 Mesh 来代替默认的。
+
+## 聚光灯
+
+聚光灯由 SpotLight 创建。聚光灯像极了手电筒的光照，聚光灯需要一个目标点。目标点会出现在光照中心点的延长线处。
+
+```js
+const light = new three.SpotLight(color, intensity);
+light.position.set(x, y, z);
+```
+
+- color 光照颜色
+- intensity 深度
+
+## 锥形区域光
+
+锥形聚光灯由 RectAreaLight 构建。矩形区域光只能影响 MeshStandardMaterial 和 MeshPhysicalMaterial 材质。
+
+```js
+// 构建渲染器
+const renderer = new three.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight - 80);
+//设置渲染器分辨率为屏幕分辨率 。不建议
+renderer.setPixelRatio(window.devicePixelRatio); // 设置摄像头
+const camera = new three.PerspectiveCamera(
+  50,
+  window.innerWidth / window.innerHeight,
+  1,
+  100,
+);
+camera.position.set(0, 10, 20);
+camera.up.set(0, 0, 1);
+camera.lookAt(0, 0, 0);
+// 将生成的视图画到画布上
+const canvas = renderer.domElement;
+canvas.id = canvasId;
+/** 生成控制器 */
+const controls = new OrbitControls(camera, canvas);
+/** 设置控制器的位置 */ controls.target.set(0, 0, 0); // 更新观察点位置
+controls.update(); // 创建场景
+const scene = new three.Scene();
+scene.background = new three.Color('white');
+const objects: any = [];
+const solarSystem = new three.Object3D();
+scene.add(solarSystem);
+objects.push(solarSystem);
+const loader = new three.TextureLoader(); // 准备球体图元
+const sphereGeometry = new three.SphereGeometry(1, 50, 10); // 准备太阳材质
+const sunMaterial = new three.MeshBasicMaterial({
+  map: loader.load('/beian.png'),
+}); // 将图元和材质混合
+const sunMesh = new three.Mesh(sphereGeometry, sunMaterial);
+sunMesh.scale.set(5, 5, 5);
+solarSystem.add(sunMesh);
+objects.push(sunMesh);
+const earthOrbit = new three.Object3D();
+earthOrbit.position.x = 10;
+solarSystem.add(earthOrbit);
+objects.push(earthOrbit); // 设置地球材质
+const earthMaterial = new three.MeshPhongMaterial({
+  color: 0x2233ff,
+  emissive: 0x112244,
+});
+const earthMesh = new three.Mesh(sphereGeometry, earthMaterial);
+earthOrbit.add(earthMesh);
+objects.push(earthMesh);
+const moonOrbit = new three.Object3D();
+moonOrbit.position.x = 2;
+earthOrbit.add(moonOrbit); // 设置月球材质
+const moonMaterial = new three.MeshPhongMaterial({
+  color: 0x8888,
+  emissive: 0x222222,
+});
+const moonMesh = new three.Mesh(sphereGeometry, moonMaterial);
+moonMesh.scale.set(0.5, 0.5, 0.5);
+moonOrbit.add(moonMesh);
+objects.push(moonMesh);
+class AxisGridHelper {
+  grid: three.GridHelper;
+  axes: three.AxesHelper;
+  private _visible: any;
+  constructor(node: any, units = 10) {
+    const axes = new three.AxesHelper();
+    axes.material.depthTest = false;
+    axes.renderOrder = 2;
+    node.add(axes);
+    const grid = new three.GridHelper(units, units);
+    grid.material.depthTest = false;
+    grid.renderOrder = 1;
+    node.add(grid);
+    this.grid = grid;
+    this.axes = axes;
+    this.visible = false;
+  }
+  get visible() {
+    return this._visible;
+  }
+  set visible(v) {
+    this._visible = this.grid.visible = v;
+    this.axes.visible = v;
+  }
+}
+const gui = new GUI();
+function makeAxisGrid(node: any, label: any, units: any) {
+  const helper = new AxisGridHelper(node, units);
+  gui.add(helper, 'visible').name(label);
+} // 生成 gui
+makeAxisGrid(solarSystem, 'solarSystem', 25);
+makeAxisGrid(sunMesh, 'sunMesh', 25);
+makeAxisGrid(earthOrbit, 'earthOrbit', 25);
+makeAxisGrid(earthMesh, 'earthMesh', 25);
+makeAxisGrid(moonOrbit, 'moonOrbit', 25);
+makeAxisGrid(moonMesh, 'moonMesh', 25);
+const light = new three.PointLight(0xffffff, 3);
+light.position.set(0, 0, 0); // 添加灯光
+scene.add(light); // 执行动画
+function render(time: any) {
+  time *= 0.001;
+  if (resizeRendererToDisplaySize(renderer)) {
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+  }
+  objects.forEach((obj: any) => {
+    obj.rotation.y = time;
+  }); // 重新渲染
+  renderer.render(scene, camera); // 递归调用自己，执行动画
+  requestAnimationFrame(render);
+}
+requestAnimationFrame(render); // 挂载 canvas
+document.querySelector('#index')!.appendChild(canvas);
+
+```
+
+            

@@ -1,0 +1,72 @@
+---
+title: 连接
+
+
+---
+
+# 连接数据库
+
+使用 indexedDB 数据库的时候，首先需要预定义 indexedDB 数据库、该数据库所用的事务、 IDBKey 对象和游标对象。定义如下：
+
+```js
+window.indexedDB =
+  window.indexedDB ||
+  window.webkitIndexedDB ||
+  window.mozIndexedDB ||
+  window.msIndexedDB;
+window.IDBTransaction =
+  window.IDBTransaction ||
+  window.webkitIDBTransaction ||
+  window.msIDBTransaction;
+window.IDBKeyRange =
+  window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+window.IDBCursor =
+  window.IDBCursor || window.webkitIDBCursor || window.msIDBCursor;
+```
+
+使用库之前，先连接库：
+
+```js
+window.indexedDB =
+  window.indexedDB ||
+  window.webkitIndexedDB ||
+  window.mozIndexedDB ||
+  window.msIndexedDB;
+window.IDBTransaction =
+  window.IDBTransaction ||
+  window.webkitIDBTransaction ||
+  window.msIDBTransaction;
+window.IDBKeyRange =
+  window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+window.IDBCursor =
+  window.IDBCursor || window.webkitIDBCursor || window.msIDBCursor;
+function connectDatabase() {
+  var dbName = 'indexedDBTest'; // 数据库名
+  var dbVersion = 20220430; // 版本号
+  var idb;
+  var dbConnect = indexedDB.open(dbName, dbVersion);
+  dbConnect.onsuccess = function (e) {
+    idb = e.target.result;
+    console.log('数据库连接成功');
+  };
+  dbConnect.onerror = function (e) {
+    console.log('连接 indexedDB 数据库失败');
+  };
+}
+```
+
+indexedDB.open() 会返回一个 IDBOpenRequest 对象，代表一个请求连接数据库的请求对象。
+
+连接成功时，会取得事件对象的 event.target.result 属性值，该属性值为一个 IDBDatabase 对象，代表连接成功的数据库对象。
+
+## 关闭数据库连接
+
+在 API 中，使用 close() 关闭数据库连接。
+
+```js
+idb.close();
+```
+
+数据库关闭后，不能再做其它对数据库的操作，否则会导致浏览器抛出异常。
+
+            

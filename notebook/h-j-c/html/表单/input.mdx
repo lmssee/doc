@@ -1,0 +1,128 @@
+---
+title: input
+
+
+---
+
+# 定制 input 元素
+
+| 类型名         | 类型作用                         |
+| :------------- | :------------------------------- |
+| text           | 用于输入文字                     |
+| password       | 用于输入密码                     |
+| submit         | 用于表单提交                     |
+| reset          | 用于表单重置                     |
+| button         | 生成普通按钮                     |
+| number         | 用于输入数值型                   |
+| range          | 用于限制用户输入在一个数值范围内 |
+| radio          | 单选型                           |
+| email          | 邮件类型                         |
+| tel            | 电话号码类型                     |
+| url            | 用于输入 URL                     |
+| date           | 用于获取日期                     |
+| datetime       | 获取世界日期和时间               |
+| datetime-local | 获取本地日期和时间               |
+| month          | 获取年月信息                     |
+| time           | 获取时间                         |
+| week           | 获取当前星期                     |
+| color          | 获取颜色值                       |
+| search         | 获取搜索词                       |
+| hidden         | 生成隐藏的数据项                 |
+| image          | 生成图像按钮                     |
+| file           | 文件类型                         |
+
+- type="email" ：显示为常规的文本框，但是当使用表单验证时，内置的验证器将会检查它是否是形式有效的电子邮件地址。一些移动设备默认会显示相关的按键（例如， @ 符号），而不需要额外的用户交互
+- type="file" ：打开一个对话框，使你能够在计算机上搜索一个要上传的文件
+- type="number" ：这种类型将不会利用 `<option>` 标签为每个数字创建一个 `<select>` 列表，而是使你能够指定一个 min 和 max 值，以及数字之间的 step
+  （步长），以在浏览器端自动生成一个列表。在程序清单 22.1 中可以看到它的使用
+- type="range" ：与刚才介绍的 number 类型非常相似，这种类型使你能够指定一个 min 和 max 值，以及数字之间的步长，但是在这种情况下，它将显示为水平滑块
+- type="search" ：显示为常规的文本框，但是具有额外的控件，有时用于允许用户使用" x "或类似的字符清除搜索框
+- type="url" ：显示为常规的文本框，但是在使用表单验证时，内置的验证器将检查它是否是形式有效的 URL 。一些移动设备默认会显示相关的按键（例如， .com 虚拟按键），而不需要额外的用户交互
+
+## 日期时间型文本框
+
+| 输入类型       | 功能与说明                        |
+| :------------- | :-------------------------------- |
+| date           | 选取年、月、日                    |
+| month          | 选取月、年                        |
+| week           | 选取周和年                        |
+| time           | 选取时间（小时和分钟）            |
+| datetime       | 选取时间、日、月、年（ UTC 时间） |
+| datetime-local | 选取时间、日、月、年（本地时间)   |
+
+## 禁用单个 input 元素
+
+禁用可以通过设置 disabled 属性来实现。
+
+readonly 只针对 input(text/password) 和 textarea 有效，而 disabled 对于所有的表单元素都有效，包括 select, radio, checkbox, button
+等。但是表单元素在使用了 disabled 后，当我们将表单以 POST 或 GET 的方式提交的话，这个元素的值不会被传递出去，而 readonly 会将该值传递出去。
+
+```html
+<form action="# ">
+  <fieldset>
+    <legend>输入型文本框</legend>
+    <label
+      for="email
+    "
+      >email</label
+    >
+    <input type="email " name="email " id="email " />
+
+    <label for="url ">url</label> <input type="url " name="url " id="url " />
+    <label for="number ">number</label>
+    <input type="number " name="number " id="number " step="3 " />
+    <label for="tel ">tel</label> <input type="tel " name="tel " id="tel " />
+    <label for="search ">search</label>
+    <input type="search " name="search " id="search " />
+    <label for="range ">range</label>
+    <input
+      type="range "
+      name="range "
+      id="range "
+      value="100 "
+      min="0 "
+      max="300 "
+    />
+    <label for="color ">color</label>
+    <input type="color " name="color " id="color " />
+  </fieldset>
+
+  <fieldset>
+    <legend>日期时间型文本框</legend>
+    <label
+      for="time
+    "
+      >time</label
+    >
+    <input type="time " name="time " id="time " />
+    <label for="date ">date</label>
+    <input
+      type="date "
+      name="date "
+      id="date
+    "
+    />
+    <label for="month ">month</label>
+    <input type="month " name="month " id="month " />
+    <label for="week ">week</label>
+    <input
+      type="week "
+      name="week "
+      id="week
+    "
+    />
+    <label for="datetime ">datetime</label>
+    <input type="datetime " name="datetime " id="datetime " />
+    <label for="datetime-local ">datetime-local</label>
+    <input
+      type="datetime-local "
+      name="datetime-local
+    "
+      id="datetime-local "
+    />
+  </fieldset>
+  <input type="submit " value="提 交 " />
+</form>
+```
+
+            

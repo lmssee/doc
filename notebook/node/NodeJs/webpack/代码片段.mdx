@@ -1,0 +1,57 @@
+---
+title: 代码片段
+
+
+---
+
+# 通过入口划分代码
+
+CommonsChunkPlugin 是 Webpack 4 之前（之后是 SplitChunks ）自带的插件，将多个 Chunk 公共部分提取出来，能够降低整体资源体积，减少从模块的打包，提升开发速度。
+
+```js
+new webpack.optimize.SplitChunks({
+  name: 'commons',
+  filename: 'commons.js',
+});
+```
+
+## 提取 vendor
+
+```js
+{
+  entry: {
+    app: "./app.js",
+    vender: ['react"],
+  },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+       name:'vender',
+       filename:'vendor.js',
+    }),
+  ],
+}
+```
+
+## 设置提取范围
+
+下面的仅从 chunks 中给出的数据提取公共部分。
+
+```js
+{
+  entry: {
+    a: './a.js',
+    b: './b.js',
+    c: './c.js',
+    d: './d.js',
+  },
+  plugins:[
+    new webpack.optimize.CommonsChunkPlugin({
+      name:'vender',
+      filename:'vendor.js',
+      chunks:['a','b'],
+      }),
+  ],
+}
+```
+
+            

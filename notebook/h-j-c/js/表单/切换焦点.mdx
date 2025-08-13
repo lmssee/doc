@@ -1,0 +1,56 @@
+---
+title: 切换焦点
+
+
+---
+
+# 切换焦点
+
+通过事件检测值的长度，通过事件函数进行焦点分配。
+
+```html
+<form action="#" id="form">
+  <label class="" for=""
+    >请输入电话号码 (格式：区号 -电话号码 -分机号 )
+    <input type="text" name="tel1" size="3" maxlength="3" />
+    <input type="text" name="tel2" size="8" maxlength="8" />
+    <input type="text" name="tel3" size="3" maxlength="3" />
+  </label>
+</form>
+<script>
+  var form = document.querySelector('form');
+  var tel1 = form.elements[0];
+  var tel2 = form.elements[1];
+  var tel3 = form.elements[2];
+  tel1.focus();
+  addHandler(tel1, 'keyup', autofocus);
+  addHandler(tel2, 'keyup', autofocus);
+  addHandler(tel3, 'keyup', autofocus);
+  function addHandler(element, type, handle) {
+    if (element.addEventListener) {
+      element.addEventListener(type, handle, false);
+    } else if (element.attachEvent) {
+      element.attachEvent('on' + type, handle);
+    } else {
+      element['on' + type] = handle;
+    }
+  }
+  var autofocus = function (event) {
+    var e = event || window.event;
+    var t = e.target || e.srcElement;
+    if (t.value.length == t.maxLength) {
+      var form = t.form;
+      for (let i = 0, len = form.elements.length; i < len; i++) {
+        if (form.elements[i] == t) {
+          if (form.elements[i + 1]) {
+            form.elements[i + 1].focus();
+          }
+          return;
+        }
+      }
+    }
+  };
+</script>
+```
+
+            

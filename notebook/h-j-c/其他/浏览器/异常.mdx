@@ -1,0 +1,102 @@
+---
+title: 异常
+
+
+---
+
+# 错误分析
+
+由于 JavaScript 是松散类型的，不会验证函数的参数，因此错误只会发生在代码运行期间。一般来说：
+
+- 转换性错误
+- 数据类型错误
+- 通信错误
+
+## 错误类型
+
+ECMA-262 定义了以下 7 种错误类型，简单说明如下。
+
+- Error ：普通错误。通常与 throw 语句和 try/catch 语句一起使用。利用属性的 name 可以声明或了解异常的类型，利用 message 属性可以设置和读取设置和读取异常的详细信息
+- EvalError : 在不正确使用 eval() 时抛出
+- SyntaxError ：抛出语法错误
+- RangeError ：在数字超出合法范围时抛出
+- ReferenceError ：在读取不存在的变量时抛出
+- TypeError ： 当一个值的类型错误时抛出
+- URLError ： 由 URL 的编码和解码方面抛出
+
+## Error
+
+其中， error 是基类，其它错误类型都继承自该类型，因此，所有的错误类型都共享了一组相同的属性，错误对象的方法全是默认的对象方法。 Error
+类型的错误很少见，如果是浏览器抛出的，这个基类的主要目的是供开发员抛出自定义错误。
+
+## EvalError
+
+在实践中，浏览器不一定在因该抛出错误时就抛出 EvalError 。而且，在实际开发中很少使用 Eval() ，所以遇见这种错误的可能性非常小。
+
+```js
+new eval(); // 抛出 EvalError
+eval = foo; // 抛出 EvalError
+```
+
+## RangeError
+
+该类型错误是在数值超出相应的范围时抛出， JavaScript 中经常有这种错误。
+
+```js
+var item = new Array(-20); // 抛出 RangeError
+var item = new Array(Number.MAX_VALUE); // 抛出 RangeError
+```
+
+## ReferenceError
+
+在找不到对象的情况下，会发生 ReferenceError ：
+
+```js
+var obj = x; // 在 x 未声明的情况下抛出 ReferenceError
+```
+
+## SyntaxError
+
+SyntaxError 表示语法错误，当把语法错误的 JavaScript 字符串传入 eval() 函数时，就会导致该类错误。
+
+```js
+eval(' a ++ b '); // 抛出 SyntaxError 错误
+```
+
+如果语法错误在 eval() 之外，这不太可能使用 SyntaxError ，因为此时的语法错误会导致 JavaScript 立即停止执行。
+
+## TypeError
+
+TypeError 是 JavaScript 中经常遇见的错误类型。在变量保存着以外的类型时，或者访问不存在的方法时，都会导致此类错误发生。
+
+```js
+var o = new 10();
+alert('name' in true);
+Function.prototype.toString.call('name');
+```
+
+## URLError
+
+在使用 encodeURL() 或 decodeURL() 时，如果 URL 的格式不正确，就会引起 URLError 错误。这种错误也很少见，因为这两个函数的容错性非常高。
+
+## bug
+
+如果想知道错误类型，可以按照如下的方法在 try-catch 语句的 catch 语句中使用 instanceof 操作符：
+
+```js
+try {
+  test();
+} catch (error) {
+  if (error instanceof TypeError) {
+    /_ 处理类型错误_/;
+  } else if (error instanceof ReferenceError) {
+    /_ 处理引用错误_/;
+  } else {
+    /_ 处理其他错误_/;
+  }
+}
+```
+
+再跨浏览器的编程中，检查类型错误是确认处理方式的最简方案，包含在 message 属性中的错误消息会因浏览器而不同。
+
+            

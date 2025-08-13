@@ -1,0 +1,153 @@
+---
+title: FileReader
+
+
+---
+
+# 读取文件
+
+- 认识 FileReader 接口
+
+- 判断浏览器是否支持 FileReader
+
+判断浏览器是否支持 FileReader ，如果浏览器支持 FileReader 接口，那么该浏览器有一个位于 Windows 对象下的 FileReader
+构造函数，如果这个构造函数存在，那么就可以通过 new 实例化一个 FileReader 来使用。
+
+- FileReader 接口的方法
+
+| 方法名称             | 说明                                               |
+| :------------------- | :------------------------------------------------- |
+| abort()              | 中断读取当前操作。需要传入参数 none                |
+| readAsBinaryString() | 使用二进制格式读取文件。需要传入参数 file          |
+| readAsDataURL()      | 使用 URL 格式读取文件。需要传入参数 file           |
+| readAsText           | 使用文本格式读取文件。需要传入参数 file,[encoding] |
+
+- FileReader 接口的事件
+
+| 事件        | 额                                     |
+| :---------- | :------------------------------------- |
+| onabort     | 当读取数据中断时触发                   |
+| onerror     | 当读取数据出错时触发                   |
+| onloadstart | 当读取数据开始时触发                   |
+| onload      | 当读取数据成功时触发                   |
+| onloadend   | 当读取操作完成时触发。无论成功或者失败 |
+| onprogress  | 正在读取数据时触发                     |
+
+- 读取二进制文件
+
+readAsBinaryString() 方法的使用很简单，只要将一个要读取的文件 file 作为参数传入即可，这样读取的结果将保存到 result 属性中。
+
+- 显示预览图像
+
+调用 FileReader 接口的 readAsDataURL() 方法，不通过后台而即时实现图片预览的功能。
+
+## 使用 FileReader 对象
+
+## 读取并显示文件
+
+FileReader 对象包括 5 个方法，其中 4 个是读取文件，另一个用来中断读取操作：
+
+- readAsText(Blob,type) ： 将 Blob 对象或文件中的数据以文本读取。默认 type 为 UTF-8
+- readAsBinaryString(Blob) ： 将 Blob 对象或文件的数据读取为二进制字符串。通常调用该方法将文件提交到服务器，服务器可以通过这段文字储存文件
+- readAsDataURL(Blob) ： 将 Blob 对象或文件中的数据读取为 DataURL 字符串。该方法就是将数据以一种特殊的格式的 URL 地址形式读入
+- readAsArrayBuffer(Blob) ： 将 Blob 的对象或文件中的数据读取为一个 ArrayBuffer 对象
+- abort() ：不包含参数，中断读取操作
+
+上述四个方法都包含一个 BLob 对象或 file 对象参数，无论是读取成功与否或失败，都不返回读取结果，读取结果被包含于 result 属性中。
+
+```js
+window.onload = function () {
+  var result = document.getElementById('result');
+  var file = document.getElementById('file');
+  if (typeof FileReader == 'undefined') {
+    result.innerHTML = '<h1>当前浏览器不支持 FileReader 对象</h1>';
+    file.setAttribute('disabled', 'disabled');
+  }
+};
+// 将文件以 Data URL 形式进行读入页面
+function readAsDataURL() {
+  // 检查是否为图像文件
+  var file = document.getElementById('file').files[0];
+  if (!/image\/\w+/.test(file.type)) {
+    alert('提交文件不是图像类型');
+    return false;
+  }
+  var reader = new FileReader(); // 将文件以 Data URL 形式进行读入页面
+  reader.readAsDataURL(file);
+  reader.onload = function (e) {
+    result.innerHTML = '<img src="' + this.result + '" alt=""/>';
+  };
+} // 将文件以二进制形式进行读入页面
+function readAsBinaryString() {
+  var file = document.getElementById('file').files[0];
+  var reader = new FileReader();
+  // 将文件以二进制形式进行读入页面
+  reader.readAsBinaryString(file);
+  reader.onload = function (f) {
+    result.innerHTML = this.result;
+  };
+}
+
+// 将文件以文本形式进行读入页面
+function readAsText() {
+  var file = document.getElementById('file').files[0];
+  var reader = new FileReader();
+  // 将文件以文本形式进行读入页面
+  reader.readAsText(file);
+  reader.onload = function (f) {
+    result.innerHTML = this.result;
+  };
+}
+```
+
+上面的示例，也可以不读取而直接发给服务器。
+
+fileReader 对象读取的数据都保存在 result 中。
+
+## 监控读取操作
+
+FileReader 对象提供 6 个事件，用于监控文件读取状态，简单说明如下：
+
+- onabort ：数据读取中断时触发
+- onprogress ：数据读取中触发
+- onerror ：数据读取出错时触发
+- onload ：数据读取成功时触发
+- onloadstart ：数据开始读取时触发
+- onloadend ：数据读取完成（无论成功与否）时触发
+
+```js
+window.onload = function () {
+  var result = document.getElementById('result');
+  var file = document.getElementById('file');
+  if (typeof FileReader == 'undefined') {
+    result.innerHTML = '<h1>当前浏览器不支持 FileReader 对象</h1>';
+    file.setAttribute('disabled', 'disabled');
+  }
+};
+function readFile() {
+  var file = document.getElementById('file').files[0];
+  var reader = new FileReader();
+  reader.onload = function (e) {
+    result.innerHTML = '<img src="' + this.result + '" alt=""/>';
+    console.log('load');
+  };
+  reader.onprogress = function (e) {
+    console.log('progress');
+  };
+  reader.onabort = function (e) {
+    console.log('abort');
+  };
+  reader.onerror = function (e) {
+    console.log('error');
+  };
+  reader.onloadstart = function (e) {
+    console.log('loadstart');
+  };
+  reader.onloadend = function (e) {
+    console.log('loadend');
+  };
+  reader.readAsDataURL(file);
+}
+```
+
+            

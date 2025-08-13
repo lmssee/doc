@@ -1,0 +1,25 @@
+---
+title: 一些
+
+
+---
+
+# 多台服务器扩展
+
+安装和配置代理服务器可以使用 Nginx ，也可以（测试）使用 [proxy](https://npmjs.org/package/proxy)、[node-http-proxy](https://www.npmjs.org/package/http-proxy)。
+
+如果使用了代理，需要：
+
+```ts
+app.enable('trust proxy');
+```
+
+## 压力测试
+
+使用 Node 模块 loadtest 做压力测试：
+
+```bash
+ npm i -s loadtest
+```
+
+            

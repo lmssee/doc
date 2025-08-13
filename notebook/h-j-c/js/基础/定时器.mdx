@@ -1,0 +1,166 @@
+---
+title: 定时器
+
+
+---
+
+# window 对象包括 4 个定时器专用方法
+
+- setInterval() 按照指定的周期（以毫秒计）来调用或计算表达式
+- setTimeout() 在指定的毫秒数后调用函数或计算表达式
+- clearInterval() 取消由 setInterval() 设置的定时器对象
+- clearTimeout() 取消由 setTimeout() 设置的定时器对象
+
+## setTimeout()
+
+```js
+setTimeout(code, delay);
+```
+
+参数 code 表示延迟执行的代码字符串，该字符串可以在 window 下可以执行，若包含多个语句，应该用分号隔开。 delay 表示延迟的时间，以毫秒计。该方法返回值为一个 Time Id ，该 ID
+编号指向延迟的代码控制句柄。该句柄可传递给 clearTimeout() 方法，则会取消延迟执行。
+
+```html
+<p>段落文本</p>
+<script>
+  var p = document.getElementsByTagName('p')[0];
+  p.onmouseover = function (i) {
+    setTimeout(function () {
+      alert(p.tagName);
+    }),
+      500;
+  };
+</script>
+```
+
+setTimeout() 第一个参数时字符串，但是我们也可以将 JavaScript 代码封装在一个函数体内，然后把函数作为参数引用给 setTimeout() 方法，等待延迟调用，这样就避免了字符串的疏忽和麻烦。
+
+```html
+<body> <p> 段落文本 </p> <ul>
+<li>1</li> <li>3</li> <li>2</li>
+</ul> 123</span> <p>123</p> </body>
+<script>
+
+var o = document.getElementsByTagName('body')[0].childNodes;
+for (var i = 0; i < o.length; i++) {
+  // 遍历元素集合
+  o[i].onmouseover = (function (i) {
+    // 注册鼠标经过事件的处理函数
+    return function () {
+      // 返回闭包函数
+      f(o[i]); // 调用函数 f ，并传递当前对象的引用
+    };
+  })(i);
+}
+function f(o) {
+  //延迟处理函数
+  var out = setTimeout(function () {
+    console.log(o.tagName); // 显示当前元素的名称
+  }, 500);
+}
+
+</script>
+```
+
+setTimeout() 只执行一次。若要执行多次，则需要调用自己。
+
+```html
+<input type="text" />
+<script>
+  var t = document.getElementsByTagName('input')[0];
+  var i = 0;
+  function f() {
+    var out = setTimeout(
+      function () {
+        t.value = i++;
+        f(); //  调用包含 setTimeout() 的方法的函数
+      },
+      1000, // 设置每秒执行一次
+    );
+    if (i > 10) {
+      clearTimeout(out);
+    }
+  }
+  f();
+</script>
+```
+
+## setInterval() 方法
+
+使用 setInterval 可以循环执行指定代码。 setInterval(code , interval) 。 该方法同样返回一个 ID ，供 clearInterval() 使用。
+
+setInterval() 方法的第一个参数是一个函数时，则 setInterval() 方法接受多个参数，这些参数将做个该函数的参数使用。
+
+```js
+var o = setInterval(function,interval[,arg1,arg2,...argn]);
+```
+
+## 使用 setInterval() 和 clearInterval() 方法实现间隔调用
+
+如果需要停止，可以调用 clearInterval() 方法取消。这两个方法一般配合使用，它们的语法格式如下：
+
+```js
+var intervalID = window.setInterval(func [,delay [,arguments … ]]);
+window.clearInterval(intervalID);
+```
+
+参数 func 是要执行的函数的名称。该参数不要包括引号或圆括号，并且不要指定要调用的函数的参数， **_仅仅是函数名_**。例如下面的应用，每 5 秒钟就调用一次函数 someFunction ：
+
+```js
+window.setInterval(someFunction, 5000);
+```
+
+而不是：
+
+```js
+window.setInterval(' someFunction ', 5000);
+```
+
+但是可以这样使用（引号或圆括号都包含）：
+
+```js
+window.setInterval(' someFunction() ', 5000);
+```
+
+**_不过这种方式不是很标准，所以不推荐使用_**。
+
+- 参数 delay 指要调用的事件间隔，以毫秒为单位。可选，默认值为 1000
+- 参数 arguments …可选，用于定义要传递给函数的参数，可以是任意数量的参数
+
+如果打算使用 `clearInterval()` 方法取消 `setInterval` 调用，就必须将 `setInterval` 调用赋给一个变量， `clearInterval()` 方法稍后将引用该变量，清除间隔调用。
+
+## 使用 setTimeout() 和 clearTimeout() 方法实现延迟调用
+
+`setTimeout()` 和 `clearTimeout()` 方法配合使用可以完成延迟调用，它们是指在指定的延迟（以毫秒为单位）后运行指定的函数，而不会重复执行。其语法格式如下：
+
+```js
+var iTimerID = setTimeout(func [,delay [,arguments … ]]);
+window.clearTimeout(iTimerID);
+```
+
+例如下面的代码：
+
+```js
+function myFunction() {
+  var newDate = new Date();
+  alert(newDate.getMilliseconds()); // 获取当前毫秒数
+}
+var iTimeId = setTimeout(myFunction, 1000);
+var myDate = new Date();
+console.log(myDate.getMilliseconds()); // 获取当前毫秒数
+```
+
+上述代码设置 `myFunction` 延迟 1000 毫秒执行，那么 `console.log()` 方法将先于 `window.alert()` 方法执行，虽然前者位于程序中较后的位置。
+
+## 强制清除
+
+目前没有一个内建的方法可以将所有 `setInterval()` 或 `setTimeout()` 方法一次性清除，因此要清除所有的 `setInterval()` 或 `setTimeout()`
+方法，就必须使用一个循环语句进行强制清除。例如下面的代码强制清除所有 `setTimeout()` 方法：
+
+```js
+for (var i = 1; i < 1000; i++) {
+  clearTimeout(i);
+}
+```
+
+            

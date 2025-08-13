@@ -1,0 +1,248 @@
+---
+title: 简介
+pagination_prev: null
+
+---
+
+# 简介
+
+JSON （读作" Jason " ）是 JavaScript 对象的一种简单紧凑的标签。使用 JSON 表示法时，对象可以方便地转换为字符串来进行存储和转换（比如在不同程序或网络之间）。
+
+JSON 数据的表示方式是一系列成对的参数与值，参数与值由冒号分隔，每对之间以逗号分隔。对象 jsonObject 的定义使用标准 JavaScript 表示法的子集，这只是有效的 JavaScript 代码的一小部分。
+
+json 优点
+
+- 对于人类和计算机都很易于阅读
+- 概念很简单。 JSON 就是用花括号包含的一系列" 参数" ：" 值" 对
+- 基本上是其义自明的
+- 能够快速创建和解析
+- 它是 JavaScript 的一个子集，不需要特殊的解释程序或额外的软件包
+
+## 访问 JSON 数据
+
+为了还原以 JSON 字符串编码的数据，需要把字符串转换为 JavaScript 代码，这通常称为字符串的" 去序列化" 。
+
+- 使用 eval() JavaScript 的 eval() 函数会计算或运行作为参数传递的内容。如果参数是一个表达式， eval() 会计算它的值
+- 直接浏览器 JSON 支持
+
+- JSON.parse() 用于解释 JSON 字符串。它接收一个字符串作为参数，解析它，创建一个对象，并且根据字符串中找到的 "parameter":"value" 对设置对象的参数
+- JSON.stringify() 利用 JSON.stringify() 方法可以创建对象的 JSON 编码字符串
+- JSON 的数据序列化
+
+在数据存储和转换时，" 序列化" 是指把数据转换为便于通过网络进行存储和传输的形式，稍后再恢复为原始的格式。
+
+JSON 选择字符串作为序列化数据的格式。因此，为了把 JSON 对象进行序列化（比如为了通过网络连接进行传输），需要用字符串的形式来表示它。
+
+在直接支持 JSON 的浏览器里，只需要简单地使用 JSON.stringify() 方法。
+
+## JSON 数据类型
+
+- 不能是 JavaScript 保留的关键字
+- 不能以数字开头
+- 除了下画线和美元符号外，不能包含任何特殊字符
+
+JSON 对象的值可以是如下一些数据类型。
+
+- 数值
+- 字符串
+- 布尔值
+- 数组
+- 对象
+- null （空）
+
+## 模拟关联数组
+
+JavaScript 并不直接支持这种所谓的" 关联" 数组 , 利用对象可以方便地模拟这种行为，比如利用 JSON 表示法可以让上述代码更易于阅读和理解。
+
+## 使用 JSON 创建对象
+
+- 属性
+- 方法 JSON 并不直接支持方法
+
+在 JavaScript 环境中用这种方式添加方法是可以的，但当 JSON 作为通用数据交换格式时，不能这样使用。在直接支持 JSON 解析的浏览器里，以这种方式声明的函数会解析错误，但 eval()
+函数仍然可以工作。当然，如果实例化的脚本只是在自己的脚本里使用，还是可以这样使用的。
+
+- 数组
+- 对象
+
+## JSON 安全性
+
+使用 JavaScript 的 eval() 函数能够执行任何 JavaScript 命令，这可能会导致潜在的安全问题，特别是处理来源不明的 JSON 数据时。 更安全的办法是使用内置 JSON 解析器的浏览器把 JSON
+字符串转换为 JavaScript 对象——它只识别 JSON 文本，而且不会执行脚本命令。同时，内置的 JSON 解析器的速度也比 eval() 快一些。 较新的浏览器都内置了 JSON 解析器， ECMAScript （
+JavaScript ）标准也明确了它的规范。
+
+## JSON
+
+JSON 事实上已经作为一种前端与服务器端的数据交换的标准格式：前端程序通过 Ajax 发送 JSON 到后端，服务器端脚本对 JSON 进行解析，还原成服务器端对象，然后做一些处理，返回给前端的仍然是 JSON
+对象，使用同一的数据格式，可以降低出错的概率。使用 JSON 作为数据交换格式，在一定程度上比 XML 更高效，冗余更小。
+
+JSON 格式的数据本身是可以嵌套的，也就是说，可以表达任意复杂的数据形式。 JSON 的写法很简单：使用花括号括起来的键值对，键值对通过冒号隔开，而值可以是任意的 JavaScript 对象，如简单对象 String 、
+Boolean 、 Number 、 Null ，或者复杂对象如 Date 、 Object ，其它自定义的对象等。
+
+一个典型的 JSON 格式的数据看起来是这样的：
+
+```json
+{
+  "content": "make the index page more fancy of feather",
+  "complete": false
+}
+```
+
+客户端组织这样的 JSON ，然后通过 HTTP 发送给服务器端，服务器根据 JSON 解析器将其转换为服务器端对应的模型对象（比如 Java 对象、 Ruby 对象等），再进行数据库访问，创建完成后，又将结果转换成
+JSON
+格式返回给客户端。
+
+ECMAScript5 新增了 JSON 类用来处理 JSON 数据，包括序列化 JavaScript 数据为 JSON 数据和逆序列化 JSON 数据为 JavaScript 数据。
+
+序列化 JavaScript 数据为 JSON 数据。
+
+使用静态方法 JSON.stringify() 可以将 JavaScript 数据序列化为 JSON 数据，该方法的语法格式如下：
+
+```js
+JSON.stringify(value [, replacer] [, space])
+```
+
+参数 value 是一个 JavaScript 数据，通常是复杂数据类型，例如对象或者数组，它们将被序列化为 JSON 字符串。
+
+参数 replacer 是可选的，定义一个过滤和转换装置，可以是一个函数或者数组。如果 replacer 是一个函数，那么对每个对象成员 `key:value` 都调用 `replacer(key,value)` 。至于根对象，调用 `replacer( "" ,value)` 。成员的值将会被函数返回值替换，但是，如果函数返回 `undefined` ，那么成员将会被删除；如果 replacer
+是数组，则必须是字符串数组。数组的元素就是要进行序列化成员的名字。序列化的顺序为数组中的名字顺序。在序列化数组时，参数
+replacer 是被忽略的。
+
+参数 space 是可选的，用于在 JSON 字符串中添加一些格式字符，从而使得 JSON
+字符串更易阅读。如果不定义该参数，那么就不会产生任何空白；如果该参数的值是一个数字，那么将会插入这个数字指定的数量的空白；如果该参数的值是一个非空字符串，那么返回值就会使用这些字符进行缩进，从而使得文本更易阅读。
+
+如果参数 replacer 不是一个函数或者数组，那么就会抛出异常；如果参数 value 包含一个循环引用，那么也会抛出异常。例如下面的代码：
+
+```js
+var a = new Object();
+var b = new Object();
+// 一个循环引用
+a.prop = b;
+b.prop = a;
+try {
+  // 将导致异常
+  var jsonText = JSON.stringify(a);
+} catch (err) {
+  console.log(err.name + ' : ' + err.message);
+}
+```
+
+如果要序列化的 JavaScript 数据定义有 toJSON() 方法，那么 stringify() 方法其实就是调用 toJSON() 方法，并返回该方法返回的结果；如果要序列化的 JavaScript 数据没有定义
+toJSON() 方法，那么该数据将不能被序列化。目前定义有 toJSON() 方法的类有 String 、 Boolean 、 Date 和 Number 。
+
+在执行时， stringify() 方法会首先调用数据的 toJSON() 方法，如果不存在 toJSON() 方法，那么就使用原始值。然后，如果 replacer 参数被定义，那么第一步返回的值将被 replacer
+返回的值替换。最后，将会加上 space 参数定义的空白字符，并最终生成序列化后的 JSON 字符串。
+
+对于没有定义 toJSON() 方法的数据类型，例如，对于 Object ，将被删除；对于 Array ，将被替换为 null 。
+
+在序列化过程中，下面的字符将会被转义（前面会加上反斜杠）：
+
+```html
+引号 ( " ) 反斜杠 () 退格 (b)Formfeed(f) 换行 (n) 回车 (r) 水平制表符 (t)
+四位十六进制数字 (uxxxx)
+```
+
+## 数据过滤
+
+例如下面的代码将一个对象序列化为 JSON 数据，属性 birthday 被过滤掉：
+
+```js
+var person = new Object();
+person.sex = ' male ';
+person.age = 28;
+person.birthday = new Date(1970, 0, 1);
+var memberFilter = new Array();
+memberFilter[0] = ' sex ';
+memberFilter[1] = ' age ';
+var jsonText = JSON.stringify(person, memberFilter, ' \t ');
+console.log(jsonText);
+/_ 序列化后的 JSON 数据如下：' {" sex " : " male "," age " : 28} '_/;
+```
+
+## 数据转换
+
+下面的代码序列化一个数组，使用 replaceToUpper 函数将数组中的值转换为大写：
+
+```js
+var continents = new Array();
+continents[0] = ' Europe ';
+continents[1] = ' Asia ';
+continents[2] = ' Australia ';
+var jsonText = JSON.stringify(continents, replaceToUpper);
+console.log(jsonText);
+// 序列化后的 JSON 数据如下："EUROPE,ASIA,AUSTRALIA]
+function replaceToUpper(key, value) {
+  return value.toString().toUpperCase();
+}
+// 下面的代码调用 toJSON() 方法，将所有的字符串序列化为大写字符：
+var person = new Object();
+person.sex = ' male ';
+person.age = 28;
+person.birthday = new Date(1970, 0, 1);
+Object.prototype.toJSON = function (key) {
+  var val;
+  for (val in this) {
+    if (typeof this[val] === ' string ') {
+      this[val] = this[val].toUpperCase();
+    }
+  }
+  return;
+  this;
+};
+var jsonText = JSON.stringify(person);
+console.log(jsonText);
+// 序列化后的 JSON 数据如下：'{"sex":"MALE","age":28,"birthday":"1969-12-31T16:00:00Z"}'
+```
+
+## 逆序列化 JSON 数据为 JavaScript 数据
+
+使用静态方法 JSON.parse() 可以将 JSON 数据逆序列化为 JavaScript 数据，该方法的语法格式如下：
+
+```js
+JSON.parse(text [, reviver])
+```
+
+参数 text 是 JSON 字符串。
+
+参数 reviver 是可选项，它定义一个函数用于过滤和转换结果。过滤和转换是按照从后到前的顺序进行的，对每一个对象成员都会调用该函数：
+
+如果函数返回一个值，那么成员的值将会使用该值替换。
+
+如果函数返回一个接收到的原值，那么成员的结构不会发生变化。
+
+如果函数返回 null 或 undefined ，那么对象成员将被删除。
+
+该参数经常被用来转换 JSON 的 ISO 日期字符串为 JavaScript 的 UTC 格式的 Date 对象。
+
+如果解析正确，那么该方法返回一个对象或者数组；否则，如果参数 text 指定的 JSON 字符串格式有错误，那么就会抛出异常。
+
+例如下面的代码将 JSON 字符串解析为 JavaScript 对象：
+
+```js
+var jsonText = ' { "surname" : "z" , "firstName" : "lmssee" } ';
+var contact = JSON.parse(jsonText);
+var fullname = contact.surname + ' - ' + contact.jsonText; // z-lmssee
+```
+
+例如下面的代码将 JSON 的 ISO 日期字符串转换为 JavaScript 的 UTC 格式的 Date 对象：
+
+```js
+var jsonText = ' { " birthdate " : " 2008-12-25T12:00:00Z " } ';
+var dates = JSON.parse(jsonText, dateReviver); // 返回 " Thu, 25 Dec 2008 12:00:00 UTC "
+var string = dates.birthdate.toUTCString(); // 定义一个过滤和转换函数
+function dateReviver(key, value) {
+  var a;
+  if (typeof value === 'string') {
+    // 定义一个正则表达式式进行匹配
+    var re = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d\*)?)Z$/;
+    a = re.exec(value);
+    if (a) {
+      return new Date(Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4], +a[5], +a[6]));
+    }
+  }
+  return;
+  value;
+}
+```
+
+            

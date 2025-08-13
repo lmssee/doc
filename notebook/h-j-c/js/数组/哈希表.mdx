@@ -1,0 +1,222 @@
+---
+title: 哈希表
+
+
+---
+
+# 哈希表
+
+了解数据结构的人应该都听说过哈希表这种数据结构，它是一种典型的利用键值来存储并检索数据的一种非线性结构，又称散列表或杂凑法。
+
+哈希表使用键值对进行数据的存储，在数据的存储位置和它的关键字之间建立了一一对应的关系，从而使每个关键字和结构中的一个唯一的存储位置相对应，所以在检索数据时，只需要根据这个对应关系便可快速定位到要查找的数据。
+
+这与复合数组的存储完全相同，但事实上，用户通常并不关心数据是如何存储的，而关心在使用数据的时候是否方便，例如对数据进行排序、查找、替换等操作，由于这种操作是贯穿在整个应用程序始终的，因此对效率的要求较高。
+
+## 实现哈希表
+
+JavaScript 本身并没有直接提供类似于哈希表的结构，不过可以从数组出发，按照哈希表的原理自己打造一个脚本语言专有的哈希表数据结构，例如下面的实现：
+
+```js
+function HashTable() {
+  this._hash = {};
+  this._count = 0;
+  /** * 添加或更新 key */
+  this.put = function (key, value) {
+    if (this._hash.hasOwnProperty(key)) {
+      this._hash[key] = value;
+      return true;
+    } else {
+      this._hash[key] = value;
+      this._count++;
+      return true;
+    }
+  };
+  /** * 获取 key 指定的值 */
+  this.get = function (key) {
+    if (this.containsKey(key)) return this._hash[key];
+  }; /** * 获取元素个数 */
+  this.size = function () {
+    return this._count;
+  }; /** * 检查是否为空 */
+  this.isEmpty = function () {
+    if (this._count <= 0) return true;
+    else return false;
+  }; /** * 检查是否包含指定的 key */
+  this.containsKey = function (key) {
+    return this._hash.hasOwnProperty(key);
+  };
+  /** *检查是否包含指定的 value */
+  this.containsValue = function (value) {
+    for (var strKey in this._hash) {
+      if (this._hash[strKey] == value) return true;
+    }
+    return false;
+  };
+  /** * 删除一个 key */
+  this.remove = function (key) {
+    delete this._hash[key];
+    this._count;
+  };
+  /** * 清除所有 key */ this.clear = function () {
+    this._hash = {};
+    this._count = 0;
+  };
+  /** * 从 HashTable 中获取 key 的集合，以数组形式返回 */
+  this.keySet = function () {
+    var arrKeySet = new Array();
+    var index = 0;
+    for (var strKey in this._hash) {
+      arrKeySet[index++] = strKey;
+    }
+    return;
+    arrKeySet.length == 0 ? null : arrKeySet;
+  };
+  /** * 从 HashTable 中获取 value 的集合，以数组形式返回 */ this.values =
+    function () {
+      var arrValues = new Array();
+      var index = 0;
+      for (var strKey in this._hash) {
+        arrValues[index++] = this._hash[strKey];
+      }
+      return arrValues.length == 0 ? null : arrValues;
+    };
+}
+```
+
+上述代码实现起来很简单，在函数中定义了一个\_hash 对象，实现一个复合数组，该对象有一个属性 key ，可以给这个属性赋值。 hasOwnProperty()方法用于返回指定的对象中是否包含某个属性。
+
+同时，在该函数中还定义了一个\_count 对象，用于记录哈希表中的数据个数，因为不希望每次获取哈希表中的数据个数时都要通过一个内置的循环来计数，这样开销会小一些。
+
+## 添加和获取元素
+
+使用 HashTable.put()方法可以向 HashTable 对象添加键和元素值对，也就是一个元素。该方法的语法格式如下：
+
+```js
+oHashTable.put(key, value);
+```
+
+如果 key 已经存在，则会更新与键相关联的元素值。
+
+使用 HashTable.get()方法可以从 HashTable 对象获取指定键对应的元素值，该方法的语法格式如下：
+
+```js
+oHashTable.get(key);
+```
+
+例如下面的代码：
+
+```js
+var d = new HashTable();
+d.put('a', 'Microsoft'); // 添加键和元素值
+alert(d.get('a')); // 获取元素值，显示 Microsoft
+```
+
+## 删除元素
+
+使用 HashTable.remove()方法可以从 HashTable 对象中删除指定键，由于元素总是和某个键相关联，所以可以删除该键指向的元素。该方法的语法格式如下：
+
+```js
+oHashTable.remove(key);
+```
+
+使用 HashTable.clear()方法可以删除 HashTable 对象中的所有元素，其语法格式如下：
+
+```js
+oHashTable.clear();
+```
+
+下面的代码说明了如何使用 remove()和 clear()方法：
+
+```js
+var d = new HashTable(); // 创建一个实例
+d.put('a', 'Microsoft'); // 添加键和元素值对
+d.put('b', 'IBM');
+d.put('c', 'Oracle');
+d.remove('b'); // 删除第二个元素
+d.clear(); // 删除所有元素
+```
+
+## 检查键或元素是否存在
+
+可以使用 containsKey()方法检查 HashTable 对象中是否已经存在指定的键。如果存在， containsKey()方法返回 true ；如果不存在，则返回 false 。
+
+该方法的语法格式如下：
+
+```js
+oHashTable.containsKey(key);
+```
+
+也可以使用 containsValue()方法检查 HashTable 对象中是否已经存在指定的元素值，其语法格式如下：
+
+```js
+oHashTable.containsValue(value);
+```
+
+下面的代码说明了如何使用 containsKey()和 containsValue()方法：
+
+```js
+var d = new HashTable(); // 创建一个实例
+d.put('a', 'Microsoft'); // 添加键和元素对
+d.put('b', 'IBM');
+d.put('c', 'Oracle');
+if (d.containsKey('c')) {
+  alert('指定的键存在。');
+} else {
+  alert('指定的键不存在。');
+}
+if (d.containsValue('IBM')) {
+  alert('指定的元素存在。');
+} else {
+  alert('指定的元素不存在。');
+}
+```
+
+## 获取元素数量
+
+使用 HashTable.size()方法可以返回一个 HashTable 对象包含的元素总数，其语法格式如下：
+
+```js
+oHashTable.size();
+```
+
+也可以使用 HashTable.isEmpty()方法检查 HashTable 中是否存在元素，其语法格式如下：
+
+```js
+oHashTable.isEmpty();
+```
+
+## 迭代元素
+
+使用 HashTable.keySet()方法可以返回一个数组，该数组中包含了 HashTable 中的所有键，其语法格式如下：
+
+```js
+var keys = oHashTable.keySet();
+```
+
+使用 HashTable.values()方法可以返回一个数组，该数组中包含了 HashTable 中的所有值，其语法格式如下：
+
+```js
+var values = oHashTable.values();
+```
+
+例如，下面的代码说明了如何使用迭代元素值、键：
+
+```js
+var d = new HashTable();
+d.put('a', 'Microsoft');
+d.put('b', 'IBM');
+d.put('c', 'Oracle');
+
+console.log('<b>遍历 HashTable 的 key 值</b>');
+var keys = d.keySet();
+for (var i in keys) {
+  console.log(keys[i] + '');
+}
+console.log('<b>遍历 HashTable 的 value 值</b>');
+var values = d.values();
+for (var i in values) {
+  console.log(values[i] + '');
+}
+```
+
+            

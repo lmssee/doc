@@ -1,0 +1,90 @@
+---
+title: 过渡
+
+
+---
+
+# 过渡
+
+transition 属性是一个复合属性，可以同时定义 transition-property 、 transition-duration 、 transition-timing-function 、
+transition-delay 、 transition-property 、 transition-duration 、 transition-timing-function 和 transition-delay 子属性值。
+
+```css
+transition:[<'transition-property'> // 定义过渡
+  |
+| <'transition-duration'> // 定义过渡时间 |
+|<'transition-timing-function'> // 定义效果 |
+|
+    <'transition-delay'> // 定义延迟 [,
+    [<'transition-property'> //第二名称|
+|
+    <'transition-duration'> |
+|<'transition-timing-function'>
+  |
+| <'transition-delay'>]]*
+```
+
+_可以使用 transition 属性来代替以上 4 个属性，中间用空格隔开_
+
+```css
+  transition ： transition-property   transition-duration  transition-delay  transition-timing-function
+```
+
+定义过渡
+
+transition-property 属性用来定义过渡动画的 css 属性，如 background 属性
+
+```css
+transition-property: none | all | [<IDENT>] [ ',' <IDENT>]\*;
+```
+
+- none
+- all
+- IDENT : 几乎所有色彩、大小、位置等相关的属性，都可以应用过渡动画
+
+## 过渡时间
+
+transition-duration 定义变幻动画的时间
+
+```css
+transition-duration:
+  <time> [,
+  <time>] +;
+```
+
+## 定义延迟
+
+transition-delay 被用来定义过渡动画的延迟
+
+```css
+transition-delay:
+  <time> [,
+  <time>] +;
+```
+
+## 定义效果
+
+transition-timing-function 被用来定义过渡动画的效果：
+
+- sase ：平滑过渡，等同于 cubic-bezier(0.25,0.1,0.25,1.0) 函数，即立方贝塞尔
+- linear ： 线性过渡，等同于 cubic-bezier(0.0,0.0,1.0,1.0) 函数
+- ease-in ：由慢到快，等同于 cubic-bezier(0.42,0,1.0,1.0) 函数
+- ease-out ： 由快到慢，等同于 cubic-bezier(0,0,0.58,1.0) 函数
+- ease-in-out ： 由慢到快再到慢，等同于 cubic-bezier(0.42,0,0.58,1.0)函数
+- cubic-bezier: 特殊的立方贝塞尔 曲线效果
+
+## 触发时机
+
+CSS 3 动画一般经过鼠标事件或定义动画，如 CSS 伪类 和 Javascript 事件：
+
+| 动态伪类 | 作用元素           | 说明         |
+| :------- | :----------------- | :----------- |
+| :link    | 只有链接           | 未访问的链接 |
+| :visited | 只有链接           | 访问过的链接 |
+| :hover   | 所有元素           | 光标经过     |
+| :active  | 所有元素           | 鼠标单击元素 |
+| :focus   | 所有可被选中的元素 | 元素被选中   |
+
+Javascript 事件包括 click 、 focus 、 mousemove 、 mouseover 、 mouseout
+
+            

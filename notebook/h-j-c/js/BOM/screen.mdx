@@ -1,0 +1,127 @@
+---
+title: screen
+
+
+---
+
+# screen 对象
+
+| 属性                 | 描述                                       |
+| :------------------- | :----------------------------------------- |
+| availHeight          | 返回显示屏幕的高度（除 Windows 任务栏外）  |
+| availWidth           | 返回显示屏幕的宽度（除 Window ）任务栏外   |
+| bufferDepth          | 设置或返回调色板的比特深度                 |
+| colorDepth           | 返回目标设备的或缓冲器上的调色板的比特深度 |
+| deviceXDPI           | 返回显示屏的每英寸水平点数                 |
+| deviceYDPI           | 返回显示屏的每英寸垂直点数                 |
+| fontSmoothingEnabled | 返回用户是否在控制面板中启用了字体平滑     |
+| height               | 返回显示屏幕的高度                         |
+| logicalXDPI          | 返回显示屏幕的水平方向的常规点数           |
+| logicalYDPI          | 返回显示屏幕的垂直方向的常规点数           |
+| pixelDepth           | 返回显示屏屏幕的颜色分辨率（比特每像素）   |
+| updateInterval       | 设置或返回屏幕的分辨率                     |
+| width                | 返回显示屏的宽度 </td>                     |
+
+screen 对象表示用户的屏幕，它提供了屏幕大小、分辨率和颜色深度等信息，使用 window.screen 属性可以返回 screen 对象。
+
+也可以使用 screen 对象直接访问其成员，例如下面的代码访问 height 属性：
+
+```js
+screen.height;
+```
+
+或者使用对象连用，这也是所有浏览器都可以使用的方式：
+
+```js
+window.screen.height;
+```
+
+```js
+function center() {
+  //窗口剧中
+  var w = screen.availWidth / 2; //获取客户端屏幕一半的宽度
+  var h = screen.availHeight / 2; //获取客户端屏幕一半的高度
+  var t = (screen.availHeight - h) / 2; // 计算居中位置的顶部坐标
+  var l = (screen.availWidth - w) / 2; //计算居中位置的左侧坐标
+  var p = 'top = ' + t + ',left = ' + l + ',width = ' + w + ',height = ' + h; //设计坐标参数字符串
+  var win = window.open(url, 'url', p); //打开指定的窗口
+  win.focus(); //获取窗口焦点
+}
+center('https://lmssee.cn/'); // 函数调用
+```
+
+```js
+function center(url) {
+  var w = screen.availWidth / 2;
+  var h = screen.availHeight / 2;
+  var t = screen.availHeight / 4;
+  var l = screen.availWidth / 4;
+  var p = 'top = ' + t + ',left = ' + l + 'width = ' + w + 'height=' + h;
+  var win = window.open(url, 'url', p);
+  win.focus();
+}
+center('https:// lmssee.cn');
+//弹出页面被禁了，位置设置也被禁了
+```
+
+## clipboardData 对象
+
+clipboardData 对象是 IE 特有的，它提供了对预定义的剪贴板格式数据的访问，这些数据可以在编辑操作中使用。
+
+使用 window.clipboardData 就可以访问 clipboardData 对象，该对象共有 3个方法可供使用，其语法格式如下：
+
+```js
+clipboardData.clearData([sDataFormat]); //从剪贴板删除一种或多种数据格式
+sRetrieveData = clipboardData.getData(sDataFormat); //从剪贴板获取指定格式的数据
+bSuccess = clipboardData.setData(sDataFormat, sData); //指定格式给剪贴板赋数据，并返回是否成功的消息
+```
+
+参数 sData 用来定义要赋给剪贴板的数据。
+
+参数 sDataFormat 用来定义要将剪贴板中的数据转换成何种格式， getData()和 setData()方法适用的值包括 Text 和 URL ；对于
+clearData()方法，该参数是可选的，而且如果定义该参数，有更多的值可供选择，。
+
+例如下面的代码将网页上的一个文本字符串剪切下来，然后粘贴到另一个地方：
+
+```html
+<body>
+  <div
+    class="clsSource"
+    id="oSource"
+    onbeforecut="fnBeforeCut()"
+    oncut="fnCut()"
+  >
+    选择并要剪切的文本
+  </div>
+  <div
+    class="clsTarget"
+    id="oTarget"
+    onbeforepaste="fnBeforePaste()"
+    onpaste="fnPaste()"
+  >
+    把文本粘贴到这里
+  </div>
+  <script>
+    //当鼠标指针位于 div 元素上时激活右键菜单中的 "剪切 "命令，默认没有激活
+    function fnBeforeCut() {
+      event.returnValue = false;
+    }
+    //当选择 "剪切"命令时，就删除文本，并将文本复制到剪贴板
+    function fnCut() {
+      event.returnValue = false;
+      window.clipboardData.setData('Text', oSource.innerText);
+      oSource.innerText = ''; //"删除 "
+    }
+    //当鼠标指针位于 div 元素上时激活右键菜单中的 "粘贴 "命令，默认没有激活
+    function fnBeforePaste() {
+      event.returnValue = false;
+    } //当选择 "粘贴 "命令时，就将文本从剪贴板中复制到该 div 元素
+    function fnPaste() {
+      event.returnValue = false;
+      oTarget.innerText = window.clipboardData.getData('Text'); //"粘贴 "
+    }
+  </script>
+</body>
+```
+
+            

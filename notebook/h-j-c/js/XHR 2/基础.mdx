@@ -1,0 +1,210 @@
+---
+title: 基础
+pagination_prev: null
+
+---
+
+# 使用 XMLHttpRequest 对象
+
+XMLHttpRequest 常简称 XMR ，中文可以理解为可扩展超文本传输请求。 XMLHttpRequest 对象可以在不向服务器提交整个页面的情况下，实现局部更新。
+
+XMLHttpRequest 对象老版本缺陷
+
+- 只支持文本的传输，无法用来读取和上传二进制文件
+- 传送和接受文本时，没有进度信息，只能提示有木有完成
+- 受到同域限制，只能向同一域名的服务器请求数据
+
+XHR 2 的新版功能：
+
+- 可以设置 HTTP 请求的时限
+- 可以上传文件
+- 可以请求不同的域名下的数据
+- 可以使用 FormData 对象管理表单数据
+- 可以获取服务器的二进制文件
+- 可以获取数据传输的进度信息
+
+## HTTP 请求时限
+
+新版本的 XMLHttpRequest 对象增加 timeout 属性，可以设置 HTTP 请求时限。
+
+```js
+hr.timeout = int || function();
+```
+
+目前， Opera 、 Firefox 支持该属性， Chrome 、 Safari 不支持。
+
+## 使用 FormData 对象
+
+为了方便表单处理， HTML 5 新增了一个 FormData 对象，可以模拟表单。
+
+_新建表单_
+
+```js
+var formData = new FormData();
+```
+
+_为 FormData 对象添加表单项_
+
+```js
+formData.append('username', ' 王五 ');
+formData.append('id', 123456);
+```
+
+_直接传送这个 FormData 对象这与提交网页表单一个效果_
+
+```js
+xhr.send(formData);
+```
+
+FormData 也可以获取网页表单的值：
+
+```js
+var form = mi('#form');
+var formData = new FormData(form);
+formData.append('secret', '123456'); // 添加表单项
+xhr.open('POST', form.action);
+xhr.send(formData);
+```
+
+## 上传文件
+
+将 input[type='file'] 元素装入 FormData 对象：
+
+```js
+var formData = new FormData();
+
+for (let i = 0; i < file.length; i++) {
+  formData.append('file[]', files[i]);
+}
+```
+
+然后，发送这个 FormData 对象：
+
+```js
+xhr.send(formData);
+```
+
+## 跨域访问
+
+新版本的 XMLHttpRequest 对象，可以跨域向服务器发送 HTTP 请求，也称为跨域资源共享（ Cross-Origin Resource Sharing,CORS ）。
+
+## 响应数据
+
+在 HTML 5 之前，当使用 XMLHttpRequest 对象从服务器端获取二进制数据时，通常需要 XMLHttpRequest 对象的 overrideMimeType() 方法重载
+
+```js
+var xhr = new XMLHttpRequest();
+xhr.open('GET', 'test.png', true);
+xhr.overrideMimeType('text/plain;charset=x-user-defined');
+xhr.onreadystatechange = function (e) {
+  if (this.readyState == 4 && this.status == 200) {
+    var binStr = this.responseText;
+    for (let i = 0; (len = binStr.length); i++) {
+      var c = binStr.charCodeAt(i);
+      var byte = c & 0xff; // type at offset i
+    }
+  }
+};
+```
+
+上述方法可以获取二进制数据，但是 XMLHttpRequest 对象的 responseText 属性值的返回值并不是原始的二进制数据，而是由这些数据所组成的和字符串。
+
+HTML 5 为 XMLHttpRequest 新增属性 responseType 和 response 。
+
+- responseType ： 用于指定服务器返回数据的数据类型，可用值 text 、 arrayBuffer 、 json 、 XMLHttpRequest 或 document
+  。如果该属性值指定为空字符串或不适用该属性值，则默认为 text
+- response ： 如果想服务器请求成功，真返回响应数据
+
+- 如果 responseType 为 text 时，则 response 返回值为一串字符串
+- 如果 responseType 为 arrayBuffer 时，则 response 返回值为一个 ArrayBuffer 对象
+- 如果 responseType 为 blob 时，则 response 返回值为一个 Blob 对象
+- 如果 responseType 为 json 时，则 response 返回值为一个 JSON 对象
+- 如果 responseType 为 document 时，则 response 返回值为一个 Document 对象
+
+## 接受二进制数据
+
+老版本的 XMLHttpRequest 对象只能从服务器接受文本数据，新版可以接收二进制数据。
+
+传统方法实现是将改写数据的 MIME Type ，将服务器返回的二进制数据伪装成文本数据，并且告诉浏览器这是用户自定义的字符集。
+
+```js
+xhr.overrideMimeType('text/plain;charset=x-user-defined');
+```
+
+然后，用 responseText 属性接收服务器返回的二进制数据。再一个字节一个字节翻译回来：
+
+```js
+var binStr = this.responseText;
+for (let i = 0; (len = binStr.length); i++) {
+  var c = binStr.charCodeAt(i);
+  var byte = c & 0xff; // type at offset
+}
+```
+
+最后一行的位运算符 'c & 0xff' ，表示每一个字符的两个字节中，只保留最后一个字节，将钱一个字节扔掉。原因是浏览器解读字符的时候，会把字符自动解读成 Unicode 的 OxF700 ~ 0xF7ff 区段。
+
+在新的浏览器中，使用 responseType 属性，定义为 blob ，即为二进制数据。
+
+```js
+var xhr = new XMLHttpRequest();
+xhr.open('GET', '/path/to/image.png');
+xhr.responseType = 'blob';
+```
+
+接收数据时，使用浏览器自带的 Blob 对象即可：
+
+```js
+var blob = new Blob([xhr.response], { type: 'image/png' });
+```
+
+可以将 responseType 设置为 arrayBuffer ，把二进制装进一个数组中：
+
+```js
+var xhr = new XMLHttpRequest();
+xhr.open('GET', 'path/to/image.png');
+xhr.responseType = 'ArrayBuffer';
+```
+
+接收数据时，需要遍历数组：
+
+```js
+var arrayBuffer = xhr.response;
+if (arrayBuffer) {
+  var byteArray = new Unit8Array(arrayBuffer);
+  for (let i = 0; i < byteArray.length; i++) {
+    //
+  }
+}
+```
+
+## 显示进度信息
+
+新版本的 XMLHttpRequest 对象，传输数据时，有一个 progress 事件，用来返回进度信息。它分为上传和下载两种情况。下载的 progress 事件属于 XMLHttpRequest 对象，上传的
+progress 属于 XMLHttpRequest.upload 事件。
+
+```js
+xhr.onprogress = updateProgress;
+xhr.update.onprogress = updateProgress;
+```
+
+在回调函数，使用这些属性：
+
+```js
+function update(event) {
+  if (event.lengthComputable) {
+    var percentComplete = event.loaded / event.total;
+  }
+}
+```
+
+event.total 是需要传输的字节， event.loaded 是已经传输的字节。如果 event.lengthComputable 不为真，则 event.total 等于 0 ；
+
+与 progress 相关的其他 5 个事件，可以分别指定回调函数：
+
+- load 传输成功完成
+- abort 传输被用户取消
+- error 传输错误
+- loadstart 传输开始
+- loadEnd 传输结束，但是不知道成功还是失败
+
+            

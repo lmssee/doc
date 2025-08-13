@@ -1,0 +1,142 @@
+---
+title: 操作
+
+
+---
+
+# 暂存
+
+运行 git stash 可将当前代码提交到暂存。改命令保存本地修改，并恢复工作目录以匹配 HEAD 提交。
+
+```sh
+git stash save # 等同于没有参数的 git stash
+  git stash pop # 取出本地暂存内容
+  git stash list [{}] #  列出所储存列表
+  git stash show [{}] # 展示提交索引和变更记录
+  git stash apply [{}] #  恢复
+  git stash drop
+  git stash branch
+  git stash clear
+  git stash create
+  git stash store
+```
+
+save 命令可以添加一段字符串进行说明，这样的话，就可以在查看时了解暂存内容的详细。
+
+拉取代码时有时候不想直接覆盖本地代码，可以先将本地代码进行暂存：
+
+```sh
+git stash # 暂存本地
+git stash pop # 取出本地暂存内容
+git stash list # 参看本地暂存的修改列表
+git stash pop stash@{} # 恢复之前的本地暂存的修改
+```
+
+可以使用 refs/stash 来进行查看：
+
+```sh
+git show-branch stash
+```
+
+## 移动文件或文件夹
+
+将目录或是文件移动到另一个位置：
+
+```sh
+git mv {移动目标} {目标位置}
+```
+
+## 重命名
+
+将文件改名字：
+
+```sh
+git mv {要改目标名称} {改后目标名称}
+```
+
+## 删除文件
+
+git rm 为在工作区或索引中删除某文件，该操作删除文件并将删除记录保留下来：
+
+```sh
+git rm {要删除目标}
+git rm -f {要删除目标} # 强制删除
+```
+
+使用 git rm --cached 可以将文件移除缓存区：
+
+```sh
+git rm --cached {待移除文件名} # 仅删除索引不删除文件
+```
+
+## 恢复删除
+
+git checkout 用于恢复文件/文件夹使用：
+
+```sh
+git checkout HEAD -- {待恢复的删除的文件}
+```
+
+也可以 使用：
+
+```sh
+git reset HEAD {待恢复文件（文件夹）名} # 重置 HEAD
+git checkout {待恢复文件（文件夹）名}# 使用库中版本代替工作区版本
+```
+
+## 标签
+
+在 refs/tags 中添加标签引用，或带参数 -d 删除、-l 列出、 -v 验证；除非指定了 -f ，否则不能创建已经存在的标签；如果传递了 -a 、-s 、-u ，则必须携带标签信息。
+
+```sh
+git tag -a <tag name> -m "some message"
+```
+
+带参数 -a 时会为标签打上备注。
+
+带参数版本号可以给已发布的版本追加标签。
+
+不待任何参数为查看所有的便签
+
+## 指定标签信息
+
+```sh
+git tag -a v0.0.0 -m "标签内容 "
+```
+
+## 创建标签
+
+使用 git tag 来给当前 HEAD 指针做标签：
+
+```sh
+git tag -a {标签名称} -m {标签的消息} # 推送时可 git push origin tag {}
+```
+
+## 查看标签
+
+```sh
+git tag -l
+```
+
+## 删除标签
+
+```sh
+git tag -d {}
+```
+
+## describe
+
+```sh
+git describe # 显示当前提交最近的标签
+```
+
+## 补丁
+
+补丁类似于 git diff 之类的东西：
+
+```sh
+git am # 修改文件并创建提交
+git apply # 修改文件而不创建提交
+```
+
+            

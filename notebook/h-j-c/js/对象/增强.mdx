@@ -1,0 +1,638 @@
+---
+title: 增强
+
+
+---
+
+# 对象增强
+
+ECMAScript5 增强了对对象模型的控制力度，通过新的对象模型，用户可以控制单独的属性是否允许读取、写入、删除和枚举等，甚至可以控制对象是否允许添加或删除属性，这样就可以实现密封对象的功能。
+
+## 属性和描述符
+
+在 ECMAScript 5 中，属性模型已经被完全重写了。现在，属性不再仅仅是附着在对象上的一个可读可写的变量，用户可以为属性定义描述符，以增强属性定义的功能。
+
+ECMAScript 5 规定了 value 、 writable 、 configurable 、 enumerable 、 get 、 set 共 6 个属性描述符，用于完成不同的功能。
+
+下面是一个属性的定义描述：
+
+```json
+{
+  "value": "$1 性值 ",
+  "writable": true,
+  "enumerable": true,
+  "configurable": true
+}
+```
+
+该属性的定义描述使用一个对象来定义，对象中定义了 4 个键，其中 value 键指定属性的值，其余 3 个键是属性的描述符。
+
+- writable ，定义属性是否可以改变，也就是是否可写。如果定义为 false ，就是只读属性
+- configurable ，定义属性是否可以被删除，或者是否可以改变属性的特性（这些特性也就是这 3 个描述符所描述的功能，即是否可以改变这 3 个描述符的值 writable 、 configurable 、
+  enumerable ）
+- enumerable ，定义属性是否可以迭代。如果定义为 true ，就可以使用类如下面的语句来迭代所有属性：
+
+```js
+for (var prop in obj) {
+}
+```
+
+这 3 个描述符可以定义也可以不定义，它们的键值都默认为 true 。
+
+## 易犯的错误
+
+注意，要使用 ECMAScript5 增强的对象模型定义属性，不能再使用原来的模式，例如下面的代码，为 Person 类定义了属性 nickName ：
+
+```js
+function Person() {}
+Person.prototype.nickName = {
+  value: 'Tom',
+  writable: true,
+  enumerable: true,
+  configurable: true,
+};
+```
+
+但这时并没有应用 ECMAScript 5 增强的对象模型，属性 nickName 的值其实是一个对象，下面的代码可以验证：
+
+```js
+var person_1 = new Person();
+console.log(JSON.stringify(person_1.nickName));
+```
+
+这输出如下的值：
+
+```json
+{
+  "value": "Tom",
+  "writable": true,
+  "enumerable": true,
+  "configurable": true
+}
+```
+
+而我们想要的值仅仅是 Tom 。
+
+## 使用 ECMAScript 5 增强的对象模型定义属性
+
+要想应用 ECMAScript 5 属性描述符定义属性，必须使用静态方法 Object.defineProperty() ，该方法就是用来定义属性的，在定义属性时可以改变描述符的键值。
+
+Object.defineProperty() 在 ECMAScript 5 增强的对象模型中是一个核心方法，其语法格式如下：
+
+```js
+Object.defineProperty(obj, prop, desc);
+```
+
+- 参数 obj 是一个对象，如果要为一个类的所有实例定义属性，那么可以将该参数指定为该类的原型对象
+- 参数 prop 是一个字符串，用于指定属性名
+- 参数 desc 是一个对象，包含了属性的描述
+
+下面的代码演示了如何使用该方法为类 Person 定义 nickName 属性：
+
+```js
+function Person() {}
+Object.defineProperty(Person.prototype, 'nickName', {
+  value: 'Tom',
+  writable: true,
+  enumerable: true,
+  configurable: true,
+});
+```
+
+此时，再使用下面的代码验证，就可以得到想要的属性值 Tom 。
+
+```js
+var person_1 = new Person();
+console.log(person_1.nickName);
+```
+
+如果是定义只读属性，可以将 writable 键的值设置为 false 。此时如果为属性赋值，在严格模式下就会抛出异常。例如下面的代码，在支持严格模式功能的 Firefox 4
+浏览器下会抛出异常（注意，其它几个浏览器尚不支持严格模式）：
+
+```js
+'use strict';
+function Person() {}
+Object.defineProperty(Person.prototype, 'nickName', {
+  value: 'Tom',
+  writable: false,
+  enumerable: true,
+  configurable: true,
+});
+var person_1 = new Person();
+try {
+  person_1.nickName = 'John';
+  console.log(person_1.nickName);
+} catch (err) {
+  alert(err.message);
+}
+```
+
+如果浏览器不支持严格模式，那么修改属性 nickName 的值虽然不会成功，但仍支持读取，因此仍将返回属性值 Tom 。
+
+## 定义 get 和 set 存取器方法
+
+`Object.defineProperty()` 方法还可用于定义 get 和 set 存取器方法，由于 get 和 set 存取器方法。
+
+需要一个私有的中间变量，所以，需要定义一个自执行的匿名函数来包含 `Object.defineProperty()` 方法定义。
+
+例如下面的代码为类 Person 定义 nickName 属性：
+
+```js
+function Person() {}
+(function () {
+  var _nickName = 'Tom';
+  Object.defineProperty(Person.prototype, 'nickName', {
+    get: function () {
+      return _nickName;
+    },
+    set: function (value) {
+      _nickName = value;
+    },
+  });
+})();
+var person_1 = new Person();
+alert(person_1.nickName); // 输出 Tom
+person_1.nickName = 'John';
+alert(person_1.nickName); // 输出 John;
+```
+
+这是一个读写属性，如果想定义只读属性，那么只需在属性描述参数中不定义 set 键即可；如果想定义只写属性，那么只需在属性描述参数中不定义 get 键即可。
+
+## 一次定义多个属性
+
+Object.defineProperties() 方法可以在一步操作中定义或修改多个属性，其语法格式如下：
+
+```js
+Object.defineProperties(obj, props);
+```
+
+- 参数 obj 是一个对象，如果要为一个类的所有实例定义属性，那么可以将该参数指定为该类的原型对象
+- 参数 props 是一个对象，包含多个属性的定义，使用键 / 值对模式定义
+
+例如下面的代码，为类 Person 定义 nickName 和 age 属性：
+
+```js
+Object.defineProperties(Person.prototype, {
+  nickName: { value: 'Tom', writable: false },
+  age: {
+    writable: true,
+    enumerable: true,
+    configurable: true,
+  },
+});
+```
+
+Object.defineProperties() 方法相当于 Object.defineProperty() 方法的批处理，下面的代码演示了如何使用 Object.defineProperty() 方法实现一次定义多个属性：
+
+```js
+Object.defineProperties = function (obj, props) {
+  for (var prop in props) {
+    Object.defineProperty(obj, prop, props[prop]);
+  }
+};
+```
+
+## 获取特定属性的属性描述符
+
+可以使用 Object.getOwnPropertyDescriptor() 方法获取一个属性的描述符信息，这是一个静态方法，其语法格式如下：
+
+```js
+Object.getOwnPropertyDescriptor(obj, prop);
+```
+
+- 参数 obj 是一个对象，指定要获取属性描述符的对象
+- 参数 prop 是一个字符串，用于指定要获取属性描述符的属性名
+
+例如下面的代码，获取 nickName 属性的属性描述符：
+
+```js
+var o = Object.getOwnPropertyDescriptor(Person.prototype, 'nickName');
+
+/**
+ * 输出:
+ *  {
+ *    "value": "Tom",
+ *    "writable": false,
+ *    "enumerable": false
+ *    configurable": false
+ *   }
+ */
+alert(JSON.stringify(o));
+```
+
+注意，该方法仅能获取自己的定义的属性，不能获取原型链上的属性定义，参数 obj 如果是一个类的实例，则不会获取属性值：
+
+```js
+var person_1 = new Person();
+var o = Object.getOwnPropertyDescriptor(person_1, 'nickName');
+alert(JSON.stringify(o)); // undefined
+```
+
+## 枚举属性
+
+## Object.keys(obj) 方法
+
+Object.keys(obj) 方法是一个静态方法，它可以列出所有能枚举的 obj 对象的属性，返回值是这一组字符串，每个字符串就是属性名。
+
+考虑到旧版本浏览器的兼容性，可以使用下面的方法实现兼容。首先检查是否存在 object.keys(obj) 静态方法，如果不存在就扩展 Object ，自定义一个静态方法实现相同的功能：
+
+```js
+if (!Object.keys) {
+  Object.keys = function (obj) {
+    var _array = new Array();
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        _array.push(prop);
+      }
+    }
+    return;
+    _array;
+  };
+}
+```
+
+下面的代码演示了如何使用该方法：
+
+```js
+var person_1 = {
+  nickName: 'john',
+  age: 15,
+  showInfo: function () {
+    return '我的名字是 ' + this.nickName + ' ，我现在 ' + this.age + '了。 ';
+  },
+};
+alert(Object.keys(person_1)); // 输出
+nickName, age, showInfo;
+```
+
+## Object.getOwnPropertyNames(obj) 方法
+
+Object.getOwnPropertyNames(obj) 方法也是一个静态方法，它可以列出所有能枚举和不能枚举的属性，功能比 Object.keys() 方法稍强。但该方法不能实现向前兼容，因为 ECMAScript3
+没有相关的方法可以获得不能枚举的属性。
+
+## 密封对象和动态对象
+
+密封对象只能拥有在实例化时从类定义获取的固定的一组属性和方法，不能在运行时添加其它属性和方法。也就是说，密封对象不能创建或访问该类原来未声明或定义的属性或方法。
+
+默认情况下， JavaScript 创建的对象都是动态对象，即允许在运行时为对象添加其它属性和方法，例如下面的类声明：
+
+```js
+function Person(myName, myAge) {
+  this.nickName = myName;
+  this.age = myAge;
+}
+Person.prototype.showInfo = function () {
+  return '我的名字是 ' + this.nickName + ' ，我现在 ' + this.age + '了。 ';
+};
+```
+
+用户可以随意添加属性和方法，例如下面的代码：
+
+```js
+var tom = new Person('Tom', 22);
+// 添加一个新属性，表示 Tom 头发的颜色并为属性赋初始值
+tom.hairColor = 'red';
+```
+
+使用 ECMAScript5 增强的对象模型，就可以定义密封对象，它通过 Object 类的几个静态方法来实现：
+
+```js
+Object.preventExtensions(obj);
+Object.seal(obj);
+Object.freeze(obj);
+```
+
+## 密封对象不允许添加成员
+
+使用 Object.preventExtensions() 方法可以锁定一个对象，防止未来向该对象添加新的成员（但仍可以删除成员）。同时提供了 Object.isExtensible()
+方法用于检查一个对象是否可以增加成员，也就是检测是否应用了 preventExtensions() 方法，如果可以增加就返回 true ，否则返回 false 。
+
+这两个方法都是静态方法，语法格式如下：
+
+```js
+Object.preventExtensions(obj);
+Object.isExtensible(obj);
+```
+
+参数 obj 就是要应用的对象，如果要密封类，可以将该参数指定为一个类的原型对象，这样该类就是密封的了。
+
+例如下面的代码，定义了 person 类，并声明了两个属性和一个方法，然后密封该类的原型对象：
+
+```js
+function Person(myName, myAge) {
+  this.nickName = myName;
+  this.age = myAge;
+}
+Person.prototype.showInfo = function () {
+  return '我的名字是 ' + this.nickName + ' ，我现在 ' + this.age + '了。 ';
+};
+alert(Object.isExtensible(Person.prototype)); // true
+Object.preventExtensions(Person.prototype);
+alert(Object.isExtensible(Person.prototype)); // false
+```
+
+现在，类的属性和方法只能删除，不能添加了。但是，该类的实例仍是动态的，可以添加和删除成员。
+
+用户也可以密封类的实例，例如下面的代码，创建一个实例，然后密封：
+
+```js
+'use strict';
+function Person(myName, myAge) {
+  this.nickName = myName;
+  this.age = myAge;
+}
+var tom = new Person('Tom ', 22);
+Object.preventExtensions(tom);
+try {
+  alert(tom.nickName); // Tom
+  delete tom.nickName; // 可以删除该属性
+  alert(tom.nickName); // undefined
+  tom.hairColor = 'red'; // 试图增加一个属性，在严格模式下会抛出异常
+  alert(tom.hairColor);
+} catch (err) {
+  alert(err.message);
+}
+```
+
+密封对象不允许添加和删除成员
+
+使用 `Object.seal()` 方法可以密封一个对象以阻止其它代码删除、改变对象的属性和描述符，也阻止添加新的属性。同时提供了 `Object.isSealed()` 方法检查一个对象是否应用了 `Object.seal()` 方法，如果可以添加或删除成员就返回 false ，否则返回 true 。
+
+这两个方法都是静态方法，语法格式如下：
+
+```js
+Object.seal(obj)Object.isSealed(obj)
+```
+
+参数 obj 就是要应用的对象，如果要密封类，可以将该参数指定为一个类的原型对象，这样该类就是密封的了。
+
+相对于 `Object.preventExtensions()` 方法， `Object.seal(obj)` 方法增强了一步，除了不允许添加属性外，同时还不允许删除属性。
+
+例如下面的代码，定义了 person 类，并声明了两个属性和一个方法，然后密封该类的原型对象：
+
+```js
+function Person(myName, myAge) {
+  this.nickName = myName;
+  this.age = myAge;
+}
+Person.prototype.showInfo = function () {
+  return '我的名字是 ' + this.nickName + ' ，我现在 ' + this.age + '$1 了。 ';
+};
+alert(Object.isSealed(Person.prototype)); // false
+Object.seal(Person.prototype);
+alert(Object.isSealed(Person.prototype)); // true
+```
+
+现在，类的属性和方法既不能删除也不能添加了。但是，该类的实例仍是动态的，可以添加和删除成员。
+
+用户也可以密封类的实例，例如下面的代码，创建了一个实例，然后密封：
+
+```js
+'use strict';
+function Person(myName, myAge) {
+  this.nickName = myName;
+  this.age = myAge;
+}
+var tom = new Person('Tom', 22);
+Object.seal(tom);
+try {
+  alert(tom.nickName);
+  // Tom delete tom.nickName;
+  // //不能删除该属性，将抛出异常
+  alert(tom.nickName); // Tom
+} catch (err) {
+  alert(err.message);
+}
+```
+
+其它不支持严格模式功能的浏览器中会继续执行，并且，并不认为属性被删除了，因此，仍返回属性的值。
+
+对于不支持 Object.seal() 方法的浏览器，可以扩展 Object ，使用属性描述符即可实现，并且也用到了 Object.preventExtensions() 方法，如下代码可以帮助用户更深入地了解 Object.seal() 方法的功能：
+
+```js
+Object.seal = function (obj) {
+  var props = Object.getOwnPropertyNames(obj); // 遍历所有属性，修改属性的描述符
+  for (var i = 0; i < props.length; i++) {
+    var desc = Object.getOwnPropertyDescriptor(obj, props[i]);
+    desc.configurable = false; // 所有属性都更改了该描述符
+    Object.defineProperty(obj, props[i], desc);
+  }
+  return Object.preventExtensions(obj);
+};
+```
+
+## 完全密封对象
+
+使用 Object.freeze() 方法可完全密封一个对象以阻止其它代码删除、改变对象的属性和描述符，也阻止增加新的属性。并且，与 Object.seal() 方法不同的是， Object.freeze()
+方法使所有现存的属性也都不可写（即都变为了只读属性）。因此， Object.freeze() 方法其实是锁定了一个对象。
+
+同时提供了一个 Object.isFrozen() 方法检查一个对象是否应用了 Object.freeze() 方法，如果锁定了对象就返回 true ，否则返回 false 。
+
+这两个方法都是静态方法，语法格式如下：
+
+```js
+Object.freeze(obj)Object.isFrozen(obj)
+```
+
+参数 obj 就是要应用的对象，如果要密封类，可以将该参数指定为一个类的原型对象，这样该类就是密封的了。
+
+例如下面的代码，定义了 person 类，并声明了两个属性和一个方法，然后密封该类的原型对象：
+
+```js
+function Person(myName, myAge) {
+  this.nickName = myName;
+  this.age = myAge;
+}
+Person.prototype.showInfo = function () {
+  return '我的名字是 ' + this.nickName + ' ，我现在 ' + this.age + '了。 ';
+};
+alert(Object.isFrozen(Person.prototype)); // false;
+Object.freeze(Person.prototype);
+alert(Object.isFrozen(Person.prototype)); // true
+```
+
+现在，类的属性和方法既不能删除也不能添加了。但是，该类的实例仍是动态的，可以添加和删除成员。
+
+用户也可以密封类的实例，例如下面的代码，创建一个实例，然后密封：
+
+```js
+'use strict';
+function Person(myName, myAge) {
+  this.nickName = myName;
+  this.age = myAge;
+}
+var tom = new Person('Tom', 22);
+Object.freeze(tom);
+try {
+  alert(tom.nickName); // Tom
+  tom.nickName = 'Tommy'; // 不能修改属性值，将抛出异常
+  alert(tom.nickName); // Tom
+} catch (err) {
+  alert(err.message);
+}
+```
+
+于不支持 Object.freeze() 方法的浏览器，可以扩展 Object ，使用属性描述符即可实现，并且也用到了 Object.preventExtensions() 方法，如下代码可以帮助用户更深入地了解
+Object.freeze() 方法的功能：
+
+```js
+Object.freeze = function (obj) {
+  var props = Object.getOwnPropertyNames(obj);
+  // 遍历所有属性，修改属性的描述符
+  for (var i = 0; i < props.length; i++) {
+    var desc = Object.getOwnPropertyDescriptor(obj, props[i]);
+    if ('value' in desc) {
+      desc.writable = false;
+      // 所有属性都更改为只读
+    }
+    desc.configurable = false; // 所有属性都更改了该描述符
+    Object.defineProperty(obj, props[i], desc);
+  }
+  return Object.preventExtensions(obj);
+};
+```
+
+注意， JavaScript 密封对象的行为不同于 Java 、 C# 、 ActionScript
+语言中的密封类，在这些语言中，密封类意味着类的任何实例都不能再增加新的成员。密封类的属性和方法是固定的。也就是说，类的实例不能创建或访问该类原来未声明或定义的属性或方法。例如，假定 Java 、 C# 或
+ActionScript 语言使用下面的代码定义了一个 Person 类，该类定义了两个属性 nickName 和 age ：
+
+```js
+class Person {
+var nickName;
+var age;
+}
+```
+
+如果创建了 person 类的一个实例，并且尝试访问某个该类中不存在的属性，编译器将生成一个错误（这些语言都是编译类型的）。例如，以下代码创建 Person 类的一个新实例 a_person ，然后尝试给名为 hairColor 的属性赋值，或者读取 hairColor 属性的值，但该属性实际不存在：
+
+```js
+var a_person = new Person();
+a_person.hairColor = 'blue ';
+// 编译错误
+console.log(a_person.hairColor); // 编译错误
+```
+
+此代码将导致一个编译错误，因为 Person 类未声明名为 hairColor 的属性。
+
+JavaScript 仅密封类的实例而不是密封类。
+
+## 根据原型创建对象
+
+使用 Object.create() 方法可以使用指定的对象和可选的属性创建一个新对象，其语法格式如下：
+
+```js
+Object.create(proto [,props])
+```
+
+这是一个静态方法，参数 proto 指定一个对象，该对象将作为新建对象的原型对象；参数 props 指定要增加的属性，是可选的。
+
+Object.create() 方法的功能相当于将新创建的对象的原型作为参数 proto ，同时使用 Object.defineProperties(props) 方法为该对象定义属性。
+
+例如下面的代码，指定一个新的 Person 类的实例作为参数 proto 的值，这样，新创建的实例 tom 便拥有了 Person 类的原型对象，因此其拥有 Person 类的属性和方法：
+
+```js
+function Person(myName, myAge) {
+  this.nickName = myName;
+  this.age = myAge;
+}
+Person.prototype.showInfo = function () {
+  return '我的名字是 ' + this.nickName + '; ，我现在 ' + this.age + '了。';
+};
+var tom = Object.create(new Person(), {
+  nickName: {
+    value: 'Tom ',
+    writable: false,
+  },
+  age: { value: 22 },
+});
+console.log(tom.showInfo());
+// 嗨！我的名字是 Tom ，我现在 22 了。
+```
+
+用户也可以使用如下方法直接将 Person 类的原型对象作为参数 proto 的值，将与前面代码实现的效果相同：
+
+```js
+var tom = Object.create(Person.prototype, {
+  nickName: { value: 'Tom ', writable: false },
+  age: { value: 22 },
+});
+console.log(tom.showInfo());
+```
+
+参数 props 可以省略，例如下面的两行代码，都是创建 Object 实例 o ，却使用了不同的方式，但实现的效果是相同的：
+
+```js
+var o = {};
+var o = Object.create(Object.prototype);
+```
+
+例如下面的两行代码，都是创建 Constructor 实例 c ，也使用了不同的方式，但实现的效果是相同的：
+
+```js
+function Constructor() {}
+var c = new Constructor();
+var c = Object.create(Constructor.prototype);
+```
+
+同样，下面的 3 个应用也是相同的：
+
+```js
+var tom = new Person();
+var tom = Object.create(new Person());
+var tom = Object.create(Person.prototype);
+```
+
+例如下面的代码，重写 object.create() 方法，可以清楚地了解该方法的功能：
+
+```js
+Object.create = function (proto, props) {
+  var ctor = function (ps) {
+    if (ps) Object.defineProperties(this, ps);
+  };
+  ctor.prototype = proto;
+  return new ctor(props);
+};
+```
+
+对象的克隆就是创建并返回对象的一个副本， JavaScript 中没有内置克隆功能的方方法，因此必需自定义一个函数实现该功能。
+
+例如，下面的函数实现一个对象的克隆功能，参数就是要克隆的对象：
+
+```js
+// 克隆对象
+function clone(oldObj) {
+  // 获取对象的原型，并根据原型创建一个新的对象
+  var pr = Object.getPrototypeOf(oldObj);
+  var newObj = Object.create(pr);
+
+  // 将原对象复制到新对象
+  var names = Object.getOwnPropertyNames(oldObj);
+  names.forEach(function (prop) {
+    var desc = Object.getOwnPropertyDescriptor(oldObj, prop);
+    Object.defineProperty(newObj, prop, desc);
+  });
+  // 如果原对象是密封的，那么新对象也应该密封
+  if (!Object.isExtensible(oldObj)) {
+    Object.preventExtensions(newObj);
+  } // 返回新对象
+  return newObj;
+}
+```
+
+可以这样使用：
+
+```js
+// 创建一个对象。
+var user = new Object();
+user.name = 'z ';
+user.age = 32;
+user.blog = 'lmssee.cn '; // 创建对象的副本
+var user_copy = clone(user);
+alert(user_copy.age); //
+32;
+// user 改变，副本不会改变
+user.age = 100;
+alert(user_copy.age); // 32
+```
+
+            

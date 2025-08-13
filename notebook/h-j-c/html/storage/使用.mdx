@@ -1,0 +1,106 @@
+---
+title: 使用
+
+
+---
+
+# 利用 localStorage 进行本地存储
+
+Storage 存储机制是通过字符串形式的 key/value 对来存储的，因此，其基本语法可以定义为：
+
+```js
+// 设置 key 值
+ojb_Storage.key = value; // 获取 key 值
+value = ojb_Storage.key;
+```
+
+它还有一些方法和属性用来实现更加强大的功能。
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>范例</title>
+  </head>
+  <body>
+    <button
+      onclick="javascript:setItem('user',
+    'zhang-yafei');"
+    >
+      设置 user 键
+    </button>
+    <button onclick="javascript:getItem('user');">显示 user 键的值</button>
+    <button onclick="javascript:removeItem('user');">删除 user 键</button>
+    <div
+      id="myDiv"
+      style="background:#EEE;width:315px;min-height:50px; padding:10px;border:2px #ccc dashed;"
+    ></div>
+    <script>
+           // // 定义事件函数，监听存储区域变化 function
+         storageHandler(event) {
+         var myDiv = document.getElementById("myDiv");
+       myDiv.innerHTML = " 存储发生了变化： <b> " + event.key +
+         "</b>键改变了 旧值 <b> " + event.oldValue +
+         "</b>被改变为为新值 <b> " +
+       event.newValue + "</b> 发生更改所在的网址： <b> " +
+       event.url + "</b> "
+       }
+        window.onstorage =
+         storageHandler;
+         // 定义当前域
+       var strDomain = "127.0.0.1";
+       var oStorage;
+       try {
+       // 获取存储区域
+       oStorage = window.localStorage
+         ? window.localStorage : window.globalStorage[strDomain];
+       } catch (err) {
+        alert(err.message ? err.message : err.toString());
+
+      }
+       // 定义 3 个函数，分别用来执行创建键、显示键值和删除键操作
+       function setItem(key, value) {
+       oStorage.setItem(key, value); alert("DOM Storage:" + key + " = " +
+         value); }
+         function getItem(key) { var myDiv = document.getElementById("myDiv");
+       myDiv.innerHTML = oStorage.getItem(key); }
+
+       function removeItem(key) {
+        oStorage.removeItem(key)
+       alert(" 键 " + key + " 被删除了 ");
+       }
+    </script>
+  </body>
+</html>
+```
+
+存储数据的方法就是直接给 window.localStorage 添加一个属性，例如： `window.localStorage.a` 或者 `window.localStorage["a"]` 。它的读取、写、删除操作方法很简单，是以键值对的方式存在的。 使用 `getItem()` 和
+`setItem()` ，如需清除键值对时可使用 `removeItem()` ，如需一次性清除所有的键值对，可以使用 `clear()` 。另外， HTML 5 还提供了一个 key() 方法，可以在不知道有哪些键值的时候使用。 API 测试方法包括 `setItem(key,value)` 、 `removeItem(key)` 、 `getItem(key)` 、 `clear()` 和 `key(index)` ，属性包括 `length` 和 `remainingSpace` （非标准）。不过存储数据时可以简单地使用
+`localStorage.key=value` 的方式。
+
+## Web Storage 的其它用法
+
+在使用 sessionStorage 或 localStorage 对象的文档中，可以通过 window 对象来获取它们。除了名字和数据的生命周期外，它们的功能完全相同。
+
+```ts
+interface Storage {
+  readonly attribute unsigned long length;
+  getter DOMString key(in unsigned long index);
+  getter any getItem(in DOMString key);
+  setter creator void setItem(in DOMString key, in any data);
+  delete void removeItem(in DOMString key); void clear(); };
+```
+
+具体说明
+
+- 与 getItem(key) 函数类似， setItem(key, value)
+  函数能够将数据存入指定键对应的位置。如果值已存在，则替换原值。需要注意的是设置数据时可能会出错。如果用户已关闭了网站的存储，或者存储已达到其最大容量，那么此时设置数据将会抛出错误。因此，在需要设置数据的场合，务必保证应用程序能够处理此类异常
+- 使用 length 属性获取目前 Storage 对象中存储的键值对的数量。注意， Storage 对象是同源的，这意味着 Storage 对象的长度只反映同源情况下的长度
+- key(index) 方法允许获取一个指定位置的键。一般情况下，最有用的是遍历特定 Storage 对象的所有健。键的索引从 0 开始，即第一个键的索引是 0 ，最后一个键的索引是 index(length-1) 。获取到键后，就可以用它来获取其相应的数据。除非键本身或者它前面的键被删除，否则其索引值会在给定 Storage 对象的生命周期内一直保留
+- getItem(key) 函数是根据给定的键返回相应数据的一种方式，另一种方式是将 Storage 对象当做数组，而将键作为数组的索引。在这种情况下，如果 Storage 中不存在指定键，则返回 null 。
+- removeItem(key) 函数的作用是删除数据项，如果数据存储在键参数下，则调用此函数会将相应的数据项删除。如果键参数没有对应数据，则不执行任何操作
+- clear() 函数能删除存储列表中的所有数据。空的 Storage 对象调用 clear() 方法也是安全的，此时调用不执行任何操作
+- 与某些数据集或数据框架不同，删除数据项时不会将原有数据作为结果返回。在删除操作前请确保已经存储相应数据的副本
+
+            

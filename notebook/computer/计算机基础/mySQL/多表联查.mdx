@@ -1,0 +1,32 @@
+---
+title: 多表联查
+
+
+---
+
+# 连接使用
+
+多表查询：）、、）。
+
+```sql
+select
+ a.main_id,a.main_name,a.main_age ,
+b.main_id,b.main_name,b.main_age
+from main a inner join newMain b
+on a.main_name = b.main_name;
+```
+
+- inner join （内/等值连接) 获取两个表中字段匹配关系的记录
+- left join （左连接）获取左边的所有记录，即便右边没有对应的记录
+- right join （右连接）获取右边的记录，即便左边没有匹配的记录
+
+## 偷来的
+
+```sql
+select c.name province, b.name city ,a.name area
+ from main a
+ inner join  main b on a.pid = b.id
+ inner join main c on b.pid = c.id;
+```
+
+            

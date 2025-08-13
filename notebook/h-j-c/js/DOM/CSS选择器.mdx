@@ -1,0 +1,160 @@
+---
+title: CSS选择器
+
+
+---
+
+# css 选择器
+
+W3C 制定了如何使用 CSS 选择符语法功能来访问元素的规范，被称为 Selectors API ，目前有两个版本： Selectors API Level 1和 Selectors API Level
+2。浏览器普遍支持 Selectors APILevel 1，它定义了两个新方法， Document 、 DocumentFragment 和 Element 对象都可以使用。这两个方法的语法格式如下：
+
+```js
+// Element
+querySelector(selectors);
+// NodeList
+querySelectorAll(selectors);
+```
+
+参数 selectors 就是 CSS 选择符语法，与 HTML 文档应用 CSS 选择符的语法格式相同，且支持所有 CSS 选择符语法。
+
+前一个方法获取符合条件的第一个元素，后一个方法则是获取符合条件的所有元素，这些元素组成一个 NodeList 。
+
+使用选择器 querySelectorAll() 方法比使用 getElementsByTagName() 的方法快得多。因此，如果浏览器支持的话，最好使用 querySelectAll()
+
+在 Selectors API2 版本的规范中，新增了一个 matchesSelector() 方法。这个方法接受一个参数，即 CSS 选择符，如果调用元素与该选择符匹配，则返回 true ；否则，则返回 false
+。目前，浏览器的支持不是太好。
+
+例如存在下面的 HTML 文档片段：
+
+```html
+<body>
+  <p>正确的认知是<em>非常</em>重要的！</p>
+  <em>去看看吧！</em>
+</body>
+那么下面的 CSS 代码都可以呈现 P 元素：
+<style type="text/css">
+  p {
+    /* /_ 类型选择符_/ */
+  }
+  body p {
+    /* /_  派生选择符_/  */
+  }
+  body > p {
+    /* /_ 子选择符_/ */
+  }
+</style>
+```
+
+于是，使用下面的程序代码就可以获取 p 元素：
+
+```js
+var p = document.querySelector('body p');
+var p = document.querySelector('body > p');
+var p = document.querySelector('p');
+```
+
+同样，因为下面的 CSS 代码都可以呈现 em 元素：
+
+```css
+em {
+  /*  类型选择符   */
+}
+p em {
+  /*  派生选择符   */
+}
+p > em {
+  /*  子选择符   */
+}
+body em {
+  /*  派生选择符   */
+}
+body > em {
+  /*  子选择符   */
+}
+```
+
+于是，使用下面的程序代码就可以获取 em 元素：
+
+```js
+var em = document.querySelector('em'); // 返回的是第一个 em 元素
+var em = document.querySelector('p em'); // 返回的是第一个 em 元素
+var em = document.querySelector('p > em'); // 返回的是第一个 em 元素
+var em = document.querySelector('body em'); // 返回的是第一个 em 元素
+var em = document.querySelector('body > em'); // 返回的是第二个 em 元素
+```
+
+也可以使用 querySelectorAll()方法返回一个 NodeList 对象：
+
+```js
+var nl = document.querySelectorAll('em'); // 返回两个 em 元素
+var nl = document.querySelectorAll('p em'); // 返回一个 em 元素
+var nl = document.querySelectorAll('p > em'); // 返回一个 em 元素
+var nl = document.querySelectorAll('body em'); // 返回两个 em 元素
+var nl = document.querySelectorAll('body > em'); // 返回一个 em 元素
+```
+
+然后获取节点列表中的元素：
+
+```js
+var len = nl.length;
+for (var i = 0; i < len; i++) {
+  var aNode = nl[i];
+  alert(aNode);
+}
+```
+
+也可以处理伪类和伪元素选择符，例如下面的代码获取已经访问过的超链接 a 元素：
+
+```js
+var links = document.querySelectorAll(':visited');
+for (var i = 0; i < links.length; i++) {
+  // 查看每个 a 元素的地址可以获取用户的单击
+  // 将信息传回服务器就可以统计用户的偏好所在
+  post2server(links[i].href);
+}
+```
+
+也可以使用群选择符作为参数，例如下面的代码获取第一个符合的 p 元素或 em 元素：
+
+```js
+var e = document.querySelector('p, em');
+```
+
+而下面的代码则意味着可以获取所有 p 元素或 em 元素：
+
+```js
+var nl = document.querySelectorAll('p, em');
+```
+
+## matches()
+
+matches()方法（在规范草案中称为 matchesSelector()）接收一个 CSS 选择符参数，如果元素 匹配则该选择符返回 true ，否则返回 false 。
+
+使用这个方法可以方便地检测某个元素会不会被 querySelector()或 querySelectorAll()方 法返回。
+
+## ClassName
+
+HTML5 通过给所有元素增加 classList 属性为这些操作提供了更简单也更安全的实现方式。 classList 是一个新的集合类型 DOMTokenList 的实例。与其它 DOM
+集合类型一样， DOMTokenList 也有 length 属性表示自己包含多少项，也可以通过 item()或中括号取得个别的元素。此外， DOMTokenList 还增加了以下方法。
+
+- add(value)，向类名列表中添加指定的字符串值 value 。如果这个值已经存在，则什么也不做
+- contains(value)，返回布尔值，表示给定的 value 是否存在
+- remove(value)，从类名列表中删除指定的字符串值 value
+- toggle(value)，如果类名列表中已经存在指定的 value ，则删除；如果不存在，则添加
+
+## 焦点管理
+
+HTML5 增加了辅助 DOM 焦点管理的功能。首先是 document.activeElement ，始终包含当前拥 有焦点的 DOM 元素。页面加载时，可以通过用户输入（按 Tab 键或代码中使用 focus()方法）让某个
+元素自动获得焦点。
+
+默认情况下， document.activeElement 在页面刚加载完之后会设置为 document.body 。而在 页面完全加载之前， document.activeElement 的值为 null 。其次是
+document.hasFocus()方法，该方法返回布尔值，表示文档是否拥有焦点。
+
+```js
+let button = document.getElementById('myButton');
+button.focus();
+console.log(document.hasFocus()); // true
+```
+
+            

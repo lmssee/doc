@@ -1,0 +1,41 @@
+---
+title: 控制台
+
+
+---
+
+# 控制台
+
+console.warn() 和 console.error() 是警示级别。
+
+控制台还有如下一些其它比较有用的函数。
+
+- 堆栈函数 console.trace() ，可以查看指定函数的调用关系
+- clear() 函数，用来清除控制台中的 log
+
+- dir() 函数，输出对象中的所有属性，如： dir({test:1,test2:2});
+- values() 函数，以数组的形式打印出对象中的所有属性值
+- keys() 与 values() 是一对，会以数组方式打印对象中所有键（名字）
+
+## 使用控制台
+
+- error （ message ） 将错误信息记录到控制台
+- info （ message ） 将信息性信息记录在控制台
+- log （ message ） 将一般信息记录在控制台
+- warn （ message ） 将警告信息记录在控制台
+
+不存在一种跨浏览器向 JavaScript 写入信息的机制，但下面的函数可以作为统一的接口 。
+
+```js
+function log(message) {
+  if (typeof console == 'Object') {
+    console.log(message);
+  } else if (typeof opera == 'Object') {
+    opera.postError(message);
+  } else if (typeof java == 'object' && typeof java.lang == 'object') {
+    java.lang.System.out.printIn(message);
+  }
+}
+```
+
+            

@@ -1,0 +1,150 @@
+---
+title: style 对象
+
+
+---
+
+# style 对象
+
+DOM 2 级样式规范为 style 对象定义了一些属性和方法。
+
+- cssText ：访问 HTML 标签中 style 属性的 CSS 码
+- length ：元素定义的 CSS 属性的数量
+- parentRule ：表示 CSS 的 CSSRule 对象
+- getPropertyCSSValue()：返回包含给定元素属性值的 CSSValue 对象
+- getPropertyPriority ：返回给定的 CSS 属性中是否附加了 !important 命令
+- item() ：返回给定位置的 CSS 属性的名称
+- getPropertyValue()：返回给定属性的字符串值
+- removeProperty()：从样式表中删除特定的属性
+- setProperty()：将给定样式表设置为相应的值，并加上优先权符号
+
+## getPropertyValue() 方法
+
+getPropertyValue() 能够获取指定元素样式表属性的值。
+
+```js
+var value = e.style.getPropertyValue(propertyName);
+```
+
+```html
+<div id="box" style="width: 300px;height: 200px;border: solid 2px #f00;"></div>
+<script>
+  var box = document.getElementById('box');
+  var width = box.style.getPropertyValue('width');
+  box.innerHTML = '盒子宽度' + width;
+</script>
+```
+
+## setProperty() 方法
+
+setProperty() 方法为指定的元素设置样式。
+
+```js
+e.style.setProperty(propertyName, value, priority);
+```
+
+```html
+<div id="box" style=" border: solid 2px #f00;"></div>
+<script>
+  var box = document.getElementById('box');
+  box.style.setProperty('width', '400px', '');
+  box.style.setProperty('height', '200px', '');
+</script>
+```
+
+## removeProperty() 方法
+
+```js
+e.style.removeProperty(propertyName);
+```
+
+## item() 方法
+
+item() 方法返回 style 对象中指定的索引位置的 CSS 属性名称。
+
+```js
+e.style.item(index);
+```
+
+## getPropertyPriority() 方法
+
+getPropertyPriority() 方法可以获取指定 CSS 是否附加了 !important 优先级声明，如果存在则返回 "important" 字样，否则返回空字符。
+
+```html
+<div
+  id="box"
+  style=" width: 300px;height: 300px;background-color: #0f0;border:
+solid 2px #f00;"
+></div>
+<script>
+  var box = document.getElementById('box');
+  box.onmouseover = function () {
+    box.style.backgroundColor = '#0ff';
+    box.style.setProperty('background-color', '#0ff', ''); //
+    box.style.border = 'solid 25px #00f';
+    box.style.setProperty('border', 'solid 25px #00f', '');
+  };
+  box.onclick = function () {
+    box.innerHTML = 'width :' + box.style.width;
+    box.innerHTML =
+      box.style.item(0) + ':' + box.style.getPropertyValue('width');
+    box.innerHTML += '' + 'height: ' + box.style.height;
+    box.innerHTML +=
+      '' + (box.style.item(1) + ':' + box.style.getPropertyValue('height'));
+  };
+  box.onmouseout = function () {
+    box.style.backgroundColor = '#ff0';
+    box.style.setProperty('background-color', '#ff0', '');
+    //
+    box.style.border = 'dotted 15px #f0f';
+    box.style.setProperty('border', 'dotted dotted 15px #f0f');
+  };
+</script>
+```
+
+使用 cssText 读取行内样式。之后再使用 split 分割：
+
+```html
+<div
+  id="box"
+  style=" width: 700px;height: 300px;background-color: #0f0;border:
+solid 12px #f56;padding: 10px;margin: auto;"
+></div>
+<script>
+  var box = document.getElementById('box');
+  var str = box.style.cssText; //读取所有行内样式
+  var a = str.split('');
+  var temp = '';
+  for (var b in a) {
+    var prop = a[b].split(':');
+    if (prop[0]) temp += b + '：' + prop[0] + ' = ' + prop[1] + '';
+  }
+  box.innerHTML = 'box.style.casText = ' + str;
+  box.innerHTML += '' + temp;
+</script>
+```
+
+修改下，使用 getAttribute() 方法获取样式：
+
+```html
+<div
+  id="box"
+  style=" width: 700px;height: 300px;background-color: #0f0;border:
+solid 12px #f56;padding: 10px;margin: auto;"
+></div>
+<script>
+  var box = document.getElementById('box');
+  var str = box.getAttribute('style');
+  // 读取所有行内样式
+  var a = str.split('');
+  var temp = '';
+  for (var b in a) {
+    var prop = a[b].split(':');
+    if (prop[0]) temp += b + '：' + prop[0] + ' = ' + prop[1] + '';
+  }
+  box.innerHTML = 'box.style.casText = ' + str;
+  box.innerHTML += '' + temp;
+</script>
+```
+
+            

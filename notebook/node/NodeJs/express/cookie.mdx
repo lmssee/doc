@@ -1,0 +1,43 @@
+---
+title: cookie
+
+
+---
+
+# cookie-parser
+
+使用 cookie 之前，需要使用中间件 cookie-parser 中间件。
+
+## 安装
+
+```sh
+npm i -s cookie-parser
+```
+
+## 使用
+
+```ts
+import cookieParser from 'cookie-parser'; // 引入
+app.use(cookieParser)(credentials.cookieSecret); // 注册
+res.cookie('en', 'en'); //生成一个键值都为 en 的 cookie
+res.cookie('ch', 'ch', { signed: true }); //生成一个键值都为 ch 的 cookie
+```
+
+## 选项
+
+| 选项名称 | 数据类型 | 说明                                                                                                                                   |
+| :------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------- |
+| domain   | 字符串   | 控制跟 cookie 相关的域名或分配子域名                                                                                                   |
+| path     | 字符串   | 控制 cookie 的路径                                                                                                                     |
+| maxAge   | 数值     | 指定 cookie 的保存时间，单位是毫秒。默认是 0 ，关闭浏览器则清空                                                                        |
+| secure   | 布尔值   | 指定该 cookie 只能通过安全（ HTTPS ）连接发送                                                                                          |
+| httpOnly | 布尔值   | 将此项设置为 true ，客户端将无权限更改 cookie 值                                                                                       |
+| signed   | 布尔值   | 设置为 true 时，需要用 res.signedCookies 而不是 res.cookies 访问它。被篡改的签名。被篡改的签名 cookie 也会被服务器拒绝，并重置为原始值 |
+
+## 删除
+
+```js
+res.clearCookie('en');
+```
+
+            

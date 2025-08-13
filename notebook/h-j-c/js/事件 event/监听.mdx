@@ -1,0 +1,94 @@
+---
+title: 监听
+
+
+---
+
+# 注册
+
+```js
+element.addEventListener(String type,Function listener,Boolean useCapture);
+```
+
+- type: 注册事件类型名
+- listener: 事件监听函数。默认传给它的唯一参数为 event
+- useCapture: 布尔值：为 true 时，则在捕获阶段触发；为 false 时，则在冒泡阶段出发
+
+注意　在 Firefox 中注册多个事件时，先添加的监听事件先被调用。标准的 DOM 监听函数是严格按顺序执行的。
+
+在 IE 事件模型中，使用
+
+```js
+attachEvent(etype, eventName);
+```
+
+使用 attachEvent() 注册事件时，其事件处理函数的调用对象不再是当前事件对象本身。而是 window 对象，因此此时事件函数指向的是 window ，而不再是当前对象。要获取当前对象，应该使用 event
+的 srcElement 属性。
+
+## 注销
+
+要移除已注册的事件监听器，调用 element 的 removeEventListener 即可，参数不变。
+
+```js
+element.removeEventListener('click', observer, useCapture);
+```
+
+直接在 DOM 节点上加事件。
+
+removeEventListener() 方法只能删除 addEventListener() 方法注册的事件。
+
+当临时注册一个事件时，可以在处理完毕后立即删除它，这样可以节省系统资源。
+
+## 内联事件处理器
+
+不同的事件处理器对于各种 HTML 标签有效。尽管 onclick 可以插入到很多的 HTML 标签中，但诸如 onload 这样的事件处理器则只能用于 `<body>` 和 `<img>` 元素。
+
+## 作为 DOM 对象的属性的事件处理器
+
+这种分配事件处理器的方法对于较小的示例也有效，但是它也有一些重要的缺点。最主要的一个缺点是，它将事物的外观（通常称为其表现层）和事物所做的事情混合到一起。这可能使得 Web 页面成为一个难以维护和更新的梦魇。
+
+## 使用 addEventListener()
+
+在所指定的任何 DOM 节点上调用 addEventListener 方法（而不只是页面元素上），并且当一个指定的事件发生时，触发所要执行的代码。通过添加多个这种类型的事件监听器，可以指定任意多个不同的事件。
+
+还有另一个函数 removeEventListener()，它将删除之前添加的一个监听器。 **使用和任何当前注册的监听器都不匹配的参数来调用 removeEventListener()，并不会产生一个错误，但是这没有任何效果。**
+
+## event 对象
+
+DOM 提供了一个 event 对象，其中包含了这种类型的信息。在一个事件处理函数中，可能会看到表示这个 event 的一个参数（通常用一个诸如 event 的名字来指定，或者直接用 e 来指定，尽管可以选择任何名称）。这个
+event 对象将会自动传递给事件处理器。
+
+**_event 对象有一个 keyCode 属性，它表示按下了哪个键_**。
+
+在 IE 浏览器中，事件对象是 Window 对象的一个属性 event ，并且 Event 对象只能在事件发生时被访问，所有事件处理完后，该对象就消失了。而标准的 DOM 中规定
+event 必须作为唯一的参数传给事件处理函数。故为了实现兼容性，通常采用下面的方法。
+
+```js
+function someHandle(event) {
+  if (window.event) event = window.event;
+}
+```
+
+在 IE 中，事件的对象包含在 Event 的 srcElement 属性中，而在标准的 DOM 浏览器中，对象包含在 target 属性中。为了处理两种浏览器的兼容性，举例如下：
+
+```js
+function handle(oEvent) {
+  if (window.event) oEvent = window.event; //处理兼容性，获得事件对象
+  var oTarget;
+  if (oEvent.srcElement)
+    //处理兼容性，获取事件目标
+
+    oTarget = oEvent.srcElement;
+  else oTarget = oEvent.target;
+  alert(oTarget.tagName); //弹出目标的标记名称
+}
+window.onload = function () {
+  var oImg = document.getElementsByTagName('img')[0];
+  oImg.onclick = handle;
+};
+```
+
+- 阻止默认行为 preventDefault() 方法
+- e.stopPropagation() 阻止进一步冒泡
+
+            

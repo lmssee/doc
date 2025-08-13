@@ -1,0 +1,157 @@
+---
+title: 文本
+
+
+---
+
+# 标题
+
+通过 `<h[\m]>` … `</h[\m]>` 标签进行定义的，其中 n 的值是从 1 到 6
+，分别表示六级标题。
+
+## 斜体 和 粗体
+
+粗体（ boldface ）和斜体（ italic ）文本在所有纸面交流中都变成了社交礼节所要求的。
+
+给文本添加粗体和斜体格式化效果的老派方法——这里将简要讨论，因为如果你选择查看源代码，那么将不可避免地会在许多 Web 站点的源代码中看到它，包括 `<b>` 和 `<i>` 标签对。对于粗体文本，将用 `<b>` 和 `</b`> 标签包围文本。类似地，要使任何文本以斜体显示，将在 `<i>` 和 `</i>` 标签内封闭它。尽管这种方法在浏览器中仍然会工作得很好，但它不像用于文本格式化的
+CSS 样式规则那样灵活或强大，应该 **_避免使用_**。
+
+`<strong>` 和 `<em>` 标签被认为是 `<b>` 和 `<i>`
+之上的改进，因为它们只暗示文本应该接受特殊的强调。它们没有明确规定应该如何实现这种效果。换句话说，浏览器不必把
+`<strong>` 解释为意指粗体或者把 `<em>` 解释为意指斜体。这使
+`<strong>` 和 `<em>` 更适合于 HTML5
+，因为它们给文本添加了含义，并且会影响文本的显示方式。
+
+## 段落
+
+其中 p 是 Paragraph （段落）的缩写，使用 `<p>` ～ `</p>`
+可以用来包裹文章的段落的主体内容。
+
+| 属性                 | 作用                          |
+| :------------------- | :---------------------------- |
+| class=class          | 设置类属性                    |
+| id=id                | 设置 ID 属性                  |
+| style=style          | 设置行内样式                  |
+| title=title          | 设置标题                      |
+| dir=dir              | 设置段落文字的显示方向        |
+| lang=lang            | 设置语言种类                  |
+| accesskey=key        | 设置快捷键                    |
+| tabindex=n           | 设置 Tab 键在控件中的移动顺序 |
+| contenteditable=bool | 设置元素是否可编辑            |
+| contextmenu=id       | 指定 context menu             |
+| draggable=bool       | 设置是否可拖拽                |
+| dropzone=value       | 设置是否可拖放                |
+| hidden               | 设置隐藏元素                  |
+| spellcheck=bool      | 检查语法拼写                  |
+| IE 扩展属性          | 用于设定 IE 扩展属性          |
+
+## 常见
+
+- `<abbr>`、`</abbr>`表示缩写
+- `<address>`地址
+- `<bdi>`文档方向 ( 不受父级影响 )
+- 换行
+- `<bro>`文档方向 包含 dir 属性，取值包括 ltr （由左向右）和 rtl （由右向左）
+- `<cite>`引用其它作品标题
+- `<code>`、 `<var>`、 `<samp>`、 `<kbd>`：表示输入和输出
+- `<del>`已删除的内容
+- `<dfn>`、`</dfn>`定义术语
+- `<em>`、`</em>`：强调的（斜体）文本。
+- `<hr>`主题分割线
+- `<ins>`已添加的内容
+- `<mark>`突出显示
+- `<meter>`代表投票结果。与 progress 类似，包含 value 、 min 、 max 、 low 、 high 、 optimum 、 form 属性
+- `<pre>`、`</pre>`：预先格式化的（通常是等宽的）文本，保留空格和换行符。
+- `<progress>`完成度，表水一个进度条，支持 max 、 value 、 form 属性
+- `<q>`、`</q>`定义短的引用
+- `<ruby>`、`<rt>`、`<rp>`、`</rp>`、`<rp >`、`</rp>`、`</rt>`、`</ruby>`注释
+- `<small>`、`</small>`添加小号文本
+- `<strong>`、`</strong>`：醒目的（粗体）文本。
+- ^、：上标文本。
+- ^、：下标文本。
+- 段中元素
+- `<time>`表示时间和日期，可包含 datetime 属性，来告诉浏览器时间
+- `<u>`、`</u>`: 下划线
+- `<wbr>`智能换行
+
+## del ins
+
+del 和 ins 有两个重要是的属性： cite 、 datetime 。 cite 属性不同于 cite
+元素，用于提供一个 URL ，指向说明编辑原因的页面。 datetime
+属性提供编辑的时间，浏览器不会显示，不过可以提供一些背景信息。
+
+## meter
+
+很像 progress ，可以用 meter 表示分数值或已知范围的测量结果。属性如下：
+
+- value 值，唯一必须包含的属性
+- min 最小
+- max 最大
+- low 下限
+- high 上限
+- optimum 设置最佳值
+- form 所属表单
+
+## 引用它处内容
+
+`<blockquote>` 与 `</blockquote>`
+之间的所有文本都会从常规文本中分离出来，经常会在左、右两边进行缩进（增加外边距），而且有时会使用斜体。也就是说，块引用拥有它们自己的空间。
+
+## 文字的滚动
+
+使用 marquee 元素可以实现文字的滚动。
+
+```html
+<span class="p"
+  ><marquee
+    style="width:xx;height: xx;"
+    scrollamount="2"
+    direction="up"
+    align="right"
+  ></marquee
+></span>
+```
+
+- bg color 属性设定活动字幕的背景颜色，背景颜色可用 RGB 、 16
+  进制值的格式或颜色名称来设定
+
+- width 用于设置滚动文本框的宽度，输入一个数值后从后面的单选框选择 in Pixels
+  （按像素）或是 in Percent （按百分比）
+
+- height 用于设置滚动文本框的高度，输入一个数值后从后面的单选框选择 in Pixels
+  （按像素）或是 in Percent （按百分比）
+
+- loop 属性设定滚动的次数，当 loop=-1 表示一直滚动下去，默认为 -1
+- hspace 、 vspace 设定活动字幕里所在的位置距离父容器垂直边框、竖屏的距离
+
+设定 `<marquee>` 标签内容的对齐方式可选参数如下。
+
+- absbottom ：绝对底部对齐（与 g 、 p 等字母的最下端对齐）
+- absmiddle ：绝对中央对齐
+- baseline ：底线对齐
+- bottom ：底部对齐（默认）
+- left ：左对齐
+- middle ：中间对齐
+- right ：右对齐
+- texttop ：顶线对齐
+- top ：顶部对齐
+
+```html
+<marquee
+  behavior="alternate"
+  direction="up"
+  style="width: 12rem; background: chartreuse; height: 2rem; text-align: center"
+  scrollamount="2"
+  align="center"
+>
+  ........ 。 ....... 。 ...... 。 ..... 。 .... 。 ... 。 .. 。 . 。
+</marquee>
+```
+
+behavior 属性设置 marquee 的滚动的方式
+
+- scroll ：循环滚动
+- slide ：单次滚动
+- alternate ：来回滚动
+
+            

@@ -1,0 +1,124 @@
+---
+title: 访问控制
+
+
+---
+
+# 访问控制
+
+JavaScript 的访问方式允许限制对类成员的访问，有了成员访问方式，才能开发一个可靠的面向对象的应用程序，才能可靠地构建可重用的面向对象类库。
+
+在某些情况下，可能需要保护类的数据和方法，不允许在类外访问。这时，需要将这些成员指定为私有成员：只有声明这些成员的类才能访问它们。
+
+使用 this 或 prototype 定义的属性和方法都是公共成员。在 function 内使用普通的变量或者函数定义就可以声明私有成员。
+
+类的实例及该类的子类的实例都不能访问声明为私有成员的属性和方法（因此导致的另一个结果是不能继承私有成员）。也就是说，私有成员只能在类定义中访问，而不能在实例级别上访问。
+
+## public 成员（公共成员）
+
+使用 this 关键字定义的类的成员允许在任何地方被访问，例如前面定义的 Person 类：
+
+```js
+function Person(myName, myAge) {
+  this.age = myName;
+  this.nickName = myAge;
+  this.showInfo = function () {
+    return '我的名字是 ' + this.nickName + ' ，我现在 ' + this.age + '$1 了。 ';
+  };
+}
+```
+
+两个属性和 showInfo() 方法都是使用 this 关键字定义，这表示这些属性和方法可以在外面任何地方被访问：
+
+```js
+var tom = new Person('Tom', 22);
+var info = tom.showInfo(); // 访问方法
+console.log(info);
+console.log(tom.nickName); // 访问属性
+console.log(tom.age); // 访问属性
+```
+
+使用 prototype 定义的属性和方法也都是公共成员，例如下面的代码定义了两个属性和 showInfo() 方法为公共成员：
+
+```js
+function Person() {}
+Person.prototype.nickName = '';
+Person.prototype.age = 0;
+Person.prototype.showInfo = function () {
+  return '我的名字是 ' + this.nickName + ' ，我现在 ' + this.age + '$1 了。 ';
+};
+```
+
+这些属性和方法可以在外面任何地方被访问：
+
+```js
+var tom = new Person();
+tom.nickName = 'Tom'; // 访问属性
+tom.age = 22; // 访问属
+var info = tom.showInfo(); // 访问方法
+console.log(info);
+```
+
+## private 成员（私有成员）
+
+如果不想类的成员在外部被访问到，那么就可以使用 var 关键字，例如修改 Person 类的定义，将 age 属性使用 var 关键字定义：
+
+```js
+function Person(myName, myAge) {
+  var age = myName;
+  this.nickName = myAge;
+  this.showInfo = function () {
+    return `我的名字是${this.nickName}
+     我现在${age} 了`;
+  };
+}
+```
+
+那么 nickName 属性和 showInfo() 方法可以在类定义的外部访问到，但如果要访问 age 属性就会导致出错（因为没有这个定义，所以会返回 undefined ）：
+
+```js
+var tom = new Person('Tom', 22);
+var info = tom.showInfo(); // 访问方法
+console.log(info);
+console.log(tom.nickName); // 访问属性
+console.log(tom.age); // 访问私有属性，返回 undefined
+```
+
+但是也注意到，在类内仍可以使用这个属性，例如在 showInfo 方法体内用到了私有属性 age 。在类内使用私有成员时不能使用 this 关键字限定。
+
+另外，也可以使用方括号运算符访问类的成员，当使用方括号运算符访问类的私有成员时，也会导致运行时出错（因为没有这个定义，所以会返回 undefined ）：
+
+```js
+console.log(tom['age']);
+/**
+ * 访问私有属性，返回 undefined
+ *
+ * private 方法可以使用匿名函数定义，也可以使用命名函数定义。例如下面的代码，实现的功能相同：
+ */
+//
+
+function Person() {
+  var showInfo = function () {};
+}
+```
+
+或者。
+
+```js
+function Person() {
+  function showInfo() {}
+}
+```
+
+定义 private 成员的目的在于有助于封装数据， private 成员（包括属性和方法等）只能由定义这些成员的类访问，不能在一个 private
+成员定义所在的类方法之外改变或读取其值。即使是该类的子类，也不能访问声明为私有成员的属性和方法。
+
+private 的使用使私有成员可以隐藏在一个类内部而不被类外部的代码接触到。同时它们还有助于实现松散的耦合，如果数据结构外的代码不能直接访问内部属性，那么就不会产生一个隐性的关联性。
+
+## 技巧与提示
+
+在继承时，声明一个与基类的 private 成员同名的成员将简单地在当前类中建立一个与原来不同的成员。因此，在技术上不能覆写一个 private 成员，因为基类方法在子类中不可见。
+
+因为 JavaScript 类都是动态类，所以访问包内属性不会导致运行出错，若要访问动态类的成员，它会自动添加一个公共的成员，即使该成员不存在，也不过是返回 undefined 。
+
+            

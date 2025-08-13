@@ -1,0 +1,45 @@
+---
+title: 版本管理
+
+
+---
+
+# 数据库版本管理
+
+每个本地的 SQL 数据库都仅能存在唯一的数据库名，并且都有唯一的一个版本号，不可能同时存在一个数据库的多个版本。
+
+使用 DatabaseSync.version 属性可以返回数据库的版本号，使用 DatabaseSync.changeVersion() 方法可以改变数据库的版本号，该方法的语法格式如下：
+
+```js
+DatabaseSync.changeVersion(oldVersion, newVersion[, callback]);
+```
+
+参数 oldVersion 定义数据库当前的版本号，一般都应设置为 DatabaseSync.version 属性值。
+
+参数 newVersion 定义数据库新的版本号，版本号是字符串类型。
+
+参数 callback 可选，定义一个要执行的函数，该函数内执行的 SQL 操作都是事务的，要么全部成功，要么全部失败。该回调函数有一个参数，参数是 SQLTransactionSync 对象，使用该对象定义的方法可以执行
+SQL 操作，代码如下：
+
+```js
+function callback(oSQLTransactionSync) {}
+```
+
+该方法经常和 openDatabaseSync() 方法最后一个参数配合使用。而且，在改变版本时，使用 DatabaseSync.changeVersion() 方法可以同时执行事务操作，代码如下：
+
+```js
+function callback(tx) {
+  // 可以执行  tx.executeSql() 操作
+}
+function creationCallback(database) {
+  database.changeVersion(database.version, '1.0', callback);
+}
+var db = openDatabaseSync(
+  'myDb',
+  ' 我的第一个客户端数据库 ',
+  2 * 1024 * 1024,
+  creationCallback,
+);
+```
+
+            

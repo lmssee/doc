@@ -1,0 +1,24 @@
+---
+title: 阴影
+
+
+---
+
+# 开启
+
+阴影需要配置多个地方，包括渲染器（ renderer ）、灯光（ light ）、网格（ Mesh ）都需要开启其相应的阴影设置。而且，材质也影响了阴影的效果。
+
+```js
+
+renderer.shadowMap.enabled = true;
+...
+cubeMesh.castShadow = true;// 可以投影
+cubeMesh.receiveShadow = true; // 接受被投影
+...
+light.castShadow = true;
+...
+
+
+```
+
+            

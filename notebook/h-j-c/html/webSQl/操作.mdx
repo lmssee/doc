@@ -1,0 +1,208 @@
+---
+title: 操作
+
+
+---
+
+# 创建数据库
+
+创建和打开数据库时必须使用 openDatabase() 方法进行创建。
+
+```js
+Database openDatabase(
+// 数据库名
+in DOMString name,
+// 版本号 in DOMString displayName,
+in DOMString version,
+/// 描述
+// 数据库大小
+in unsignes long estimatedSize,
+ // 回调函数
+ in optional DatabaseCallback creationCallback
+ );
+```
+
+调用 openDatabase() 方法可以返回创建后的数据库访问对象，如果该数据库不存在，则会创建该数据库。使用 openDatabase() 方法时需要传递 4 个参数。它们分别表示数据库名称、数据库版本号、数据库说明以及数据库大小。除了这 4 个参数外，还有一个可选参数，这个参数是创建数据库时的回调函数，在数据库创建后会执行回调函数。
+
+连接失败可能是多因素引起的，例如：浏览器安全原因拒绝访问、设备储存有限。面对活跃而快速进化的浏览器，对用户机器、软件及其功能等做出假设都是不理智的行为。所以，使用前应先判断。
+
+## 访问和操作数据库
+
+使用事务处理，可以防止在对数据库进行访问及执行有关操作的时候受到外界打扰。因为在 Web 上，同时会有许多用户都在对页面进行访问。如果在访问数据库的过程中，正在操作的数据被别的用户修改了，会引起很多意想不到的后果。因此，可以使用事务来达到在操作完成之前，阻止其它用户访问数据库的目的。
+
+```js
+transaction(callbackFun, errorCallbackFun, successCallbackFun);
+```
+
+- callbackFun ：回调函数，在该函数中执行访问数据库的 SQL 语句操作
+- errorCallbackFun ：发生错误时调用的回调函数
+- successCallbackFun ：执行成功时的回调函数
+
+一般情况下，使用 transaction() 时传入一个类型事务的函数参数 tx 最为常用，它可以创建表或者执行操作语句。
+
+```js
+db.transaction(function (tx) {
+  tx.executeSql('CREATETABLE IF NOT EXISTS User (id unique, text)');
+});
+```
+
+transaction() 中需要传入一个事件参数 tx ，该参数具有一个 executeSql() 方法，调用该方法可以创建数据库表，也可以执行增加、删除和修改等数据操作。
+
+使用 executeSql() 方法时需要传入 4 个参数
+
+## sqlString
+
+sqlString ：表示要查询的字符串，即要执行的 SQL 语句。如果包含参数，则需要使用" ? "代替，然后依次将这些参数组成数组放到第二个参数中
+
+## []
+
+执行 SQL 语句时需要传入的参数，即 sqlString 语句中使用" ? "时所在处的字符串数据
+
+```js
+transaction.executeSql('UPDATE User set text=? where id=?', [' 陈洋 ', 1]);
+```
+
+## dataHandler
+
+执行成功时的回调函数。可以向该回调函数中传递两个参数，第一个参数表示 transaction 对象，第二个参数表示执行查询操作时返回的查询到的结果数据集对象
+
+```js
+function dataHandler(transaction, results) {
+  // 执行SQL 语句成功时的处理
+}
+```
+
+## errorHandler
+
+执行失败时的回调函数。与成功时的回调函数一样，也可以向该函数中传递两个参数，第一个参数表示 transaction 对象，第二个参数表示执行发生错误时的错误信息文字
+
+```js
+function errorHandler(transaction, err_msg) {
+  // 执行SQL 语句出错时的处理
+}
+```
+
+## 数据的简单操作
+
+当执行查询操作时，如果要把查询到的结果数据集中所获取的数据依次取出到页面上来，可以使用 for 语句进行循环。数据集对象中有一个 rows 属性，它保存了查询到的每条记录，记录的条数可以使用 rows.length 来获取。在
+for 语句中，一般情况下都使用 rows.item(index) 的形式依次获取出每条记录。
+
+创建新的网页并进行设计，在合适位置添加一个表格。
+
+```html
+<tbody id="contactListBody"></tbody>
+```
+
+在 JavaScript 脚本中创建名为 UserMobileManager 的数据库，指定该数据库的版本是 2.0 ，并且空间大小是 2MB 。然后在页面中调用 Init() 函数， Init() 函数中首先使用 transaction() 添加事务处理，然后调用 executeSql() 创建名称是 UserMobile 的数据库表，并且向该表中添加 4 个联系人记录，最后调用 GetObjectList() 函数向页面显示所有的联系人列表。
+
+```js
+var db = openDatabase(
+  'UserMobileManager',
+  '2.0',
+  'A List of UserMobile',
+  2 * 1024 * 1024,
+);
+window.onload = Init;
+function Init() {
+  if (db) {
+    db.transaction(function (tx) {
+      tx.executeSql(
+        'CREATE TABLE UserMobile(username unique, user phone text,user group text)',
+      );
+      tx.executeSql('INSERT INTO UserMobile Values(?,?,?)', [
+        '庆儿',
+        '138xxxxxxxx',
+        ' 朋友 ',
+      ]);
+
+      tx.executeSql('INSERT INTO UserMobile Values(?,?,?)', [
+        ' 妈妈 ',
+        '138xxxxxxxx',
+        ' 家人 ',
+      ]);
+      tx.executeSql('INSERT INTO UserMobile Values(?,?,?)', [
+        ' 老爸 ',
+        '138xxxxxxxx',
+        ' 家人 ',
+      ]);
+      tx.executeSql('INSERT INTO UserMobile Values(?,?,?)', [
+        '谭二胖',
+        '138xxxxxxxx',
+        ' 朋友 ',
+      ]);
+    });
+    GetObjectList();
+  } else {
+    alert('Failed to connect to database.');
+  }
+}
+```
+
+上述代码调用 executeSql() 方法创建 UserMobile 时，向该表中添加了三个字段列，第一个字段列是 username ，其中 unique 表示主键列；第二个和第三个字段分别表示联系电话和联系人分组，它们都是字符类型。
+
+GetObjectList() 函数用来获取所有的联系人列表，并且将这些联系人的信息显示到页面中。在 GetObjectList() 函数中，首先会在事务处理中通过 executeSql() 方法执行一个查询语句，该语句用来获取数据库表 UserMobile 的所有联系人记录，如果执行成功则访问成功回调函数中的内容，并且向成功回调函数中传入两个分别表示 transaction 对象和执行结果数据集的参数。
+
+```js
+function GetObjectList() {
+  if (db) {
+    db.transaction(function (tx) {
+      tx.executeSql('select * FROM UserMobile', [], function (tx, results) {
+        var totalcount = results.rows.length;
+        var strHTML = '<tbody>';
+        for (var i = 0; i < totalcount; i++) {
+          strHTML += '<tr>';
+          strHTML +=
+            '<td style="width:200px">' +
+            results.rows.item(i).username +
+            '</td>';
+          strHTML +=
+            '<td style="width:180px">' +
+            results.rows.item(i).userphone +
+            '</td>';
+          strHTML += '<td>' + results.rows.item(i).usergroup + '</td>';
+          strHTML +=
+            '<td><a href= "javascript:DelObject(' +
+            results.rows.item(i).username +
+            ')"> 删除 </a>';
+          strHTML += '</tr>';
+        }
+        strHTML += '</tbody>';
+        document.getElementById('contactListBody').innerHTML = strHTML;
+      });
+    });
+  }
+}
+```
+
+单击每条记录后的【删除】链接时会调用 JavaScript 脚本中的 DelObject() 函数，该函数中需要传入一个参数，这里传入每条记录的联系人姓名。在 DelObject() 函数代码中，执行删除数据操作的查询语句，如果执行成功则返回成功的回调函数，在该函数中重新调用 GetObjectList() 函数加载显示联系人列表；如果执行失败则弹出提示。
+
+```js
+function DelObject(objName) {
+  if (db) {
+    db.transaction(function (tx) {
+      tx.executeSql(
+        'DELETE FROM UserMobile WHERE username=?',
+        [objName],
+        function () {
+          GetObjectList();
+        },
+        function (tx, ex) {
+          alert('删除过程中出现了错误,其错误原因是: ' + ex.message);
+        },
+      );
+    });
+  }
+}
+```
+
+关系数据库是目前各类数据库中最重要、最流行的数据库，也是数据存储的最主要应用。与关系数据库对应的是 SQL 语言，全称是结构化查询语言（ Structured Query Language ）。
+
+使用本地存储和会话存储可以实现简单的对象持久化，它们可以对简单的键 / 值对（如应用程序设置）或对象（如应用程序状态）进行存储，但是，在对稍微复杂的关系数据进行处理时，就力所不及了，这正是 HTML5 的 Web SQL Database 存在的原因。
+
+因为关系数据库存储需要使用结构化查询语言 SQL ，因此，也被称为 Web SQL Database 。
+
+每个支持 Web SQL Database 功能的浏览器都将内嵌一个本地的 SQL 数据库，并且都有一个版本号。不可能同时存在一个数据库的多个版本。
+
+每种浏览器嵌入的数据库可能不同，例如当前 Chrome 、 Safari 、 Firefox 和 Opera 都内嵌了 SQLite 数据库，而 Internet Explorer 嵌入何种数据库目前尚不明朗。但是，不管是何种数据库，都可以使用相同的 API 来查询和操作。
+
+            

@@ -1,0 +1,154 @@
+---
+title: 汇总
+
+
+---
+
+# reduce()方法
+
+使用 reduce 方法可对数组中所有的元素调用指定的回调函数。该回调函数是返回值的累计结果，并且此返回值在下一次调用该回调函数时作为参考提供。
+
+```js
+array.reduce(callbackfn[,initialValue])
+```
+
+参数说明
+
+- callbackfn 对于数组中的每个元素， reduce 方法都调用 callbackfn 一次
+- initialValue 可选参数，如果指定 initialValue,则它将作为初始值自动累积，第一次调用 callbackfn 会将此值作为参数而非数组值提供
+
+如果提供了参数 initialValue ，则 reduce 方法会对每一个数组中的每一个元素调用一次 callbackfn 函数（按升序索引顺序）。如果未提供 initialValue
+，则 reduce 方法会将第二个元素开始的每一个元素调用 callbackfn 函数。
+
+回调函数语法如下：
+
+```js
+function callbackfn(previousValue, currentValue, currentIndex, array)
+```
+
+- previousValue 通过上一次回调函数获得的值，如果向 reduce 方法提供 initialValue ，则在首次使用函数时， previousValue 为 initialValue
+- currentValue 当前数组元素的值
+- currentIndex 当前数组元素的数字索引
+- array 包含该元素的数组对象
+
+reduce()方法从左到右，使用函数对比数组中的两个值，将这两个值删除一个，其语法格式如下：
+
+```js
+oArray.reduce(callbackFunction[,initialValue])
+```
+
+参数 callbackFunction 定义对数组中的每一元素进行匹配运算的函数。该函数可以包含4个参数，即前一个元素值、当前元素值、当前元素索引和 Array 对象，格式如下：
+
+```js
+function callbackFunction(previous, current, index, array) {}
+```
+
+参数 initialValue 定义第一次调用 callbackFunction 函数时的 previous 参数，如果定义该参数，当前值是第一个元素值；如果不定义 initialValue ，第一次调用 callbackFunction 函数时，前一个值是第一个元素值，当前值是第二个元素值。
+
+该方法对数组中的每两个元素执行测试函数，每执行一次就减去一个元素，并将返回值作为当前元素，依次类推。
+
+例如下面的代码，演示了如何使用该方法：
+
+```js
+var A_Team = [0, 1, 2, 3];
+function getItemsFn(previous, current, index, array) {
+  return previous + current; // 所有元素相加
+}
+var temp_int = A_Team.reduce(getItemsFn);
+console.log(temp_int); // 返回6
+```
+
+下面是调用的过程：
+
+```js
+// 第一次调用，当前值是倒数第二个元素
+(previousValue = 0), (currentValue = 1), (index = 1);
+// 第二次调用
+(previousValue = 1), (currentValue = 2), (index = 2);
+// 第三次调用
+(previousValue = 3), (currentValue = 3), (index = 3);
+```
+
+下例演示。
+
+```js
+function appendCurrent(previousValue, currentValue) {
+  return;
+  previousValue + '::' + currentValue;
+}
+var elements = ['abc', 'def', 123, 456];
+var result = elements.reduce(appendCurrent);
+console.log(result); // abc::def::123::456
+```
+
+下例向数组中添加元值。 currentIndex 和 array 参数用于回调函数。
+
+```js
+function addDigitValue(previousValue, currentDigit, currentIndex, array) {
+  var exponent = array.length - 1 - currentIndex;
+  var digitValue = currentDigit * Math.pow(10, exponent);
+}
+var digits = [4, 1, 2, 5];
+var result = digits.reduce(addDigitValue, 0);
+console.log(result);
+// 4125
+```
+
+下例获取一个数组，该数组包含另一个数组中介于 1 和 10 之间值，，提供给 reduce 方法的初始值的一个空数组。
+
+```js
+function Process(previousArray, currentValue) {
+  var nextArray;
+  if (currentValue >= 1 && currentValue <= 10)
+    nextArray = previousArray.concat(currentValue);
+  else nextArray = previousArray;
+  return nextArray;
+}
+var numbers = [20, 1, -5, 6, 50, 3];
+var emptyArray = new Array();
+var resultArray = numbers.reduce(Process, emptyArray);
+console.log(resultArray); // 1,6,3
+```
+
+## reduceRight()方法
+
+reduceRight()方法从右到左 ，该回调函数的返回值为累计结果，其语法格式如下：
+
+```js
+oArray.reduceRight(callbackFunction[,initialValue])
+```
+
+参数 callbackFunction 定义对数组中的每一元素进行匹配运算的函数。该函数可以包含4个参数，即前一个元素值、当前元素值、当前元素索引和 Array 对象，格式如下：
+
+```js
+function callbackFunction(previous, current, index, array) {}
+```
+
+参数 initialValue 定义第一次调用 callbackFunction 函数时的 previous 参数，如果定义该参数，当前值是最后一个元素值；如果不定义 initialValue ，第一次调用 callbackFunction 函数时，前一个值是最后一个元素值，当前值是倒数第二个元素值。
+
+该方法对数组中的每两个元素执行测试函数，每执行一次就减去一个元素，并将返回值作为当前元素，依次类推。
+
+例如下面的代码，演示了如何使用该方法：
+
+```js
+var A_Team = [0, 1, 2, 3];
+function getItemsFn(previous, current, index, array) {
+  return previous + current; // 所有元素相加
+}
+var temp_int = A_Team.reduceRight(getItemsFn);
+console.log(temp_int);
+// 返回6
+```
+
+下面是调用的过程：
+
+```js
+// 第一次调用，当前值是倒数第二个元素
+(previousValue = 3), (currentValue = 2), (index = 2);
+// 第二次调用
+(previousValue = 5), (currentValue = 1), (index = 1);
+// 第三次调用
+(previousValue = 6), (currentValue = 0), (index = 0);
+```
+
+            

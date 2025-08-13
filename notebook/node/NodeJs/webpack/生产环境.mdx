@@ -1,0 +1,96 @@
+---
+title: 生产环境
+
+
+---
+
+# 配置封装
+
+生产环境的配置与开发环境有所不同，比如要设置 mode 、环境变量，为文件名添加 chunk hash 作为版本号等。
+
+## 相同变量不同参数
+
+```json
+"script" ：{
+  "dev" :"ENV=development webpack-dev-server",
+  "build": "ENV=production webpack"
+  },
+```
+
+```js
+const EVN = process.evn.EVN;
+module.exports = {
+  output: {
+    filename: `bundle${EVN === 'production' ? '@[chunkhash]' : ''}.js`,
+  },
+  mode: EVN,
+};
+```
+
+## 独立配置文件
+
+```json
+{
+  "script": {
+    "dev": "webpack-dev-serve --config=webpack.development.config.js",
+    "build": "webpack --config=webpack.production.config.js"
+  }
+}
+```
+
+## 开启 production 模式
+
+设置 mode 为 production 。
+
+## source map
+
+source map 指的是将编译、打包、压缩后的代码映射回源代码的过程。经过 Webpack 打包压缩后的代码基本上已经不具备可读性，此时若代码抛出了一个错误，要想回溯它的调用栈是非常困难的。而有了 source
+map ，再加上浏览器调试工具（ dev tools ），要做到这一点就非常容易了。同时它对于线上问题的追查也有一定帮助。
+
+开启 source map ，仅需在 webpack.config.js 中添加 devtool ：
+
+```json
+{
+  "devtool": "source-map"
+}
+```
+
+对于 CSS 、 SCSS 、 Less 来说，则需要添加额外的 source map 配置项。
+
+开启 source map 可能不太安全，所以就需要单独的设置不让用户看到
+
+## 资源压缩
+
+## js 压缩
+
+开启配置项 mode ： production 后无需配置资源压缩，而单独配置则需要使用 optinization 配置项，设置 minimize 值为 true
+
+```json
+{
+  "optimization": {
+    "minimize": true
+  }
+}
+```
+
+## css 压缩
+
+压缩 CSS 文件的前提是使用 extract-text-webpack-plugin 或 mini-css-extract-plugin 将样式提取出来，接着使用
+optimize-css-assets-webpack-plugin 来进行压缩，这个插件本质上使用的是压缩器 cssnano 。
+
+之前的 [mini-css-extract-plugin](https://www.npmjs.com/package/mini-css-extract-plugin) 插件有配套插件说明，就是 mini-css-extract-plugin
+
+## 缓存
+
+缓存是指重复利用浏览器已经获取过的资源。合理地使用缓存是提升客户端性能的一个关键因素。
+
+## 资源 hash
+
+一个常用的方法是在每次打包的过程中对资源的内容计算一次 hash ，并作为版本号存放在文件名中，如 <bundle@2e0a691e769edb228e2.js> 。 bundle 是文件本身的名字，@后面跟的则是文件内容
+hash 值，每当代码发生变化时相应的 hash 也会变化。
+
+## 动态 HTML
+
+使用 html-webpack-plugin
+
+            

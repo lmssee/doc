@@ -1,0 +1,129 @@
+---
+title: 发送邮件
+
+
+---
+
+# 邮件
+
+需要使用第三方模块，例如 Andris Reinman 的 Nodemailer 。
+
+## SMTP 、 MSA 、 MTA
+
+- SMTP 简单的邮件传输协议，但是可能会被放进垃圾邮件或是退回
+- MSA 会通过可信的渠道投递邮件，降低邮件被标记为邮件的可能性，还可以处理诸如临时故障造成的滋扰和回退的邮件
+- MTA 提供一个真正的送达的服务
+
+## 接收邮件
+
+暂无。可参考 Andris Reinman 的 [SimpleSMTP](https://github.com/andirs9/simplesmtp)
+
+## 邮件头
+
+邮件消息有两部分组成：头部和主体（跟 HTTP 请求一样）。头部包含：谁发的、发给谁、接收日期、主题。
+
+## 邮件格式
+
+建议是普通文本和 HTML 两种格式
+
+## html 邮件
+
+使用 HTMl 编写邮件，可参考 [MailChimp](https://kb.mailchimp.com/campaigns/ways-to-build/how-to-code-html-emails)
+
+## Nodemailer
+
+安装：
+
+```bash
+ npm i -s nodemailer
+```
+
+使用：
+
+```js
+import nodemailer from "nodemailer;
+var mailTransport = nodemailer.createTransport('SMTP', {
+  service: 'Gmail',
+  auth: {
+    user: credentials.gmail.user,
+    pass: credentials.gmail.password,
+  },
+});
+```
+
+或者直接连接一个 SMTP 服务器：
+
+```js
+import nodemailer from "nodemailer;
+var mailTransport = nodemailer.createTransport('SMTP', {
+  host: 'smtp.lmssee.com',
+  secureConnection: true,
+  auth: {
+    user: credentials.meadowlarkSmtp.user,
+    pass: credentials.meadowlarkSmtp.password,
+  },
+});
+```
+
+## 发送邮件
+
+```js
+mailTransport.sendMail(
+  {
+    from: "'Meadowlark Travel' <info@meadowlarktravel.com>",
+    to: 'lmssee@qq.com',
+    subject: '哈哈哈',
+    text: '哈哈哈哈哈哈',
+  },
+  function (err) {
+    if (err) console.error(`Unable to send email: ${error}`);
+  },
+);
+```
+
+邮件发送给多个接受者时，需要用逗号分隔开：
+
+```js
+mailTransport.sendMail(
+  {
+    from: "'Meadowlark Travel' <info@meadowlarktravel.com>",
+    to: 'lmssee@qq.com,lmssee@outlook.com',
+    subject: '哈哈哈',
+    text: '哈哈哈哈哈哈',
+  },
+  function (err) {
+    if (err) console.error(`Unable to send email: ${error}`);
+  },
+);
+```
+
+## 发送 HTMl 邮件
+
+Nodemailer 允许在同一封邮件中发送 HTML 和普通文本两种版本，让邮件客户端选择显示哪一个版本：
+
+```js
+mailTransport.sendMail(
+  {
+    from: "'Meadowlark Travel' <info@meadowlarktravel.com>",
+    to: 'lmssee@qq.com,lmssee@outlook.com',
+    subject: '哈哈哈',
+    html: `<h1>哈哈哈哈</h1><b>粗哈哈哈哈</b>`,
+    text: '哈哈哈哈哈哈',
+  },
+  function (err) {
+    if (err) console.error(`Unable to send email: ${error}`);
+  },
+);
+```
+
+添加属性可以命令 Nodemailer 将自动转化为普通文本：
+
+```json
+generateTextFormHtml : true
+```
+
+## HTML 中的图片
+
+不建议在 HTML 邮件中嵌入图片。
+
+            

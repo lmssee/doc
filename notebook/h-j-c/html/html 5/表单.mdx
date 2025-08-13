@@ -1,0 +1,139 @@
+---
+title: 表单
+
+
+---
+
+# form
+
+## 新增的 form 元素
+
+## datalist 元素
+
+datalist 元素用于为输入框提供一个可选的列表，用户可以直接选择列表中的某一预设的项，从而免去输入的麻烦。该列表由 datalist 中的 option 元素创建。
+
+## keygen 元素
+
+keygen 元素是密钥对生成器（ key-pair generator ），能够使用户验证更为可靠。用户提交表单时会生成两个键，一个私钥，一个公钥，其中私钥（ private key ）会被存储在客户端，而公钥（
+public key ）则会被发送到服务器。
+
+| 属性名称  | 说明                                                     |
+| :-------- | :------------------------------------------------------- |
+| challenge | 如果使用该属性，将 keygen 的值设置为在提交时会给出提示   |
+| disabled  | 禁用 keygen 字段                                         |
+| form      | 定义该 keygen 字段所属的一个或多个表单                   |
+| keyType   | 定义生成密钥的算法，默认值为 rsa                         |
+| name      | 定义 keygen 元素的唯一名称。用于在提交表单时获取字段的值 |
+
+## output 元素
+
+output 元素用于在浏览器中显示计算结果或脚本输出，包含完整的开始和结束标签。
+
+## optgroup
+
+optgroup 元素在 HTML 4 中已经存在， HTML 5 中对其进行了扩展。该元素定义选项组，使用该元素允许用户组合选项。当使用一个长的选项列表时，对相关的选项进行组合会使处理更加容易。
+
+使用 optgroup 元素可以将 select 元素中的选项进行逻辑分组， optgroup 元素必须在 select 元素中直接定义，而且不允许嵌套，这就意味着不能进行二级分组。 optgroup
+元素有两个常用的属性，它们分别是 disabled 属性和 label 属性。其中，前者表示首次加载时是否禁用该选项组，而后者则用来定义分组显示的标签名，但是标签名并不能被当作选择项。
+
+## 新增的 form 属性
+
+## autocomplete 属性
+
+form 元素的 autocomplete 属性用于规定 form 中所有元素都拥有自动完成功能。
+
+## novalidate 属性
+
+form 元素的 novalidate 属性用于在提交表单时取消整个表单的验证，即关闭对表单内所有元素的有效性检查。
+
+```html
+<form action="#" class="form1">
+  <fieldset class="fld1">
+    <legend>个人信息</legend>
+    <p><label for="name">姓名</label><input id="name"></p>
+    <p><label for="address">地址</label><input id="address"></p>
+    <p><label for="sex">性别</label> <select id="sex">
+        <option value="female">女</option>
+        <option value="male">男</option>
+      </select>
+    </p>
+  </fieldset>
+  <hr>
+  <fieldset class="fld2">
+    <legend>其它信息</legend>
+    <p>
+    <fieldset>
+      <legend>你喜欢什么运动?</legend> <label for="football"> <input id="football" name="motion" type="checkbox">足球</label>
+      <label for="basketball"> <input id="basketball" name="motion" type="checkbox">篮球</label> <label for="ping"> <input
+          id="ping" name="motion" type="checkbox">乒乓球</label>
+    </fieldset>
+    </p>
+    <p>
+    <fieldset>
+      <legend>请写下你的建议? </legend> <label for="comments">
+        <textarea id="comments" rows="7" cols="25"></textarea></label>
+    </fieldset>
+    </p>
+  </fieldset> <input value="提交个人信息" type="submit">
+</form>
+```
+
+## input
+
+## 新增的 input 属性
+
+用于指定输入类型的行为和限制，这些属性分别是 autocomplete 、 autofocus 、 form 、 form overrides 、 placeholder 、 height 和 width 、 min 和 max 、 step 、 list 、 pattern 以及 required 。
+
+## input autocomplete 属性
+
+新增的 autocomplete 属性可以帮助用户在 input 类型的输入框中实现自动完成内容输入，这些 input 类型包括： text 、 search 、 url 、 telephone 、 email 、 password 、 ?? 、 range 以及 color 。不过，在某些浏览器中，可能需要首先启用浏览器本身的自动完成功能，才能使 autocomplete 属性起作用。
+
+autocomplete 属性有 3 种值： on 、 off 和空值。
+
+## autofocus 属性
+
+页面中的文字输入框会自动获得光标焦点，以方便输入搜索关键词。
+
+## form 属性
+
+form 属性，可以把表单内的从属元素写在页面中的任一位置，然后只需要为这个元素指定 form 属性并设置属性值为该表单的 id 。
+
+## 表单重写属性
+
+表单重写（ form override ）属性
+
+- formaction ：用于重写表单的 action 属性
+- formenctype ：用于重写表单的 enctype 属性
+- formmethod ：用于重写表单的 method 属性
+- formnovalidate ：用于重写表单的 novalidate 属性
+- formtarget ：用于重写表单的 target 属性
+
+## height 与 width 属性
+
+height 和 width 属性规定用于 image 类型的 input 标签的图像高度和宽度，这两个属性只适用于 image 类型的 `<input>` 标签。
+
+## list 属性
+
+HTML5 中新增了一个 datalist 元素，可以实现数据列表的下拉效果，其外观类似 autocomplete ，用户可从列表中选择，也可自行输入。而 list 属性用于指定输入框所绑定的 datalist 元素，其值是某个 datalist 的 id 。
+
+## min 、 max 和 step 属性
+
+min 、 max 和 step 属性用于为包含数字或日期的 input 输入类型规定限值，也就是给这些类型的输入框加一个数值的约束，适用于 date 、 pickers 、 number 和 range 标签。
+
+## multiple 属性
+
+multiple 属性支持一次性选择多个文件，并且该属性同样支持新增的 email 类型。
+
+## pattern 属性
+
+pattern 属性用于验证 input 类型输入框中用户输入的内容是否与自定义的正则表达式相匹配，该属性适用于以下类型的 `<input\>` ; 标签： text 、 search 、 url 、 telephone 、 email 、 password 。其实许多 input 输入类型本身就是 HTML5 "内建"的正则表达式，如 email 、 number 、 tel 、 url 等，使用这些输入类型，浏览器便能够检查用户的输入是否合乎既定的规则。
+
+## placeholder 属性
+
+placeholder 属性用于为 input 类型的输入框提供一种提示（ hint ），这些提示可以描述输入框期待用户输入何种内容，在输入框为空时显式出现，而当输入框获得焦点时则会消失。 placeholder 属性适用于以下类型的 `<input>` 标签： text 、 search 、 url 、 telephone 、 email 和 password 。
+
+## required 属性
+
+新增的 required 属性用于规定输入框填写的内容不能为空，否则不允许用户提交表单。该属性适用于以下 input 输入类型： text 、 search 、 url 、 telephone 、 email 、 password 、 date pickers 、 number 、 checkbox 、 radio 和 file 。
+
+            

@@ -1,0 +1,134 @@
+---
+title: 案
+
+
+---
+
+# 用户登录信息保存和读取
+
+```html
+<head>
+  <style>
+    ul {
+      list-style: none;
+    }
+  </style>
+  <script>
+    function mi(n, a = 0) {
+      if (document.querySelector(n) != null) {
+        if (a > 0) {
+          return document.querySelectorAll(n);
+        }
+        return;
+        document.querySelector(n);
+      } else {
+        throw new Error('完犊子啦！');
+      }
+    }
+    function page() {
+      let nam = localStorage.getItem('keyName');
+      let pas = localStorage.getItem('keyPass');
+      if (nam) mi('#textName').value = nam;
+      if (pas) mi('#textPass').value = pas;
+    }
+    function btn_click() {
+      let nam = mi('#textName').value;
+      let pas = mi('#textPass').value;
+      localStorage.setItem('keyName', nam);
+      if (mi('chkSave').checked) localStorage.setItem('keyPass', pas);
+      else localStorage.removeItem('keyPass');
+      mi('#spnStatus').className = 'status';
+      mi('#spnStatus').innerHTML = '登陆成功';
+    }
+    window.onload = page();
+  </script>
+</head>
+<body>
+  <form action="#" id="formLogin">
+    <fieldset>
+      <legend>用户登录</legend>
+      <ul>
+        <li>用户名: <input type="text" id="textName" class="input_text" /></li>
+        <li>
+          密 ** 码: <input type="password" id="textPass" class="input_text" />
+        </li>
+        <li>
+          <input
+            type="checkbox"
+            id="chkSave"
+            title="不建议在网吧等公共上网设备保存密码"
+          />是否保存密码
+        </li>
+        <li>
+          <input
+            type="button"
+            onclick="btn_click()"
+            name="btn"
+            class="input_button"
+            value="登录"
+          />
+          <input type="reset" value="重置" name="rst" class="input_button" />
+        </li>
+        <li class="li_title"><span id="spnStatus"></span></li>
+      </ul>
+    </fieldset>
+  </form>
+</body>
+```
+
+## Web 留言本
+
+```html
+<head>
+  <script>
+    function mi(n, a = 0) {
+      if (document.querySelector(n) != null) {
+        if (a > 0) {
+          return;
+          document.querySelectorAll(n);
+        }
+        return document.querySelector(n);
+      } else {
+        console.log('mi 函数参数错误，请确定输入参数正确');
+      }
+    }
+
+    function saveStorage(id) {
+      let data = mi('#' + id).value;
+      let t = new Date().getTime();
+      localStorage.setItem(t, data);
+      console.log('数据已保存');
+      alert('数据已保存');
+      loadStorage('msg');
+    }
+    function loadStorage(id) {
+      var r = '<table border="1">';
+      for (let i = 0, len = localStorage.length; i < len; i++) {
+        let key = localStorage.key(i);
+        let v = localStorage.getItem(key);
+        let d = new Date();
+        d.setTime(key);
+        let ds = d.toGMTString();
+        r += '<tr><td>' + v + '</td><td>' + ds + '</td></tr>';
+      }
+      r += '</table>';
+      mi('#' + id).innerHTML = r;
+    }
+    function clearStorage(id) {
+      localStorage.clear();
+      console.log('数据清理成功');
+      alert('数据清理成功');
+      loadStorage(id);
+    }
+  </script>
+</head>
+<body>
+  <h1>Web 留言本</h1>
+  <textarea id="memo" cols="60" rows="10"></textarea>
+  <input type="button" value="添加" onclick="saveStorage('memo')" />
+  <input type="button" value="全部清理" onclick="clearStorage('msg')" />
+  <div id="msg"></div>
+</body>
+```
+
+            

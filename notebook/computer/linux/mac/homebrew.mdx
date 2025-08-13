@@ -1,0 +1,56 @@
+---
+title: homebrew
+
+
+---
+
+# 安装
+
+直接 [官网](https://brew.sh/) 。
+
+```sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+有可能下载报错，可以尝试修改 hosts 文件：
+
+```sh
+sudo vim /etc/hosts
+185.199.108.133 raw.githubusercontent.com # 安装 homebrew 需要
+```
+
+## 环境
+
+需要设置环境变量，全剧访问：
+
+```sh
+export PATH="/opt/homebrew/bin:$PATH" # 添加到 ~/.zshrc
+```
+
+## 使用
+
+```sh
+brew install wget
+```
+
+下载的软件包会安装到独立的目录，并将其软链接搭配 /opt/homebrew 。
+
+## 列出安装的包
+
+```sh
+brew list
+```
+
+## 卸载安装的包
+
+```sh
+brew uninstall wget
+```
+
+## 版本查看
+
+```sh
+brew --version
+```
+
+            

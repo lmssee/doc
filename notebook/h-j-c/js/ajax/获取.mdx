@@ -1,0 +1,139 @@
+---
+title: 获取
+
+
+---
+
+# 获取 XML 数据
+
+XMLHttpRequest 对象通过 responseBody 、 responseStream 、 responseText 、 responseXML 属性获取响应信息，它们都是只读属性。| 响应信息 | 说明 |
+| responseBody | 将相应信息正文以 Unsigned Byte 数字形式返回 |
+| responseStream | 以 ADO Stream 对象的形式返回响应信息 |
+| responseText | 以字符串的形式返回响应信息 |
+| responseXML | 以 XML 数据形式返回响应信息 |
+
+实际应用中，，一般原则设置为 XML 、 HTML 、 JSON 或其它纯文本格式。
+
+- 如果向页面添加大量的大块数据时，选择 HTML 格式会比较方便
+- 如果要协作开发，且项目庞杂，选择 XML 格式会比较更通用
+- 如果要检索复杂的数据，且结构复杂。那么选择 JSON 格式比较便捷
+
+XML 是使用比较多的数据格式，因为 XML 文档可以被许多的编程语言支持，而且开发人员可以使用计较熟悉的 DOM 模型来解析数据，其缺点是就是服务器响应和解析 XML
+数据的脚本可能会变得相当冗长，查找数据不得不遍历所有的节点。
+
+```js
+var x = createXMLHTTPObject();
+var url = 'XML_server.xml';
+x.open('GET', url, true);
+x.onreadystatechange = function () {
+  if (x.readyState == 4 && x.status == 200) {
+    var info = x.responseXML;
+    alert(info.getElementsByTagName('the')[0].firstChild.data);
+  }
+};
+x.send(null);
+```
+
+对于 XML 来说，第一行必须是 `<?xml version="1.0" encoding="gb2312"?>` ，该行命令表示输出的数据格式为 XML 格式文档，同时标识了 XML
+文档的版本和字符编码。为了能够兼容 IE 异类等浏览器，能让不同浏览器能够识别 XML 文档，还应该为响应信息定义 XML 文本类型。最后根据 XML 语法规则编写文档的信息结构。
+
+## 获取 HTML 文本
+
+响应信息为 HTML 字符串是一种常用的方法，这样在客户端就可以使用 innerHTML 属性把获取的字符串插入到网页。
+
+```js
+var x = createXMLHTTPObject();
+var url = 'HTML_server.html';
+x.open('GET', url, true);
+x.onreadystatechange = function () {
+  if (x.readyState == 4 && x.status == 200) {
+    var o = document.getElementById('grid');
+    o.innerHTML = x.responseText;
+  }
+};
+x.send(null);
+```
+
+在某些情况下，使用 HTML 字符串可能为客户端解析响应信息节省了 JavaScript 脚本，但是，也会有其它问题：
+
+- 响应信息中的大量无用字符，响应数据变得臃肿。因为 HTML 表示不含有信息，完全可以在客户端脚本生成
+- 响应信息中的 HTML 结构无法被利用，在看客户端的 JavaScript 中，它们仅是字符串穿在，无法使用 DOM 进行调整
+
+## 获取 JavaScript 脚本
+
+可以响应信息为 JavaScript 代码，这里的代码与 JSON 不同，它是可以执行的命令或脚本。
+
+```js
+var x = createXMLHTTPObject();
+var url = 'code_server.js';
+x.open('GET', url, true);
+x.onreadystatechange = function () {
+  if (x.readyState == 4 && x.status == 200) {
+    var info = x.responseText;
+    var o = eval('(' + info + ')' + '()');
+    alert(o);
+  }
+};
+x.send(null);
+```
+
+在转换时加上小括号，并使用 eval 来执行响应代码代码。但是不常用，因为它无法传递更丰富的信息，同时极易容易引起安全隐患。
+
+## 获取 JSON 数据
+
+通过 XMLHttpRequest 对象的 responseText 属性获取返回的 JSON 数据字符串，然后可以使用 eval() 方法将其解析为本地的 JavaScript 对象，从该对象中获取想要的。
+
+```js
+var x = createXMLHTTPObject();
+var url = 'JSON_server.js';
+x.open('GET', url, true);
+x.onreadystatechange = function () {
+  if (x.readyState == 4 && x.status == 200) {
+    var info = x.responseText;
+    var o = eval('(' + info + ')');
+    alert(info);
+    alert(o.name);
+  }
+};
+x.send(null);
+```
+
+使用一种有效识别 JSON 语法的解析程序，当解析一旦匹配到 JSON 字符串中包含不规范的对象，会直接中断或者不执行其中的恶意代码。可以访问 [http://www.json.org/josn2.js](http://www.json.org/json2.js) 免费下载 JavaScript
+版本的解析程序。不过在确信代码没有恶意时，可以直接使用 eval() 方法解析 json 字符串。
+
+## 获取纯文本
+
+对于简短的信息，有必要使用纯文本格式来进行响应。但是纯文本信息在响应时很容易丢失，且没有办法检测信息的完整性。因为缺少元数据，元数据都以数据包的形式发送，不容易丢失。
+
+```js
+var x = createXMLHTTPObject();
+var url = 'Text_server.txt';
+x.open('GET', url, true);
+x.onreadystatechange = function () {
+  if (x.readyState == 4 && x.status == 200) {
+    var info = x.responseText;
+    if (info == 'true') alert(' 文本信息传输完整');
+    else alert(' 文本信息可能存在丢失');
+  }
+};
+x.send(null);
+```
+
+## 获取头部信息
+
+每个 HTTP 请求和响应的头部都包含一组消息，对于开发人员来说，获取这些消息有很必要的重要性。 XMLHttpRequest 对象有两个方法获取或设置头部响应。
+
+- getAllResponseHeaders() 获取响应头部的所有 HTTP 头信息
+- getResponseHeader() 从响应头中获取指定的 HTTP 信息
+
+```js
+var x = createXMLHTTPObject(); var url = "server.txt";
+  x.open("GET", url, true); x.onreadystatechange = function() {
+  if (x.readyState == 4 && x.status == 200) {
+  var info = document.getElementById("info") info.innerHTML =
+    x.getAllResponseHeaders(); alert(x.getAllResponseHeaders()); }
+  }
+  x.send(null);
+```
+
+            

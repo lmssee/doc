@@ -1,0 +1,56 @@
+---
+title: 递归
+
+
+---
+
+# 递归函数
+
+所谓递归函数，就是函数在自身的函数体内调用自身。任何一个有意义的递归总是由两部分组成的：递归调用和递归终止条件，递归运算在无限制的情况下，会无休止的调用自身。显然，程序不该出现这种无休止的递归调用，而只应出现有限次数的、有终止的调用。
+
+```js
+function f(n) {
+  var l = 0;
+  if (n.nodeType == 1) l++;
+  var child = n.childNodes;
+  for (var i = 0; i < child.length; i++) {
+    l += f(child[i]);
+  }
+  return l;
+}
+window.onload = function () {
+  var body = document.getElementsByTagName('body')[0];
+  alert(f(body));
+};
+```
+
+## 尾递归
+
+尾递归是递归的一种优化算法，它从最后开始计算，每递归一次就算出相应的结果，即函数调用出现在调用函数的尾部，因为是尾部，所以不用去保存任何局部变量。返回时调用函数可以直接通过调用者，返回到调用者的调用者。
+
+下面是线性递归。
+
+```js
+function f(n) {
+  return n == 1 ? 1 : n * f(n - 1);
+}
+console.log(f(5));
+```
+
+使用尾递归后。
+
+```js
+function f(n, a) {
+  return n == 1 ? a : f(n - 1, a * n);
+}
+console.log(f(5, 1));
+```
+
+_简单比较_
+
+- 线性递归： f(n)，返回值会被调用者使用
+- 尾递归： f(m,n)，返回值不会被调用者使用
+
+尾递归由于直接返回值，不需要保存临时变量，所以性能不会产生线性增加，并且 JavaScript 解释器会将尾递归形式转化为非梯形形状。
+
+            

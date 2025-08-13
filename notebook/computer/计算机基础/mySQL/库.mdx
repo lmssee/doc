@@ -1,0 +1,33 @@
+---
+title: 库
+
+
+---
+
+# 创建数据库
+
+下面将以 L 为数据库名称
+
+```sql
+create database if not exists test default charset utf8 collate utf8_general_ri;
+```
+
+## 字符集
+
+```sql
+alter database test default charset set {字符集} [collate {字符集排序规则}];
+```
+
+## 删除数据库
+
+```sql
+drop database test;
+```
+
+## 选择数据库
+
+```sql
+use test;
+```
+
+            

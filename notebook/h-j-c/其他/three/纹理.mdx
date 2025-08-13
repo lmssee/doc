@@ -1,0 +1,36 @@
+---
+title: 纹理
+
+
+---
+
+# hello
+
+纹理是附着在表面的东西，可以避免只用简单的颜色，让效果更加好：
+
+```js
+const loader = new three.TextureLoader();
+const material = new three.MeshBasicMaterial({ map: loader.load('') });
+```
+
+也可以创建多个 material ， 将其放进数组中，一起传给 Mesh 进行混合。
+
+但需要注意的是，并不是所有的几何体类型都支持多种材质。 BoxGeometry 和 BoxGeometry 可以使用6种材料，每个面一个。 ConeGeometry 和 ConeGeometry
+可以使用2种材料，一种用于底部，一种用于侧面。 CylinderGeometry 和 CylinderGeometry 可以使用3种材料，分别是底部、顶部和侧面。
+
+## 等待多个加载完毕
+
+使用 LoadingManager 。创建并设置将其传递给 TextureLoader ，然后将 onLoad 属性设置为回调。
+
+```js
+const loadManger = new three.LoadingManager();
+const loader = new three.TextureLoader(loadManager);
+// ...
+loaManager.onload = () => {
+  const cube = new three.Mesh(geometry, materials);
+  scene.add(cube);
+  cubes.push(cube);
+};
+```
+
+            

@@ -1,0 +1,36 @@
+---
+title: 计数排序
+
+
+---
+
+# 计数排序
+
+计数排序是一种稳定的排序算法，计算排序需要一个额外的数组 CountArr ，其中第 i 个元素是待排序数组 arr 中值等于 i 的元素个数。
+
+仅用于非负整数排序
+
+- 找出待排序的数组中最大和最小的元素
+- 统计数组中每一个元素出现的次数，存入数组 countArr 的第 i 项
+- 从待排序列 arr 的第一个元素开始，将 arr[i]
+
+```js
+function countingSort(arr) {
+  let length = arr.length,
+    countArr = [];
+  if (length < 2) return arr;
+  for (let i in arr)
+    countArr[arr[i]] ? countArr[arr[i]]++ : (countArr[arr[i]] = 1);
+  arr = [];
+  countArr.forEach((value, key) => {
+    for (let i = 0; i < value; i++) arr.push(key);
+  });
+  return arr;
+}
+```
+
+运行时间是 O(n + k)。计算排序不是比较排序，所以排序的速度快于任何比较排序
+
+最佳情况： T(n) = O(n + k)；最差情况： T(n) = O(n + k)；平均： T(n) = O(n + k)。
+
+            

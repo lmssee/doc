@@ -1,0 +1,158 @@
+---
+title: 例
+
+
+---
+
+# 第 1 个 Web SQL Database 应用
+
+使用 window 对象的 openDatabase() 方法，可以在网页内创建和使用 Web SQL Database ，示例代码如下：
+
+```js
+function queryResult(tx, result) {
+  try {
+    var rowList = result.rows;
+    for (var i = 0; i < rowList.length; i++) {
+      var row = rowList.item(i);
+      for (var j in row) {
+        console.log(j + '= ' + row[j] + '; ');
+      }
+    }
+  } catch (err) {
+    alert(err.message ? err.message : err.toString());
+  }
+}
+function queryError(tx, err) {
+  alert(err.message ? err.message : err.toString());
+}
+function callback(tx) {
+  var sql;
+  sql =
+    'CREATE TABLE employees(firstName TEXT, lastName TEXT, EmpType TEXT, age INTEGER)';
+  tx.executeSql(sql);
+  sql =
+    "INSERT INTO employees(firstName, lastName, EmpType, age) VALUES(' myFirst ', ' myLast ',' myEmpType ', 40)";
+  tx.executeSql(sql);
+  sql =
+    'INSERT INTO employees(firstName, lastName, EmpType, age) VALUES( ? , ? , ? , ? )';
+  tx.executeSql(sql, ['myFirst', 'myLast', 'myEmpType', 40]);
+  sql = 'select _ FROM employees ';
+  tx.executeSql(sql, [], queryResult, queryError);
+}
+try {
+  var db = window.openDatabase(
+    'mydb',
+    '1.0',
+    ' 我的第一个客户端数据库 ',
+    2 * 1024 * 1024,
+  );
+} catch (err) {
+  alert(err.message ? err.message : err.toString());
+}
+if (!db) alert('不能连接到数据库！ ');
+db.transaction(callback);
+```
+
+## 单次
+
+```html
+<head>
+  <script>
+    var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
+    var msg;
+    db.transaction(function (tx) {
+      tx.executeSql('CREATE TABLE IF NOT EXISTS LOGS (id unique, log)');
+      t;
+      x.executeSql('INSERT INTO LOGS (id, log) VALUES (1, "foobar")');
+      tx.executeSql('INSERT INTO LOGS (id, log) VALUES (2, "logmsg")');
+      msg = '<p> 完成消息创建和插入行操作。 </p>';
+      document.querySelector('#status').innerHTML = msg;
+    });
+    db.transaction(function (tx) {
+      tx.executeSql(
+        'select \* FROM LOGS',
+        [],
+        function (tx, results) {
+          var len = results.rows.length,
+            i;
+          msg = '<p> 查询行数 : ' + len + '</p>';
+          document.querySelector('#status').innerHTML += msg;
+          for (i = 0; i < len; i++) {
+            msg = '<p><b>' + results.rows.item(i).log + '</b></p>';
+            document.querySelector('#status').innerHTML += msg;
+          }
+        },
+        null,
+      );
+    });
+  </script>
+  <meta charset="utf-8" />
+</head>
+
+<body>
+  <div id="status" name="status"></div>
+</body>
+```
+
+## 批量
+
+```html
+<head>
+  <meta charset="utf-8" />
+  <title></title>
+</head>
+<body>
+  <table id="racers" border="1" cellspacing="0" style="width:100%">
+    <th>Id</th>
+    <th>Name</th>
+  </table>
+  <script>
+    // 根据名称 name 打开数据库
+    var db = openDatabase('db', '1.0', 'my first database', 2 * 1024 * 1024);
+    function log(id, name) {
+      var row = document.createElement('tr');
+      var idCell = document.createElement('td');
+      var nameCell = document.createElement('td');
+      idCell.textContent = id;
+      nameCell.textContent = name;
+      row.appendChild(idCell);
+      row.appendChild(nameCell);
+      document.getElementById('racers').appendChild(row);
+    }
+    function doQuery() {
+      db.transaction(function (tx) {
+        tx.executeSql('select * from mytable', [], function (tx, result) {
+          // 显示查询的记录集
+          for (var i = 0; i < result.rows.length; i++) {
+            var item = result.rows.item(i);
+            log(item.id, item.name);
+          }
+        });
+      });
+    }
+    function initDatabase() {
+      var names = [
+        ' 张三 ',
+        '李四 ',
+        ' 王五 ',
+        ' 赵六 ',
+        ' 侯七 ',
+        'abc',
+        'def',
+      ];
+      db.transaction(function (tx) {
+        tx.executeSql(
+          'CREATE TABLE IF NOT EXISTS  mytable(id integer primary key autoincrement, name)',
+        );
+        for (var i = 0; i < names.length; i++) {
+          tx.executeSql('INSERT INTO mytable (name) VALUES (?)', [names[i]]);
+        }
+        doQuery();
+      });
+    }
+    initDatabase();
+  </script>
+</body>
+```
+
+            

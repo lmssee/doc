@@ -1,0 +1,36 @@
+---
+title: Beacon
+
+
+---
+
+# Beacon API
+
+Beacon API 主要用于发送不需要服务器回应的 HTTP 请求，或强制浏览器发送请求。
+
+Beacon API 为 navigator 对象提供了一个 sendBeacon()
+方法，该方法将数据放入一个列队中，当前页面如果被关闭将立即发送数据，这个数据发送动作不会减慢页面的跳转速度。当数据放入列队成功后，该方法返回 true ，否则返回 false 。
+
+```js
+navigator.sendBeacon(url, data);
+```
+
+- url ： 接收数据的服务器地址
+- data ： 被发送的数据，可以是一个 ArrayBufferView 对象、一个 Blob 、一个 FormData 对象或一个字符串。
+
+## 其他
+
+- sendBeacon 只能用 post 请求发来的信息
+- SendBeacon 的第 2 个参数是可选的。如果提供的话，参数类型可以是 ArrayBufferView 、 Blob 、 DOMString 、 FormData
+- sendBeacon 所收到的 HTTP 回应应被无视
+- sendBeacon 是有返回值的，类型为 bool 。如果返回值为 true ，表示浏览器已经将这个请求纳入列队，稍后处理；如果返回值是 false ，表示浏览器无法完成这个请求，其原因不详，不过通常来说就是
+  HTTP 请求列队已满。
+
+```js
+window.addEventListener('unload', logData, false);
+function logData() {
+  navigation.sendBeacon('/log', analyticsData);
+}
+```
+
+            

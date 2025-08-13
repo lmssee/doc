@@ -1,0 +1,52 @@
+---
+title: 索引
+
+
+---
+
+# 为了效率
+
+表的类型不同，索引的存放位置不同。对于 MyISAM
+表，数据行放在数据文件里，索引值放在索引文件里，一个表可以有多个索引，这些索引都放在一个索引里，一个索引其实就是一个排好序的键值数组，正是通过这些键值才可以实现对数据文件的快速定位访问。对于 InnoDB
+表，它的索引也是排好序的数组，但它的数据行与索引值是存放在同一个文件里的，存放在同一个表空间里面。
+
+## 缺点
+
+- 索引需要使用更多的磁盘空间，索引越多，占用的磁盘空间越大
+- 索引在加快检查速度的同时，降低了插入、更新、删除的操作速度
+
+## 创建
+
+```sql
+create index main_id  on main
+```
+
+使用 alter 修改表结构：
+
+```sql
+alter table main add index main_id
+```
+
+创建表的时候指定。
+
+## 删除索引
+
+```sql
+drop index main_id on main;
+```
+
+## 唯一索引
+
+```sql
+create unique index main_id  on main
+```
+
+使用 alter 修改表结构：
+
+```sql
+alter table main add unique main_id
+```
+
+创建表的时候指定。
+
+            

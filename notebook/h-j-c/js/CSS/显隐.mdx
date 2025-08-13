@@ -1,0 +1,78 @@
+---
+title: 显隐
+
+
+---
+
+# 可见性
+
+简单的隐藏可用 style.display 设置。
+
+```html
+<p>p1</p>
+<p class="hover">p2</p>
+<p>p3</p>
+<script>
+  var p = document.querySelectorAll('p');
+  for (var i = 0; i < p.length; i++) {
+    if (p[i].className == 'hover') continue;
+    p[i].style.display = 'none';
+  }
+</script>
+```
+
+恢复显示只需设置 style.display="" 。
+
+若常用，则封装：
+
+```js
+function display(a, b) {
+  if (b && typeof b != 'boolean') throw new Error('第二个参数应该是布尔值');
+  var c = getStyle(e, 'display');
+  c != 'none' && (e._display = c);
+  e._display = e._display || '';
+  if (b || c == 'none') {
+    e.style.display = e._display;
+  } else {
+    e.style.display = 'none';
+  }
+}
+```
+
+## 透明度
+
+所有浏览器都支持透明度，但是不同浏览器的支持程度不一样。 IE 浏览器支持 filters 滤镜集，而 DOM 支持 style.opacity 属性，同时，它们设置值的范围不同， IE 的值在 0 ~ 100 ，其中，0
+表示完全透明，而 100 不透明。而支持 style.opacity 属性浏览器设置 0 ~ 1 之间，其中 0 表示完全透明， 而 1 表示完全不透明。
+
+```js
+function setOpacity(e, n) {
+  var n = parseFloat(n);
+  if ((n && n > 100) || !n) n = 100;
+  if (n && n < 0) n = 0;
+  if (e.filters) {
+    // 兼容 IE
+    e.style.filters = 'alpha(opacity=' + n + ')';
+  } else {
+    // 兼容 DOM
+    e.style.opacity = n / 100;
+  }
+}
+```
+
+获取透明度时需要 用 try 捕获。
+
+```js
+function getOpacity(e) {
+  var r;
+  if (!e.filters) {
+    if (e.style.opacity) return parseFloat(e.style.opacity) * 100;
+  }
+  try {
+    return e.filters.item('alpha').opacity;
+  } catch (o) {
+    return 100;
+  }
+}
+```
+
+            

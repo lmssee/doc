@@ -1,0 +1,437 @@
+---
+title: 文本
+
+
+---
+
+# color
+
+```css
+font: [font-style] [font-weight] font-size/line-height font-family;
+```
+
+语法说明： font 的各个属性值的描述参见前面各个属性的介绍。定义样式时，各个属性值之间使用空格分隔，同时必须按照如上的排列顺序出现。需要注意的是，要使简写定义有效，必须至少提供 font-size 和 font-family
+这两个属性值，其它忽略的属性值将使用它们对应的默认值。另外， font-size 和 line-height 必须通过"斜杠 /"组成一个值，不能分开写。
+
+## font-family
+
+```css
+font-family: tahoma, 'Times New Roman', 'Microsoft YaHei', 'SimSun', 'SimHei',
+  sans-serif;
+font-family: tahoma, 'Times New Roman', 'Microsoft
+    YaHei', '\5b8b\4f53', 'SimHei', sans-serif;
+font-family: 'Times New
+    Roman', tahoma, arial, 'SimSun', 'Microsoft YaHei', 'SimHei', sans-serif;
+```
+
+大多数浏览器的默认行高大约是当前字体大小的 110% 到 120%，这个行高有时不一定符合界面设计要求。
+
+文本行之间的间距指上面文本的底线和下面文本的顶线之间的距离，行距由行高和字体尺寸决定，其值等于行高减去字体尺寸。
+
+也可以用 font 复合类型设置 ,方法如下
+
+```css
+font: font-style |
+| font-variant |
+| font-weight |
+| font-size |
+| line-height |
+|
+font-family font: caption | icon | menu | message-box | small-caption |
+statue-bar
+```
+
+css 提供 5 种通用字体 ,通用字体是一种备用机制 ,当指定的字体不可用时 ,将在用户的系统中找了一个类似的字体代替
+
+- serif : 衬线字体 ,通常变宽 ,字体明显的显示粗细笔画 ,在字体的头部和尾部附带显示的装饰细线
+- sans-serif : 无衬线字体 ,无突变、交叉笔划或其它装饰线。通常是变宽，字体粗细笔划变化不明显
+- cursive ： 草体，表现为斜字型、联笔或其它草体。看起来像是用毛笔或刷子写的，不像打印体
+- fantasy ： 奇异字体，主要是装饰性（艺术体）
+- monospace ： 等宽字体，唯一标准就是所有的字型宽度都一样
+
+## font-feature-setting
+
+font-feature-setting 属性允许空值 OpenType 字体的高级印刷特性。
+
+```css
+font-feature-settings: normal|feature-value;
+```
+
+- normal ： 默认值，使用默认设置来布置文本
+- feature-value ： 格式 string[1|0|on|off]，字符串始终是 4 个 ASCII 字符
+
+## font-kerning
+
+font-kerning 属性控制字体中储存的字距信息的使用。
+
+```css
+font-kerning: auto|normal|none;
+```
+
+## font-size
+
+字体大小。
+
+```css
+font-size ： length font-size ： xx-small | x-small | small |
+medium | large | x-large | xx-large font-size ： larger | smaller
+```
+
+_绝对单位所定义的字体大小是固定的，大小效果不会受到所处环境的影响。如： in 、 cm 、 mm 、 pt 、 pc 等。此外， xx-small 、 x-small 、 medium 、 large 、 x-large 、 xx-large 也是绝对单位_
+
+_相对单位多定义的为 字体大小一般不固定。如： px 、 em 、 ex 、 % 、 larger 、 smaller。_
+
+## font-size-adjust
+
+font-size-adjust 属性为某一个元素规定一个 aspect 值，这样就可以保持首选字体的 x-height
+
+## font-stretch
+
+font-stretch 属性可对当前的 font-family 进行伸缩变形
+
+- normal ： 默认值，把伸缩比例设置为标准
+- wider ： 把伸缩比例设置为更进一步的伸缩值
+- narrower ： 把收缩比例设置为更进一步的收缩值
+
+## font-variant
+
+字体大小写，仅支持拉丁字符
+
+```css
+font-variant ： normal | small-caps
+```
+
+- normal ： 默认值，浏览器会显示一个标准的字体
+- small-spas ： 浏览器显示小型大写字母的字体
+- inherit ： 继承
+
+## font-variant-caps
+
+font-variant-caps 属性控制大写字母的替代字形的使用:
+
+```css
+font-variant-caps: normal | small-caps | all-small-caps | petite-caps |
+  all-petite-caps | unicase | titling-caps | initial | inherit | unset;
+```
+
+- normal ： 停用备用字形的使用
+- small-caps ： 显示小型大写字母
+- all-small-caps ： 把大写和小写字母都显示为小型大写字母
+- petite-caps ： 显示特小大写字母
+- all-petite-caps ： 把大写和小写字母都显示为特小型大写字母
+- unicase ： 允许见大写字母转化为小型大写字母与普通小写字母的混用
+- titling-caps ： 显示首字母大写
+- initial ： 默认值
+- inherit ： 继承
+- unset ： 不设置
+
+## font-weight
+
+字体粗细 。
+
+```css
+font-weight ： normal | bold font-weight ： bolder |
+lighter font-weight ： 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900
+```
+
+其中， normal 代表 400 ， border 相当于 700 或 `<b>` 的效果。
+
+## font-style
+
+斜体显示
+
+```css
+font-style ： normal | italic | oblique
+```
+
+normal 显示为正常的字体， italic 显示为斜体， oblique 显示为 倾斜的字体，只在拉丁文中有效。
+
+## hanging-punctuation
+
+```css
+hanging-punctuation: none | | first | | last | | allow-end | | force-end;
+```
+
+是否悬挂一个标点符号： start 、 end 、 end-edge 。
+
+## hyphens
+
+hyphens 属性定义允许在一行文本内用连字符常见更多的自动换行的机会：
+
+```css
+hyphens: none | manual | auto | initial | inherit;
+```
+
+- none ： 单词不用连字符（不换行）
+- manual ： 默认，单词只在 &amp;hyphen;（&hyphen;） 或 &amp;shy;(&shy;) 处有连字符（如果需要）
+- auto ： 在算法确定的位置插入单词连字符（如果需要）
+- initial ： 默认值
+- inherit ：继承
+
+## letter-spacing: normal
+
+对象中字符的间距。词间距以空格作为调整，默认值同上为 normal 。
+
+## line-height
+
+在 CSS 中， line-height 还有一个更加准确的定义：两行文字基线之间的距离。
+
+```css
+line-height ： normal | length
+```
+
+vertical-align 属性中的 top 、 middle 、 baseline 、 bottom 这四个属性值分别对应的就是：顶线、中线、基线、底线。
+
+## punctuation-trim: none
+
+标点符号的修剪：
+
+- none
+- start
+- end
+- adjacent （根据相邻的标点符号，修剪另一半标点符号）
+
+## quotes
+
+quotes 属性定义嵌套引用（ embedded quotation ）的引号类型
+
+- none ： 规定 “ content ” 属性的 “ open-quote ” 和 “ close-quote ” 的值不会产生任何引号
+- string string string string ： 定义使用的引号。前两个值是第一级嵌套，后两个值是下一级的嵌套
+- inherit ：继承
+
+string 的取值可能：
+
+- &#34; (&amp;#34;) ： double quote
+- &#39 (&amp;#39;) ： single quote
+- &#8249; (&amp;#8249;) ： single ,left angle quote
+- &38250; (&amp;#8250;) ： single ,right angle quote
+- &#171; (&amp;#171;) ： double ,left angle quote
+- &#187; (&amp;#187;) ： double ,right angle quote
+- &#8216; (&amp;#8216;) ： left quote(single high-6)
+- &#8217; (&amp;#8217;) ： right quote(single high-9)
+- &#8220; (&amp;#8220;) ： left quote(double high-6)
+- &#8221; (&amp;#8221;) ： right quote(double high-9)
+- &#8222; (&amp;#8222;) ： double quote (double low-9)
+
+## tab-size
+
+设置制表符的宽度，通常都是单个空格，除了某些元素外（比如 `<textarea>` 和 `<pre>` ）并且 tab-size 只对可见的元素有效。默认为 8 个空格。
+`tab-size: number | length | initial | inherit;`
+
+- number ：默认值是 8
+- length ： 制表符长度。主流浏览器都不支持
+- initial ： 默认值
+- inherit ： 继承
+
+## text-align: start
+
+文本对齐方式：
+
+- start ：行内元素
+- end ：行内元素
+- left 、 right 、 center 、 justify 、 `<string>`
+
+" text-align:center"与" margin:0 auto "的区别
+
+- " text-align:center; "实现的是文字、 inline 元素以及 inline-block 元素的水平居中。
+- " margin:0 auto;"实现的是块元素的水平居中
+- " text-align:center;"在父元素中定义，" margin:0 auto; "在当前元素中定义
+
+## text-align-last: auto
+
+文本最后一行的对齐方式，取值同 text-align 。
+
+- start ：行内元素
+- end ：行内元素
+- left 、 right 、 center 、 justify 、`<string>`
+
+## text-decoration 装饰线
+
+```css
+text-decoration ： none |
+| underline |
+| overline |
+| line-through |
+| blink
+```
+
+text-decoration 是符合属性，分属性为:
+
+- text-decoration-line ： none 、 overline 、 line-through 、 blink
+- text-decoration-color ： [color]
+- text-decoration-style: solid 、 double 、 dotted 、 dashed 、 wavy
+- text-decoration-skip ： 定义装饰线的忽视位置
+- text-underline-position ： auto 、 under 、 left 、 right
+
+## text-emphasis: none
+
+重点文本样式：
+
+- none
+- accent ：马克笔
+- dot ：点标记
+- circle ：空心圆标记
+- disc ：实心圆标记
+- before ：顶部或右侧标记
+- after ：底部或左侧
+
+## text-indent: none
+
+文本缩进。
+
+## text-justify: auto
+
+对象内调整文本使用的对齐方式，只有在 text-align 设置为 justify 时才可用：
+
+- auto
+- inter-word （两端对齐，不涉及最后一行 )
+- inter-ideograph （两端对齐 )
+- inter-cluster （两端对齐，优化亚洲无空格文档）
+- distribute （两端对齐，优化拉丁文字母，适用东亚，尤其是泰国）
+- kashida （优化阿拉伯语使用）
+- tibetan （两端对齐，同 distribute ）
+
+## text-outline: 0
+
+文本外形轮廓：
+
+- none
+- [`<color>``<length>``<length>`?]
+- [`<length>``<length>`?`<color>`]
+
+## text-overflow: unset
+
+超出文本显示：
+
+- clip: 不显示省略（ ...），简单裁剪
+- ellipsis ：裁剪，尾部最后一字符添加（ ...）
+- ellipsis-word: 裁 剪，尾部最后一词添加（ ...）
+
+定义时可同时定义 white-space ： nowrap 和 overflow ： hidden
+
+## text-shadow: none
+
+文字阴影。
+
+## text-transform
+
+单词文本的大小写 。 none 为默认，无变化、 capitalize 为每一个单词首字母大写。
+
+```css
+text-transform ： none | capitalize | uppercase | lowercase
+```
+
+## text-wrap: normal
+
+对象内文本换行模式：
+
+- normal ：自动换行
+- none ：不换行
+- unrestricted ：无限制
+- suppress ：压制模式
+
+## unicode-bidi
+
+重写文本，与 direction 属性一起使用，设置或返回是否应重写文本以支持同一文档中的多种语言。
+
+```css
+unicode-bidi: normal | embed | bidi-override | initial | inherit;
+```
+
+- normal ： 默认值，元素不会打开额外的嵌入级别
+- embed ： 对于行内元素，此值将额外打开的嵌入级别
+- bidi-override ：对于行内元素，此值会创建一个覆盖对于块级容器元素，该值将为不在另一个块级元素内的行内元素的级别的后代创建一个覆盖
+- isolate ：该元素将隔离兄弟元素
+- initial ：恢复默认值
+- inherit ：继承
+
+```css
+div {
+  direction: rtl;
+  unicode-bidi: bidi-override;
+}
+```
+
+## user-select
+
+禁止文本被选取
+
+```css
+div {
+  -webkit-user-select: none; /*
+Safari */
+  -ms-user-select: none; /* IE 10+ and Edge*/
+  user-select: none; /* Standard syntax*/
+}
+```
+
+## vertical-align
+
+W3C 官方对 vertical-align 属性的定义有四个方面。
+
+- vertical-align 属性用于定义"周围的文字、 inline 元素以及 inline-block 元素"相对于该元素基线的垂直对齐方式。这里的"该元素"指的是被定义了 vertical-align 属性的元素
+
+- 在表格单元格中， vertical-align 属性可以定义单元格 td 元素中内容的对齐方式。 td 元素是 table-cell 元素，也就是说 vertical-align 属性对 table-cell 类型元素有效
+
+- vertical-align 属性对 inline 元素、 inline-block 元素和 table-cell 元素有效， 对块元素无效
+- vertical-align 属性允许指定负长度值（如 -2px ）和百分比值（如 50%）
+
+文本垂直对齐:
+
+```css
+vertical-align ： auto |
+| length vertical-align ： baseline | sub
+| super | top | text-top | middle | bottom | text-bottom
+```
+
+## word-break: initial
+
+设置或检索对象内文本的换行行为
+
+- normal
+- keep-all （中日韩字符不允许断开）
+- loose （中日韩字符可任意断开）
+- break-strict （非中日韩字符可任意断开）
+- break-all （除了中日韩字符其它遵守 loose ）
+
+## white-space: nowrap
+
+设置和检索对象内空字符的处理方式
+
+- normal
+- pre
+- nowrap
+- pre-wrap
+- pre-line
+
+## white-space-collapse
+
+```css
+white-space-collapse: preserve | collapse | preserve-breaks | discard;
+```
+
+white-space-collapse 初始值为 collapse ，使用所有元素。该属性设置或检索如果处理对象内的空格，对应 css 2.1 版本中的 white-escape 属性
+
+- Collapse ： 使用一个单一的字符串序列呈现空白（或在某些情况下，没有字符）
+- preserve ： 可以呈现所有的空白，换行符将被保留
+- preserve-breaks : 抛弃呈现的空白，但保留换行符
+- discard : 抛弃所有呈现空白
+
+## word-spacing: normal
+
+在单词间插入空格：
+
+- normal
+- `<length>`
+- `<percentage>` 宽度由字符（ U+0020）标准
+
+## word-wrap
+
+该属性针对换行符问题进行处理，设置或检索当前超过容器的指定边界是否断开换行。
+
+- normal
+- break-word
+
+在 IE 浏览器下，使用 word-wrap:break-word 不会有
+
+            

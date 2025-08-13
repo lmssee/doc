@@ -1,0 +1,215 @@
+---
+title: 伸缩项目
+
+
+---
+
+# 定义伸缩项目
+
+一个伸缩项目就是一个伸缩容器的子元素，伸缩容器内的文本也被当作伸缩项目。伸缩项目中的内容和普通的文本流一样。
+
+伸缩项目都有一个主轴长度（ Main Size ）和一个侧轴长度（ Cross Size ）。主轴长度是伸缩项目在主轴上的尺寸，侧轴长度是伸缩项目在侧轴上的尺寸。一个伸缩项目的宽和高取决于伸缩容器的轴，可能就是它的主轴长度和侧轴长度。
+
+## 显示位置
+
+默认情况下，伸缩项目是按照文档流出现的先后顺序进行排列的。然后， order 属性可以来指定申诉项目在伸缩容器的出现的顺序：
+
+```css
+order: <integer>;
+```
+
+## 扩展空间
+
+扩展空间由 flex-grow 指定，子属性 flex-grow 的值是数字，如果容器中所有子元素的 flex-grow 是 1 ，那么每个子元素将占据相同的空间。
+
+```css
+flex-grow: <number>;
+```
+
+- 默认值为 0 ，负值时也为默认值；
+- 为 1 时，每个伸缩项目大小相等
+- 为 2 时，该伸缩项目是所剩其他伸缩项目的 2 倍
+
+```css
+flex-grow: 2; /** 用在第 1 个 */
+```
+
+```css
+flex-grow: 2; /** 用在第 1 个 */
+```
+
+## 收缩空间
+
+收缩空间由 flex-shrink 定义。与 flex-grow 类似。
+
+```css
+flex-shrink: <number>;
+```
+
+## 伸缩比率
+
+伸缩比率由 flex-basis 设置伸缩基准值，剩余空间按比率伸缩。
+
+```css
+flex-basis: <length> | auto;
+```
+
+auto 为默认值，负值不合法。
+
+flex 是 flex-grow 、 flex-shrink 、 flex-basis 3 个属性的复合属性，该属性适用于伸缩项目。其中第 2 个和第 3
+个参数（ flex-shrink 、 flex-basis ）是可选参数。默认值为 "0 1 auto"。具体如下：
+
+```css
+    flex : none | [<'flex-grow'> <flex-shrink'> ? |
+| <'flex-basis'>
+      ]
+```
+
+## 垂直对齐方式
+
+对齐方式由 align-self 定义，语法如下
+
+```css
+align-self: auto | flex-start | flex-end | center | baseline | stretch;
+```
+
+- flex-start: 伸缩项目在侧轴起点的外侧边距紧靠该行起始边
+- flex-end: 伸缩项目在侧轴起点的外侧边距紧靠该行终止边
+- center: 伸缩项目在侧轴起点的外侧边距紧靠该行居中位置
+- baseline ： 基线对齐
+- stretch ：默认值，伸缩项目填充整个项目。此值会在项目的外边距盒的尺寸再遵照 min/max-width/height 属性的限制下尽可能的接近行的尺寸
+
+margin : auto 在伸缩盒中具有强大的功能，一个 "auto" 的 margin 会和合并剩余的空间，把伸缩项目挤到其他位置。
+
+旧版本中的属性 box-orient 和 box-direction 分别控制着子元素的排列方式和排列顺序，排列方式可以是从左向右（ horizontal ）或从上到下（ vertical ），排列顺序可以是正序（
+normal ）或反序（ reverse ），结合两个属性，就能达到新版本中 flex-direction 属性的效果，例如水平排列加反序，相当于新属性的 row-reverse 。
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style type="text/css">
+      .page-wrap {
+        display: -webkit-box; /* 2009版 - iOS 6-, Safari 3.1-6*/
+        display: -moz-box; /* 2009版 - Firefox 19- (存在缺陷)*/
+        display: -ms-flexbox;
+        /* 2011版 - IE 10*/
+        display: -webkit-flex; /* 最新版 - Chrome*/
+        display: flex; /* 最新版 - Opera 12.1, Firefox 20+*/
+      }
+      .main-content {
+        -webkit-box-ordinal-group: 2; /* 2009版 - iOS 6-, Safari 3.1-6*/
+        -moz-box-ordinal-group: 2; /* 2009版 - Firefox 19-*/
+        -ms-flex-order: 2;
+        /* 2011版 - IE 10*/
+        -webkit-order: 2; /*
+      最新版 -
+      Chrome */
+        order: 2; /* 最新版 - Opera 12.1, Firefox 20+*/
+        width: 60%;
+        /* 不会自动伸缩,其他列将占据空间*/
+        -moz-box-flex: 1; /*
+      如果没有该声明，主内容（60%）会伸展到和最宽的段落，就像是段落设置了 white-space:nowrap */
+        background: white;
+      }
+      .main-nav {
+        -webkit-box-ordinal-group: 1; /*
+      2009版 - iOS 6-, Safari 3.1-6 */
+        -moz-box-ordinal-group: 1; /*
+      2009版 - Firefox 19- */
+        -ms-flex-order: 1; /* 2011版 - IE 10 */
+        -webkit-order: 1; /* 最新版 - Chrome*/
+        order: 1;
+        /* 最新版 - Opera 12.1, Firefox 20+*/
+        -webkit-box-flex: 1; /* 2009版 - iOS 6-, Safari 3.1-6*/
+        -moz-box-flex: 1; /* 2009版 - Firefox 19-*/
+        width: 20%;
+        /* 2009版语法, 否则将崩溃*/
+        -webkit-flex: 1; /*
+      Chrome
+      */
+        -ms-flex: 1; /* IE 10*/
+        flex: 1;
+
+        /* 最新版 - Opera 12.1, Firefox 20+*/
+        background: #ccc;
+      }
+      .main-sidebar {
+        -webkit-box-ordinal-group: 3;
+
+        /* 2009版 - iOS 6-, Safari 3.1-6*/
+        -moz-box-ordinal-group: 3;
+        /* 2009版 - Firefox 19- */
+        -ms-flex-order: 3; /* 2011版 - IE 10*/
+        -webkit-order: 3; /* 最新版 - Chrome*/
+        order: 3;
+        /* 最新版, Spec - Opera 12.1, Firefox 20+*/
+        -webkit-box-flex: 1;
+
+        /* 2009版 - iOS 6-, Safari 3.1-6 */
+        -moz-box-flex: 1; /* Firefox 19-*/
+        width: 20%; /* 2009版，否则将崩溃
+      */
+
+        -ms-flex: 1; /* 2011版 - IE 10*/
+        -webkit-flex: 1; /* 最新版 - Chrome*/
+        flex: 1; /*
+      最新版 - Opera 12.1, Firefox 20+ */
+        background: #ccc;
+      }
+      .main-content,
+      .main-sidebar,
+      .main-nav {
+        padding: 1em;
+      }
+      body {
+        padding: 2em;
+        background: #79a693;
+      }
+      \* {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+      h1,
+      h2 {
+        font: bold 2em Sans-Serif;
+        margin: 0 0 1em 0;
+      }
+      h2 {
+        font-size: 1.5em;
+      }
+      p {
+        margin: 0 0 1em 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrap">
+      <section class="main-content">
+        <h1>主要内容</h1>
+        <p><strong>强调内容</strong></p>
+        <p>段落文本</p>
+        <p>描述文本</p>
+      </section>
+      <nav class="main-nav">
+        <h2>导航</h2>
+        <ul>
+          <li><a href="#">主页</a></li>
+          <li><a href="#">咨询</a></li>
+          <li><a href="#">产品</a></li>
+          <li><a href="#">关于</a></li>
+        </ul>
+      </nav>
+      <aside class="main-sidebar">
+        <h2>侧栏</h2>
+        <p>侧栏内容</p>
+      </aside>
+    </div>
+  </body>
+</html>
+```
+
+            

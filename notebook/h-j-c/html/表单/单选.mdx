@@ -1,0 +1,79 @@
+---
+title: 单选
+
+
+---
+
+# 单选框
+
+单选框，用于在一组选项中进行单项（即互斥）选择，每个单选框用一个圆框表示。当 type 属性取值为" radio "时， input 控件将创建一个单选框。
+
+```html
+<input type="radio" name=" 域名称 " value=" 域值 " checked="checked" />
+<input type="radio" name="field_name" checked value="value" />
+```
+
+- checked ：表示此项为默认选中。
+- value ：表示选中项目后传送到服务器端的值。
+
+type 的属性值必须设置为" radio "； name 属性用于设置单选框的名称，处理程序使用该名称获取域的数据，属于同一组单选框的 name 属性必须设置为相同的值，否则无法在一组选项中实现互斥选择； value
+属性用于设置单选框选中后传到服务器端的值； checked 属性用于表示此项被默认选中，如果不设置默认选中状态，则不需要使用 checked 属性。默认情况下，单选框没有被选中。对于单选框， type 、 name 和
+value 三个属性一般都需要设置。
+
+| 标签     | 属性     | 描述                     |
+| :------- | :------- | :----------------------- |
+| select   | name     | 定义列表名称             |
+| size     | select   | 定义同时显示列表选项个数 |
+| multiple | select   | 定义列表多选             |
+| option   | value    | 设置选择项               |
+| option   | selected | 默认选择性               |
+
+## 单选按钮
+
+单选按钮（ radio button ）指一次只能选择其中一个选项，其实现方式与复选框几乎同样简单。单选按钮的最简单的应用是用于"是 / 否"问题，或者当只能选择一个候选人时用于投票表决。
+
+为组中的所有单选按钮使用相同的 name ，但是不要使用在创建复选框时使用的" [ ] "，因为不必容纳多个答案。
+
+```html
+<form action="#" method="get" id="form1" name="form1">
+  <p>
+    会员：
+    <input name="user" id="user" type="text" />
+  </p>
+  <p>密码： <input name="password" id="password" type="text" /></p>
+  <fieldset>
+    <legend>类型</legend>
+    <label>
+      <input type="radio" name="grade" value="1" checked="checked" />
+      普通会员</label
+    >
+    <label> <input type="radio" name="grade" value="2" /> VIP 会员</label>
+    <label> <input type="radio" name="grade" value="3" /> 管理员</label>
+  </fieldset>
+  <p><input type="submit" value="登录" /></p>
+</form>
+```
+
+## 判断单选框是否选中
+
+```js
+window.onload = function () {
+  var sexMan = document.getElementById('sexMan'),
+    // 获取元素的节点对象 s
+    exWoman = document.getElementById('sexWoman');
+  if (sexMan.checked) {
+    // 判断是否被选中
+    console.log('sexMan 被选中 ');
+  } else {
+    console.log('sexMan 未被选中 ');
+  }
+  if (sexWoman.checked) {
+    // 判断是否被选中
+    console.log('sexWoman 被选中 ');
+  } else {
+    console.log('sexWoman 未被选中 ');
+  }
+};
+```
+
+            

@@ -1,0 +1,132 @@
+---
+title: 页面事件
+
+
+---
+
+# 简介
+
+所有的页面事件都明确的处理整个页面的函数和状态。主要包括页面的加载和卸载。
+
+## 页面的初始化
+
+load 事件是在页面完全加载完毕后触发。该事件包含所有的图形文件、外部文件的加载，也就是说，在页面所有内容全部加载之前，任何 DOM 操作都不会发生。为 window 对象加载 load 事件有两种。
+
+## 直接为 window 对象注册页面初始化事件的处理函数
+
+## 在页面的 `<body>` 标签中定义 onload 事件处理属性
+
+JavaScript 解释器在编译时，如果发现同时使用两种方式定义 load 事件类型，会通过 window 对象注册处理函数覆盖掉 body 元素定义的页面初始化函数。
+
+在实际开发中， load 事件类型经常需要调用附带参数的函数，但是 load 事件类型不能够直接带参数，要解决这个问题，可以通过在 `<body>` 中通过事件属性的形式调用函数、或是通过嵌套函数或闭包来实现。
+
+## 结构初始化
+
+在传统事件中， load 是最早触发的事件。不过当使用 load 事件来初始化页面时可能会存在一个问题，那就是，当页面中包含较大的文件时， load 事件事件需要等到所有的图片都加载完毕后才能触发。
+
+这时可以考虑使用 DOMContentLoaded 事件类型。作为 DOM 的标准类型，它在 DOM 文档结构加载完毕后触发，因此要比 load 加载要早。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+initial-scale=1.0"
+    />
+    <title>Document</title>
+    <script>
+      function f1() {
+        alert('页面初始化完毕 ');
+      }
+      function f() {
+        alert('我提前了 ');
+      }
+      window.onload = f1;
+      if (document.addEventListener) {
+        document.addEventListener('DOMContentLoaded', f, false);
+      }
+    </script>
+  </head>
+  <body>
+    <img src="image/2020-12-13.png" />
+  </body>
+</html>
+```
+
+为兼容 IE 支持。则使用一个小技巧：
+
+```js
+if (window.ActiveXObject) {
+  console.log(
+    '<script id="ie_onload" defer src="javascript:void(0)"><\/script>',
+  );
+  document.getElementById('ie_onload').onreadystatechange = function () {
+    if (this.readyState === 'complete') {
+      // 如果状态完成，这说明事件已加载完毕
+      this.onreadystatechange = null; // 清空当前方法
+      f();
+      // 调用预先执行的回调函数
+    }
+  };
+}
+```
+
+针对 Safari 浏览器，需要用 setInterval() 函数周期性检查 document 对象的 readyState 属性，随时监控文档是否加载完毕，如果加载完毕则完成回调函数。
+
+```js
+if (/WibKit/i.test(navigator.userAgent)) {
+  var _timer = setInterval(function () {
+    if (/onload|complete/.test(document.readyState)) {
+      clearInterval(_timer);
+      f();
+    }
+  }, 10);
+}
+```
+
+## 页面卸载
+
+unload 是卸载的意思，这个事件在从页面窗口内移动文档的位置时触发。也就是说，通过超链接、前进或后退等方式从一个页面去向另一个页面时，或者关闭浏览器窗口时。
+
+在 unload 中，无法阻止有效的默认行为。因为该事件后，页面不再存在。使用该事件类型的最佳方式就是取消页面的对象的引用。
+
+beforeunload 事件类型比 unload 更加人性化。如果 beforeunload 事件处理函数返回字符串信息，那么字符串信息一定显示在对话框中，询问用户是否离开页面。但，如果 beforeunload
+没有返回值，那么就不会弹出对话框，功能和 unload 就相同了。
+
+## 窗口重置
+
+resize 事件类型在浏览器窗口被重置时触发。
+
+## 页面滚动
+
+scroll 事件类型是用于浏览器窗口内移动文档时触发的。如通过键盘箭头键、翻页键和空格键移动文档位置，或者通过滚动条滚动时触发。
+
+## 错误处理
+
+error 事件类型是在 JavaScript 代码发生错误时触发，利用该事件可以捕获并处理错误信息。 error 事件类型与 try/catch 功能类似，都是用来捕获页面的错误信息。不过 error
+无需传递事件对象，且可以包含已经发生的错误信息。
+
+```js
+window.onerror = function (message) {
+  alert(
+    '错误原因： ' +
+      arguments[0] +
+      '\n 错误的 URL ： ' +
+      arguments[1] +
+      '\n 错误的行号： ' +
+      arguments[2],
+  );
+  return false; // 禁止浏览器显示默认出错信息
+};
+a.innerHTML = '';
+```
+
+在 error 事件处理函数中，默认包含 3 个参数，其中第 1 个参数表示错误信息，第 2 个参数表示出错文件的 URL ，第三个参数显示文件中出错的位置的行含。
+
+error 事件处理函数的返回值是可以决定浏览器是否显示默认错误信息。如果返回值为 false ，则返回默认返回信息；若返回值为 true ，则不返回标准错误信息。
+
+            

@@ -1,0 +1,54 @@
+---
+title: 获取
+
+
+---
+
+# 获取数据
+
+基本思想：
+
+- 连接某个数据库
+- get 数据
+- 请求发出后立即异步，监听 onerror 和 onsuccess
+- 请求成功后处理数据
+
+```js
+window.indexedDB =
+  window.indexedDB ||
+  window.webkitIndexedDB ||
+  window.mozIndexedDB ||
+  window.msIndexedDB;
+window.IDBTransaction =
+  window.IDBTransaction ||
+  window.webkitIDBTransaction ||
+  window.msIDBTransaction;
+window.IDBKeyRange =
+  window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+window.IDBCursor =
+  window.IDBCursor || window.webkitIDBCursor || window.msIDBCursor;
+function getData() {
+  var dbName = 'indexedDBTest'; // 数据库名
+  var dbVersion = 20220430; // 版本号
+  var idb;
+  var dbConnect = indexedDB.open(dbName, dbVersion);
+  dbConnect.onsuccess = function (e) {
+    idb = e.target.result;
+    var t = idb.transaction(['users'], 'readonly');
+    var s = t.objectStore('users');
+    var r = s.get(1);
+    r.onsuccess = function (e) {
+      if (this.result == undefined) console.log('没有符合的数据');
+      else console.log('数据获取成功，用户名为：' + this.result.userName);
+    };
+    r.onerror = function (e) {
+      console.log('数据获取失败');
+    };
+  };
+  dbConnect.onerror = function (e) {
+    console.log('连接 indexedDB 数据库失败');
+  };
+}
+```
+
+            

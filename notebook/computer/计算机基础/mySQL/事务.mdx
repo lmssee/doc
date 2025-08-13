@@ -1,0 +1,30 @@
+---
+title: 事务
+
+
+---
+
+# 准则
+
+- 只有使用了 InnoDb 数据库引擎才支持事物
+- 处理事务可以维持数据库的完整性
+- 事务用来管理 insert 、 update 、 delete
+
+## 条件
+
+- 原子性 ： 中间出错直接滚回
+- 一致性 ： 数据库完整
+- 隔离性
+- 持久性
+
+## 控制语句
+
+- 开启事物 begin （或者 start transaction ）
+- 提交事物 commit （或者 commit work ）
+- 回滚 rollback （或者 rollback work ）
+- 保存点 savepoint （可存在多个）
+- 删除保存点 release savepoint
+- 回滚到保存点 rollback to
+- 事物隔离级别 set transaction (read uncommitted 、 read committed 、 repeatable read 、 serializable)
+
+            

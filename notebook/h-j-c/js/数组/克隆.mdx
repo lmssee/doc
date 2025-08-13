@@ -1,0 +1,109 @@
+---
+title: 克隆
+
+
+---
+
+# 克隆数组
+
+克隆就是创建副本，副本具有与原数组相同的值。 Array 类中没有克隆数组的方法，但用户可以使用变通的方法来实现克隆。
+
+## 浅表克隆
+
+通过调用 concat()或 slice()方法，可以创建数组的浅表副本。在浅表副本中，如果原始数组的元素是复杂数据类型，则元素值指向对象的引用而非对象本身，与原始数组一样，浅表副本的元素值也指向对象的引用，对对象所做的任何更改都会在两个数组中反映出来。例如下面的代码，演示了如何实现浅表克隆：
+
+```js
+var person = new Object(); //
+创建一个复杂数据类型作为数组元素 person.sex = 'male';
+person.age = 28;
+var oArray = ['tom', person];
+var newArray = oArray.concat(); // 克隆
+console.log(oArray[1].age); // 返回28
+console.log(newArray[1].age); // 返回28
+// 现在改变指向的对象，那么将同时影响两个数组
+person.age = 29;
+console.log(oArray[1].age); // 返回29
+console.log(newArray[1].age); // 返回29 // 也可以这样改变指向的对象
+oArray[1].age = 30;
+console.log(newArray[1].age); // 返回30
+console.log(person.age); // 返回30
+```
+
+## 深度克隆
+
+深度克隆是相对于浅表克隆而言的，在克隆的深度副本中，不断复制索引，还将复制原始数组中的所有对象，从而使新数组和原始数组指向不同的对象。
+
+在 JavaScript 中，实现深度克隆的方法是：将原始数组中的引用类型数据读出来然后重新填充新数组。
+
+下面来创建一个实用函数，该函数根据参数 deep 的值确定是将参数\_array 定义的数组克隆为浅表副本还是深度副本，实现如下：
+
+```js
+/***
+ *  @param _array 被克隆的数组
+ * @param deep 定义是否深度克隆
+ * @return Array 返回克隆的数组
+ * @throws Error 参数数量不正确
+ */
+function cloneArray(_array, deep) {
+  if (arguments.length == 1) {
+    var isDeep = false;
+  } else if (arguments.length == 2) {
+    var isDeep = deep;
+  } else {
+    throw new Error('参数数量不正确');
+    return;
+  }
+  var newArray = _array instanceof Array ? [] : {};
+  if (isDeep) {
+    for (var i in _array) {
+      var prop = _array[i];
+      if (typeof prop == 'object') {
+        if (prop instanceof Array) {
+          newArray[i] = [];
+          for (var j = 0; j < prop.length; j++) {
+            if (typeof prop[j] != 'object') {
+              newArray[i].push(prop[j]);
+            } else {
+              newArray[i].push(cloneArray(prop[j]), true);
+            }
+          }
+        } else {
+          newArray[i] = cloneArray(prop, true);
+        }
+      } else {
+        newArray[i] = prop;
+      }
+    }
+  } else {
+    newArray = _array.concat();
+  }
+  return newArray;
+}
+```
+
+该函数有以下3种使用方法：
+
+```js
+var newArray = cloneArray(oArray); // 浅表克隆
+var newArray = cloneArray(oArray, false); // 浅表克隆
+var newArray = cloneArray(oArray, true); // 深度克隆
+```
+
+下面验证一下该函数：
+
+```js
+var person = new Object(); // 创建一个复杂数据类型作为数组元素
+person.sex = 'male';
+person.age = 28;
+var oArray = ['tom', person];
+// ===== 克隆
+cloneArray(oArray, true); // =====
+console.log(oArray[1].age); // 返回28
+/console.log(newArray[1].age); / / 返回28;
+// 现在改变指向的对象，那么仅影响原始数组，而不影响克隆的数组
+person.age = 29;
+console.log(oArray[1].age); // 返回29
+console.log(newArray[1].age); // 返回28
+```
+
+            

@@ -1,0 +1,122 @@
+---
+title: ALTER
+
+
+---
+
+# alter （更改）命令
+
+alter 用于修改数据表名和数据字段。
+
+```sql
+show columns from main -- 展示 main 表的字段
+alter table main drop main_age -- 删除字段 main_age
+alter table main add main_phone varChar(25) after (); -- 添加关键字
+main_phone
+alter table main change .. after ..; -- 调整字段顺序
+```
+
+first 和 after 关键字可用于 add 和 modify 子句。
+
+## 修改字段类型和名称
+
+```sql
+alter table main modify main_age char(3); -- 修改字段数据类型
+alter table main change main_phone main_tel bigint; -- 修改字段名
+alter table main change main_tel main_tel int;
+alter table main change main_phone main_tel char(25); -- 修改字段名直接改数据类型
+```
+
+## 设置主键
+
+先删除原有主键：
+
+```sql
+alter table main_id change main int(15) not null;
+```
+
+然后再设置主键：
+
+```sql
+alter table main add primary key(main_id );
+```
+
+## 操控默认值
+
+```sql
+alter table main -- 设置默认值 100
+modify main_tel bigint not null default 100;
+alter table main alter main_age drop default; -- 删除默认值
+alter table main alter main_age set default 0 ;
+show columns from main; -- 查看表字段
+```
+
+## 修改表名
+
+```sql
+alter table main rename to newMain ;
+```
+
+## 索引
+
+## 普通索引
+
+```sql
+create index indexName on mainmain_age ;
+```
+
+如果是 char ， varChar 类型， length 可以是小于实际长度。如果 BLOB 和 TEXT 类型，必须制定 length 。
+
+```sql
+alter table main add index indexName(main_age) ;
+```
+
+## 删除索引
+
+```sql
+drop index [indexName] on main
+```
+
+## 唯一指引
+
+索引列的值必须唯一，但允许有空值。
+
+```sql
+create unique index indexName on main main_tel(length)) ;
+```
+
+或者用：
+
+```sql
+alter table main add unique [indexName] (main_tel(length)) ;
+```
+
+```sql
+create table main
+main_id int not null,
+ main_name varChar(25) not null,
+unique [indexName] (main_name(length))
+);
+```
+
+## 使用 alter 命令添加或删除索引
+
+```sql
+/** 添加一个主键，意味着该索引值唯一，且不能是 null */
+alter table main add primary key (main_age);
+/** 创建值唯一（可以为 null ） */
+alter table main add unique index_name (main_age) ;
+/** 普通索引 */
+alter table main add index index_name (main_age) ;
+/** 制定索引为 fulltext ，用于全文检索 */
+alter table main add fulltext index_name (main_age) ;
+/** 删除索引 */
+alter table main drop index main_age ;
+```
+
+```sql
+/** 展示索引信息 */
+show index from main\G;
+```
+
+            

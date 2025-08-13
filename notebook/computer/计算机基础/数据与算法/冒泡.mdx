@@ -1,0 +1,68 @@
+---
+title: 冒泡
+
+
+---
+
+# 冒泡
+
+整个过程像气泡一样上冒。单向冒泡：对于给定的 n 个记录值，从此一个开始依次进行两两比较，当前大于后面的记录时，交换位置。
+
+```js
+function maoPao(arr) {
+  const length = arr.length;
+  for (let i = 1; i < length; i++) {
+    for (let j = 0; j < length - i; j++) {
+      if (arr[j] > arr[j + 1]) arr[j + 1] = [arr[j], (arr[j] = arr[j + 1])][0];
+    }
+  }
+  return arr;
+}
+```
+
+每一次冒泡，已经将最大的放到了最后。但不但最后的排好了，在每次循环的最后一次交换之后的都排好了，所以可以设置变量储存每一次循环最后交换的位置：
+
+```js
+function maoPao2(arr) {
+  var i = arr.length - 1,
+    bool;
+  while (i) {
+    bool = 0;
+    for (let j = 0; j < i; j++) {
+      if (arr[j] > arr[j + 1]) {
+        bool = j;
+        arr[j + 1] = [arr[j], (arr[j] = arr[j + 1])][0];
+      }
+    }
+    i = bool;
+  }
+  return arr;
+}
+```
+
+原则上第二个冒泡比第一个冒泡要少几次循环，除非是完全从大到小的排序。
+
+还有一种冒泡是每次循环时分别找出本轮最大和最小的，但是测试随机数组发现循环次数不亚于第一个冒泡：
+
+```js
+function maoPao3(arr) {
+  let left = 0,
+    right = arr.length - 1;
+  while (left < right) {
+    for (let j = left; j < right; j++)
+      if (arr[j] > arr[j + 1]) arr[j + 1] = [arr[j], (arr[j] = arr[j + 1])][0];
+    right--;
+    for (let j = right; j > left; --j)
+      if (arr[j] < arr[j - 1]) arr[j - 1] = [arr[j], (arr[j] = arr[j - 1])][0];
+    ++left;
+  }
+  return;
+  arr;
+}
+```
+
+但是书上说，最后一个效率最高。。。
+
+最佳情况： T(n) = O(n)，输入为正序。最差 T(n) = O(n\*n)，输入为倒序。
+
+            

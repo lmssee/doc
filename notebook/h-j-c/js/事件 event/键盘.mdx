@@ -1,0 +1,266 @@
+---
+title: 键盘
+
+
+---
+
+# 键盘事件
+
+JavaScript 可以响应键盘事件，例如键按下和键弹起： keydown 、 keypress 和 keyup 。例如下面的代码：
+
+```js
+// <!-- <textarea name="" id="key" cols="30" rows="10"></textarea> -->
+var key = document.getElementById('key');
+key.onkeydown = f; // 注册 keydown 事件处理函数
+key.onkeyup = f; // 注册 keyup 事件处理函数
+key.onkeypress = f; // 注册 keypress 事件处理函数
+function f(e) {
+  var e = e || window.event;
+  var s = e.type + '__' + e.keyCode;
+  key.value = s;
+}
+```
+
+- keydown ：在键盘上按下某个键时触发。如果一直按着，则一直持续触发该事件。但是 Opera 不支持这种操作。该事件处理函数返回 false 时，默认动作将被取消
+- keypress ：按下某个键并释放时会触发。如果一直按着这个键，会不断触发。该事件处理返回 false 时，默认动作将被取消
+- keyup ：释放某个键盘键时触发。该事件仅在松开时触发一次，不是一个连续触发的
+
+要注意按键事件触发的顺序，先是按下而后是弹起。
+
+## 键盘事件属性
+
+键盘事件一般只在键盘相关事件发生时才会存在于事件对象中，但是 ctrlKey 和 shiftKey 属性除外，因为它们也会在鼠标事件中存在。
+
+| keyCode    | 该属性包含键盘中对应键位的键值                                |
+| :--------- | :------------------------------------------------------------ |
+| charCode   | 该属性包括键盘中键位对应的 Unicode 编码，仅 DOM 支持          |
+| target     | 发生事件的节点（包含元素），仅 DOM 支持                       |
+| srcElement | 发生事件的元素，仅 IE 支持                                    |
+| shiftKey   | 是否按下【 shiftKey 】键，如果按下返回 true ，否则为 false    |
+| ctrlKey    | 是否按下【 ctrlKey 】键，如果按下返回 true ，否则返回 false   |
+| altKey     | 是否按下【 altKey 】键，如果按下则返回 true ，否则返回 false  |
+| metaKey    | 是否按下【 metaKey 】键，如果按下则返回 true ，否则返回 false |
+
+keyCode 和 charCode 属性比较复杂，但是它们在实际开发中比较有用，故比较这两个属性在不同的浏览器中的表现是很有必要的。
+
+| 属性               | IE 事件模型                                                                 | DOM 事件模型                                                                                                                                                    |
+| :----------------- | :-------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| keyCode(keypress)  | 返回所有字符键的正确值，区分大写状态（ 65-90）和小写状态（ 97-122）         | 功能键返回正确值，而【 shift 】、【 Ctrl 】、【 Alt 】、【 PrintScreen 】、【 ScrollLock 】无返回值，其它所有键都返回 0                                         |
+| kryCode(keydown)   | 返回所有键值（除【 printScreen 】键），字母键都以大写状态返回键值（ 65-90） | 返回所有键值（除【 PrintScreen 】键），字母键都以大写形式返回（ 65-90）                                                                                         |
+| kryCode(keyup)     | 返回所有键值（除【 printScreen 】键），字母键都以大写状态返回键值（ 65-90） | 返回所有键值（除【 PrintScreen 】键），字母键都以大写形式返回（ 65-90）                                                                                         |
+| charCode(keypress) | 不支持该属性                                                                | 返回字符键，区分大写状态（ 65-90）和小写状态（ 97-122），而【 shift 】、【 Ctrl 】、【 Alt 】、【 PrintScreen 】、【 ScrollLock 】 无返回值，其它所有键都返回 0 |
+
+|
+| charCode(keydown) | 不支持该属性 | 所有键值为 0 |
+| charCode(keyup) | 不支持该属性 | 所有键值为 0 |
+
+```js
+{
+  /* <div id="box"></div> */
+}
+var box = document.getElementById('box');
+box.style.position = 'absolute';
+box.style.width = '20px';
+box.style.height = '20px';
+box.style.backgroundColor = '#f00';
+document.onkeydown = keyDown;
+function keyDown(event) {
+  var e = event || window.event;
+  switch (event.keyCode) {
+    case 37:
+      box.style.left = box.offsetLeft - 5 + 'px';
+      break;
+    case 39:
+      box.style.left = box.offsetLeft + 5 + 'px';
+      break;
+    case 38:
+      box.style.top = box.offsetTop - 5 + 'px';
+      break;
+    case 40:
+      box.style.top = box.offsetTop + 5 + 'px';
+  }
+  return false;
+}
+```
+
+## 获取按键
+
+有时我们也需要了解用户按的是哪一个键，这可以通过事件对象的属性实现。例如下面的代码：
+
+```js
+function keyDownHandler(evt) {
+  alert('按下键的字符代码 : ' + String.fromCharCode(evt.keyCode));
+  alert('按下键的键控代码 : ' + evt.keyCode);
+  alert('alt 键状态 : ' + evt.altKey);
+  alert('ctrl 键状态 : ' + evt.ctrlKey);
+  alert('shift 键状态 : ' + evt.shiftKey);
+}
+function keyUpHandler(evt) {
+  alert('弹起键的字符代码 : ' + String.fromCharCode(evt.keyCode));
+  alert('弹起键的键控代码 : ' + evt.keyCode);
+}
+document.body.addEventListener('keydown', keyDownHandler);
+document.body.addEventListener('keyup', keyUpHandler);
+```
+
+下面是这些属性的详细解释：
+
+- altKey 属性设置或获取 Alt 键的状态，该键当前状态适用的值包括 true （按下）和 false （没按下）
+- keyCode 表示按下或释放的键的键控代码值，键控代码是标识所按之键的数值。使用
+  String.fromCharCode()方法可将字符代码转换成字符串。键控代码值与字符值之间的主要区别是键控代码值表示键盘上的特定键（数字小键盘上的 1与最上面一排键中的 1不同，但生成 1的键与生成
+  !的键是相同的），而字符值表示特定字符（ R 与 r 字符是不同的）
+- ctrlKey 指示 Ctrl 键是处于活动状态（ true ）还是非活动状态（ false ）
+- shiftKey 指示 Shift 功能键是处于活动状态（ true ）还是非活动状态（ false ）
+
+例如在下面的脚本代码中，每按一次向右方向键就使当前 div 元素右移 10个像素：
+
+```js
+function keyDownHandler(evt) {
+  if (evt.keyCode == 39) {
+    evt.currentTarget.pageX = evt.currentTarget.pageX + 10;
+  }
+}
+var oDiv = document.getElementById('divParent');
+oDiv.addEventListener('keydown', keyDownHandler);
+```
+
+## 键盘响应顺序
+
+当按下键盘时，会连续触发很多事件，它们依次触发。
+
+对于字符键，按照； keydown -< keypress -< keyup 响应。如果按下字符键不放，则 keydown 和 keypress 一直响应，直至松开手。
+
+对于非字符键，按照； keydown -< keyup 响应。如果按下功能键不放，只有 keydown 一直响应。
+
+```js
+{
+  /* <textarea name="" id="key" cols="30" rows="10"></textarea> */
+}
+var key = document.getElementById('key');
+var n = 1;
+key.onkeydown = f;
+key.onkeyup = f;
+key.onkeypress = f;
+function f(e) {
+  var e = e || window.event;
+  var s = e.type + '\_ \_' + e.keyCode;
+  key.value += n++ + '=' + e.type + ' (keyCode=' + e.keyCode + ')\n';
+}
+```
+
+## 响应组合键事件
+
+组合键的操作方式有很多种，最常见的是先按一个键，保持该键处于按下状态，然后再按另一个键或更多的键。这种情况下，往往是使用 Ctrl 、 Alt 、 Shift 键和另外的键相组合；还有一种比较常见的方式是同时按下两个或三个键。在
+Windows 操作系统上和在 Macintosh 操作系统上键盘事件不尽相同，这里所提及的都是在 Windows 操作系统上的组合键事件。
+
+了解了组合键事件模型的过程，下面用组合键事件的范例来说明一下如何应用组合键事件，例如下面是 Shift+O 触发组合键事件的代码：
+
+```js
+function keyDownHandler(evt) {
+  if (evt.shiftKey && evt.keyCode == 79) {
+    alert('组合键触发 ');
+  }
+}
+document.body.addEventListener('keydown', keyDownHandler);
+```
+
+要注意浏览器的快捷键。例如在上面的范例中，使用了 Shift+O 而不是 Ctrl+O 就是出于这个考虑。
+
+## 技巧与提示
+
+keypress 、 keydown 和 keyup 这 3个事件都是只有事件源获得焦点的情况下才会被触发，但是三者还是略有区别：
+
+- keypress 只能捕获单个字符， keydown 和 keyup 可以捕获组合键
+- keypress 主要用来接收字母、数字等 ANSI 字符， keydown 和 keyup 可以捕获键盘除 PrintScreen 键外的所有按键
+- keypress 不显示键盘的物理状态，而只是传递一个字符，它将每个字符的大小写形式作为不同的键代码解释，即作为两种不同的字符。 keydown 和 keyup 不能判断键值字母的大小
+- keypress 不区分数字小键盘和主键盘的数字字符，而 keydown 和 keyup 区分
+
+## 键盘事件的使用
+
+键盘事件包含 onkeypress 、 onkeydown 和 onkeyup 事件。其中， onkeypress 事件是在键盘上的某个键被按下并且释放时触发此事件的处理程序，一般用于键盘上的单键操作；
+onkeydown 事件是在键盘上的某个键被按下时触发此事件的处理程序，一般用于组合键的操作； onkeyup 事件是在键盘上的某个键被按下后松开时触发此事件的处理程序，一般用于组合键的操作。
+
+|             |     |            |     |          |     |
+| :---------- | --- | ---------- | --- | -------- | --- |
+| A a         | 65  | B b        | 66  | C c      | 67  |
+| D d         | 68  | E e        | 69  | F f      | 70  |
+| G g         | 71  | H h        | 72  | I i      | 73  |
+| J j         | 74  | K k        | 75  | L l      | 76  |
+| M m         | 77  | N n        | 78  | O o      | 79  |
+| P p         | 80  | Q q        | 81  | R r      | 82  |
+| S s         | 83  | T t        | 84  | U u      | 85  |
+| V v         | 86  | W w        | 87  | X x      | 88  |
+| Y y         | 89  | Z z        | 90  |          |     |
+| 1           | 49  | 2          | 50  | 3        | 51  |
+| 4           | 52  | 5          | 53  | 6        | 54  |
+| 7           | 55  | 8          | 56  | 9        | 57  |
+| 0           | 48  |            |     |          |     |
+| 0           | 96  | 1          | 97  | 2        | 98  |
+| 3           | 99  | 4          | 100 | 5        | 101 |
+| 6           | 102 | 7          | 103 | 8        | 104 |
+| 9           | 105 |            |     |          |     |
+| \*          | 106 | +          | 107 | Enter    | 108 |
+| -           | 109 | .          | 110 | \/       | 111 |
+| F1          | 112 | F2         | 113 | F3       | 114 |
+| F4          | 115 | F5         | 116 | F6       | 117 |
+| F7          | 118 | F8         | 119 | F9       | 120 |
+| F10         | 121 | F11        | 122 | F12      | 123 |
+| Back space  | 8   | Tab        | 9   | Clear    | 12  |
+| Enter       | 13  | Shift      | 16  | Control  | 17  |
+| Alt         | 18  | Cape Lock  | 20  | Esc      | 27  |
+| SpaceBar    | 32  | Page Up    | 34  | End      | 35  |
+| Home        | 36  | Left Arrow | 37  | Up Arrow | 38  |
+| Right Arrow | 39  | Down Arrow | 40  | Insert   | 45  |
+| Delete      | 46  | Num Lock   | 144 | ; :      | 186 |
+| = +         | 187 | \, <       | 188 | - \_     | 189 |
+| . >         | 190 | / ?        | 191 | ` ~      | 192 |
+| [ {         | 219 | \ \|       | 220 | ] }      | 221 |
+| ' "         | 222 |            |     |          |     |
+
+以上键码值只有在文本框中才完全有效。如果在页面中使用（也就是在 `<body>`标记中使用），则只有字母键、数字键和部分控制键可用，其字母键和数字键的键值与 ASCII 值相同。。
+
+如果想要在 JavaScript 中使用组合键，可以分别利用 event.ctrlKey 、 event.shiftKey 、 event.altKey 判断是否按下了 Ctrl 键、 Shift 键以及 Alt 键。
+
+## 检测 Shift 、 Alt 、 Ctrl 键
+
+```js
+//以下是浏览器内置的检测方法
+event.shiftKey; //检测 Shift
+event.altKey; //检测 Alt
+event.ctrlKey; //检测 Ctrl
+```
+
+## 获取屏幕分辨率的宽、高
+
+```js
+window.screen.height; //获取屏幕的高
+window.screen.width; //获取屏幕的宽
+```
+
+## 脚本永不出错的方式
+
+```js
+window.onerror = function (m, f, l) {
+  return true;
+};
+```
+
+## 让 JavaScript 处理字符与 ASCII 码之间的转换
+
+```js
+console.log('a'.charCodeAt(0)); //97
+console.log(String.fromCharCode(75)); //K
+charCodeAt(); // 返回指定位置字符的 Unicode 编码
+fromCharCode(); //接收一个指定的 Unicode 值，然后返回一个字符串
+```
+
+## 捕捉 Ctrl+Enter 按键
+
+```js
+if (event.ctrlKey && event.keyCode == 13) {
+  console.log('You pressed the Ctrl + Enter');
+}
+// event.ctrlKey 检测 Ctrl 键， event.keyCode == 13检测 Enter 键
+```
+
+            

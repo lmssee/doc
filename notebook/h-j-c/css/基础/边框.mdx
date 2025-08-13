@@ -1,0 +1,113 @@
+---
+title: 边框
+
+
+---
+
+# border
+
+```css
+border: line-width | line-style | color;
+```
+
+## 各边框设置
+
+边框的上下左右都可以单独设置 ,使用 border-top 、 border-right 、 border-left 、 border-bottom 。
+
+## border-style
+
+在边框的三个属性中， border-style 是基础
+
+```css
+border-style: none | hidden | dotted | dashed | solid | double | groove | ridge
+  | inset | outset;
+```
+
+- none 无轮廓
+- hidden 隐藏边框
+- dotted 点状轮廓
+- solid 实线轮廓
+- double 双线轮廓
+- dashed 虚线轮廓
+- groove 3D 凹槽轮廓
+- ridge 3D 凸槽轮廓
+- inset 3D 凹边轮廓
+- outset 3D 凸边轮廓
+
+## 多色边框
+
+支持不太好，貌似就 Mozilla Gecko 引擎支持。私有属性为 -moz-border-color 。
+
+## 边框背景
+
+该功能模拟 background-image ，但功能更强大。
+
+```css
+border-image ：
+none|<image>[<number>|<percentage>]{1,4}[/<border-width>{1,4}]
+```
+
+边框图像源：
+
+```css
+ border-image-source
+```
+
+边框图像剪切：
+
+```css
+ border-image-slice
+```
+
+边框重复性：
+
+```css
+border-image-repeat
+```
+
+- stretch(拉伸 )
+- repeat （重复）
+- round （平铺）
+
+图像偏移位置：
+
+```css
+ border-image-outset
+```
+
+图像大小：
+
+```css
+border-image-width
+```
+
+虽然 W3C 制定了该属性，但是浏览器还是喜欢使用 border-width 实现相同的功能。
+
+```css
+div {
+  border: 2px solid #dedede;
+  height: 60px;
+  width: 200px;
+  background: url(images/1.jpg);
+  -moz-border-right-colors: #333 #aaa;
+  -moz-border-bottom-colors: #333 #aaa;
+  -moz-border-top-colors: #aaa #666;
+  -moz-border-left-colors: #aaa #666;
+}
+```
+
+WebKit 支持 -webKit-border-image 私有属性， Mozilla Gecko 支持 -moz-border-image 私有属性， Presto 引擎支持 -o-border-image 私有属性。 IE
+浏览器暂不支持 border-image 属性，也没有私有属性。
+
+border-image 和 background-image 属性的用法类似，包括图像源、裁剪位置和重复性。
+
+## 边框圆角
+
+```css
+border-radius
+```
+
+目前， WebKit 引擎支持 -WebKit-border-radius 私有属性， Mozilla Gecko 支持 -moz-border-radius 私有属性， Presto 引擎和 IE9+ 支持
+border-radius 标准属性。 IE 8 之前的版本的浏览器不支持 border-radius 属性。
+
+            

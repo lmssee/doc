@@ -1,0 +1,201 @@
+---
+title: 一些
+
+
+---
+
+# 去重
+
+## set
+
+```js
+var j = [...new Set([1, 2, 3, 3])];
+// [1,2, 3]
+```
+
+## for
+
+写 for 循环遍历
+
+## 过滤数组中的 false 值
+
+```js
+myArray
+  .map(item => {
+    // 编写逻辑代码
+  })
+  .filter(Boolean);
+```
+
+## 创建空对象
+
+```js
+let dict = Object.create(null);
+```
+
+## 对象合并
+
+使用扩展运算符（…），可以方便地合并对象。
+
+```js
+const person = { name: 'David Walsh', gender: 'Male' };
+const tools = { computer: 'Mac', editor: 'Atom' };
+const attributes = { handsomeness: 'Extreme', hair: 'Brown', eyes: 'Blue' };
+const summary = { ...person, ...tools, ...attributes };
+```
+
+## 多维数组一行代码实现一维转换
+
+```js
+var arr = [[1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14]]]], 10];
+var resultArr = arr.toString().split(',').map(Number);
+console.log(resultArr);
+```
+
+## 统计字符串中相同字符出现的次数
+
+```js
+var str = 'aaabbbccc66aabbc6';
+var strInfo = str.split('').reduce((p, c) => (p[c]++ || (p[c] = 1), p), {});
+console.log(strInfo);
+// {6: 3, a: 5, b: 5, c: 4}
+```
+
+## 将类数组对象转成数组
+
+```js
+var likeArrObj = { 0: 1, 1: 2, 2: 3, length: 3 };
+var arr1 = Array.prototype.slice.call(likeArrObj); //或者使用
+[].slice.call(likeArrObj);
+console.log(arr1); // [1, 2, 3]
+```
+
+## 初始化数组
+
+```js
+Array.dim = function (dimension, initial) {
+  var a = [],
+    i;
+  for (i = 0; i < dimension; i++) {
+    a[i] = initial;
+  }
+  return a;
+};
+```
+
+## 扩展原型方法
+
+模板。
+
+```js
+Array.prototype._m =
+  Array.prototype ||
+  (Array.prototype.m = function () {
+    //扩展方法的具体代码});
+    Object.prototype.m = Array.prototype._m;
+  });
+```
+
+首先，利用判断数组中是否存在名为 m 的原型方法，如果存在直接引用该原型的方法，不再定义，否则定义原型方法 \_m()。
+
+然后，把定义的原型方法 m() 引用给原型方法 \_m() 方法，这样的目的是防止当原型方法 m() 引用给 Object 对象的原型方法时发生死循环，可以兼容 Firefox 浏览器。
+
+最后，把数组的临时原型方法 \_m() 引用给 Object 对象的原型，这样就可以确保所有的对象都可以调用这个原型方法。经过临时原型方法，就可以防止数组 （ Array ）和 对象
+（ Object ）都定义了同名方法，如果把该方法传递给 Object ，而 Object 的原型方法又引用了 Array 的同名原型方法，则会发生循环引用的问题。
+
+例如；扩展一个函数求数组所有的元素的和。
+
+```js
+Array.prototype._sum =
+  Array.prototype.sum || //检查是否有同名方法
+  (Array.prototype.sum = function () {
+    //定义该方法
+    (var_n = 0), (_this = []); //临时汇总变量
+    for (var i in this) {
+      if ((_this[i] = parseFloat(this[i]))) _n += _this[i]; //如果数组元素是数字，则进行累加
+    }
+    return_n;
+  });
+
+Object.prototype.sum = Array.prototype._sum; //把临时变量赋值给对象的原型方法
+sum();
+```
+
+## 关联数组
+
+关联数组是一种数据结构，它允许用户动态的将任意值和任意字符串关联在一起。实际上 Javascript 对象就是使用关联数组实现的。这样可以在设计中将对象和数组作为单独的类型来处理。
+
+## 三点表示法
+
+JavaScript 新增加的一个功能，是在变量名前面使用三个句点形式的一个操作符。有人称之为展开操作符（ spread operator ），还有人称之为剩余参数（ rest parameters ）。
+
+- 组合多个数组 直接通过三点插入数组 var array2 = ['orange', ...array1, 'cherry', 'fig'];
+- 用参数的数组来调用函数
+- 收集数据
+
+对象 obj 和数组 array 的 typeof 值均为"object"，这样我们就无法准确判断了，这时候，可以通过调用 instanceof 来进行进一步的判断。
+
+```js
+print(obj instanceof Array); //false
+print(array instanceof Array); //true
+```
+
+## 迭代器
+
+## 设置迭代器
+
+迭代器（ Iterator ）对数据集合中每一个元素执行重复操作的机制，通常与循环结构搭配，因此也称循环器。它能够根据传递的函数行参数，为集合每个元素反复执行相同的命令，知道满足某些条件位置。迭代器通常用于迭代数组的值，或者执行重复的命令。
+
+```js
+Array.prototype.each = function (f) {
+  //数组迭代器，扩展 Array 原型方法
+  try {
+    //异常处理，避免不可预测的错误
+    this.i || (this.i = 0); //初始化迭代计数器
+    if (this.length && f.constructor == Function) {
+      // 如果数组长度大于 0 ，参数为函数
+      while (this.i < this.length) {
+        //遍历数组
+        var e = this[this.i]; //获取当前元素
+        if (e && e.constructor == Array) {
+          //如果元素存在，且为数组
+          e.each(f); //递归调用迭代器
+        } else {
+          // 否则，在元素上调用参数函数，并传递至值
+          f.apply(e, [e]);
+        }
+        this.i++;
+        //递加计数器
+      }
+      this.i = null; //如果遍历完成，则清空计数器
+    }
+  } catch (w) {} //捕获异常，暂不处理
+  return this; // 返回当前数组
+};
+```
+
+```js
+var a = [1, 2, 3];
+var f = function (x) {
+  return x * x;
+};
+var_a = [];
+for (var i in a) {
+  var c = f.apply([], [a[i]]);
+  _a.push(c);
+}
+a = _a;
+alert(a);
+```
+
+## 调用该迭代器
+
+```js
+var a = [1, [2, [3, 4]]];
+var f = function (x) {
+  alert(x);
+};
+a.each(f);
+```
+
+            

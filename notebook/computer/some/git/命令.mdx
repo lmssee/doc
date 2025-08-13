@@ -1,0 +1,46 @@
+---
+title: 命令
+pagination_prev: null
+
+---
+
+# git 命令行
+
+|                                  |                                                                            |
+| :------------------------------- | :------------------------------------------------------------------------- |
+| git --version                    | 版本                                                                       |
+| git init                         | 初始化                                                                     |
+| git init new repo                | 使用指定的目录作为 Git 仓库                                                |
+| git add \*.c                     | 文件追踪                                                                   |
+| git add README                   | 文件追踪                                                                   |
+| git commit -m \" 提示说明 \"     |                                                                            |
+| git clone                        | 拷贝项目                                                                   |
+| git clone `<repo>` `<directory>` | 克隆库 repo 到指定位置 directory                                           |
+| git log                          | 查看历史提交记录                                                           |
+| git blame `<file>`               | 以列表形式查看文件的历史修改记录                                           |
+| git add                          | 暂存区目录被更新                                                           |
+| git reset HEAD                   | 暂存区的目录会被重新，被 master 分支指向的目录树所代替，但是工作区不受影响 |
+
+| git re --cache `<file>`
+| 直接从暂存区删除文件，工作区不变 |
+| git checkout | 暂存区全部代替工作区文件 **_ 该操作很危险_** |
+| git checkout --`<file>` | 暂存区指定文件代替工作区文件 **_ 该操作很危险_** |
+| git remote | 远程操作 |
+| git fetch | 从远端获取代码库 |
+| git pull | 下载远程代码合并 |
+| git push | 上传远程代码合并 |
+| git add | 添加到仓库 |
+| git status | 查看仓库的状态，显示变化的文件 |
+| git diff | 必交文件的不同，即暂存区与工作区的差异 |
+| git commit | 提交到暂存区 |
+| git reset | 回退版本 |
+| git rm | 删除工作区文件 |
+| git mv | 移动或命名工作期间 |
+| git branch {新建分支名} | 新建分支 |
+| git checkout {分支名} | 切换分支 |
+| git merge | 分支合并 |
+| git log | 查看记录 |
+| git blame `<file>` | 查看指定文件的修改记录 |
+| git gc | 垃圾回收 |
+
+            

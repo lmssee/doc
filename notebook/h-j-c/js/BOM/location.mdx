@@ -1,0 +1,160 @@
+---
+title: location
+
+
+---
+
+# location 对象包含当前加载页面的 URL 信
+
+页面的 URL 是由多个部分组成的：`[协议 ]//[主机名 ]:[端口 ]/[路径 ][搜索 ][hash]`
+
+|                   |                                                                                          |
+| :---------------- | :--------------------------------------------------------------------------------------- |
+| location.href     | 声明当前的显示文档的完整 URl ，与其它属性不同，把该属性设置为新的 URl ，将会显示新的内容 |
+| location.protocol | 协议，包括冒号 —— --⊱⊱⊱⊱⊱ https:                                                         |
+| location.host     | 主机名（域名加端口）—— --⊱⊱⊱⊱⊱ lmssee.cn:80                                              |
+| location.hostname | 主机名（不加端口）—— --⊱⊱⊱⊱⊱ lmssee.cn                                                   |
+| location.port     | 端口号 —— --⊱⊱⊱⊱⊱ 80                                                                     |
+| location.pathname | 相对路径 —— --⊱⊱⊱⊱⊱ l/study/BOM/                                                         |
+| location.search   | 搜索 —— --⊱⊱⊱⊱⊱ ?id=                                                                     |
+| location.hash     | hash ，锚点之后的内容 </td>                                                              |
+
+```js
+var queryString = function () {
+  // 获取 URL 查询字符串参数的调用函数
+  var q = location.search.substring(1); // 获取字符串
+  var a = q.split('&');
+  // 以 & 为界将查询字符串分割成数组
+  var o = {}; // 定义临时数组
+  for (var i = 0; i < a.length; i++) {
+    // 遍历对象
+    var n = a[i].indexOf('='); // 获取每一个参数中等号的小标位置
+    if (n == -1) {
+      // 如果没有发现这调到下一次循环继续
+      continue;
+    }
+    var v1 = a[i].substring(0, n); // 截取等号前的参数值
+    var v2 = a[i].substring(n + 1); // 截取等号后的参数值
+    o[v1] = unescape(v2); // 以名值对形式储存在对象中
+  }
+  return o; // 返回对象
+};
+```
+
+## 使用 location 导航
+
+- 直接设置对象的 href 用这种方法把用户转移到新页面时，原始页面还保留在浏览器的历史记录里，用户可以利用浏览器的" Back"按钮方便地返回到以前的页面
+- 使用 location 的 replace （）方法 新的 URL 直接替换当前页面，即把当前页面从历史记录列表里删除
+
+可以通过修改 location 对象修改浏览器的地址。首先，最常见的是使用 assign()方法并传入一 个 URL 。如果给 location.href 或 window.location 设置一个 URL ，也会以同一个
+URL 值调用 assign()方法。
+
+除了 hash 之外，只要修改 location 的一个属性，就会导致页面重新加载新 URL 。
+
+## 刷新页面
+
+如果要在浏览器里重新加载当前页面，也就是相当于用户单击" reload"按钮，可以用 reload()方法：如果要在浏览器里重新加载当前页面，也就是相当于用户单击" reload"按钮，可以用 reload()方法：
+
+```js
+location.reload();
+```
+
+如果用没有参数的 reload()方法，当浏览器的缓存中保存了当前页面时，就会加载缓存的内容。为了避免发生这种情况，确保从服务器获得页面数据，可以在调用 reload()方法时添加参数 true ：
+
+```js
+document.reload(true);
+```
+
+## 跳转至新页面，并且保证浏览器不会再回退
+
+```js
+location.replace('https://lmssee.art.blog');
+```
+
+location 的 replace()方法可以用一个新的文档替换当前文档，并且该方法还会覆盖 History 对象中的记录。
+
+## 几秒钟之后返回上一页
+
+```html
+<meta
+  http-equiv="refresh"
+  content="3;
+        url=javascript:window.history.go(-1);"
+/>
+```
+
+其中 content 为设置的时间。
+
+## 在打开的子窗口中刷新父窗口
+
+```js
+window.opener.location.reload();
+```
+
+## 解析地址
+
+location 对象描述的是某一个窗口对象所打开的 URL 地址。使用 window.location 可以返回一个 location 对象（也可以直接使用 location 调用方法和属性，因为 window 可以省略）。
+
+要表示当前窗口的地址，只需要使用 location 即可；若要表示某一个窗口的地址，就要使用" window.location"。例如下面的代码：
+
+window.location 和 document.location 不同，前者引用 location 对象，后者只是一个只读的字符串，与 documentURL 同义。但是，但服务器存在重定向时。
+document.location 包含的是已经装载的 URL ，而 location.href 包含的是原始请求的文档的 URL 。
+
+```js
+var newWindow = window.open('http://localhost/JavaScript', '_blank');
+console.log(newWindow.location);
+```
+
+这将返回打开的新窗口的 location ：
+
+```html
+<a href="http://localhost/JavaScript" rel="nofollow"
+  >http://localhost/JavaScript</a
+>
+```
+
+注意，属于不同协议或不同主机的两个地址之间不能互相引用对方的 location 对象，这是出于安全性的需要。
+
+例如，当前窗口打开的是 `www.lmssee.com` 主机上的某个网页，另外一个窗口（对象名为 newWindow ）打开的是 `www.lmssee.cn` 主机上的某个网页。那么，如果在当前窗口使用 newWindow.location 就会弹出错误信息：拒绝访问。
+
+例如下面的代码演示了如何访问这些属性：
+
+```js
+console.log(' 书签名称：' + location.hash + ' ');
+console.log(' 主机全称：' + location.host + ' ');
+console.log(' 主机名称：' + location.hostname + ' ');
+console.log(' 路径 ：' + location.pathname + ' ');
+console.log(' 连接端口：' + location.port + ' ');
+console.log(' 通讯协议：' + location.protocol + ' ');
+console.log('查询字符串：' + location.search + ' ');
+```
+
+## location 对象的方法
+
+| 方法         | 嗯                                                                              |
+| :----------- | :------------------------------------------------------------------------------ |
+| assign       | 加载一个新的 html 文档                                                          |
+| reload()     | 刷新当前网页                                                                    |
+| replace()    | 打开另一个 URL 并取代历史对象中当前位置的地址，用该方法打开的地址无法返回上一个 |
+| resolveURL() | 将相对地址转换成绝对地址                                                        |
+
+location 对象方法的使用方法都很简单，语法格式如下：
+
+```js
+location.assign(sURL);
+location.reload([bReloadSource]);
+location.replace(sURL);
+location.resolveURL(sURL);
+```
+
+参数 sURL 表示要加载或者取代的 URL ；参数 bReloadSource 是一个逻辑值，是可选的参数，默认值是 false ，表示从浏览器缓存中重新加载， true 表示从网站重新加载。
+
+注意，用 location.replace()方法打开一个 URL 后，单击浏览器中的"后退"按钮将不能返回到刚才的页面，这与 location.assign()方法不同。
+
+## 获取文件扩展名
+
+```js
+var c = p.substring(p.lastIndexOf('.') + 1);
+```
+
+            

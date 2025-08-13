@@ -1,0 +1,21 @@
+---
+title: application
+
+
+---
+
+# 软件已损坏
+
+建于第三方软件，处理为在系统的偏好设置打开允许任何来源的安装，如果没法发现该选项，可以在终端输入：
+
+```bash
+sudo spctl --master-disable
+```
+
+在终端输入：
+
+```bash
+sudo xattr -r -d com.apple.quarantine [软件路径]
+```
+
+            

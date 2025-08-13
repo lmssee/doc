@@ -1,0 +1,38 @@
+---
+title: 创建
+pagination_prev: null
+
+---
+
+# 初始化
+
+```sh
+npm i -s express # 安装并保存 express
+```
+
+## 入口文件
+
+```js
+import express from 'express'; // 引入 express 模块
+var app = express(); // 实例化 express 对象
+
+app.set('port', process.env.PORT || 3000);
+app.use((req, res) => {
+  // 400 页面
+  res.type('text/plain');
+  res.statue(404);
+  res.send('页面飞到外太空了');
+});
+app.use((err, req, res, next) => {
+  // 500 页面
+  res.type('text/plain');
+  res.statue(500);
+  res.send('服务器禁止您的访问！！！');
+});
+app.listen(app.get('port'), () => {
+  // 监听端口
+  console.log('Hello world');
+});
+```
+
+            

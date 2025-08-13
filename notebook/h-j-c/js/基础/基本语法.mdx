@@ -1,0 +1,191 @@
+---
+title: 基本语法
+
+
+---
+
+# 字符编码
+
+JavaScript 程序使用 Unicode 字符编码，有两个字节。意味着用户可以使用中文来命名变量。**_但，不建议如此非正常人操作_**。
+
+```js
+let 谁 = '张三 ';
+function 睡觉(哪位, 在哪) {
+  alert(哪位 + '在 ' + 在哪 + '睡大觉 ');
+}
+睡觉(谁, '床上 ');
+```
+
+切换 中英文 很麻烦，除非设定中文输入时输入英文字符。再者，为了考虑 JavaScript 的兼容性和开发习惯。
+
+由于 JavaScript 脚本一般都寄存在网页中，并由浏览器来解释，因此在考虑 JavaScript 语言编译时，还要顾及嵌入页面的字符编码，以及浏览器支持的字符编码。一般建议保持页面的字符编码与 JavaScript 编码一致，以免出现乱码。
+
+## 区分大小写
+
+```html
+<div></div>
+<!-- 下面本来是 Div ，被 vsCode 自动修改了 -->
+<div></div>
+<!-- 下面本来是 diV ，被 vsCode 自动修改了 -->
+<div></div>
+<script>
+  /* 在早期的浏览器可能会弹出 1 */
+  alert(document.querySelectorAll('div').length);
+  /* 新版浏览器会忽略大小写，弹出 3 */
+</script>
+```
+
+## 标识符
+
+标识符（ identifier ）表示名称。 JavaScript 标识符主要包括变量名、函数名、参数名 和 属性名
+
+- 第一个字符必须是 字母、下划线 或 美元符号（ $ ）
+- 除第一个字符，其它可使用字母、数字、下划线、美元符号
+- 标识符不能与 JavaScript 关键字和保留字同名
+- 在 ES3 中，可以使用 Unicode 转义序列
+
+## 直接量
+
+直接量指在程序中直接显示的量，如：字符串、数值、布尔值、正则表达式、对象初始化、数组初始化。
+
+```js
+// 字符串直接量
+'字符串直接量 ';
+// 数值直接量
+123456;
+// 布尔值直接量
+true;
+// 正则表达式直接量
+/^ab.*/g;
+// 特殊值直接量
+null;
+// 对象初始化直接量
+{a:1,b:2}
+// 数组直接量
+[1,2]
+```
+
+## 关键字和保留字
+
+具有一定用途关键字
+
+_ECMAScript 全部关键字_
+
+- break
+- delete
+- function
+- return
+- typeof
+- case
+- do
+- if
+- switch
+- var
+- catch
+- else
+- in
+- this
+- void
+- continue
+- false
+- instanceof
+- throw
+- while
+- debugger
+- finally
+- new
+- true
+- with
+- default
+- for
+- null
+- try
+
+ECMAScript 5 保留的关键字： class 、 const 、 enum 、 export 、 extends 、 import 、 super 。
+
+严格模式保留字： implements 、 let 、 private 、 public 、 yield 、 interface、 package 、 protected 、 static 。
+
+严格模式下，禁止使用以下关键字作为变量名、函数名、参数名： arguments 、 eval。
+
+_ECMAScript 3 中保留字_
+
+- abstract
+- double
+- goto
+- native
+- static
+- boolean
+- enum
+- implements
+- package
+- super
+- byte
+- export
+- int
+- protected
+- import
+- private
+- synchronized
+- char
+- extends
+- throws
+- class
+- final
+- interface
+- public
+- transient
+- const
+- float
+- long
+- short
+- volatile
+
+_JavaScript 预定义全局变量和函数_
+
+- arguments
+- encodeURL
+- Infinity
+- Number
+- RegExp
+- Array
+- encodeURLComponent
+- isFinite
+- Object
+- String
+- boolean
+- Error
+- isNaN
+- parseFloat
+- SyntaxError
+- Date
+- eval
+- JSON
+- parseInt
+- TypeError
+- decodeURL
+- EvalError
+- Math
+- RangeError
+- undefined
+- decodeURLComponent
+- Function
+- NaN
+- ReferenceError
+- URlError
+
+## 分隔符
+
+空格、制表符、换行符、换页符。在解析时， JavaScript 会忽略。最长行原则：在一行内如果能够正常解析，那么久在一行内解析；否则会读取下一行，直到能够被正常解析。
+
+## 注释
+
+- `//` 单行注释
+- `/* */` 多行注释
+
+## 转义序列
+
+使用 6 个 ASCII 字符来代替 16 位的 Unicode 内码。这些 Unicode 转义序列均以 \u
+开头，后跟 4 个 16
+进制的字符。这种表示可在字符串直接量、正则表达式直接量、标识符中， **_关键字除外_**。
+
+            

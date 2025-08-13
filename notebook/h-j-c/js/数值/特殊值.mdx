@@ -1,0 +1,53 @@
+---
+title: 特殊值
+
+
+---
+
+# 特殊的数值
+
+ECMAScript 可以表示的最小 数值保存在 Number.MIN_VALUE 中，这个值在多数浏览器中是 5e  324 ；可以表示的最大数值保存在 Number.MAX_VALUE 中，这个值在多数浏览器中是
+1.797 693 134 862 315 7e+308 。如果某个计算得到的 数值结果超出了 JavaScript 可以表示的范围，那么这个数值会被自动转换为一个特殊的 Infinity （无 穷）值。任何无法表示的负数以
+-Infinity （负无穷大）表示，任何无法表示的正数以
+Infinity （正 无穷大）表示。
+
+## 特殊数值
+
+|                          |                                |
+| :----------------------- | :----------------------------- |
+| Infinity                 | 无穷大                         |
+| NaN                      | 非数值                         |
+| Number.MAX_VALUE         | 表示最大数值                   |
+| Number.MIN_VALUE         | 表示最小数值 , 一个接近 0 的数 |
+| Number.NaN               | 非数值 , 与 NaN 相同           |
+| Number.POSITIVE_INFINITY | 表示正无穷大                   |
+| Number.NEGATIVE_INFINITY | 表示负无穷大                   |
+
+NaN (Not a Number) 是在 IEEE754 中定义的一个特殊的数值。它不表示一个数。尽管。
+
+```js
+typeof NaN === 'Number'; //true
+```
+
+在试图将非数字形式的字符串转化为数字时都会产生 NaN ，例如。
+
+```js
++'0'; //0
++'oops'; //NaN
+```
+
+NaN 不等于它自己。
+
+```js
+NaN !== NaN; //true
+```
+
+自定义一个检测数字函数。
+
+```js
+var isNumber = function isNumber(value) {
+  return typeof value === 'number' && isFinite(value);
+};
+```
+
+            

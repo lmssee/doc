@@ -1,0 +1,49 @@
+---
+title: 静态资源
+
+
+---
+
+# 只适合小项目
+
+用 Node 提供静态资源只适用于初期的小型项目，对于比较大的项目，你应该会想用 Nginx 或 CDN 之类的代理服务器来提供静态资源。
+
+```js
+import http from 'http';//引入 http 服务
+import fs from 'fs';//引入 fs 文件系统
+function serveStaticFile(res,path,contentType,responseCode){
+  if(!responseCode)
+    responseCode = 200;
+  fn.sendFile(__dirname + path,(err,data)=>{
+  if(err){
+    res.writeHead(500,{'Content-Type':'text/plain'});
+    res.send('500 - Internal Error');
+  }else{
+    res.writeHead(responseCode,{'Content-Type':'contentType'});
+    res.send(data);
+  }
+  });
+}
+
+http.createServer((req, res) => {
+  var path = req.url.replace(/\/?(?:\?.\*$),'').toLowerCase();
+  switch(path){
+    case '':
+      serveStaticFile(res,'/public/home.html','text/html');
+    break;
+    case '/about':
+      serveStaticFile(res,'/public/about.html','text/html');
+    break;
+    case '/img/logo.jpg':
+      serveStaticFile(res,'/public/img/logo.jpg','image/jpeg');
+    break;
+    default:
+      serveStaticFile(res,'/public/404.html','text/html');
+    break;
+  }
+});
+
+console.log('i am coming');
+```
+
+            

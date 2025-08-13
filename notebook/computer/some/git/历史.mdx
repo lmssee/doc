@@ -1,0 +1,59 @@
+---
+title: 历史
+
+
+---
+
+# log
+
+## 查看 log
+
+```sh
+git log
+  git log -s -1  #  仅展示最近的
+  git log --online  #  一行查看
+  git log -n 3  #  查看最近三次
+  git log --stat  #  展示被修改的文件
+  git log --dirstat  # 显示被修改的目录
+  git log --shortstat  #  展示多少文件被修改
+  git log --graph  #  展示各个提交之间的关系
+  git log --format=fuller  #  展示更多的细节
+  git log --author  #  指定用户
+  git log --since | --before | --until | --after  # 指定日期
+```
+
+首先需要将重点放在信息收集上，以便了解目标分支上目前所发生的事。在这里，在 log 命令中使用 .. 这符号可能会很有帮助。
+
+例如， a..b 可用来表示来自于分支 b ，但不属于分支 a 的提交。它可以显示出在当前分支上做了哪些事，而这些事应该不会被提交到其他分支中。
+
+```sh
+git log MERGE_HEAD..HEAD
+git log HEAD..MERGE_HEAD
+```
+
+分支的图形化表示也会很有用:
+
+```sh
+git log --graph --oneline --decorate HEAD..MERGE_HEAD
+
+```
+
+也可以在 log 命令中使用 --merge 选项，限制其只输出合并提交：
+
+```sh
+git log --merge
+
+```
+
+需要以合并操作为基础，即该版本必须在合并操作中是这些分支共同的祖辈提交：
+
+```sh
+git merge-base HEAD MERGE_HEAD
+
+```
+
+## shortlog
+
+该命令用于汇总 git 日志输出。
+
+            

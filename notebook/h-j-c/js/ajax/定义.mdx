@@ -1,0 +1,110 @@
+---
+title: 定义
+
+
+---
+
+# 定义 XMLHttpRequest 对象
+
+XMLHttpRequest 对象提供了与服务器进行通信的协议，浏览器可以通过 XMLHttpRequest 对象向服务器发送请求，并使用 JavaScript 处理响应信息，然后在 DOM 中显示数据。
+
+| 属性               | 嗯                                         |
+| :----------------- | :----------------------------------------- |
+| onreadystatechange | 指定当 readyState 属性改变时的事件处理句柄 |
+| readyState         | 返回请求的状态                             |
+| status             | 返回请求的 HTTP 状态码                     |
+| statusText         | 返回当前请求的响应行状态                   |
+| responseBody       | 返回正文信息                               |
+| responseStream     | 以文本流的形式返回响应信息                 |
+| responseText       | 以字符串的形式返回响应信息                 |
+| responseXML        | 以 XML 数据形式返回响应信息                |
+
+| 方法                    | 嗯                                                              |
+| :---------------------- | :-------------------------------------------------------------- |
+| open()                  | 创建一个新的 HTTP 请求，并指定此请求的方法、 URL 、以及验证信息 |
+| send                    | 发送请求到 HTTP 服务器并接收回应                                |
+| getAllResponseHeaders() | 获取响应的全部 HTTP 头信息                                      |
+| getResponseHeader()     | 从响应信息中获取某个指定的 HTTP 头信息                          |
+| setRequestHeader()      | 单独指定某个请求的某个 HTTP 头信息                              |
+| abort()                 | 取消当前请求                                                    |
+
+使用 XMLHttpRequest 对象实现异步通信的几个步骤：
+
+- 定义 XMLHttpRequest 实力对象
+- 调用 XMLHttpRequest 对象的 open() 方法打开服务器端的 URL 地址
+- 注册 onreadystatechange 事件处理函数，准备接受响应数据，并处理
+- 调用 XMLHttpRequest 对象的 send() 方法发送请求
+
+```js
+var xmlHttp;
+if (window.XMLHttpRequest) {
+  xmlHttp = new XMLHttpRequest(); // 兼容现代浏览器
+} else if (window.ActiveXObject) {
+  // 兼容 IE
+  try {
+    xmlHttp = new ActiveXObject('Msxml2.XMLHTTP');
+  } catch (e) {
+    try {
+      xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
+    } catch (e) {}
+  }
+}
+```
+
+IE 在 5.0 版本就开始以 ActiveX 组件支持定义 XMLHttpRequest 对象，在 7.0 版本中就开始支持标准化的 XMLHttpRequest 对象，允许通过 window
+对象进行访问。现在所有浏览器都支持 XMLHttpRequest 对象，且提供了相同的的属性和方法。
+
+```js
+// 定义 XMLHttpRequest 对象
+// //参数：无
+// 返回值： XMLHttpRequest 对象实例
+function createXMLHTTPObject() {
+  var XMLHttpFactories = [
+    // 兼容不同浏览器和版本的创建函数数组
+    function () {
+      return new XMLHttpRequest();
+    },
+    function () {
+      return new ActiveXObject('Msxml2.XMLHTTP');
+    },
+    function () {
+      return new ActiveXObject('Msxml3.XMLHTTP');
+    },
+    function () {
+      return new ActiveXObject('Microsoft.XMLHTTP');
+    },
+  ];
+  var xmlhttp = false;
+  for (var i = 0; i < XMLHttpFactories.length; i++) {
+    // 尝试调用匿名函数，如果成功则返回 XMLHttpRequest 对象，否则继续调用下一个
+    try {
+      xmlhttp = XMLHttpFactories[i]();
+    } catch (e) {
+      continue; // 如果发生异常，则继续下一个函数调用
+    }
+
+    break; // 如果成功，则中止循环
+  }
+  return xmlhttp; // 返回对象实例
+}
+```
+
+上面的函数首先创建一个数组，数组元素为各种创建 XMLHttpRequest 对象的匿名函数。第一个元素是创建一个本地对象，而其它元素将针对 IE 浏览器的不同版本尝试创建 ActiveX 对象。然后设置变量 xmlhttp
+为 false ，表示不支持 Ajax 。接着遍历工厂内所有函数并尝试执行它们，为了避免发生异常，把所有调用函数放在 try 子句中执行，如果发生错误，则在 catch 子句中捕获异常，并执行 continue
+命令，返回继续执行，而不是抛出异常。如果创建成功，则中止循环，返回创建的 XMLHttpRequest
+对象实例。
+
+```js
+var XHR = function() { var standard = { createXHR:
+    function() { return new XMLHttpRequest(); } }
+  var newActionXObject = { createXHR: function() { return new ActionXObject("Msxml2.XMLHTTP"); } }
+  var oldActionXObject = {
+  createXHR: function() { return new ActionXObject("Microsoft.XMLHTTP");
+  } } if (standard.createXHR()) {
+  return standard;
+  } else { try { newActionXObject.createXHR();
+  return newActionXObject; } catch (o) { oldActionXObject.createXHR();
+  return oldActionXObject; } } }();
+```
+
+            

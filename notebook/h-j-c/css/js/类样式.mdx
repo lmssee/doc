@@ -1,0 +1,44 @@
+---
+title: 类样式
+
+
+---
+
+# 获取类样式
+
+使用 DOM 的 getAttribute() 方法可以获取指定的元素的属性。
+也可以使用 HTML DOM 模型快捷获取读取属性，即 node.className 。
+对于复合类样式，需要使用 split() 方法劈开返回字符串，然后遍历类样式 node.className.split(" ")。
+
+## 添加类样式
+
+为元素设置属性可以使用标准的 setAttribute() 方法：
+
+```js
+node.setAttribute(name, value);
+```
+
+但一般添加类样式，使用 className 直接添加，但要注意，避免类样式被覆盖。
+
+```js
+function addClass(e, c) {
+  if (new RenExp('(\\s|^)' + c + '(\\s|$)').test(e, c)) {
+    e.c += ' ' + c;
+  }
+}
+```
+
+## 删除类
+
+DOM 中使用 removeAttribute() 方法删除特定的属性。
+
+```js
+function deleteClass(e, c) {
+  let r = new RenExp('(\\s|^)' + c + '(\\s|$)');
+  if (r.test(e, c)) {
+    e.c.replace(r, ' ');
+  }
+}
+```
+
+            

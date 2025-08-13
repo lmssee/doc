@@ -1,0 +1,326 @@
+---
+title: 程序结构
+
+
+---
+
+# 简述
+
+程序都是由一个或多个语句组成的集合。语句表示一个可执行的命令，用来完成特定的任务。大部分语句用于流程控制。
+
+以结构划分，语句分为单句和复句：
+
+- 单句一般由一个或多个关键字和表达式构成，用来控制运算、赋值等操作
+- 复句一般由大括号构成，用来设计流程结构，控制程序的执行顺序
+
+| 语句类型   | 语句子类型   | 逻辑概念           | 示例                                                                                                |
+| :--------- | :----------- | :----------------- | :-------------------------------------------------------------------------------------------------- | ------------------ |
+| 声明变量   | 变量声明语句 | 为变量指定储存地址 | var variable [=value],variable2 [=value2]...];                                                      |
+| 声明变量   | 标签声明语句 | 为语句建立索引     | label : statements                                                                                  |
+| 表达式语句 | 赋值语句     | 为变量赋值         | variable = value                                                                                    |
+| 表达式语句 | 函数调用语句 | 执行函数           | function ()                                                                                         |
+| 表达式语句 | 方法调用函数 | 执行函数           | object.method();                                                                                    |
+| 表达式语句 | 属性赋值语句 | 为变量对象赋值     | object.property = value;',                                                                          |
+| 分支语句   | if           | 选择执行           | if(expression)statements[else statements]                                                           |
+| 分支语句   | switch       | 选择执行           | switch(expression){case label:statementList case labelList:statementList...default:statementList}', |                    |
+| 循环语句   | for          | 重复执行           | for ([var] initialization;test; increment)statements                                                |
+| 循环语句   | for/in       | 遍历执行           | for([var] variable in <object                                                                       | array >)statements |
+| 循环语句   | while        | 重复执行           | while(expression)statement                                                                          |
+| 循环语句   | do/while     | 重复执行           | do statement while(expression)                                                                      |
+| 控制语句   | continue     | 继续执行           | continue [label];                                                                                   |
+| 控制语句   | break        | 中断执行           | break [label]                                                                                       |
+| 控制语句   | return       | 执行返回           | return [expression];                                                                                |
+| 控制语句   | throw        | 抛出异常           | throw [exception]                                                                                   |
+| 控制语句   | try          | 尝试执行           | try{statements}                                                                                     |
+| 控制语句   | catch        | 捕获异常           | catch(exception){statement}                                                                         |
+| 控制语句   | finally      | 最后执行           | finally{statements}                                                                                 |
+| 其它语句   | 空语句       | 不执行             | ；                                                                                                  |
+| 其它语句   | with         | 暂时作用域         | with( object ) statements                                                                           |
+
+名词说明 。
+
+- variable 表示变量值
+- value 值
+- expression 表达式
+- statement 表示单句
+- statements 表示复合语句
+- statementList 表示语句列表
+- label 表示标签名
+- object 对象
+- initialization 表示初始值
+- test 表示测试表达式
+- increment 表示增长量
+
+## 表达式语句
+
+表达式与语句区别。
+
+- 语法角度 表达式是短语，语句是句子
+- 组成角度
+- 表现方式 表达式呈现静态，而语句呈现动态
+- 结果趋向 表达式返回一个值，语句完成特定任务
+
+大多数表达式具有破坏性，完成任务后会改变自身的值，如赋值语句、函数调用、声明变量、定义函数语句。
+
+## 复合语句
+
+多个语句放在一起就是一个语句段；如果用大括号括起来，就是复合语句。
+
+## 声明语句
+
+用 var 和 function 表示语句 。
+
+## 空语句
+
+只有 分号 而无内容 _空语句易引起错误，避免遗漏建议写注释_。
+
+## 分支结构
+
+```js
+// if 单分枝
+if (true) {
+    do();
+}
+```
+
+```js
+// 双分枝
+if () {
+
+} else {
+
+
+}
+```
+
+```js
+// 多分枝
+if () {
+
+} else if () {
+
+} else {
+
+
+}
+```
+
+```js
+// switch
+switch () {
+    case 1:
+        break;
+    case 2:
+        break;
+    default:
+        break;
+}
+```
+
+## 循环结构
+
+- wile () {}
+- for （ ; ; ） {}
+- do { } while ()
+- for( [var] variable in < object | array> ) statement
+
+- for/in 比较灵活
+- for/in 能遍历所有的对象成员，但是若成员被设置成只读、存档、不可枚举时，无法使用
+- for/in 无法遍历内置对象的属性
+- for/in 可遍历客户端 document 对象的所有属性
+- for/in 可遍历内置对象的自定义属性
+- 内置对象属性无序，可能每次顺序不一样
+- 有时还是 for 好使
+- 在对数组或对象使用 for 循环时，注意必须确保没有使用原型链扩展数组或对象的属性
+
+- for each (variableIterant in object)
+
+## for/in
+
+for/in 是 for 的一种特殊形式。
+
+```js
+for ( [var | let] variable in <object | array>) {
+    // statement
+}
+
+```
+
+variable 表示一个变量，可以在其前面附加 var 语句，用来直接声明变量。 in 后面是一个对象或数组类型的表达式。在遍历对象或数组过程中，把获取的每一个值赋给 variable 。
+
+在运行该循环结构时，会声明一个变量，然后计算对象或数组类型的表达式，并遍历该对象或表达式。在遍历过程中，每获取一个对象或数组，就会临时把对象或数组中元素储存在 variable
+指定的变量中。注意对于数组来说，该变量储存的是数组的元素的下标；而对象来说，该变量储存的是对象的属性名或方法名。
+
+然后，执行 statement 语句，其中可以访问 variable 来读取每个对象属性或数组元素的值。执行完后，返回继续枚举的下一个元素，周而复始，直到所有的元素被枚举完。
+
+```js
+var a = [1, true, '0', [false], {}];
+for (var n in a) {
+  console.log('a[' + n + '] = ' + a[n] + '&ltgt;');
+}
+```
+
+利用枚举法复制数组
+
+```js
+var o = { x: 1, y: true, z: 'true' };
+var a = [];
+var n = 0;
+for (a[n++] in o);
+```
+
+for/in 能够枚举对象的所有成员，但是如果是对象的成员被设置成只读、存档或不可枚举等属性，那么 for/in 语句是无法枚举的。因此，当使用内置对象时，可能就无法读取全部的属性。
+
+由于对象没有固定的顺序，所以，在使用 for/in 循环时也无法判断遍历的顺序，因此在遍历结果中看到不同的排列顺序。
+
+在 for/in 中改变枚举对象的属性可能会导致意外的发生，所以一般不建议随意在循环体内操作属性。
+
+## for 和 while 的区别
+
+for 和 while 语句都是用来设计循环，完成特定动作的重复性操作。不过，使用时不可随意替换。
+
+|      |                                                                                                                                          |
+| :--- | :--------------------------------------------------------------------------------------------------------------------------------------- |
+| 语义 | while 结构是依据特定条件来决定是否循环，条件是动态的，无法预知条件何时为 true 或 false 。而 for 语句是有规律的，常用在数组、对象、集合中 |
+| 模式 | for 把循环三要素定义为结构语法的一部分，比 while 更能快速编译，更适合结构简单的数值迭代操作。                                            |
+| 目标 | 一般来说，在循环结构中动态改变变量的值时采用 while ，而对于静态的循环变量，则考虑 for                                                    |
+| 条件 | while 根据表达式决定循环结构； for 根据操作次数决定循环的操作                                                                            |
+| 结构 | while 比较复杂，结构相对宽松； for 比较简洁，要求结构比较严谨                                                                            |
+| 效率 | while 存在一定安全隐患 ; for 执行效率比较高                                                                                              |
+| 变种 | while do/while; for for/in                                                                                                               |
+
+## 结构跳转
+
+- label 标签语句
+- break 语句
+- continue 语句
+
+## 标签语句
+
+在 JavaScript 中，任何语句都可以添加标签。以便在复杂的结构中设置程序的跳转路径。定义标签的语法如下：
+
+```js
+label: statements;
+```
+
+label 可以是任何的标识符，但不能是保留字。由于标签名与变量名属于不同于的语法体系，所以不用担心标签名和变量名重叠。然后使用冒号分隔标签和标签语句。
+
+由于标签名和属性名都属于标签范畴，不能重名。
+
+## break 语句
+
+break 语句能够终止循环和多重分子结构的执行。主要是在循环结构和 switch 语句中，用在其它位置都是非法的。
+
+break 后跟随一个标签名，用来指示程序终止执行之后要跳转的位置，并以该标签语句末尾的位置为起点继续执行。
+
+## continue 语句
+
+continue 和 break 语句都是独立的语句，用于循环结构， break 语句用于终止循环，而 continue 用于停止当前的循环，继续下一次的循环。
+
+与 break 相同， continue 后可跟着一个标签名，用于指定跳转循环结构的起始位置。
+
+## let 语句
+
+let 语句允许使用标识符来标示一个语句，其语法格式如下：
+
+```js
+let (expressionA, expressionB, ...) {statementA;statementB;}
+```
+
+## yield 语句
+
+yield 语句可以在循环语句中产生一个输出值并返回，包含 yield 语句的循环经常位于函数中，包含 yield 语句的函数称为产生器。用户可以使用迭代器遍历产生器。
+
+## with 语句
+
+with 语句可以方便地用来引用某个特定对象的方法和属性，语法格式如下：
+
+```js
+with (object) {
+  statement(s);
+}
+```
+
+参数 object 是某个 JavaScript 对象；参数 statement(s) 表示花括号中包含的一个或一组语句。
+
+使用 with 语句，允许用户使用 object 参数指定一个对象，并使用 statement(s) 参数计算对象的方法和属性，这样可以使用户不必重复书写对象的名称。
+
+例如下面的代码：
+
+```js
+var rightNow = new Date();
+with (rightNow) {
+  console.log(getDay() + '');
+  console.log(getMonth() + 1 + '');
+  console.log(getFullYear() + '');
+}
+```
+
+如果不使用 with 语句，则必须按如下方式书写：
+
+```js
+var rightNow = new Date();
+console.log(rightNow.getDay() + '');
+console.log(rightNow.getMonth() + 1 + '');
+console.log(rightNow.getFullYear() + '');
+```
+
+with 语句的作用在于省略了 rightNow 这个对象。
+
+|     |                                                                        |
+| :-- | :--------------------------------------------------------------------- |
+| 1   | 在 with 语句最里面的 object 参数指定的对象                             |
+| 2   | 在 with 语句最外面的 object 参数指定的对象                             |
+| 3   | 激活的对象（当调用函数时自动创建的临时对象，该函数包含调用的局部变量） |
+| 4   | 该对象包含当前正在指定的脚本                                           |
+| 5   | 全局对象                                                               |
+
+## 流程控制
+
+## label
+
+在 JavaScript 中，使用 label 语句可以为一行语句添加标签，以便在复杂的结构中设置跳转目标。语法：
+
+```js
+label: statements;
+```
+
+break 语句能够结束当前的 for 、 for/in 、 while 、 do/while 或者 switch 语句的执行。同时 break
+可以接受一个可选的标签名，来结束跳出的结构语句，没有设置标签名，则跳出最内层的结构。
+`break label;`
+
+## continue
+
+continue 主要用于循环的内部，用于跳转本次循环的后续代码。也可接受一个标签名，跳出特定的循环结构。
+
+## 优化
+
+优化循环结构
+
+- 优化结构
+- 避免不必要的重复操作
+- 妥善定义循环变量
+
+在 JavaScript 中查表法可通过普通对象或数组实现，比 if 和 switch 都快，特别是当条目特别大的时候。与 if 和 switch
+相比，查表法不仅速度快，而且当需要测试的离散值数量非常大时，有助于保持代码的可读性。
+
+## 减少查询
+
+对于任何循环来说，每次执行的循环体都发生
+
+- 在控制条件中读一次属性（ items.length ）
+- 在控制条件中执行一次比较（ i< items.length ）
+- 判断 i <items.length 表达式的值是不是 true （ i < items.length == true ）
+- 一次自加操作 (i++)
+- 一次数组查找 (items[i])
+- 一次函数调用
+
+优化循环的第一步就是减少对象成员和数组项查找的次数。
+
+可以简单地将值存成一个局部变量，在控制条件中使用局部变量，从而提高性能。
+
+## 倒叙循环
+
+通常，数组的处理顺序与任务无关，可以从最后一个开始，直到处理第一个元素。倒叙循环是编程语言中常用的优化方法。
+
+            

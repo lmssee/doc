@@ -1,0 +1,420 @@
+---
+title: 应用
+
+
+---
+
+# 动态添加脚本
+
+```js
+var script = document.createElement('script');
+script.type = 'text/javascript';
+script.appendChild(
+  document.createTextNode("function haa(){alert('hello world')}"),
+);
+document.documentElement.firstChild.appendChild(script);
+
+script.onload = haa();
+```
+
+定义异步请求封装函数
+
+```js
+function request(url) {
+  if (!Document.script) {
+    // 如果不存在 script 元素
+    document.script = document.createElement('script');
+    document.script.setAttribute('type', 'text/javascript');
+    document.script.setAttribute('src', url);
+    document.body.appendChild(document.script);
+  } else {
+    document.script.setAttribute('src,url');
+  }
+}
+```
+
+完善客户端页面结构
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+initial-scale=1.0"
+    />
+    <title>信息请求页面</title>
+    <script>
+      function callback(info) {
+        alert(info);
+      }
+      function request(url) {
+        // 同上
+      }
+      window.onload = function () {
+        var b = document.getElementsByTagName('input')[0];
+        b.onclick = function () {
+          request('server.js');
+        };
+      };
+    </script>
+  </head>
+  <body>
+    <h1>客户端信息提交页</h1>
+    <input type="button" name="submit" id="submit" value="向服务器发出请求" />
+  </body>
+</html>
+```
+
+## 使用 JSONP
+
+JSONP 就是 JSON with Padding 的简写。它能够通过在客户端文档中生成脚本标记（ 标签）来调用跨域脚本时的规定。是一个非官方的协议。
+
+callback 是回调函数的名称，然后在小括号运算符内调用该函数
+
+```js
+callback({
+  title: 'JSONP Test',
+  link: 'https://lmssee.cn/',
+  modified: '2022-12-1',
+  items: [
+    {
+      title: '百度',
+      link: 'http://www.baidu.com',
+      description: '百度好呀',
+    },
+    {
+      title: 'google',
+      link: 'http://www.google.cn',
+      description: 'google 神呀',
+    },
+  ],
+});
+```
+
+在回调函数中对对象进行组成分析和分解。
+
+```js
+function callback(info) {
+  var temp = '';
+  for (var i in info) {
+    if (typeof info[i] != 'object') {
+      temp += i + ' = "' + info[i] + '"';
+    } else if (typeof info[i] == 'object' && info[i].constructor == Array) {
+      temp += ' ' + i + ' = ' + '';
+      var a = info[i];
+      for (var j = 0; j < a.length; j++) {
+        var o = a[j];
+        for (var e in o) {
+          temp += '' + e + ' = " ' + o[e] + '"';
+        }
+        temp += '';
+      }
+    }
+  }
+  var div = document.getElementById('test');
+  div.innerHTML = temp;
+}
+```
+
+## 结合 JSONP 约定来实现跨域异步信息的交互
+
+_在客户端调用提供的 JSONP 支持的 URL 服务，获取 JSONP 格式数据_
+
+所谓的 JSONP 支持的 URL 服务，就是在请求的 URL 中必须添加附加在客户端的回调函数，并约定正确的设置回调函数参数，默认参数名为 json 或 callback 。
+
+## 设计动态表格
+
+为了方便设计表格， HTML 为 `<table>`、`<tbody>`、`<tr>` 设计了一些属性和方法。
+
+为 `<table>` 设计的属性和方法
+
+例 --—— 原始方法
+
+```js
+table = document.createElement('table');
+tableBody = document.createElement('tbody');
+for (var j = 0; j < 2; j++) {
+  current_row = document.createElement('tr');
+  for (var i = 0; i < 2; i++) {
+    current_cell = document.createElement('td');
+    currentText = document.createTextNode('第 ' + j + ' 行，第' + i + '列');
+    current_cell.appendChild(currentText);
+    current_row.appendChild(current_cell);
+  }
+  tableBody.appendChild(current_row);
+}
+table.appendChild(tableBody);
+document.body.appendChild(table);
+table.setAttribute('border', '1');
+table.setAttribute('width', '100%');
+```
+
+例 --—— 新增加方法
+
+```js
+var table = document.createElement('table');
+table.border = 1;
+table.width = '100%';
+var tbody = document.createElement('tbody');
+table.appendChild(tbody);
+tbody.insertRow(0);
+tbody.row(0).insertCell(0);
+tbody.row(0).cells(0).appendChild(document.createTextNode('第1行，第1列'));
+tbody.row(0).insertCell(1);
+tbody.row(0).cells(1).appendChild(document.createTextNode('第1行，第2列'));
+tbody.insertRow(1);
+tbody.row(1).createCell(0);
+tbody.row(1).cells(0).appendChild(document.createTextNode('第2行，第1列'));
+tbody.row(1).createCell(1);
+tbody.row(1).cells(1).appendChild(document.createTextNode('第2行，第2列'));
+document.body.appendChild(table);
+```
+
+## 链接文字颜色设置
+
+链接文字颜色设置通过使用 alinkColor 属性、 linkColor 属性和 vlinkColor 属性来实现。
+
+## ~~alinkColor 属性~~
+
+该属性用来获取或设置当链接获得焦点时显示的颜色。
+
+语法格式如下： 。
+
+```js
+[color=]document.alinkColor[=setColor]
+```
+
+- setColor ：设置颜色的名称或颜色的 RGB 值。 setColor 是可选项。
+- color ：字符串变量，用来获取颜色值。 color 是可选项。
+
+## ~~linkColor 属性~~
+
+该属性用来获取或设置页面中未单击的链接的颜色。
+
+语法格式如下： 。
+
+```js
+[color=]document.linkColor[=setColor]
+```
+
+- setColor ：设置颜色的名称或颜色的 RGB 值。 setColor 是可选项。
+- color ：字符串变量，用来获取颜色值。 color 是可选项。
+
+## ~~vlinkColor 属性~~
+
+该属性用来获取或设置页面中单击过的链接的颜色。
+
+语法格式如下：
+
+```js
+[color=]document.vlinkColor[=setColor]
+```
+
+- setColor ：设置颜色的名称或颜色的 RGB 值。 setColor 是可选项。 s
+- color ：字符串变量，用来获取颜色值。 color 是可选项。
+
+```html
+<body>
+  <p><a id="a1" href="https://lmssee.com">左左和右右</a></p>
+  <script language="JavaScript">
+    document.vlinkColor = '#00CCFF';
+    document.linkColor = 'green';
+    document.alinkColor = '000000';
+  </script>
+</body>
+```
+
+## 文档前景色和背景色设置
+
+文档背景色和前景色的设置可以使用 bgColor 属性和 fgColor 属性来实现。
+
+## ~~bgColor 属性~~
+
+该属性用来获取或设置页面的背景颜色。
+
+语法格式如下：
+
+```js
+[color=]document.bgColor[=setColor]
+```
+
+- setColor ：设置颜色的名称或颜色的 RGB 值。 setColor 是可选项。
+- color ：字符串变量，用来获取颜色值。 color 是可选项。
+
+## ~~fgColor 属性~~
+
+该属性用来获取或设置页面的前景颜色，即页面中文字的颜色。
+
+语法格式如下：
+
+```js
+[color=]document.fgColor[=setColor]
+```
+
+- setColor ：设置颜色的名称或颜色的 RGB 值。 setColor 是可选项
+- color ：字符串变量，用来获取颜色值。 color 是可选项
+
+```html
+<body>
+  <main>背景自动变色</main>
+  <script>
+    var colorList = new Array(
+      '#00FF66',
+      '#FFFF99',
+      '#99CCFF',
+      '#FFCCFF',
+      '#FFCC99',
+      '#00FFFF',
+      '#FFFF00',
+      '#FFCC00',
+      '#FF00FF',
+    );
+    var n = 0;
+    function turnColor() {
+      n++;
+      if (n == colorList.length - 1) n = 0;
+      document.bgColor = colorList[n]; //设置页面的背景颜色
+      document.fgColor = colorList[n - 1]; //设置页面的文字颜色
+      setTimeout(() => turnColor(), 1000);
+    }
+    turnColor();
+  </script>
+</body>
+```
+
+## 查看文档创建日期、修改日期和文档大小
+
+## ~~fileCreatedDate 属性~~
+
+该属性用来获取文档的创建日期。
+
+语法格式如下：
+
+```js
+[date=]fileCreatedDate
+```
+
+## ~~fileModifiedDate 属性~~
+
+该属性用来获取文档修改的日期。
+
+语法格式如下：
+
+```js
+[date=]fileModifiedDate
+```
+
+## ~~lastModified 属性~~
+
+该属性用来获取文档修改的时间。
+
+语法格式如下：
+
+```js
+[date=]lastModified
+```
+
+## ~~fileSize 属性~~
+
+该属性用来获取文档的大小。
+
+语法格式如下：
+
+```js
+[size=]fileSize
+```
+
+## ~~获取并设置 URL~~
+
+获取并设置 URL 主要使用 URL 属性来实现。
+
+语法格式如下：
+
+```js
+[url=]document.URL[=setUrl]
+```
+
+- url ：字符串表达式，用来存储当前文档的 URL 。 url 是可选项。
+- setUrl ：字符串变量，用来设置当前文档的 URL 。 setUrl 是可选项。
+
+## 获取对象的当前状态
+
+在文档中获取某个对象的当前状态可以使用 readyState 属性来实现。
+
+语法格式如下：
+
+```js
+[state=]obj.readyState
+```
+
+- obj ：需要显示状态的对象，是必选项。
+- state ：字符串变量，用来获取当前对象的状态。
+
+| 状态值      | 额                                                 |
+| :---------- | -------------------------------------------------- |
+| loading     | 表示该对象正在载入数据                             |
+| loaded      | 表示该对象数据载入完毕                             |
+| interactive | 用户可以和该对象进行交互，不管该对象是否已加载完毕 |
+| complete    | 该对象初始化完毕                                   |
+
+## 在文档中输出数据
+
+## write 方法
+
+该方法用来向 HTML 文档中输出数据，其数据包括字符串、数字和 HTML 标记等。
+
+语法格式如下：
+
+```js
+console.log(text);
+```
+
+参数 text 表示在 HTML 文档中输出的内容。
+
+## writeln 方法
+
+该方法与 write 方法的作用大致相同，唯一的区别在于 writeln 方法在所输出的内容后添加了一个回车换行符。但回车换行符只有在 HTML 文档中的`<pre>...</pre>`标记（此标记把文档中的空格、回车、换行等表现出来）内才能被识别。
+
+语法格式如下：
+
+```js
+console.log(text);
+```
+
+参数 text 表示在 HTML 文档中输出的内容。
+
+## 动态添加一个 HTML 标记
+
+动态添加一个 HTML 标记可以使用 createElement 方法来实现。
+
+createElement 方法可以根据一个指定的类型来创建一个 HTML 标记。
+
+语法格式如下：
+
+```js
+sElement = document.createElement(sName);
+```
+
+- sElement ：用来接收该方法返回的一个对象。
+- sName ：用来设置 HTML 标记的类型和基本属性。
+
+## 获取文本框并修改其内容
+
+获取文本框并修改其内容可以使用 getElementById 方法来实现。
+
+getElementById 方法可以通过指定的 id 来获取 HTML 标记，并将其返回。
+
+语法格式如下：
+
+```js
+sElement = document.getElementById(id);
+```
+
+- sElement ：用来接收该方法返回的一个对象。
+- id ：用来设置需要获取 HTML 标记的 id 值。
+
+            

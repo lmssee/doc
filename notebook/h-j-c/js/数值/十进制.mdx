@@ -1,0 +1,29 @@
+---
+title: 十进制
+
+
+---
+
+# 十进制
+
+八进制或是十六进制在参与数学计算后，返回的都是十进制数值。
+
+为了考虑到安全性，不建议使用八进制数值直接量，因为 JavaScript 会误解为十进制。
+
+```js
+var a = Math.floor(20.5); // 调用数学函数，下舍入
+var b = Math.round(20.5); // 调用数学函数，四舍五入
+alert(a); // 返回 20
+alert(b); // 返回 21
+```
+
+```js
+var a = 32;
+console.log(a.toString(2)); // 返回字符串 100000
+console.log(a.toString(4)); // 返回字符串 200
+console.log(a.toString(16)); // 返回字符串 20
+console.log(a.toString(30)); // 返回字符串 12
+console.log(a.toString(32)); // 返回字符串 10
+```
+
+            

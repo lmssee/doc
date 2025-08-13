@@ -1,0 +1,504 @@
+---
+title: 例
+
+
+---
+
+# 使用远程脚本
+
+远程脚本（ Remote
+Scripting ）是远程函数的调用，通过远程函数调用实现异步通信。所谓异步通信，就是在不刷新页面的情况下，允许客户端与服务器进行不连续的通信。这样用户不需要等待，网页浏览与信息互不干扰，信息传输不再是传整个页面。
+
+设计思路：创建一个隐藏的框架，使用它载入服务器指定的文件，此时被载入的服务器文件包含的远程脚本就会被激活，被激活的脚本就会把服务器需要传递的信息通过框架页响应给用户，从而实现客户端与服务器的异步通信的目的。
+
+所谓的隐藏框架，就是设置框架高度为 0，以达到隐藏框架的目的。隐藏框架常用来加载一些外部链接和导入一些扩展的服务。使用最多的就是使用隐藏框架导入广告。
+
+_新建一个框架集，其中第一个为默认加载的客户前端的交互界面，第二个是加载的空白页面_
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+        initial-scale=1.0"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <frameset row="50%,50%">
+      <frame src="main.htm" name="main" />
+      <frame src="blank.htm" name="server" />
+    </frameset>
+  </body>
+</html>
+```
+
+_设计空白页面_
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+        initial-scale=1.0"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>空白页</h1>
+  </body>
+</html>
+```
+
+_在客户端页面（ main.htm ）添加一个简单的交互按钮，当点击按钮时将为底部框架加载服务器端的请求页面_
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+        initial-scale=1.0"
+    />
+    <title>与客户端交互页面</title>
+    function request() { parent.frames[1].location.href = "server.htm"; }
+    window.onload = function() { var b =
+    document.getElementsByTagName("input")[0]; b.onclick = request; }
+  </head>
+  <body>
+    <h1>与客户端交互页面</h1>
+    <input type="button" name="submit" value="向服务器发送请求 " id="submit" />
+  </body>
+</html>
+```
+
+_在服务器响应页面_
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+        initial-scale=1.0"
+    />
+    <title>服务器响应页面</title>
+    <script>
+      window.onload = function () {
+        //  页面加载完毕后，动态改变用户交互页面的信息
+        parent.frames[0].console.log('<h1>hi,大家好，我是远道而来的信息</h1>');
+      };
+    </script>
+  </head>
+  <body>
+    <h1>服务器响应页面</h1>
+  </body>
+</html>
+```
+
+远程交互
+
+隐藏框架只是交互的实体，它只负责传输信息，而交互的核心是由一种信息处理机制，这种机制就是回调函数。
+
+回调函数就是指客户端页面的一个普通函数，但是该函数是在服务器端被调用，并负责处理服务器的响应信息。
+
+在异步交互的过程中，经常需要信息的双向交互，而不仅仅是接受服务器的信息。
+
+_设置框架集_
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+        initial-scale=1.0"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <frameset row="50%,50%">
+      <frame src="main.htm" name="main" />
+      <frame src="blank.htm" name="server" />
+    </frameset>
+    <noframes>
+      您的浏览器不支持框架集，请升级您的浏览器版本或更换其它品牌的浏览器
+    </noframes>
+  </body>
+</html>
+```
+
+_默认情况下，第一个框架加载用户的交互页面，第二个框架加载空白页面_
+
+第一个框架主要包含两个函数：一个是响应客户端操作的回调函数，另一个是向服务器发送请求的事件处理函数。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+initial-scale=1.0"
+    />
+    <title>与客户端交互页面</title>
+    <style>
+       body { background-color: #099; text-align:
+      center; }
+      h1 {
+      padding-top: 5rem; padding-bottom: 8rem; }
+      div { margin-left: -4rem; } label {
+      width: 4rem; display: inline-block; }
+      input[id="submit"] { margin-top: 3rem; /_
+      margin-left: 4rem; _/
+      }
+    </style>
+    <script>
+      function request() {
+        var user = document.getElementById('user');
+        var pass = document.getElementById('pass');
+        var s = 'user=' + user.value + '&pass=' + pass.value;
+        parent.frames[1].location.href = 'server.htm?' + s;
+      }
+      function callback(b, n) {
+        if (b) {
+          var e = document.getElementsByTagName('body')[0];
+
+          e.innerHTML = `<h1>${n}</h1><p>您好，欢迎登陆</p>`;
+        } else {
+          alert('您输入的密码或用户名错误，请重新输入 ');
+          var user = parent.frames[0].document.getElementById('user');
+          var pass = parent.frames[0].document.getElementById('pass');
+          user.value = '';
+          pass.value = '';
+        }
+      }
+      window.onload = function () {
+        var b = document.getElementsByTagName('input')[0];
+        b.onclick = request;
+      };
+    </script>
+  </head>
+  <body>
+    <h1>登录界面</h1>
+    <form action="js:void('')">
+      <div>
+        <label class="" for="user"> 用户名</label>
+        <input
+          type="text"
+          name="user"
+          id="user"
+          placeholder="请输入用户名 "
+          autocomplete="false"
+        />
+      </div>
+
+      <div>
+        <label class="" for="pass"> 密码</label>
+        <input
+          type="password"
+          name="pass"
+          id="pass"
+          placeholder="请输入密码 "
+        />
+      </div>
+      <input type="button" name="submit" value="提交 " id="submit" />
+      <input type="reset" value="清除 " />
+    </form>
+  </body>
+</html>
+```
+
+由于回调函数是在服务器端文件中调用，所有对象的作用于范围就发生变化，此时应该明确它的框架集和序号，否则在页面操作中就找不到指定的元素。
+
+_在服务器端文件中处理函数该函数分解 HTTP 传递过来的 URL 信息，获取查询字符串，并根据查询字符串中的用户名和密码，判断当前输入的信息是否正确，并确定具体的响应信息_
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+        initial-scale=1.0"
+    />
+    <title>服务器端响应和处理界面</title>
+    <script>
+      window.onload = function () {
+        var query = location.search.substring(1);
+        var a = query.slit('&');
+        var o = {};
+        for (var i = 0; i < a.length; i++) {
+          var pos = a[i].indexOf('=');
+          if (pos == -1) continue;
+          var name = a[i].substring(0, pos);
+          var value = a[i].substring(pos + 1);
+          o[name] = unescape(value);
+        }
+        var n, b;
+        o['user'] && o['user'] == 'admin' ? (n = o['user']) : (n = null);
+        o['pass'] && o['pass'] === '123456' ? (b = true) : (b = false);
+        parent.frames[0].callback(b, n);
+      };
+    </script>
+  </head>
+  <body>
+    <h1>服务器响应页面和处理页面</h1>
+  </body>
+</html>
+```
+
+实际开发中，用 php 也好， jsp 也好， asp 也好，我都不会。所以，实际文件啥样也不知道。
+
+## 使用浮动框架
+
+框架集需要多个网页配合，结构不符合标准，也不利于代码优化，缺乏灵活性。所以可以使用浮动框架。
+
+_异步通信_
+
+```js
+/*创建浮动框架*参数： url 表示请求的服务器文件路径*返回值：无
+ */ function hideIframe(url) {
+  var hideFrame = null;
+  hideFrame = document.createElement('iframe');
+  hideFrame.name = 'hideFrame';
+  hideFrame.id = 'hideFrame';
+  hideFrame.style.height = '0px';
+  hideFrame.style.width = '0px';
+  document.body.appendChild(hideFrame);
+  setTimeout(function () {
+    frames['hideFrame'].location.href = url;
+  }, 10);
+}
+```
+
+如果页面存在多处调用请求，则建议定义一个全局变量，专门用来储存浮动框架对象。这样就避免每一次都创建新的 iframe 框架。
+
+_修改客户端交互页面的 request() 页面，直接调用 hideIframe() 函数，并传递 URL 信息_
+
+```js
+function request() {
+  var user = document.getElementById('user');
+  var pass = document.getElementById('pass');
+  var s = 'iframe_server.html?user=' + user.value + '&pass=' + pass.value;
+  hideFrame(s);
+}
+```
+
+由于浮动框架和框架集是属于不同级别的作用域，浮动窗口是被包含在当前窗口的，所以应当是 parent ，而不是 parent.frames[0] 调用回调函数，或者在回调函数中读取文档中的元素。
+
+```js
+function callback(b, n) {
+  if (b && n) {
+    var e = document.getElementsByTagName('body')[0];
+    e.innerHTML = '<h1>' + n + '</h1><p>您好，欢迎登录站点 </p>';
+  } else {
+    alert('您输入有误，请重新输入 ');
+    var user = parent.document.getElementById('user');
+    var pass = parent.document.getElementById('pass');
+    user.value = '';
+    pass.value = '';
+  }
+}
+```
+
+## 封装用户代理检测
+
+用户代理 (User Agent) 字符串用来标识自身信息的一串字符串 ,一般包含浏览器品牌、版本、内核、操作系统环境等信息。用户检测是通过检测 User Agent 字符串来确定实际使用的浏览器及内核的相关信息。
+
+```js
+var client = (function () {
+  //
+  内部检测代码;
+})();
+```
+
+```js
+var client = (function () {
+  var engine = {
+    trident: 0,
+    gecko: 0,
+    webkit: 0,
+    khtml: 0,
+    presto: 0,
+    ver: null, // 具体型号
+  }; // 内部检测代码
+  return {
+    engine: engine, // 包含用户浏览器引擎信息
+  };
+})();
+```
+
+_识别 Webkit 和 Opera_
+
+```js
+var client = (function () {
+  var engine = {
+    trident: 0,
+    gecko: 0,
+    webkit: 0,
+    khtml: 0,
+    presto: 0,
+    ver: null, // 具体型号
+  }; // 内部检测代码
+  return {
+    engine: engine, // 包含用户浏览器引擎信息
+  };
+})();
+var ua = navigator.userAgent;
+if (/AppleWebKit\/(\S+)/.test(ua)) {
+  engine.ver = Regexp['$1'];
+  engine.webkit = parseFloat(engine.ver);
+  if (/OPR\/(S+)/.test(ua)) {
+    browser.ver = RegExp['$1'];
+    browser.opera = parseFloat(browser.ver);
+  } else if (/Chrome\/(\S+)/.test(ua)) {
+    browser.ver = RegExp['$1'];
+    browser.chrome = parseFloat(browser.ver);
+  } else if (/Version\/(\S+)/.test(ua)) {
+    browser.ver = RegExp['$1'];
+    browser.Safari = parseFloat(browser.ver);
+  } else {
+    var SafariVersion =
+      engine.webkit < 100
+        ? 1
+        : engine.webkit < 312
+          ? 1.2
+          : engine.webkit < 412
+            ? 1.3
+            : 2;
+    browser.safari = browser.ver = SafariVersion;
+  }
+} else if (window.opera) {
+  engine.ver = browser.ver = window.opera.version();
+  engine.presto = browser.opera = parseFloat(engine.ver);
+} else if (/Opera[\/\s](\S+)/.test(ua)) {
+  engine.ver = browser.ver = RegExp['$1'];
+  engine.presto = browser.opera = parseFloat(engine.ver);
+}
+// <!-- _识别 KHTML_ -->
+
+if (/KHTML\/(\S+)/.test(ua) || /Konqueror\/([^;]+)/.test(ua)) {
+  engine.ver = browser.ver = RegExp['$1'];
+  engine.khtml = browser.konq = parseFloat(engine.ver);
+} else if (/rv:([^\)]+)\) Gecko\/\d{8}/.test(ua)) {
+  engine.ver = RegExp['$1'];
+  engine.gecko = parseFloat(engine.ver);
+  if (/Firefox\/(\S+)/.test(ua)) {
+    browser.ver = RegExp['$1'];
+    browser.firefox = parseFloat(browser.ver);
+  }
+} else if (/Trident\/([\d.]+)/.test(ua)) {
+  // <!-- 识别 IE -->
+  engine.ver = browser.ver = RegExp['$1'];
+  engine.trident = parseFloat(engine.ver);
+  if (/rv:([^\d\.)]+)\)/.test(ua) || /MSIE ([^;]+)/.test(ua)) {
+    // 匹配 IE8-IE11+
+
+    engine.ver = RegExp['$1'];
+    engine.ie = parseFloat(engine.ver);
+  } else if (/MSIE ([^;]+)/.test(ua)) {
+    // 匹配 IE6 IE7
+    browser.ver = RegExp['$1'];
+    browser.ie = parseFloat(browser.ver);
+    engine.ver = browser.ie - 4.0;
+    // 模拟 IE6、 IE7 中的 Trident
+    engine.trident = parseFloat(engine.ver);
+  }
+}
+```
+
+## 识别浏览器
+
+```js
+var client = (function () {
+  var browser = {
+    ie: 0,
+    firefox: 0,
+    konq: 0,
+    opera: 0,
+    chrome: 0,
+    ver: null, // 具体版本号
+  };
+  return {
+    engine: engine, //     包含着用户的浏览器引擎（内核信息）
+    browser: browser, //  包括用户浏览器品牌与版本信息
+  };
+})();
+```
+
+## 识别平台
+
+```js
+var system = {
+  // 操作系统
+  win: false,
+  mac: false,
+  xll: false,
+};
+```
+
+## 识别操作系统
+
+```js
+if (system.win) {
+  if (/Win(?:dow)?([^do]{2})\s?(\d+\.\d+)?/.test(ua)) {
+    if (Regexp['$1'] == 'NT') {
+      switch (RegExp['$2']) {
+        case '5.0':
+          system.win = '2000';
+          break;
+        case '5.1':
+          system.win = 'XP';
+          break;
+        case '6.0':
+          system.win = 'Vista';
+          break;
+        case '6.1':
+          system.win = '7';
+          break;
+        case '6.2':
+          system.win = '8';
+          break;
+        case '6.3':
+          system.win = '8.1';
+          break;
+        case '6.4':
+        case '10':
+          system.win = '10';
+          break;
+        default:
+          system.win = 'NT';
+          break;
+      }
+    } else if (RegExp['$1'] == '9x') {
+      system.win = 'ME';
+    } else {
+      system.win = RegExp['$1'];
+    }
+  }
+}
+```
+
+            

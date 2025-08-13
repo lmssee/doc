@@ -1,0 +1,53 @@
+---
+title: 组合
+
+
+---
+
+# 图形的组合
+
+当两个或两个以上的图形存在重叠区域时，默认情况下一个图形画在前一个图形之上。通过指定图形 globalCompositeOperation 属性的值可以改变图形的绘制顺序或绘制方式，从而实现更多种可能。此外，还可以使用 globalAlpha 属性来指定图形的透明度。
+
+globalCompositeOperation() 处于原有图形与新图形之间。
+
+| 属性值           | 图形合成实例 | 说明                                                                 |
+| :--------------- | :----------- | :------------------------------------------------------------------- |
+| source-over      |              | A over B ，这是默认设置，即新图形覆盖在原有内容之上                  |
+| destination-over |              | B over A ，即原有内容覆盖在新图形之上                                |
+| source-atop      |              | 只绘制原有内容和新图形与原有内容重叠的部分，且新图形位于原有内容之上 |
+| destination-atop |              | 只绘制新图形和新图形与原有内容重叠的部分，且原有内容位于重叠部分之下 |
+| source-in        |              | 新图形只出现在与原有内容重叠的部分，其余区域变为透明                 |
+| destination-in   |              | 原有内容只出现在与新图形重叠的部分，其余区域为透明                   |
+| source-out       |              | 新图形中与原有内容不重叠的部分被保留                                 |
+| destination-out  |              | 原有内容中与新图形不重叠的部分被保留                                 |
+| lighter          |              | 两图形重叠的部分作加色处理                                           |
+| darker           |              | 两图形重叠的部分作减色处理                                           |
+| copy             |              | 只保留新图形。在 Chrome 浏览器中无效， Opera 11.5中有效              |
+| xor              |              | 将重叠的部分变为透明                                                 |
+
+```js
+for (var k = 1; k < 13; k++) {
+  var canvas = document.createElement('canvas');
+  canvas.id = 'canvas' + k;
+  canvas.width = '70';
+  canvas.height = '36';
+  document.querySelectorAll('td')[3 * k - 2].appendChild(canvas);
+}
+function canvaS(id, name) {
+  var c = document.querySelector('#' + id);
+  var context = c.getContext('2d');
+  context.fillStyle = '#000';
+  context.fillRect(50, 5, 20, 20);
+  context.fillStyle = '#00f';
+  context.globalCompositeOperation = name;
+  context.beginPath();
+  context.arc(50, 25, 10, 0, Math.PI * 2, true);
+  context.closePath();
+  context.fill();
+}
+for (var i = 1; i < 13; i++) {
+  canvaS('canvas' + i, Aa[i - 1][0]);
+}
+```
+
+            

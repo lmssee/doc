@@ -1,0 +1,233 @@
+---
+title: 节点
+
+
+---
+
+# 节点类型
+
+从存在方式来看，文本节点总是包含在元素节点中，但不是每个元素节点都包含文本节点。 还有其它一些类型的节点，分别代表元素属性、 HTML 注释及其它一些与页面相关的信息。很多类型的节点都能够包含其它节点作为子节点。
+每种节点类型都有一个关联的数值，保存在属性 nodeType 里。
+
+节点类型1、2和3 最常用的节点。类型是1、2和3，也就是页面元素、它们的属性和包含的文本。
+
+| 节点类型              | 说明                                                    | 可包含的子节点的类型                                                        |
+| :-------------------- | :------------------------------------------------------ | :-------------------------------------------------------------------------- |
+| 1                     | element                                                 | 元素                                                                        |
+| 2                     | Attr                                                    | 属性                                                                        |
+| 3                     | text                                                    | 文本（包括空白）                                                            |
+| 4                     | CDATASection                                            | CDATA 区域                                                                  |
+| 5                     | EntityReference                                         | 实体引用                                                                    |
+| 6                     | Entity                                                  | 实体                                                                        |
+| 7                     | ProcessingInstruction                                   | 执行指令                                                                    |
+| 8                     | Comment                                                 | HTML 注释                                                                   |
+| 9                     | Document                                                | 文档                                                                        |
+| 10                    | DocumentType                                            | 文档类型（ DTD ）                                                           |
+| 11                    | DocumentFragment                                        | 文档片段                                                                    |
+| 12                    | Notation                                                | 标签</td>                                                                   |
+| nodeType 值           | nodeType                                                | 节点类型                                                                    |
+| :-------------------- | :------------------------------------------------------ | :------------------------------------------------------------------         |
+| Document              | 表示整个文档， DOM 树的根节点                           | Element 、 processingInstruction 、 Comment 、 DocumentType                 |
+| DocumentFragment      | 文档片段，轻量级的 Document ，仅包含部分文档            | processingInstruction 、 Comment 、 Text 、 CDATASection 、 EntityReference |
+| DocumentType          | 为文档定义的实体提供接口                                | 无                                                                          |
+| ProcessingInstruction | 表示处理命令                                            | 无                                                                          |
+| EntityReference       | 表示实体引用元素                                        | ProcessingInstruction 、 Comment 、 Text 、 CDATASection 、 EntityReference |
+| Element               | 表示元素                                                | ProcessingInstruction 、 Comment 、 CDATASection 、 EntityReference         |
+| Attr                  | 表示属性                                                | Text 、 EntityReference                                                     |
+| Text                  | 表示元素或属性的文本                                    | 无                                                                          |
+| CDATASection          | 表示文档中的 CDATA 片段，还包含文本不会被解析器解析部分 | 无                                                                          |
+| Comment               | 表示注释                                                | 无                                                                          |
+| Entity                | 表示实体                                                | ProcessingInstruction 、 Comment 、 Text 、 CDATASection 、 EntityReference |
+| Notation              | 表示在 DTD 中声明的符号                                 | 无 </td>                                                                    |
+
+```js
+function count(n) {
+  //定义统计函数
+  var num = 0;
+  if (n.nodeType == 1) num++;
+  // 检测是否是元素节点
+  var son = n.childNodes; // 获取所有的子节点
+  for (var i = 0; i < son.length; i++) {
+    num += count(son[i]);
+  }
+  return num;
+}
+alert('当前文档包含' + count(document) + '个元素');
+```
+
+## childNodes 属性
+
+每个节点都有一个 childNodes 属性。这个类似数组的属性包含了当前节点全部直接子节点的集合，可供用户访问这些子节点的信息。
+
+childNodes 集合称为"节点列表"（ NodeList ），其中的项目以数值进行索引。集合（在大多数情况下）的表现类似于数组。我们可以像访问数组元素一样访问集合里的项目，还可以像对待数组一样遍历集合的内容，但有些数组方法是不能用的，比如 push()和 pop()。
+
+节点列表是一个动态集合，这表示集合的任何改变都会立即反映到列表。
+
+**_小心空白_**当浏览器加载页面时， HTML 代码里的空白（比如空格和制表符）一般是被忽略的。但是，对于页面元素里存在的空白，比如有序列表
+
+- 里的空白，大多数浏览器都会创建文本类型的子节点（ nodeType==3）。这样一来，仅使用 childNodes.length 未必能得到期望的结果
+- firstChild 和 lastChild
+- parentNode 父级节点
+- nextSibling 下一个兄弟节点，不存在则返回 null
+- previousSibling 上一个兄弟节点，不存在返回 null
+- nodeValue 返回保存在节点里的值，常用于返回文本节点里的内容
+- nodeName 以字符串形式返回节点的名称。这个属性是只读的，不能修改它的值
+
+## 节点名称和值
+
+使用节点的 nodeName 、 nodeValue 属性可以读取节点的名称和值。
+
+| 节点类型              | nodeName 返回值        | nodeValue 返回值 |
+| :-------------------- | :--------------------- | :--------------- |
+| Document              | #document              | null             |
+| DocumentFragment      | #document-fragment     | null             |
+| DocumentType          | doctype 名称           | null             |
+| EntityReference       | 实体引用发名称         | null             |
+| Element               | 元素的名称（标签名称） | null             |
+| Attr                  | 属性的名称             | 属性的值         |
+| ProcessingInstruction | target                 | 节点的内容       |
+| Comment               | #comment               | 注释的内容       |
+| Text                  | #text                  | 节点的内容       |
+| CDATASection          | #cada-section          | 节点的内容       |
+| Entity                | 实体名称               | null             |
+| Notation              | 符号名称               | null </td>       |
+
+## 节点的关系
+
+节点之间的关系包括：上下级父子关系，相邻级别的兄弟关系。
+
+- 在节点树，最顶端节点为根节点
+- 除了根节点，每个节点都有一个父节点
+- 节点可以包括任何数量的子节点
+- 叶子没有字节点
+- 同级节点拥有同父节点
+
+## 访问节点
+
+- ownerDocument 返回当前节点的根节点
+- parentNode 返回当前节点的父节点，所有的节点都仅有一个父节点
+- childNode 返回当前节点的所有子节点的节点列表
+- firstNode 返回当前节点的第一个子节点
+- lastNode 返回档期那节点的最后一个节点
+- nextNode 返回当前节点的下一个节点
+- previousSibling 返回当前节点之前的所有同级别的节点
+
+## childNodes
+
+所有节点都有一个 childNodes 属性，该属性保存着一个 nodeList 对象，它包含所有子节点的列表。
+
+```html
+<body>
+  <ul>
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+    <li>4</li>
+    <li>5</li>
+  </ul>
+</body>
+<script>
+  var tag = document.getElementsByTagName('ul')[0];
+  var a = tag.childNodes;
+  console.log(a[0].nodeType);
+  console.log(a.item(1).innerHTML);
+  console.log(a.length);
+</script>
+```
+
+使用 Array.prototype.slice 方法可以把 nideList 转化为数字，这样就可以调用数组的方法。
+
+```js
+var tag = document.getElementsByTagName('ul')[0];
+var a = Array.prototype.slice.call(tag.childNodes, 0); // 把 nodeList 转换成数组
+a.reverse();
+console.log(a[0].nodeType); // 返回第一个节点类型，返回值 3 ，显示为文本节点
+console.log(a[1].innerHTML); // 显示第二个节点所包含的文本
+console.log(a.length); // 包含子节点个数。 nodeList 长度
+```
+
+文本节点和属性节点都不包含子节点，所以它们的 childNodes 属性永远返回一个空的 nodeList 。如果判断一个节点是否含有子节点，可以使用 hasChildNodes() 方法直接快速判断，或者使用
+childNodes.length 值是否为 0 判断。
+
+对于 IE 8 以前的版本，则需要另类方法。
+
+```js
+function convertToArray(nodes) {
+  var array = null;
+  try {
+    array = Array.prototype.slice.call(nodes, 0);
+    // 非 IE 或者 IE 9+
+  } catch (ex) {
+    array = new Array();
+    for (var i = 0, len = nodes.length; i < len; i++) {
+      array.push(nodes[i]);
+    }
+  }
+  return array;
+}
+```
+
+## parentNode
+
+每一个节点都有一个 parentNode 属性，该属性指向文档树中的父节点。包含在 childNodes 列表中的所有节点都具有的父节点，因此它们的 parentNode 的属性都指向同一个父节点。
+
+parentNode 返回节点永远是一个元素节点，因为只有元素节点才可能包含子节点。不过， document 没有父节点， document 节点的 parentNode 属性将返回 null 。
+
+## ownerDocument
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+        initial-scale=1.0"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <span class="p c">span</span>
+  </body>
+</html>
+```
+
+获取 body 元素：
+
+```js
+var b = document.documentElement.lastChild;
+var b = document.documentElement.firstChild.nextSibling.nextSibling;
+```
+
+可以这样获取 span 元素所包含的文本。
+
+```js
+var text = document.documentElement.lastChild.firstChild.firstChild.nodeValue;
+```
+
+## 操作节点
+
+| method          | en                                       |
+| :-------------- | :--------------------------------------- |
+| appendChild()   | 向节点的子节点列表的结尾添加新的子节点   |
+| cloneChild()    | 复制节点                                 |
+| hasChildNodes() | 判断节点是否拥有子节点                   |
+| insertBefore()  | 在指定的子节点前添加新的子节点           |
+| normalize()     | 合并相邻的 Text 节点并删除空的 Text 节点 |
+| removeChild()   | 删除(并返回)当前节点的指定节点           |
+| replaceChild()  | 用新节点替换旧节点"]                     |
+
+cloneNode() 用于克隆节点
+
+```js
+node.cloneNode(include_all);
+```
+
+参数 include_all 是布尔值，如果是 true ，则将克隆节点，并复制所有的子节点；为 false 时，仅复制节点本身。复制后返回节点的副本属于文档所有，但并没有为它指定父节点，需要通过
+appendChild()、 insertBefore()、 replaceChild() 方法将它添加到文档。
+
+cloneNode() 方法不会复制添加到 DOM 节点的 JavaScript 属性，如事件处理程序。但是， IE 会复制事件处理程序！！！
+
+            

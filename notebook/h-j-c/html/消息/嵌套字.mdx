@@ -1,0 +1,177 @@
+---
+title: 嵌套字
+
+
+---
+
+# Web Socket 可使客户端 Web 应用程序与服务端进程实现双向通信，而 Server-Sent Event 仅能实现单向通信
+
+下面首先创建一个 HTML 网页，在该网页中使用 Web Socket 实现双向通信：
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>en</title>
+    <script>
+      var socket;
+      /** * 该函数在文档完成加载后执行
+       * @return void
+       * */
+      function init() {
+        var host = 'ws://localhost:12345/';
+        try {
+          //建立连接，并监听各种事件
+          socket = new WebSocket(host);
+          socket.onopen = function (event) {
+            log(' 连接已经建立： ' + this.readyState);
+          };
+          socket.onmessage = function (event) {
+            log('<b>接收到的数据：' + event.data + '</b>');
+          };
+          socket.onclose = function (event) {
+            log(' 断开， 信息是： ' + this.readyState);
+          };
+        } catch (err) {
+          log(err.message);
+        }
+        document.getElementById('msg').focus();
+      }
+      /**
+       * 该函数用于关闭 WebSocket 连接
+       * @return void */
+      function quit() {
+        log('已经退出 ！');
+        socket.close();
+        socket = null;
+      }
+      /**
+       *  该函数用于通过 WebSocket 发送消息
+       * @return void
+       * */
+      function send() {
+        var txt = document.getElementById('msg ');
+        var msg = txt.value;
+        if (!msg) {
+          alert('不能发送空内容！');
+          return;
+        }
+        txt.value = '';
+        txt.focus();
+        try {
+          socket.send(msg);
+          log('Sent: ' + msg);
+        } catch (err) {
+          log(err.message);
+        }
+      }
+      /** _ 该函数用于将信息写入 div
+        元素，呈现在网页上_ @param String msg 定义写入的消息
+        _ @return void*/
+
+      function log(msg) {
+        document.getElementById('log ').innerHTML += '' + msg;
+      }
+    </script>
+  </head>
+  <body onload="init()">
+    <div
+      id="log"
+      style="border:1px dashed
+#c3c3c3; min-height:100px;"
+    ></div>
+    <input id="msg" type="text" /> <button onclick="send();">发送</button>
+    <button onclick="quit();">退出</button>
+  </body>
+</html>
+```
+
+## 关于 Web Socket 通信协议
+
+Web Socket 通信协议由 IETF 制定，用户可以从[网页](http://tools.ietf.org/html/draft-hixiethewebsocketprotocol-76) 查看该协议的详细描述。
+
+Web Socket 通信协议很简单，包含握手和传输数据两部分。
+
+下面是一个客户端握手请求的基本通信格式：
+
+```html
+GET /demo HTTP/1.1 Host: lmssee.com Connection: Upgrade Sec-WebSocket-Key2:
+12998 5 Y3 1 .P00 Sec-WebSocket-Protocol: sample Upgrade: WebSocket
+Sec-WebSocket-Key1: 4 @1 46546xW%0l 1 5 Origin:
+[http://lmssee.com](http://lmssee.com) ^n:ds[4U
+```
+
+下面是一个服务端握手请求的数据格式：
+
+```html
+HTTP/1.1 101 WebSocket Protocol Handshake Upgrade: WebSocket Connection: Upgrade
+Sec-WebSocket-Origin: [http://lmssee.com](http://lmssee.com)
+Sec-WebSocket-Location: ws://lmssee.com/demo Sec-WebSocket-Protocol: sample 8jKS
+' y:G\*Co,Wxa-
+```
+
+这类似于 HTTP 报头信息，同样每行都是以" \r\n "结尾。客户端握手无需用户构造， WebSocket 对象会自动发送，对客户端是透明的；服务端必需由用户编写。
+
+Web Socket 通信协议的握手部分类似于 HTTP 协议，所不同的是， HTTP 协议每次都会包含这些报头，而 Web Socket 通信只会执行一次这个过程，之后的信息传输较简洁。这也是 WebSocket 通信与
+HTTP 通信最大的不同之处。对于聊天程序，一次数据发送可能仅仅包含几个或几十个文字，如果使用 HTTP 协议，在这几十个文字上加上报头，会使数据量成倍增加。而 Web Socket 通信则可以避免这种情况。
+
+Web Socket 协议使用 ws: 架构或者 wss: 架构，后者表示加密的通信，就像 http: 和 https: 的区别。
+
+另外需要注意的是， WebSocket 通信数据的编码总是 UTF-8 格式的。
+
+## 使用 WebSocket 对象
+
+以使用构造方法创建 WebSocket 对象：
+
+```js
+var socket = new WebSocket(url[, protocol]);
+```
+
+参数 url 指 Web Socket 地址。当调用构造方法创建对象时，将自动建立与该 Web Socket 的连接。 url 以 ws 或 wss 开头，以 ws 开头的是普通的 WebSocket 连接；以 wss
+开头的是安全的 WebSocket 连接（类似 https ）。
+
+参数 protocol 可选，定义一个子协议，服务端必须支持该子协议才能建立连接。通常省略该参数。
+
+客户端在握手成功后，会触发 WebSocket 对象的 open 事件，告诉客户端连接已经成功建立了。
+
+WebSocket 对象一共绑定了 3 个事件，用户可以定义事件监听函数来处理各种事件：
+
+- open 事件：当连接打开时触发该事件
+- message 事件：当收到信息时触发该事件
+- close 事件：当连接关闭时触发该事件
+
+在事件处理函数中，也可以使用 readyState 属性检测连接状态，这与使用 EventSource 对象时相同。
+
+当 Web Socket 连接建立后，浏览器首先会把 readyState 的属性值改为 OPEN ，然后触发 open 事件。
+
+例如，可以通过下面的代码来检查状态：
+
+```js
+socket = new WebSocket(url, protocol);
+switch (socket.readyState) {
+  case socket.CONNECTING:
+    // CONNECTING == 0
+    alert(' CONNECTING ');
+    break;
+  case socket.OPEN:
+    // OPEN == 1
+    alert(' OPEN ');
+    break;
+  case socket.CLOSED:
+    // CLOSED == 2
+    alert(' CLOSED ');
+    break;
+  default:
+    alert('未知状态！');
+    break;
+}
+```
+
+另外，也可以使用 URL 属性返回 WebSocket 对象构造方法的 url 参数值。
+
+使用 send() 方法可以发送消息，如果 readyState 属性值为 CONNECTING ，调用该方法会抛出 INVALID_STATE_ERR 异常；使用 close() 方法可以关闭 WebSocket
+连接，并改变 readyState 属性值为 CLOSED 常量；使用 bufferedAmount 属性可以返回尚没有发送、保存在缓存中的数据的量，以 byte 为单位。如果连接已关闭，该属性不会重置到 0 ，而是会随每个
+send() 方法的调用增加。
+
+            

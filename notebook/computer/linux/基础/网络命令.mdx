@@ -1,0 +1,81 @@
+---
+title: 网络命令
+
+
+---
+
+# 网络命令
+
+## ping
+
+用于测试网络连接情况，通过向目标主机发送 ICMP 数据包并接收响应来判断网络是否可达以及网络延迟等情况。
+
+```bash
+ping www.lmssee.com
+```
+
+## ifconfig
+
+用于查看和配置网络接口的参数，如 IP 地址、子网掩码、 MAC 地址等。在一些新的 Linux 系统中，也可以使用`ip addr`命令来替代部分功能。
+
+```bash
+ifconfig eth0
+```
+
+## netstat
+
+用于显示网络连接、路由表、网络接口等信息，能帮助分析网络连接状态和排查网络问题。
+
+```bash
+netstat -an
+```
+
+## traceroute
+
+用于跟踪数据包在网络中经过的路由路径，可帮助确定网络故障所在的位置。在 Windows 系统中对应的命令是`tracert`。
+
+```bash
+traceroute www.lmssee.com
+```
+
+## nslookup
+
+用于查询域名系统（ DNS ）信息，将域名解析为 IP 地址，或者进行反向查询，将 IP 地址解析为域名。
+
+```bash
+nslookup www.lmssee.com
+```
+
+## curl
+
+用于从服务器获取数据或向服务器发送数据，支持多种协议，如 HTTP 、 FTP 等，常用于测试 API 接口、下载文件等。
+
+```bash
+curl https://www.lmssee.com
+```
+
+## wget
+
+主要用于从网络上下载文件，支持 HTTP 、 HTTPS 、 FTP 等协议。
+
+```bash
+wget https://www.lmssee.com/file.zip
+```
+
+## ssh
+
+用于通过安全外壳协议（ SSH ）远程登录到其他服务器，并执行命令或传输文件。
+
+```bash
+ssh user@remote_host
+```
+
+## scp
+
+用于在本地和远程主机之间安全地复制文件和目录。
+
+```bash
+scp local_file user@remote_host:/remote/directory
+```
+
+            

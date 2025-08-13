@@ -1,0 +1,245 @@
+---
+title: 渐变
+pagination_prev: null
+
+---
+
+# webkit 渐变
+
+WebKit 是第一家支持渐变的引擎。
+
+```html
+<div class="c" style="background-image: linear-gradient(to left,#000,#666);">-WebKit-gradient(<type>, <point> [,
+    <radius>]?,<point>[,<radius>]?[,<stop>]* )
+  </div>
+```
+
+- type: 渐变类型，包括 linear 和 radial
+- point ：起始点和结束点
+- radius ：当定义径向（ radial ）时，设置长度
+- stop ：渐变色 和步长
+
+```css
+div {
+  width: 400px;
+  height: 200px;
+  border: 2px solid #fcf;
+  padding: 4px;
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(blue),
+    to(red)
+  );
+  -webkit-background-origin: padding-box;
+  -webkit-background-clip: content-box;
+}
+```
+
+使用 to() 函数
+
+```css
+div {
+  width: 400px;
+  height: 200px;
+  border: 2px solid #fcf;
+  padding: 4px;
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(blue),
+    to(red),
+    color-stop(50%, green)
+  );
+  -webkit-background-origin: padding-box;
+  -webkit-background-clip: content-box;
+}
+```
+
+二重渐变
+
+```css
+div {
+  width: 400px;
+  height: 200px;
+  border: 2px solid #fcf;
+  padding: 4px;
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(blue),
+    to(red),
+    color-stop(0.5, #fff),
+    color-stop(0.5, #000)
+  );
+  -webkit-background-origin: padding-box;
+  -webkit-background-clip: content-box;
+}
+```
+
+Gecko 渐变
+线性渐变
+
+```css
+-moz-linear-gradient([<point> |<angle>, ]?<stop>, <stop>[, <stop>] *);
+```
+
+- point ： 设置起始点
+- angle ：线性渐变的角度，包括 deg 、 grad （梯度，一圈为 90 度为 100grad ）、 rad （弧度，一圈等于 2\*PI ）
+- stop ： 颜色与步长
+
+```css
+div {
+  width: 400px;
+  height: 200px;
+  border: 2px solid #fcf;
+  padding: 4px;
+  background: -moz-linear-gradient(red, blue);
+}
+```
+
+```css
+div {
+  width: 400px;
+  height: 200px;
+  border: 2px solid #fcf;
+  padding: 4px;
+  background: -moz-linear-gradient(top left, red, rgba(255, 0, 0, 0));
+}
+```
+
+```css
+div {
+  width: 400px;
+  height: 200px;
+  border: 2px solid #fcf;
+  padding: 4px;
+  background: -moz-linear-gradient(
+    left,
+    red,
+    orange,
+    yellow,
+    green,
+    blue,
+    indigo,
+    violet
+  );
+}
+```
+
+## 径向渐变
+
+```css
+
+-moz-radial-gradient([<position>|
+|<angle>,]?[<shape>|
+|<size>,]?<stop>,<stop>[,<stop>]*)
+```
+
+- point ：
+- angle ：
+- shape ：径向形状，包括 circle （⚪）和 ellipse （椭圆），默认值为 ellipse
+- size ：
+- stop ：渐变色
+
+```css
+div {
+  width: 400px;
+  height: 200px;
+  border: 2px solid #fcf;
+  padding: 4px;
+  background: -moz-radial-gradient(bottom left, red, yellow, blue 80%);
+}
+```
+
+## Gecko 重复性渐变
+
+Gecko 定义了 -moz-repeating-linear-gradient 为重复性线性渐变，定义了 -moz-repeating-radial-gradient
+
+## IE 渐变
+
+IE 不支持 CSS 渐变，但提供了渐变滤镜，可以简单的渐变效果。 IE 浏览器渐变滤镜的效果：
+
+```css
+filter: progid:DXImageTransform.Microsoft.Gradient(enabled=bEnabled,startColorStr=iWidth,endColorStr=iWidth);
+```
+
+- enabled ： 设置或检索滤镜是否被激活。可选布尔值，包括 true 和 false ；默认值为 true ，即激活状态
+- startColorStr ： 设置或检索色彩渐变的开始颜色和透明度。可选项，其格式为 #AARRGGBB
+- EndColorStr ： 设置或检索色彩渐变的结束颜色和透明度。默认值为 #FF000000，即不透明黑色
+
+```css
+body {
+  /*让渐变背景填满整个页面*/
+  padding: 1em;
+  margin: 0; /*为网页设计垂直渐变背景*/
+  filter: progid: DXImageTransform.Microsoft.Gradient(gradientType=0,
+    startColorStr=#9999FF, endColorStr=#ffffff);
+} /* 定义标题样式 */
+h1 {
+  color: white;
+  font-size: 18px;
+  height: 45px;
+  padding-left: 3em;
+  line-height: 65px; /* 控制文本显示位置 */
+  border-bottom: solid 2px #c72223; /*为标题插入一个装饰图标*/
+  background: url(images/icon4.png) no-repeat left center;
+}
+.box {
+  background: url(images/bg5.png) no-repeat right bottom; /* 设计插画背景 */
+}
+p {
+  text-indent: 2em;
+}
+```
+
+## 标准渐变
+
+W3C 于 21010 年 11月份才正式发布了渐变工作的工作草案，不过渐变设计并没有单独列为一个模块，而是作为图像值和图像被替换的一部分。该标准草案沿袭了 Gecko 引擎的渐变设计方法，语法和用法也基本相同。
+
+## 线性渐变
+
+```css
+linear-gradient([<angle>|to
+    <side-or-corner>,]?<color-stop>[,<color-stop>]+)
+```
+
+```css
+div {
+  width: 400px;
+  height: 200px;
+  border: 2px solid #fcf;
+  padding: 4px;
+  background-image: linear-gradient(to bottom, yellow, blue 30%, red);
+}
+```
+
+## 重复性渐变
+
+repeating-linear-gradient()函数可以定义重复性渐变，用法与 linear-gradient() 语法相同。
+
+## webkit 径向渐变
+
+```css
+radial-gradient([[<shape>|
+|<size>][at <position>]?,| at
+    <position>,]?<color-stop>[,<color-stop>]+)
+```
+
+- shape 用来指定渐变的类型，包括 circle （⚪）和 ellipse （椭圆）两种
+- size 如果是 circle ，则指定一个圆的半径；如果是 ellipse ，指定两个值分别设置椭圆的 x 轴和 y 轴 的半径，取值包括长度、百分比、关键字。关键字为以下
+
+- closest-side ：可渐变到离渐变起点最近的一条边
+- farthest-side ：可渐变到离渐变起点最远的一条边
+- closest-corner ：可渐变到离渐变起点最近的一个角
+- farthest-corner ：可渐变到离渐变起点最远的一个角
+
+- position 用来指定圆心的位置。如果是两个参数，则第一个代表 x 轴坐标，第二个代表 y 轴坐标。如果提供一个字，第二个值默认为 50%，即 center
+- color-stop 用于指定渐变的色点。包括一个颜色值和一个起点值，颜色值与起点值以空格隔开，起点位置为一个具体的长度值（不可以是负值），也可以是一个百分值
+
+position 值位于 shape 和 size 的后面。
+
+            

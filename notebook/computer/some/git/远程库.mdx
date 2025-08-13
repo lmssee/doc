@@ -1,0 +1,153 @@
+---
+title: 远程库
+
+
+---
+
+# remote
+
+git remote 用于管理跟踪的储存库。
+
+## 查看
+
+```sh
+git remote  #  origin
+git remote -v #  查看的会携带详细的地址
+```
+
+## 添加一个远程仓库
+
+```sh
+git remote add origin {仓库别名} {远程地址}
+git remote add -f origin {仓库别名} {远程地址} #  立即 fetch
+```
+
+## 删除远程仓库
+
+```sh
+git remote rm origin
+```
+
+##
+
+## 更新仓库状态
+
+```sh
+git remote update
+```
+
+远程版本库中可能已经有分支被其他开发人员删除了（即使这些分支的副本可能还遗留在你的版本库中）。 git remote prune 命令可以用来删除你的本地版本库中那些陈旧的（相对于实际的远程版本库）远程追踪分支。
+
+为了与上游远程版本库更加同步，使用 git remote update--prune remote 命令首先从远程版本库获得更新，然后一步删除陈旧的追踪分支。
+
+要重命名一个远程版本库及其所有引用，可以使用“ git remote rename 旧名 新名”命令。
+
+## 删除远程分支
+
+```sh
+git push origin --delete {远程分支名}
+```
+
+等同于：
+
+```sh
+git push origin :{远程分支名}  #  推送空的分支到远程，即删除
+```
+
+## gitee
+
+## 添加密钥
+
+```sh
+ssh-keygen -t rsa -C "email"
+```
+
+**_在 .ssh 文件夹下创建 config 文件或者手动输入 touch config 生成_** ：
+
+```sh
+# 我是一条注释
+Host github.com # 自定义别名
+HostName github.com # 真实的服务器地址
+User lmssee # 之前配置的用户名可以省略
+PreferredAuthentications publickey # 权限认证 [publickey]、[password publickey]、[keyboard-interactive]
+IdentityFile ~/.ssh/id_rsa # rsa 文件配置地址
+```
+
+## 在 gitee 上配置密钥
+
+## 链接
+
+```sh
+git remote add origin "path"
+```
+
+## github
+
+## 添加新的远程仓库
+
+```sh
+git remote add [shortname] [url]
+```
+
+## 生成密钥
+
+```sh
+ssh-keygen -t rsa -C "email of github"
+```
+
+## 复制 ssh
+
+## mac
+
+```sh
+pbcopy < ~/.ssh/id_rsa.pub
+```
+
+## window
+
+```sh
+clip < ~/.ssh/id_rsa.pub
+```
+
+## linux
+
+```sh
+sudo apt-get install xclip  #  安装 xclip
+sclip -sel clip < ~/.ssh/id_rsa.pub
+```
+
+## 检测 git 连接
+
+```sh
+ssh -T git@github.com
+```
+
+## 同时连接 gitHub 和 gitee
+
+链接不同的远程库时使用不同的库名：
+
+```sh
+git remote rm origin
+git remote add github git@github.com:lmssee/lmssee.github.io.git
+git remote add gitee git@gitee.com:lmssee/io.git
+```
+
+此时就拥有了两个远程仓库
+
+## push
+
+```sh
+git push github master
+git push gitee master
+```
+
+## linux 上使用 github
+
+## 安装
+
+```sh
+sudo dnf install gh  #  从社区安装 gh
+sudo dnf update gh  #  升级 gh
+```
+
+            

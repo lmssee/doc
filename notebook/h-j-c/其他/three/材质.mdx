@@ -1,0 +1,66 @@
+---
+title: 材质
+
+
+---
+
+# [材质](https://threejs.org/manual/#zh/materials)
+
+材质有很多。设置材质可以在实例化时设置，也可以在实例化之后设置。
+
+不同的材质展现不同的效果，也会占用不同的内存消耗。
+
+## MeshBasicMaterial
+
+不受光照影响的材质。
+
+## MeshLambertMaterial
+
+只受顶点计算光照的材质。
+
+## MeshPhongMaterial
+
+每一个像素计算光照，且支持镜面高光的材质。
+
+MeshPhongMaterial 的 shininess 设置决定了光照的光泽度，默认值 30。
+
+## MeshToonMaterial
+
+平滑的设置光照着色，而不是渐变图。
+
+## MeshStandardMaterial
+
+与 MeshPhongMaterial 类似。 MeshPhongMaterial 和 MeshStandardMaterial 最大的区别是它们使用的参数不同。 MeshPhongMaterial 有一个参数用来设置 shininess
+属性。 MeshStandardMaterial 有2个参数用来分别设置 roughness 和 metalness 属性。
+
+## MeshPhysicalMaterial
+
+MeshPhysicalMaterial 与 MeshStandardMaterial 相同，但它增加了一个 clearcoat 参数，该参数从0到1，决定了要涂抹的清漆光亮层的程度，还有一个 clearCoatRoughness
+参数，指定光泽层的粗糙程度。
+
+各种标准材质的构建速度从最快到最慢： MeshBasicMaterial ➡ MeshLambertMaterial ➡ MeshPhongMaterial ➡ MeshStandardMaterial ➡
+MeshPhysicalMaterial 。构建速度越慢的材质，做出的场景越逼真，但在低功率或移动设备上，可能需要思考代码的设计，使用构建速度较快的材质。
+
+## MeshNormalMaterial
+
+现实几何体的法线
+
+## ShaderMaterial
+
+通过 three.js 着色器系统来自定义材质。
+
+## RawShaderMaterial
+
+用来制作自定义着色器，不需要 three.js 帮助
+
+## 公用属性
+
+## flatShading
+
+对象是否平面着色，默认值为 false 。
+
+## side
+
+显示三角形哪个边。默认值为 three.FrontSide (正面)，还可选 three.BackSide （背面）
+
+            

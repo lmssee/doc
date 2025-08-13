@@ -1,0 +1,48 @@
+---
+title: ssh
+
+
+---
+
+# 简介
+
+SSH 是制定于应用层基础上的安全网络协议，是加密的信息传输系统。
+
+## 验证是否开启
+
+## 配置 SSH
+
+## 默认端口
+
+```bash
+netsh advfirewall firewall add rule name=sshd dir=in action=allow protocol=TCP localport=22
+```
+
+## 开启服务
+
+```bash
+Start-Service sshd
+```
+
+## 关闭服务
+
+```bash
+Stop-Service sshd
+```
+
+## 远程连接
+
+```bash
+ssh Administrator@119.45.35.232 -o 2222
+```
+
+## 防止断连
+
+在本地 sshd_config 文件（在 /etc/ssh/ 下）：
+
+```bash
+ClientAliveInterval 60 // 闲置 60s 后自动连接
+ClientAliveCountMax 5 // 尝试 5 次
+```
+
+            

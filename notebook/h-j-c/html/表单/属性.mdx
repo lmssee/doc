@@ -1,0 +1,54 @@
+---
+title: 属性
+
+
+---
+
+# 名称和值
+
+每一个表单都应该设置唯一的名称（ name ），该属性有两个作用：一是服务器可以根据 name 获取对应的控件提交的值；二是在 JavaScript 中直接使用点语法访问对应的控件对象。
+
+如果要在 css 、 dom 或与 `<label>` 标签绑定，还应该设置 id 属性。
+
+如果表单数据要提交到服务器，则还应该设置 value 属性值，该值会被提交到服务器。
+
+## 布尔属性值
+
+|            |                  |
+| :--------- | :--------------- |
+| readonly   | 只读             |
+| disabled   | 禁用             |
+| require    | 必填             |
+| checked    | 选中             |
+| selected   | 选择             |
+| autofocus  | 自动获取焦点     |
+| multiple   | 多选             |
+| novalidate | 要求提交不被验证 |
+
+## 一些属性
+
+## form 属性
+
+form 设置表单控件的归属表单。
+
+## 高和宽
+
+width 和 height 仅适用于设置 `<input type="image">` 标签的图像高度和宽度。
+
+## 最大值、最小值、步长
+
+max 、 min 、 step 用于包含数字和日期的 input 输入类型的设置限制，适用于 datepickers 、 number 、 range 等类型的 `<input>` 标签。
+
+## 表单重写
+
+该类属性是新增属性，仅适用于 submit 和 input 元素。
+
+## 匹配模式
+
+pattern 属性用于验证 `<input>` 的模式。模式就是 JavaScript 的正则表达式，通过自定义的正则表达式匹配用户的输入。
+
+## 替代文本
+
+placeholder 是用于 input 类型的文本提示。
+
+            

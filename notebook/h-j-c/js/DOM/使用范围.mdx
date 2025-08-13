@@ -1,0 +1,248 @@
+---
+title: 使用范围
+
+
+---
+
+# 创建范围
+
+document 对象定义了 createRange() 方法，使该方法可以创建使用范围。
+
+```js
+var range = document.createRange();
+```
+
+创建了范围之后，就可以使用它之后在后台选择文档中的特定的部分。当设置了范围的位置之后，还可以针对范围的内容执行各种操作，从而实现对 DOM 结构更精细的控制。
+
+每个范围都有两个边界点，一个是开始点，一个是结束点。每个边界点由一个节点元素和该节点的偏移量指定。该节点通常是 Element 节点、 Document 节点、或 Text 节点。对于 Element
+节点，偏移量是指该节点的子节点。例如，偏移量为 0 ，说明边界点位于该边界点的第一个字边界点之前；偏移量为 1 ，说明边界点位于该该边界点的第一个子节点之后，第二个子节点之前。如果边界点是 Text
+节点，偏移量是指文本的两个字符之间的位置。
+
+范围实际上就是 Range 类型的对象实例，它拥有许多属性和方法。
+
+| 属性                    | 说明                                                                                                                                                     |
+| :---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| collapsed               | 如果范围是开始点和结束点在文档的同一位置，则为 true ，即范围是空的，则折叠的，则为 false                                                                 |
+| commonAncestorContainer | 范围开始点和结束点的（即它们的祖先节点）、嵌套最深的 Document 节点                                                                                       |
+| endContainer            | 包含范围的结束点的 Document 节点                                                                                                                         |
+| endOffset               | endContainer 中的结束点位置                                                                                                                              |
+| startContainer          | 包含范围的开始点的 Document 节点                                                                                                                         |
+| startOffset             | startContainer 中的开始点位置 </td>                                                                                                                      |
+| 方法                    | 说明                                                                                                                                                     |
+| :---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| cloneContainer()        | 返回新的 DocumentFragment 对象，它包含该范围表示的文档区域的副本                                                                                         |
+| cloneRange()            | 创建一个新的 Range 对象，表示当前的 Range 对象相同的文档区域                                                                                             |
+| collapse()              | 折叠该范围，使它与边界点重合                                                                                                                             |
+| compareBoundaryPoints() | 比较指定范围的边界点和当前范围的边界点，根据它们的顺序返回 -1、0和 1。比较哪个边界由它的第一个参数指定，它的值必须是范围的常量之一                       |
+| deleteContents()        | 删除当前 Range 对象表示的文档区域                                                                                                                        |
+| detach()                | 通知实现不再使用当前的范围，可以停止跟踪。如果调用了范围的这个方法，那么接下来调用的该范围任何办法都会抛出代码为 INVALID_STRATE_ERR 的 DOMException 异常 |
+| extractContents()       | 删除当前范围表示的文档区域，并且以 DocumentFragment 对象的形式返回该区域的内容，该方法和 cloneContents() 方法与 deleteContents() 方法的结合很相似        |
+| insertNote()            | 把指定的节点插入到文档范围的开始点                                                                                                                       |
+| selectNode()            | 设置该范围的边界点，使它包含的指定节点和它的所有子孙节点                                                                                                 |
+| selectNodeContents()    | 设置该范围的边界点，使它包含指定节点的子孙节点，但不包含指定的节点本身                                                                                   |
+| serEnd()                | 把该范围的结束点设置为指定节点和偏移量                                                                                                                   |
+| setEndAfter()           | 把该范围的结束点设置为紧邻指定节点的结点之后                                                                                                             |
+| setEndBefore()          | 把该范围的结束点设置为紧邻指定节点之前                                                                                                                   |
+| setStart()              | 把该范围的开始点设置为指定节点中的偏移量                                                                                                                 |
+| setStartAfter()         | 把该范围的开始点设置为紧邻指定节点之后                                                                                                                   |
+| setStartBefore()        | 把该范围的开始点设置为紧邻指定节点之前                                                                                                                   |
+| surroundContents()      | 把指定的节点插入文档范围的开始点，然后重订范围中的所有节点的父节点，使它们成为新的插入的节点的子孙节点                                                   |
+| toString()              | 返回该节点表示的文档区域的纯文本内容 </td>                                                                                                               |
+
+## 选择范围
+
+创建范围之后，可以使用范围来选择文档中的一部分。其中最简单的就是 selectNode() 或 selectNodeContents 。这两个方法都接受一个参数，即一个 DOM 节点，然后再使用该节点中的信息来填充范围。用法如下：
+
+```js
+selectNode(refNode);
+selectNodeContents(refNodes);
+```
+
+参数 refNode 为 DOM 节点。 selectNOde() 方法将把范围的内容设置在指定的 refNode 节点，也就是选中那个节点和它的子孙节点；但是， selectNodeContents() 方法"选中"的范围不包含 refNode 节点，仅包含 refNode 的子节点。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+initial-scale=1.0"
+    />
+    <title>Document</title>
+    <style>
+      dl {
+        float: left;
+        margin: 4px 20px;
+        border: solid 1px blue;
+        padding: 12px;
+      }
+      dl span {
+        color: #f00;
+        float: right;
+      }
+      dd {
+        width: 360px;
+      }
+      footer {
+        display: none;
+      }
+    </style>
+    <script>
+      function createRange() {
+        var range1 = document.createRange();
+        var range2 = document.createRange();
+        var main = document.getElementById('main');
+        range1.selectNode(main);
+        range2.selectNodeContents(main);
+        var footer = document.getElementsByTagName('footer')[0];
+        footer.style.display = 'block';
+        document.getElementById('txtStartContainer1').textContent =
+          range1.startContainer.tagName;
+        document.getElementById('txtStartOffset1').textContent =
+          range1.startOffset;
+        document.getElementById('txtEndContainer1').textContent =
+          range1.endContainer.tagName;
+        document.getElementById('txtEndOffset1').textContent = range1.endOffset;
+        document.getElementById('txtCommonAncestor1').textContent =
+          range1.commonAncestorContainer.tagName;
+        document.getElementById('txtStartContainer2').textContent =
+          range2.startContainer.tagName;
+        document.getElementById('txtStartOffset2').textContent =
+          range2.startOffset;
+        document.getElementById('txtEndContainer2').textContent =
+          range2.endContainer.tagName;
+        document.getElementById('txtEndOffset2').textContent = range2.endOffset;
+        document.getElementById('txtCommonAncestor2').textContent =
+          range2.commonAncestorContainer.tagName;
+      }
+    </script>
+  </head>
+  <body>
+    <section id="wrap">
+      <article id="main">
+        <h1>游子吟</h1>
+        <h2>孟郊</h2>
+        <p>慈母手中线，游子身上衣；临行密密行，意恐迟迟归。</p>
+      </article>
+      <header>
+        <input type="button" value="创建范围" onclick="createRange()" />
+      </header>
+      <footer>
+        <dl>
+          <dd>范围1</dd>
+          <dd>
+            Start Container(开始点的父节点)：<span
+              id="txtStartContainer1"
+            ></span>
+          </dd>
+          <dd>
+            start Offset(开始点的偏移量)：<span id="txtStartOffset1"></span>
+          </dd>
+          <dd>
+            End Container （结束点的父节点）：<span
+              id="txtEndContainer1"
+            ></span>
+          </dd>
+          <dd>
+            End Offset （结束点的偏移量）：<span id="txtEndOffset1"></span>
+          </dd>
+
+          <dd>
+            Common Ancestor （共同祖先节点）：<span
+              id="txtCommonAncestor1"
+            ></span>
+          </dd>
+        </dl>
+        <dl>
+          <dd>范围2</dd>
+          <dd>
+            Start Container(开始点的父节点)：<span
+              id="txtStartContainer2"
+            ></span>
+          </dd>
+          <dd>
+            start Offset(开始点的偏移量)：<span id="txtStartOffset2"></span>
+          </dd>
+          <dd>
+            End Container （结束点的父节点）：<span
+              id="txtEndContainer2"
+            ></span>
+          </dd>
+          <dd>
+            End Offset （结束点的偏移量）：<span id="txtEndOffset2"></span>
+          </dd>
+
+          <dd>
+            Common Ancestor （共同祖先节点）：<span
+              id="txtCommonAncestor2"
+            ></span>
+          </dd>
+        </dl>
+      </footer>
+    </section>
+  </body>
+</html>
+```
+
+```html
+<section id="wrap">
+  <article id="main">
+    <h1>游子吟</h1>
+    <h2>孟郊</h2>
+
+    慈母手中线，游子身上衣；临行密密行，意恐迟迟归。
+  </article>
+  <header><input type="button" value="创建范围" /></header>
+  <footer>
+    <dl>
+      <dd>范围1</dd>
+      <dd>Start Container(开始点的父节点)： SECTION</dd>
+      <dd>start Offset(开始点的偏移量)：1</dd>
+      <dd>End Container （结束点的父节点）： SECTION</dd>
+      <dd>End Offset （结束点的偏移量）：2</dd>
+      <dd>Common Ancestor （共同祖先节点）： SECTION</dd>
+    </dl>
+    <dl>
+      <dd>范围2</dd>
+      <dd>Start Container(开始点的父节点)： ARTICLE</dd>
+      <dd>start Offset(开始点的偏移量)：0</dd>
+      <dd>End Container （结束点的父节点）： ARTICLE</dd>
+      <dd>End Offset （结束点的偏移量）：7</dd>
+      <dd>Common Ancestor （共同祖先节点）： ARTICLE</dd>
+    </dl>
+  </footer>
+</section>
+```
+
+设置范围
+
+创建复杂的范围一般使用 setStart() 和 setEnd() 方法。这两种方法都接受两个参数：
+
+```js
+setStart(refNode, offset);
+setEnd(refNode, offset);
+```
+
+## 操作范围内容
+
+## 插入范围内容
+
+## 折叠范围
+
+## 比较范围
+
+## 复制和清除范围
+
+使用 cloneRange() 方法可以复制范围，新创建的范围与原来的范围包含相同的属性，而修改它的边界不会影响原来的范围。
+
+使用完范围后，最好是使用 detach() 方法把范围从文档中分离出来，然后就可以放心的解除范围的引用，从而使垃圾回收机制回收其内存。
+
+```js
+range.detach();
+range = null;
+```
+
+            

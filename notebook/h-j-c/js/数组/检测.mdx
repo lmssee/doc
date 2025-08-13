@@ -1,0 +1,27 @@
+---
+title: 检测
+
+
+---
+
+# isArray()方法
+
+isArray()方法用于判断指定的参数是否是数组，这是一个静态方法，其语法格式如下：
+
+```js
+Array.isArray(obj);
+```
+
+参数指定要进行判断的对象。例如下面的代码：
+
+```js
+var person_1 = { sex: 'male', age: 28, birthday: new Date(1980, 7, 5) };
+alert(isArray(person_1)); // false
+var person_2 = new Array();
+person_2['sex'] = 'male';
+person_2['age'] = 28;
+person_2['birthday'] = new Date(1980, 7, 5);
+alert(isArray(person_2)); // true
+```
+
+            

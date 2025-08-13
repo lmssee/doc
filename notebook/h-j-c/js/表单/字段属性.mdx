@@ -1,0 +1,117 @@
+---
+title: 字段属性
+
+
+---
+
+# 访问字段属性
+
+- disabled ：布尔值，表示当前字段是否被禁用
+- form ：只读，指向当前字段所属的表单对象
+- name ：当前字段的名称
+- readOnly ：表示当前字段是否只读
+- type ：当前字段的类型，如 "checkbox"、 "radio" 等
+- value ：当前字段将被提交到服务器的值，对文件来说，这个属性是只读的，包含着文件在计算机的路径
+
+除了 form 属性，其它属性都可以动态修改，这样就可以在脚本中智能控制表单的表现。
+
+```html
+<form action="" id="form1">
+  <h3>反馈表</h3>
+  <fieldset>
+    <
+    <p>姓名： <input type="text" class="special" name="name" /></p>
+
+    <
+    <p>
+      性别 <input type="radio" name="sex" value="0" />男<<input
+        type="radio"
+        name="sex"
+        value="1"
+      />女
+    </p>
+    <
+    <p>邮箱 <input type="text" name="email" /></p>
+
+    <
+    <p>网址 <input type="text" name="web" /></p>
+    <
+    <p>反馈意见 <textarea name="message" rows="10" cols="30"></textarea></p>
+    <p class="submit">
+      <button type="submit">提交表单</button>
+    </p>
+  </fieldset>
+</form>
+<script>
+  var form = document.getElementById('form1');
+  var field = form.elements['name'];
+  // 通过 name 找到姓名文本框
+  field.value = '输入姓名 ';
+  alert(field.form.id);
+  field.focus();
+  field.disabled = true;
+  field.type = 'checkbox';
+</script>
+```
+
+提交表单后，禁用提交按钮。
+
+```html
+<form action="" id="form1">
+  <h3>反馈表</h3>
+  <fieldset>
+    <
+    <p>姓名： <input type="text" class="special" name="name" /></p>
+    <
+    <p>
+      性别 <input type="radio" name="sex" value="0" />男<<input
+        type="radio"
+        name="sex"
+        value="1"
+      />女
+    </p>
+    <
+    <p>邮箱 <input type="text" name="email" /></p>
+
+    <
+    <p>网址 <input type="text" name="web" /></p>
+    <
+    <p>反馈意见 <textarea name="message" rows="10" cols="30"></textarea></p>
+    <p class="submit">
+      <button type="submit">提交表单</button>
+    </p>
+  </fieldset>
+</form>
+<script>
+  var form = document.getElementById('form1');
+  var field = form.elements['name'];
+  // 通过 name 找到姓名文本框
+  field.value = '请输入姓名 ';
+  alert(field.form.id);
+  form.onsubmit = function (e) {
+    var e = e || window.event;
+    var t = e.target || e.srcElement;
+    var btn = target.elements['submit'];
+  };
+  field.value = '输入姓名 ';
+  field.focus();
+  field.disabled = true;
+  field.type = 'checkbox';
+</script>
+```
+
+对于 fieldset 外，所有字段都有 type 属性。对于 input 元素， type 属性值等于
+HTML 标签的 type 属性值，而对于其它的元素的 type 属性值：
+
+| 名称                 | type 属性值       | HTML 标签                |
+| :------------------- | :---------------- | :----------------------- |
+| 单选列表（下拉菜单） | "select-one"      | `<select>`               |
+| 多选按钮（列表框）   | "select-multiple" | `<select multiple>`      |
+| 自定义按钮           | "submit"          | `<button>`               |
+| 普通按钮             | "button"          | `<button type="button">` |
+| 自定义下重置按钮     | "reset"           | `<button type="reset">`  |
+| 自定义下提交按钮     | "reset"           | `<button type="submit">` |
+
+`<input>`、`<button>` 标签的 type 值是可以动态改变的，而 `<select>`标签的 type 值是只读的。
+
+            

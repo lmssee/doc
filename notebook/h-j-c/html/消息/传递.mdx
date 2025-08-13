@@ -1,0 +1,242 @@
+---
+title: 传递
+
+
+---
+
+# 跨域获取传递消息
+
+postMessage() 方法的目标源页面必须填写（即第二个参数，第一个参数则提交数据），这个目标源页面必须与 iframe 对象所在的域匹配。如果不匹配，将会抛出一个安全性错误，阻止脚本继续执行。
+
+evt 对象常用的属性有 data 、 origin 和 source 三个
+
+- data 属性：包含传入的消息，一般会将传递的数据转化为字符串
+- origin 属性：返回消息来自的域，可能根据它来判断是否是处理消息，是非常基本的层级上的策略控制
+- source 属性：相当于 window.opener ，这样就可以实现基本的消息互通了
+
+服务器推送技术使用事件来实现，英文全称是 Server-Sent Event 。客户端使用 EventSource 对象实现，服务端也有相应的要求。
+
+## 使用 Server-Sent Event 入门
+
+下面首先创建一个 HTML 网页，在该网页中使用服务器推送技术：
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>范例</title>
+    <script>
+      var source;
+      /**
+       * * 该函数在文档完成加载后执行*
+       *  @return void
+       *  */
+      function init() {
+        var url = 'http://....com/eventsource/server.php';
+        try {
+          // 建立连接，并监听各种事件
+          source = new EventSource(url);
+          source.onopen = function (event) {
+            log(' 连接已经建立： ' + this.readyState);
+          };
+          source.onmessage = function (event) {
+            log('<b> 接收到的数据： ' + event.data + '</b>');
+          };
+          source.onerror = function (event) {
+            log(' 出错，信息是： ' + this.readyState);
+          };
+        } catch (err) {
+          log(err.message);
+        }
+      } /** *
+        该函数用于关闭 EventSource
+          连接* @return void
+        */
+      function quit() {
+        log(' 已经退出    ！ ');
+        source.close();
+        source = null;
+      }
+      /**
+       *  该函数用于将信息写入 div 元素，呈现在网页上_
+       *
+       * @param String msg 定义写入的消息
+       *  @return void
+       */
+      function log(msg) {
+        document.getElementById('log').innerHTML += '' + msg;
+      }
+    </script>
+  </head>
+  <body onload="init()">
+    <button onclick="quit()">退出</button>
+    <div id="log" style="border:1px dashed #c3c3c3;"></div>
+  </body>
+</html>
+```
+
+## 服务器要求
+
+## 使用 EventSource 对象
+
+EventSource 对象是客户端浏览器用于实现 Server-Sent Event 的关键，它代表接收事件终端点。可以使用构造方法创建该对象：
+
+```js
+var source = new EventSource(url);
+```
+
+参数 url 就是要推送数据的服务器技术的 URL 地址。当调用构造方法创建对象时，将自动建立与该 URL 的连接。
+
+客户端浏览器通过创建 EventSource 对象来打开一个事件流。当事件流被打开时，浏览器会发送如下 HTTP 请求：
+
+```html
+GET /eventsource/server.php HTTP/1.1Host: localhostReferer:
+<a href="http://localhost/eventsource/client.html" rel="nofollow"
+  >http://localhost/eventsource/client.html</a
+>
+Cache-Control: max-age=0Accept: text/event-streamUser-Agent: Mozilla/5.0
+(Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.3 (KHTML, like
+Gecko)Chrome/6.0.472.63 Safari/534.3 Accept-Encoding:
+gzip,deflate,sdchAccept-Language: zh-CN,zh;q=0.8Accept-Charset:
+GBK,utf-8;q=0.7,\*;q=0.3
+```
+
+注意，请求不会被缓存，因为定义了 Cache-Control 报头。
+
+下面是服务器做出的响应（注意 Content-Type 报头）：
+
+```html
+HTTP/1.1 200 OKDate: Mon, 18 Oct 2010 10:03:58 GMTServer: Apache/2.2.2 (Win32)
+PHP/5.2.0X-Powered-By: PHP/5.2.0Content-Length: 32 Content-Type:
+text/event-streamdata: 2010-10-18T10:03:58+00:00
+```
+
+一旦创建了 EventSource 对象，就可以定义事件监听函数来处理各种事件，主要有以下 3 个事件：
+
+- open 事件：当连接打开时触发该事件
+- message 事件：当收到信息时触发该事件
+- close 事件：当连接关闭时触发该事件
+
+在事件处理函数中，也可以使用 readyState 属性检测连接状态，主要有 3 种状态，可以使用常量表示。
+
+例如，可以通过下面的代码来检查状态：
+
+```js
+source = new EventSource(url);
+switch (source.readyState) {
+  case source.CONNECTING: //  CONNECTING == 0
+    alert('CONNECTING ');
+    break;
+  case source.OPEN: // OPEN == 1
+    alert(' OPEN ');
+    break;
+  case source.CLOSED: // CLOSED == 2
+    alert('CLOSED ');
+    break;
+  default:
+    alert('未知状态！');
+    break;
+}
+```
+
+在 Web Workers 中使用 EventSource 对象
+
+EventSource 对象是一个不间歇运行的程序，时间一长就会导致运行缓慢，甚至导致浏览器崩溃， Web Workers 对这一部分的执行能够起到优化的效果。下面就来看一下怎样使用 WebWorkers 来实现优化。
+
+(1) 首先建立一个 JavaScript 文件，包含复杂的运算。下面创建一个名为 worker.js 的文件：
+
+```js
+/**  该函数用于监听消息
+ *  @param evt Event 事件对象
+ *  @return void
+ * */
+function messageHandler(evt) {
+  var url = 'http://localhost/eventsource/server.php';
+  // var source;
+  // 如果发送的是 true ，则建立连接，否则关闭连接
+  if (evt.data) {
+    try {
+      source = new EventSource(url);
+      source.onopen = function (event) {
+        postMessage('连接已经建立：' + this.readyState);
+      };
+      source.onmessage = function (event) {
+        postMessage('<b>接收到的数据：' + event.data + ' < /b> ');
+      };
+      source.onerror = function (event) {
+        postMessage('出错， 信息是：' + this.readyState);
+      };
+    } catch (err) {
+      postMessage(err.message);
+    }
+  } else {
+    postMessage('已经退出！');
+    source.close();
+    source = null;
+  }
+}
+self.addEventListener('message: ', messageHandler, false);
+```
+
+网页向 Worker 传递消息时，会判断是创建连接还是断开连接，然后将适当的消息使用 postMessage() 方法发送给网页。
+
+(2) 在 HTML 网页中创建 Worker ，向 Worker 发送参数 true ，要求连接服务端网页，并接收返回的消息，然后将消息写在网页的 div 元素中。代码如下：
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>范例</title>
+    <script>
+      var worker;
+      /** 该函数在文档完成加载后执行_ @return void
+       * */
+      function init() {
+        /**  创建 Worker  */
+        if (window.Worker) {
+          worker = new Worker('worker.js');
+          worker.onmessage = function (event) {
+            log(event.data);
+          };
+          worker.postMessage(true);
+        } else {
+          alert(' 浏览器不支持 Web Workers!');
+        }
+      }
+      /**
+       *  该函数用于关闭 EventSource 连接
+       * @return void */
+      function quit() {
+        if (worker == null) {
+          return;
+        }
+        worker.postMessage(false);
+        worker.terminate();
+        worker = null;
+      }
+      /** _ 该函数用于将信息写入 div 元素，呈现在网页上
+       *  @param String msg 定义写入的消息
+       *   @return void
+       * */
+      function log(msg) {
+        document.getElementById('log').innerHTML += ' <br/>' + msg;
+      }
+    </script>
+  </head>
+  <body onload="init()">
+    <button onclick="quit()">退出</button>
+    <div id="log" style="border:1px dashed #c3c3c3;"></div>
+  </body>
+</html>
+```
+
+在浏览器中执行该网页，再应用 EventSource 对象的 JavaScript 程序代码运行在客户端操作系统线程中，速度非常快，不会再导致浏览器崩溃，并可以长时间运行。
+
+## 技巧与提示
+
+通常情况下，浏览器会限制每个服务器的连接的数量。如果网页包含多个 EventSource 对象，且连接到同一个 URL ，那么这些连接可能会超出浏览器连接数量限制。为了解决该问题，可以使用共享 Web Workers
+来共享一个 EventSource 的实例。
+
+            

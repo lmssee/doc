@@ -1,0 +1,34 @@
+---
+title: 事件
+pagination_prev: null
+
+---
+
+# 驱动
+
+nodejs 是单线程，但是通过一种奇怪的观察者模式去监听多事件。如果有事件发生，观察者就会触发该回调（类似于 js 中给 DOM 绑定事件，事件触发时执行绑定回调函数）。
+
+```js
+import { EventEmitter } from 'events'; // 引入 events 模块下的监听者
+var eventEmitter = new EventEmitter(); // 实例化一个 Eventemitter 对象
+eventEmitter.on('eventName', eventHandle); // 为 EventEmitter 注册事件观察者
+eventEmitter.emit('eventName'); // 手动触发
+```
+
+```js
+// 引入
+import { EventEmitter } from 'events';
+// 实例化
+var e = new EventEmitter(); // 声明回调
+var connectHandler = () => {
+  console.log('ok');
+  // 手动触发其他事件
+  e.emit('data_received');
+};
+e.on('connection', connectHandler); // 注册监听者
+e.on('data_received', () => console.log('this 也 ok'));
+e.emit('connection');
+console.log('over');
+```
+
+            

@@ -1,0 +1,328 @@
+---
+title: 表单
+
+
+---
+
+# 获得焦点与失去焦点事件
+
+获得焦点事件（ `onfocus` ）是当某个元素获得焦点时触发事件处理程序。失去焦点事件（ `onblur` ）是当前元素失去焦点时触发事件处理程序。在一般情况下，这两个事件是同时使用的。
+
+如果是隐藏字段（ `<input type="hidden">`），或者使用 CSS 的 `display` 和 `visibility` 隐藏字段显示，设置其获得焦点，将会引发异常。
+
+## 失去焦点修改事件
+
+失去焦点修改事件（ `onchange` ）是当前元素失去焦点并且元素的内容发生改变时触发事件处理程序。该事件一般在下拉文本框中使用。
+
+## 选择文本
+
+当在文本框或文本区域内选择文本时，将会触发 `select` 事件。通过该事件，用户可以设计选择操作的交互行为。在调用 `select()` 方法时，也会触发 `select` 事件。
+
+```html
+<input type="text" value="请选择字符串 " id="a" /> <input type="text" id="b" />
+<script>
+  var a = document.getElementsByTagName('input')[0];
+  var b = document.getElementsByTagName('input')[1];
+  a.onselect = function () {
+    // 为第一个文本绑定 select 事件处理函数
+    if (document.selection) {
+      // 兼容 IE
+      o = document.selection.createRange();
+      // 创建一片区域
+      if (o.text.length > 0) b.value = o.text;
+      // 如果区域内文本存在
+    } else {
+      // 兼容 DOM
+      p1 = a.selectionStart;
+      // 文本框中选择起始位置
+      p2 = a.selectionEnd; // 文本框中结束位置
+      b.value = a.value.substring(p1, p2); // 赋值
+    }
+  };
+</script>
+```
+
+## 字段值变化监测
+
+change 事件类型是在表单元素的值发生变化时触发，它主要用于 input 、 select 和
+textarea 元素。对于 input 和 textarea 来说，当它们失去焦点且 value
+值改变时触发；对于 select
+元素，在其选择改变时触发，也就是说不失去焦点，也会触发 change 事件。
+
+```html
+<input type="text" id="a" /> <input type="text" id="b" />
+<script>
+  var a = document.getElementsByTagName('input')[0];
+  var b = document.getElementsByTagName('input')[1];
+  a.onchange = function () {
+    b.value = this.value;
+  };
+</script>
+```
+
+关于 select 的 change 事件。
+
+```html
+<select>
+  <option value="https://lmssee.cn">本站</option>
+
+  <option value="https: // lmssee.art.blog">个人微博</option>
+</select>
+<script>
+  var a = document.getElementsByTagName('select')[0];
+  a.onchange = function () {
+    window.open(this.value, '');
+  };
+</script>
+```
+
+在其它元素的 change 事件。
+
+```html
+<input type="radio" name="r" value="1" checked="checked" />
+<input type="radio" name="r" value="2" />
+<input type="radio" name="r" value="3" />
+<script>
+  var a = document.getElementsByTagName('input');
+  for (var i = 0; i < a.length; i++) {
+    a[i].onchange = function () {
+      console.log(this.value);
+    };
+  }
+</script>
+```
+
+对于 input 来说，由于 change
+是在失去焦点时触发，会显得略有迟钝。为了更好的用户体验，很多时候，使用按键离开或是鼠标点击更为快速。
+
+focus 、 blue 和 change 事件常常配合使用。一般在 focus 和 blur
+事件来以某种方式改变用户界面，或是向界面添加额外的功能。
+
+```html
+<form action="javascript:alert(123)" id="my" method="post">
+  <
+  <p>
+    <label for="txtNumbers">请输入文字： </label> <<input
+      type="text"
+      name="numbers"
+      id="txtNumbers"
+    />
+  </p>
+  <
+  <p><input type="submit" value="提交表单 " id="submit-btn" /></p>
+</form>
+<script>
+  var form = document.getElementById('my');
+  var numbers = form.elements['numbers'];
+  numbers.onfocus = function (event) {
+    var e = event || window.event;
+    var t = e.target || e.srcElement;
+    t.style.backgroundColor = '#ff0';
+  };
+  numbers.onblur = function (event) {
+    e = event || window.event;
+    var target = e.target || e.srcElement;
+    if (/[^\d]/.test(target.value)) {
+      target.style.backgroundColor = '#f00';
+    } else {
+      target.style.backgroundColor = '';
+    }
+  };
+  numbers.onchange = function (event) {
+    var e = event || window.event;
+    var t = e.target || e.srcElement;
+    if (/[^\d]/.test(target.value)) {
+      target.style.backgroundColor = '#f00';
+    } else {
+      target.style.backgroundColor = '';
+    }
+  };
+  numbers.focus();
+</script>
+```
+
+## 表单提交与重置事件
+
+表单提交事件（ onsubmit ）是在用户提交表单时（通常使用 "提交" 按钮，也就是将按钮的 type 属性设为 submit ），在表单提交之前被触发，因此，该事件的处理程序通过返回 false 值来阻止表单的提交。该事件可以用来验证表单输入项的正确性。
+
+表单重置事件（
+onreset ）与表单提交事件的处理过程相同，该事件只是将表单中的各元素的值设置为原始值，一般用于清空表单中的文本框。
+
+下面给出这两个事件的使用格式：
+
+```html
+<form name="formName" onReset="return FunName" onsubmit="return FunName"></form>
+```
+
+- formName ：表单名称 - FunName
+  ：函数名或执行语句。如果是函数名，在该函数中必须有布尔型的返回值 注意　如果在
+  onsubmit 和 onreset 事件中调用的是自定义函数名，那么，必须在函数名的前面加 return 语句；否则，不论在函数中返回的是 true ，还是 false ，当前事件所返回的值一律是 true 值。
+
+```html
+<form action="" id="a" name="a" method="post">
+  <input type="text" name="t" id="t" /> <input type="submit" name="" />
+</form>
+<script>
+  var t = document.getElementsByTagName('input')[0];
+  t = document.querySelector('input');
+  var f = document.getElementsByTagName('form')[0];
+  f.onsubmit = function (e) {
+    alert(t.value);
+    return false;
+  };
+</script>
+```
+
+阻止默认动作
+
+```html
+<form action="" id="a" name="a" method="post">
+  < <input type="text" name="t" id="t" />
+</form>
+<script>
+  var t = document.querySelector('input');
+  var f = document.querySelector('form');
+  f.onsubmit = function (e) {
+    if (t.value.length < 1) {
+      var e = e || window.event;
+      if (e.preventDefault) {
+        e.preventDefault();
+      } else {
+        // 兼容 IE
+        e.returnValue = false;
+      }
+    }
+  };
+</script>
+```
+
+禁止回车提交
+
+```js
+var t = document.querySelector('input');
+t.onkeypress = function (e) {
+  var e = e || window.event; // 标准化事件对象
+  return e.keyCode != 13;
+  // 按下回车时，设置返回值为 false ，禁止默认键盘行为
+};
+submit();
+```
+
+方法也可以触发表单提交，但是不会触发提交事件。因此在此之前应当先进行验证输入。
+
+## 重置表单
+
+```html
+<form action="" id="a" name="a" method="post">
+  <input type="text" name="t" id="t" /> <<input type="reset" name="t" />
+</form>
+<script>
+  var t = document.querySelector('input');
+  var f = document.querySelector('form');
+  f.onreset = function (e) {
+    alert(t.value);
+  };
+</script>
+```
+
+也可以加入其它动作。
+
+```html
+<form action="" id="a" name="a" method="post">
+  <input type="text" name="t" id="t" /> <input type="reset" name="t" />
+</form>
+<script>
+  var t = document.querySelector('input');
+  var f = document.querySelector('form');
+  f.onreset = function (e) {
+    if (t.value.length > 10) {
+      var e = e || window.event;
+      if (e.preventDefault) {
+        e.preventDefault();
+      } else {
+        // 兼容 IE
+        e.returnValue = false;
+      }
+    }
+  };
+</script>
+```
+
+同样，用户可以使用 reset() 方法进行表单重置。
+
+## 剪切板数据
+
+- beforecopy ：在复制发生之前触发
+- copy ：在复制时触发
+- beforecut ：在发生剪切动作时触发
+- cut ：在发生剪切时触发
+- beforepaste ：在发生粘贴时触发
+- paste ：在粘贴时触发
+
+copy 、 cut 、 paste 事件，只是在上下文菜单中选择了相应选项，或者使用了相应的键盘键组合键，所有浏览器都会触发它们。在实际的事件发生之前，通过 beforecopy 、 beforecut 、 beforepaste 事件可以向剪切板发送数据，或者从剪切板取得之前修改数据。
+
+使用 clipboard 对象可以访问剪切板数据。在 IE 中，可以在任何情况下使用 window.clipboardData 访问剪切板；而在 Firefox 4.0+ 、 Safari 、 Chrome 中，可以通过事件对象的 clipboardData 属性访问剪切板，且只有在处理剪切板事件期间， clipboardData 才有效。
+
+clipboardData 定义了三个方法：
+
+- getData()：从剪切板获得数据。包含 1 个参数，设置取得数据的格式。 IE 提供两总数据模式： text 和 URL ； Firefox 、 Safari 、 Chrome 中定义了 MIME 类型，可以用 text 代替
+- setData()：设置剪切板数据。包含两个参数，其中一个是设置数据的格式，第二个是要放到剪切板的文本。对于第一个参数， IE 只支持 "text" 和 "URL" ，而 Safari 、 Chrome 都仍支持 MIME 类型，但是不识别 "text" 类型。在成功将文本放回到剪切板后，都会返回 true ；否则，将返回 false
+
+```js
+var getClipboardText = function (event) {
+  var clipboardData = event.clipboardData || window.clipboardData;
+  return clipboardData.getData('text');
+};
+var setClipboardDataText = function (event, value) {
+  if (event.clipboardData) {
+    event.clipboard.setData('text/plain', value);
+  } else if (window.clipboardData) {
+    window.clipboardData.setData('text', value);
+  }
+};
+```
+
+例子
+
+```html
+<form action="#" id="a" method="post">
+  < <input type="text" size="25" maxlength="50" value="123456" />
+</form>
+<script>
+  var form = document.querySelector('form');
+  var fi = form.elements[0];
+  var getClipboardText = function (event) {
+    var clipboardData = event.clipboardData || window.clipboardData;
+    return clipboardData.getData('text');
+  };
+  var setClipboardDataText = function (event, value) {
+    if (event.clipboardData) {
+      event.clipboard.setData('text/plain', value);
+    } else if (window.clipboardData) {
+      window.clipboardData.setData('text', value);
+    }
+  };
+  var addHandler = function (element, type, handler) {
+    if (element.addEventListener) {
+      element.addEventListener(type, handler, false);
+    } else if (element.attachEvent) {
+      element.attachEvent('on' + type, handler);
+    } else {
+      element['on' + type] = handler;
+    }
+  };
+  addHandler(fi, 'paste', function (event) {
+    event = event || window.event;
+    var text = getClipboardText(event);
+    if (!/^\d\*$/.test(text)) {
+      if (event.preventDefault) {
+        event.preventDefault();
+      } else {
+        event.returnValue = false;
+      }
+    }
+  });
+</script>
+```
+
+            

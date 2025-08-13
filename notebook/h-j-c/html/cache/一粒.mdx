@@ -1,0 +1,66 @@
+---
+title: 一粒
+
+
+---
+
+# 简单例子
+
+创建一个新的页面，在页面中自定义添加三幅图片，其中前两张图片来自网络，最后一张图片来自本项目的 image 文件夹下。
+
+```html
+<figure>
+  百度搜索图片：
+  <img
+    src="http://www.baidu.com/img/bdlogo.gif"
+    title=" 百度首页 "
+    width="248"
+    height="129"
+  />
+  搜狗搜索图片：
+  <img
+    src="http://www.sogou.com/images/logo_l.gif"
+    title=" 搜狗搜索图片 "
+    width="248"
+    height="64"
+  />
+  谷歌搜索图片： <img src="images/google.jpg" width="248" height="93" />
+</figure>
+<figure>
+  百度搜索图片：
+  <img
+    src="http://www.baidu.com/img/bdlogo.gif"
+    title="
+百度首页 "
+    width="248"
+    height="129"
+  />
+  搜狗搜索图片：
+  <img
+    src="http://www.sogou.com/images/logo_l.gif"
+    title=" 搜狗搜索图片 "
+    width="248"
+    height="64"
+  />
+  谷歌搜索图片： <img src="images/google.jpg" width="248" height="93" />
+</figure>
+```
+
+创建全称是 base.manifest 的缓存清单文件，并且在该文件中定义要缓存的内容。
+
+```tex
+CACHE MANIFEST #version 5.2.0 CACHE:
+http://www.baidu.com/img/bdlogo.gif images/google.jpg
+```
+
+将上一步中创建的 base.manifest 文件链接到 HTML 网页中，在网页中的 `<html></html>` 标记中添加 manifest 属性，将此属性指定为 base.manifest 文件
+
+```html
+<html manifest="base.manifest"></html>
+```
+
+在 IIS 中访问页面进行测试，大多数的浏览器都不会提醒是否允许缓存，而是默认自动缓存。但是， Firefox 浏览器除外，该浏览器对脱机时的数据存储提供了选择。
+
+以手动的方式断开网络连接，然后重新访问该页面查看效果。
+
+            

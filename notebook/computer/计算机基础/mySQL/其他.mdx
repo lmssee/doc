@@ -1,0 +1,106 @@
+---
+title: 其他
+
+
+---
+
+# 其他方法
+
+|                                      |                                                                           |
+| :----------------------------------- | :------------------------------------------------------------------------ |
+| bin(x)                               | 返回 x 的二进制编码                                                       |
+| binary(s)                            | 将字符串 s 转换为二进制字符串                                             |
+| cast(x AS type)                      | 转换数据类型                                                              |
+| coalesce(expr1, expr2, ...., expr_n) | 返回参数中的第一个非空表达式（从左向右）                                  |
+| connection_id()                      | 返回唯一的连接 id                                                         |
+| conv(x,f1,f2)                        | 返回 f1 进制数变成 f2 进制数                                              |
+| convert(s USING cs)                  | 函数将字符串 s 的字符集变成 cs                                            |
+| current_user()                       | 返回当前用户                                                              |
+| database()                           | 返回当前数据库名                                                          |
+| if(expr,v1,v2)                       | 如果表达式 expr 成立，返回结果 v1；否则，返回结果 v2                      |
+| isNull(expression)                   | 判断表达式是否为 NULL                                                     |
+| last_insert_id()                     | 返回最近生成的 auto_increment 值                                          |
+| nullIf(expr1, expr2)                 | 比较两个字符串，如果字符串 expr1 与 expr2 相等 返回 NULL ，否则返回 expr1 |
+| session_user()                       | 返回当前用户                                                              |
+| system_user()                        | 返回当前用户                                                              |
+| user()                               | 返回当前用户                                                              |
+| version()                            | 返回数据库的版本号                                                        |
+| json_object()                        | 将键值对转换为 json 对象                                                  |
+| json_array()                         | 将值转换为 json 数组                                                      |
+| json_extract()                       | 从 json 字符串中提取指定的值                                              |
+| json_contains()                      | 检查一个 json 字符串是否包含指定的值                                      |
+| row_number()                         | 为查询结果中的每一行分配一个唯一的数字                                    |
+| rank()                               | 为查询结果中的每一行分配一个排名                                          |
+
+## 数据操作语句| any | 任何（用于子查询） |
+
+|           |                                                                      |
+| :-------- | :------------------------------------------------------------------- |
+| call      | 储存以前创建的过程（具体没看懂）                                     |
+| delete    | 删除并返回删除的行                                                   |
+| do        | 执行表达式，但没有返回值。也就会快一点而已，用于 release_lock 比较爽 |
+| except    | 除去后面的。包含在前且不存在于后面表中                               |
+| handler   | 对表储存引擎接口                                                     |
+| import    | 从别处导入表                                                         |
+| insert    | 插入数据                                                             |
+| into      | select.. into .. 储存为变量或写入文件                                |
+| intersect | 包含在两个表中相同的数据                                             |
+| load      | 加载数据                                                             |
+| replace   | 替换数据                                                             |
+| some      | 一些（用于子查询）                                                   |
+| update    | 更新                                                                 |
+| union     | 将多个查询块合并到一个集合中去                                       |
+| values    | 返回一组或多行座位表格                                               |
+| with      | 子句包含。每一个子句可以是饮用以访问相应的结果集                     |
+
+## 复杂语句
+
+## begin end
+
+用于编写复杂语句、可以嵌套。
+
+## 语句标签
+
+在用 begin 、 loop 、 repeat 、 while 时可以使用 label1 来标记以在 end 的时候不会出现嵌套混乱。
+
+## 声明变量 declare
+
+生命语句仅允许出现在 begin .. end 语句，且必须在最前面。
+
+## 条目陈列
+
+使用 case （） when .. then .. end case;
+
+## 判断
+
+使用 if .. then .. elseif .. then .. else .. end if ;
+
+## 迭代
+
+iterate ，仅用于 loop 、 repeat 、 while 中。
+
+## 离开循环
+
+leave 用于推出流结构。
+
+## 循环结构
+
+loop .. end loop;
+
+## 重复语句
+
+repeat ... until ...end repeat;
+
+## 返回语句
+
+return ；
+
+## while 循环
+
+while .. do ... end while; 仅当条件为 true 时执行
+
+## 游标
+
+游标声明必须在处理程序之前，并且在变量和条件声明之后。
+
+            

@@ -1,0 +1,415 @@
+---
+title: 原型
+
+
+---
+
+# 定义原型
+
+原型（ prototype ），是 JavaScript 特有的一个概念。通过使用原型， JavaScript 可以建立其传统面向对象语言中的继承，从而体现对象的层次关系。 JavaScript
+本身是基于原型的，每个对象都有一个 prototype 的属性，这个 prototype 本身也是一个对象，因此它本身也可以有自己的原型，这样就构成了一个链结构。
+
+访问一个属性的时候，解析器需要从下向上的遍历这个链结构，直到遇到该属性，则返回属性对应的值，或者遇到原型为 null 的对象（ JavaScript 的基对象 Object 的构造器的默认 prototype 有一个
+null
+原型），如果此对象仍没有该属性，则返回 undefined 。
+
+由于遍历原型链的时候，是由下而上的，所以最先遇到的属性值最先返回。通过这种机制可以完成继承及重载等传统的面向对象机制。
+
+原型就是数据集合，即普通对象，继承于 Object 类，由 JavaScript 自动创建并依附于每个构造函数。
+
+使用点语法，用户可通过 function.prototype 方式定义原型，从而影响所有实例。
+
+```js
+function p(x) {
+  this.x = x;
+}
+p.prototype.x = 1;
+var p1 = new p(10);
+p.prototype.x = p1.x;
+alert(p.prototype.x);
+```
+
+## 访问原型
+
+原型实际上就是一个普通对象，继承了 Object 类，由 JavaScript 自动创建并依附在每一个函数身上。访问原型对象 3 种方法：
+
+- `obj.__proto__`
+- `obj.constructor.prototype`
+- `Object.getPrototypeOf(obj)`
+
+每个构造器方法都有一个 prototype 属性，该属性是在定义构造器方法时自动创建的。 prototype 属性代表用该函数创建的类的默认属性值。如果将方法分配给类的 prototype
+属性，则该类的任何新创建的实例都可以使用这些方法。
+
+类的每个新实例也都有一个 `__proto__` 属性（注意前后两个下划线），用于引用创建它的构造器方法的 prototype 属性。
+
+可以使用 prototype 和 `__proto__` 属性扩展类，这样可以以面向对象的方式重新使用代码。
+
+最好将方法分配给构造器方法的 prototype 属性，因为它只存在于一个位置，并且由该类的新实例引用。 `__proto__` 属性最终还是要经过对 prototype 属性的引用才能实现其功能。并且， IE 不支持使用
+`__proto__` 属性，所以不建议使用该属性。
+
+`__proto__` 是私有属性，存在浏览器兼容问题，以及缺乏非浏览器环境的支持。使用 obj.constructor.prototype 也有一定的风险，如果 obj 的 constructor 属性值被覆盖，则
+obj.constructor.prototype 将会失效。因此，最靠谱的就是 Object.getPrototypeOf(obj) 。
+
+```js
+var F = function () {}; // 构造函数
+var obj = new F(); // 实例化
+var proto1 = Object.getPrototypeOf(obj); // 引用原型
+var proto2 = obj.__proto__; // 引用原型，注意， IE 暂不支持
+var proto3 = obj.constructor.prototype; // 引用原型
+var proto4 = F.prototype; // 引用原型
+console.log(proto1 === proto2); // true
+console.log(proto1 === proto3); // true
+console.log(proto1 === proto4); // true
+console.log(proto2 === proto3); // true
+console.log(proto2 === proto4); // true
+console.log(proto3 === proto4); // true
+```
+
+## 设置原型
+
+原型有三种设置方法， IE 仅支持第三种：
+
+- `obj.__proto__ = prototypeObj`
+- `Object.setPrototypeOf(obj,prototypeObj)`
+- `Object.create(prototypeObj)`
+
+```js
+var proto = { name: 'prototype' };
+var obj1 = {};
+obj1.__proto__ = proto;
+console.log(obj1.name);
+var obj2 = {};
+Object.setPrototypeOf(obj2, proto);
+console.log(obj2.name);
+var obj3 = Object.create(proto);
+console.log(obj3.name);
+```
+
+## 检测原型
+
+使用 isPrototypeOf() 方法可以判断该对象是否为参数对象的原型。
+
+```js
+var F = function () {}; // 构造函数
+var obj = new F(); // 实例化
+var proto1 = Object.getPrototypeOf(obj); // 引用原型
+console.log(proto1.isPrototypeOf(obj)); // true
+var proto = Object.prototype;
+console.log(proto.isPrototypeOf({})); // true
+
+console.log(proto.isPrototypeOf([])); // true
+console.log(proto.isPrototypeOf(/ /)); // true
+console.log(proto.isPrototypeOf(function () {})); // true
+console.log(proto.isPrototypeOf(null)); // false
+```
+
+## 应用原型
+
+原型属性可以被所有实例访问，而私有属性只能被当前实例访问。
+
+## 比较原型属性和本地属性
+
+如果给构造函数定义了与原型属性同名的本地属性，则本地属性将覆盖原型属性。如果 delete 删除本地属性，则原型属性依旧可访问。
+
+本地属性的修改，不影响其它实例；原型属性的修改则会影响所有的实例。
+
+prototype 属性属于构造函数，则必须由点号来调用 prototype 属性，再通过 prototype 属性来访问原型对象。
+
+```js
+function p(x, y, z) {
+  this.x = x;
+  this.y = y;
+  this.z = z;
+}
+p.prototype.del = function () {
+  for (var i in this) delete this[i];
+};
+p.prototype = new p(1, 2, 3);
+var p1 = new p(10, 20, 30);
+alert(p1.x); // 10
+alert(p1.y); // 20
+alert(p1.z); // 30
+p1.del();
+alert(p1.x); // 1
+alert(p1.y); // 2
+alert(p1.z); // 3
+```
+
+_利用原型为对象设置默认值_
+
+```js
+function p(x) {
+  if (x) this.x = x;
+}
+p.prototype.x = 0;
+var p1 = new p(); // 0
+alert(p1.x);
+var p2 = new p(1);
+alert(p2.x); // 1
+```
+
+_利用本地对象是实现本地数据备份_
+
+```js
+function p(x) {
+  this.x = x;
+}
+p.prototype.backup = function () {
+  for (var i in this) p.prototype[i] = this[i];
+};
+var p1 = new p(1);
+p1.backup();
+p1.x = 10;
+alert(p1.x); // 10
+p1 = p.prototype;
+alert(p1.x); // 1
+```
+
+_利用原型将对象属性设置为只读_
+
+```js
+function p(x, y) {
+  if (x) this.x = x;
+  if (y) this.y = y;
+  p.prototype.x = p.prototype.y = 0;
+}
+function l(a, b) {
+  var a = a;
+  var b = b;
+  var w = function () {
+    return Math.abs(a.x - b.x);
+  };
+  var h = function () {
+    return Math.abs(a.y - b.y);
+  };
+  this.length = function () {
+    return;
+    Math.sqrt(w() * w() + h() * h());
+  };
+  this.d = function () {
+    return a;
+  };
+  this.e = function () {
+    return b;
+  };
+}
+var p1 = new p(50, 2);
+var p2 = new p(10, 20);
+var ll = new l(p1, p2);
+alert(ll.length()); // 20.12461179749811
+ll.d().x = 50;
+alert(ll.length()); // 43.86342439892262
+```
+
+在上例，发现，当无意改动了 l.d() 方法下的值，会影响计算结果。所以，将 d() 和 e() 方法改为对原始数据的值传递，而非引用。
+
+```js
+function p(x, y) {
+  if (x) this.x = x;
+  if (y) this.y = y;
+  p.prototype.x = p.prototype.y = 0;
+}
+function l(a, b) {
+  var a = a;
+  var b = b;
+  var w = function () {
+    return Math.abs(a.x - b.x);
+  };
+  var h = function () {
+    return Math.abs(a.y - b.y);
+  };
+  this.length = function () {
+    return Math.sqrt(w() * w() + h() * h());
+  };
+  this.d = function () {
+    function temp() {}
+    temp.prototype = a;
+    return new temp();
+  };
+  this.e = function () {
+    function temp() {}
+    temp.prototype = b;
+    return new temp();
+  };
+}
+var p1 = new p(1, 2);
+var p2 = new p(10, 20);
+var ll = new l(p1, p2);
+alert(ll.length()); // 20.12461179749811
+ll.d().x = 50;
+alert(ll.length()); // 20.12461179749811
+```
+
+也可以在给私有属性 w 和 h 赋值时，直接调用函数计算出结果，就不再受后续的相关属性值的影响。
+
+```js
+function p(x, y) {
+  if (x) this.x = x;
+  if (y) this.y = y;
+  p.prototype.x = p.prototype.y = 0;
+}
+function l(a, b) {
+  var a = a;
+  var b = b;
+  var w = (function () {
+    return Math.abs(a.x - b.x);
+  })();
+  var h = (function () {
+    return Math.abs(a.y - b.y);
+  })();
+  this.length = function () {
+    return;
+    Math.sqrt(w * w + h * h);
+  };
+  this.d = function () {
+    return a;
+  };
+  this.e = function () {
+    return b;
+  };
+}
+var p1 = new p(1, 2);
+var p2 = new p(10, 20);
+
+var ll = new l(p1, p2);
+alert(ll.length()); // 20.12461179749811
+ll.d().x = 50;
+alert(ll.length()); // 20.12461179749811
+```
+
+## 原型域和原型域链
+
+在 JavaScript 中，实例对象在读取属性时，总是先检查自身域的属性，如果存在，则返回本地属性，否则将向上检索 prototype 原型域，如找到同名属性，则返回该属性。若未找到，则 JavaScript
+利用引用关系，继续向外查找 prototype 原型域所指向的 prototype 原型域，知道查找到对象的 prototype 域是它自身，或者出现循环为止。
+
+每个对象实例都有属性成员用于指向它的构造函数的原型（ Prototype ），可以把这种层层指向父原型的关系称为原型域链。
+
+```js
+function a(x) {
+  this.x = x;
+}
+a.prototype.x = 0;
+function b(x) {
+  this.x = x;
+}
+b.prototype = new a(1);
+function c(x) {
+  this.x = x;
+}
+c.prototype = new b(2);
+var d = new c(3);
+alert(d.x); // 3
+delete d.x;
+alert(d.x); // 2
+delete c.prototype.x;
+alert(d.x); // 1
+delete b.prototype.x;
+alert(d.x); // 0
+delete a.prototype.x;
+alert(d.x); // undefined
+```
+
+在 JavaScript 中，一切都是对象，函数是第一型。 Function 和 Object 都是函数的实例，构造函数的父原型指向 Function 的原型， Function.prototype 的父原型是 Object
+的原型， Object 也指向 Function 的原型， Object.prototype 是所有的父原型的顶层。
+
+```js
+Function.prototype.a = function () {
+  alert('FUnction');
+};
+Object.prototype.a = function () {
+  alert('Object');
+};
+function f() {
+  this.a = 'a';
+}
+f.prototype = {
+  w: function () {
+    alert('w');
+  },
+};
+alert(f instanceof Function); // true
+alert(f.prototype instanceof Object); // true
+alert(Function instanceof Object); // true
+alert(Function.prototype instanceof Object); // true
+alert(Object.prototype instanceof Function); // false
+```
+
+## 原型继承
+
+原型继承是一种简单化的继承机制，也是 JavaScript
+主要支持的一种继承方式。在原型继承中，类和实例化的概念被淡化了，一切钭从对象的角度出发。原型继承不再需要使用类的定义对象的结构，直接定义对象，并被其它对象引用，这样形成了继承关系，其中引用的对象被称为原型对象（
+Prototype Object ）。
+
+```js
+function A(x) {
+  this.x1 = x;
+  this.get1 = function () {
+    return this.x1;
+  };
+}
+function B(x) {
+  this.x2 = x;
+  this.get2 = function () {
+    return this.x2 + this.x2;
+  };
+}
+B.prototype = new A(1);
+function C(x) {
+  this.x3 = x;
+  this.get3 = function () {
+    return this.x3 * this.x3;
+  };
+}
+C.prototype = new B(2);
+var b = new B(2);
+var c = new C(3);
+alert(b.x1); // 1
+alert(c.x1); // 1
+alert(c.get3()); // 9
+alert(c.get2()); // 4
+```
+
+基于原型的编程是面向对象编程的一种特定形式。在这种编程模型中，不需要声明静态类，而是通过复制已经存在的原型对象来实现继承关系的，因此，基于原型没有类的概念，原型链继承中的类仅是一个模型，或者说是沿用面向对象编程的概念。
+
+原型继承显得很简单，优点是结构简练，不需要每次构造都调用父类的构造函数，且不需要通过复制属性的方式就能快速实现继承。但有以下几个缺点 。
+
+- 每个类型只有一个原型，所以它不直接支持多重继承
+- 不能很好的支持多参数或者动态参数的父类
+- 使用不够灵活。需要在原型的声明阶段实例化父类对象，并把它当作当前类型的原型，这样就限制了父类实例化的灵活性，很多时候无法确定父类对象实例化的时机和场所
+- prototype 属性固有的副作用
+
+## 扩展原型方法
+
+JavaScript 允许为基本的数据类型定义方法。通过 Object.prototype 添加原型方法，可使得该方法对所有的对象可用。这样的方式对函数、数组、字符串、数字、正则表达式和布尔值都适用。
+
+下例中，使用 Object.prototype 添加一个添加方法的方法 method 。
+
+```js
+Function.prototype.method = function (name, func) {
+  this.prototype[name] = func;
+  return this;
+};
+```
+
+下例将 JavaScript 的 Number 添加一个提取整数的方法 integer 。
+
+```js
+Number.method('integer', function () {
+  return Math[this < 0 ? 'ceil' : 'floor'](this);
+});
+console.log((-10 / 3).integer());
+```
+
+基本类型的原型都是公共结构，为防止在扩展基类时将其覆盖掉。一个保险的方法就是再确定没有该方法时才增加。
+
+```js
+Function.prototype.method = function (name, func) {
+  if (!this.prototype[name]) {
+    this.prototype[name] = func;
+    return;
+    this;
+  }
+};
+```
+
+            

@@ -1,0 +1,368 @@
+---
+title: 严格模式
+
+
+---
+
+# 简介
+
+ECMAScript 5 新增严格运行模式。严格模式定义的目的。
+
+- 消除 JavaScript 语法的一些不合理、不严谨之处，减少一些怪异行为
+- 消除代码运行的一些不安全之处，保证代码运行安全
+- 提高编译器效率，增加运行速度
+- 为未来的新版本 JavaScript 做铺垫
+
+同样的代码，在严格模式下，可能会有不一样的运行结果。一些在正常模式可以运行的语句，在严格模式下将不能运行。掌握这些知识，有助于更细致的深入了解 JavaScript 。
+
+## 启用
+
+"use strict" 即可开启严格模式。不支持严格模式的浏览器把它当成一个普通字符串，加以忽略。**_该声明必须放在首部，其前不得出现代码、空格，但可以加注释_**
+
+- 全局模式
+- 局部模式
+- 模块模式
+
+## 全局模式
+
+将 "use strict" 放在脚本文件的第一行，则整个脚本都将以严格模式运行。如果该语句不在第一行，则无效。
+
+严格地说，只要前面不是产生实际运行结果的语句， "use strict" 可以不在第一行。
+
+```js
+'use strict';
+console.log('这是严格模式。 ');
+```
+
+## 局部模式
+
+将 "use strict" 放在函数内的第一行，则该函数将以严格模式运行。
+
+```js
+function strict() {
+  'use strict';
+  return ' 这是严格模式。 ';
+}
+function notStrict() {
+  return ' 这是正常模式。 ';
+}
+```
+
+## 模块模式
+
+由于全局模式不利于文件的合并，所以更好的做法是，借用局部模式的方法，将整个脚本放到一个立即执行的匿名函数中。
+
+```js
+(function () {
+  'use strict';
+  // 这里编写 JavaScript 代码
+})();
+```
+
+## 严格模式的执行限制
+
+## 显式声明变量
+
+JavaScript 是弱类型语言，不使用 var 声明的变量默认会转化为全局变量。但是在严格模式下将不允许，会报语法错误。
+
+```js
+'use strict';
+v = 1; // 报错， v 未声明
+for (i = 0; i < 2; i++) {
+  // 报错， i  未声明;
+}
+```
+
+因此，在严格模式下，变量必须先用 var 命令声明，然后再使用。
+
+## 静态绑定
+
+在正常模式下， JavaScript 允许动态绑定，即某些属性和方法到底属于哪个对象，不是还在编译时确定的，而是在运行时确定的。
+
+严格模式对动态绑定做了一些限制。某些情况下，只允许静态绑定。也即是说，属性和方法到底归属哪个对象，在编译阶段就确定。这样有利于编译效率的提高，是的代码更容易阅读，避免出现意外。
+
+_禁止使用 with_
+
+```js
+'use strict';
+var v = 1;
+with (o) {
+  v = 2; // 语法错误
+}
+```
+
+_创建 eval 作用域_
+
+在正常模式下， JavaScript 有两种变量作用域：全局作用域和函数作用域。严格模式创造了第三种： eval 作用域。
+
+在正常模式下， eval 语句的作用域，取决于是处于全局作用域，还是函数作用域。而在严格模式下， eval 本身就是一个作用域，不能够生成全局变量了，它生成的变量只能用于 eval 内部。
+
+```js
+'use strict';
+var x = 2;
+console.info(eval('var x = 5; x')); //5
+console.info(x); //2
+```
+
+另外，任何使用 'eval' 的操作都会被禁止，例如，一下用法都是违法的。
+
+```js
+'use strict';
+var obj = {};
+var eval = 3;
+obj.eval = 1;
+obj.a = eval('for (var eval in obj) { }');
+function eval() {}
+function func(eval) {}
+var func = new Function('eval');
+```
+
+## 增强安全措施
+
+_禁止 this 关键字指向全局_
+
+```js
+/** 下面需在浏览器环境测试 */
+function useStrictFunc() {
+  console.log(this);
+  return !this;
+}
+function noUseStrictFunc() {
+  'use strict';
+  console.log(this);
+  return !this;
+}
+
+// 返回 false, 因为 "this" 指向全局对象， "!this" 就是 false
+console.log(useStrictFunc());
+// 返回 true ，因为在严格模式下， this 的值 undefined ，所以 !this 就是 true
+console.log(noUseStrictFunc());
+```
+
+使用构造函数时，如果忘加了 new 语句， this 不再指向全局，而是报错。
+
+```js
+function f() {
+  'use strict';
+  this.a = 1;
+}
+f(); // 报错， this 未定义
+```
+
+_禁止在函数内遍历调用栈_
+
+caller 、 callee 、 arguments 的调用行为都被禁止。
+
+```js
+function f1() {
+  'use strict';
+  f1.caller; // 报错
+  f1.arguments; // 报错;
+}
+f1();
+```
+
+## 禁止删除变量
+
+在严格模式下无法删除变量。只有在 configurable 设置为 true 时，可删除。
+
+```js
+'use strict';
+var x;
+delete x; // 语法错误
+var o = Object.create(null, 'x', { value: 1, configurable: true });
+delete o.x; // 成功
+```
+
+## 显示报错
+
+在正常模式下，对一个对象的只读属性进行赋值，不会报错，只会默默的失败。在严格模式下，将报错。
+
+```js
+'use strict';
+var o = {};
+Object.defineProperty(o, 'v', { value: 1, writable: false });
+o.v; // 报错
+```
+
+_在严格模式下，对一个使用 getter 方法读取的属性进行赋值，将报错_
+
+```js
+'use strict';
+var o = {
+  get v() {
+    return 1;
+  },
+};
+o.v = 2; // 报错
+```
+
+_严格模式下，对禁止扩展的对象添加属性，将报错_
+
+```js
+'use strict';
+var o = {};
+Object.preventExtensions(o);
+o.v = 1; // 报错;
+```
+
+_删除一个不可删除的属性，将报错_
+
+```js
+'use strict';
+delete Object.prototype; // 报错;
+```
+
+重名错误
+
+严格模式新增了一些语法错误。
+
+_对象不能有重名的属性_
+
+```js
+'use strict';
+var o = { p: 1, p: 2 }; // 语法错误
+```
+
+_函数不能有重名的参数_
+
+在正常模式下，如果函数有多个重复名的参数，可以用 `arguments[i]` 读取。在严格模式下，这属于语法错误。
+
+```js
+'use strict';
+function f(a, a, b) {
+  // 语法错误
+  return;
+}
+```
+
+## 禁止八进制表示
+
+正常模式下，整数的第一位如果是零，表示这是八进制，如 0100 等于十进制的 64 。在严格模式下禁止这种写法，整数第一位如果是零，则报错。
+
+```js
+'use strict';
+var n = 0100; // 将报错，语法错误
+```
+
+## s arguments 对象的限制限制
+
+arguments 是函数的参数对象，严格模式下对它的使用进行限制。
+
+## 不允许对 arguments 赋值\_
+
+```js
+'use strict';
+arguments++; // 语法错误
+var obj = { set p(arguments) {} }; // 语法错误
+try {
+} catch (arguments) {} // 语法错误
+function arguments() {} // 语法错误
+var f = new Function('arguments', "'use strict';return 17;");
+//   语法错误
+```
+
+## arguments 不再追踪参数的变化
+
+```js
+function f(a) {
+  a = 2;
+  return [a, arguments[0]];
+}
+f(1); // 正常模式 [2,2]
+function f(a) {
+  'use strict ';
+  a = 2;
+  return [a, arguments[0]];
+}
+f(1); // 严格模式 [2,1]
+```
+
+## _禁止使用 `arguments.callee`_
+
+这就意味着无法在匿名函数内部调用自身了。
+
+```js
+'use strict';
+var f = function () {
+  return arguments.callee;
+};
+f(); // 报错
+```
+
+## 函数声明必须在顶层
+
+将来 JavaScript 的新版本将引入块级作用域。为了与新版本接轨，严格模式只允许在全局作用域或函数作用域的顶层声明函数。也就是说，不允许再非函数的代码内声明函数。
+
+```js
+'use strict';
+if (true) {
+  function f() {}
+  // 语法错误
+}
+for (var i = 0; i < 5; i++) {
+  function f2() {} // 语法错误
+}
+```
+
+## 保留字
+
+为了向未来 JavaScript 过渡，新增 一些保留字： implement 、 interface 、 let 、 package 、 private 、 protected 、 public 、 static 、
+yield 。使用这些名词作为变量名会报错。
+
+```js
+function package(protected) {
+  // 语法错误
+  'use strict';
+  var implements; // 语法错误
+}
+```
+
+## 动态绑定
+
+_call 、 apply 的第一个参数直接传入，不包装为对象_
+
+下面的代码，输出以次为 "string" 、 "number" 。而非严格模式中 call 、 apply 将对值类型的 "abcd" 包装成对象后传入，即两次输出都为 "object" 。
+
+```js
+'use strict';
+function func() {
+  console.log(typeof this);
+}
+func.call('abcd'); //string
+func.apply(1); //number
+```
+
+_call 、 apply 的第一个参数为 null 、 undefined 时， this 为 null 、 undefined_
+
+以下代码输出以此为 undefined 、 null ，而在正常模式中宿主对象（浏览器里是 window ， node.js 环境是 global ）。
+
+```js
+'use strict';
+function func() {
+  console.log(this);
+}
+func.call(undefined);
+// undefined
+func.call(null); // null
+```
+
+_bind 的第一个参数为 null 、 undefined 时， this 为 null/undefined_
+
+bind 是 ECMAScript 5 给 Function.prototype 新增的一个方法，它与 call 、 apply 一样在 function 上直接调用。它返回一个指定上下文和参数的函数。它的第一个参数为
+null 、 undefined 时， this 也为 null 、 undefined 。
+
+以下代码在非严格模式输出都为 window （或是 global ）。
+
+```js
+'use strict';
+function func() {
+  console.log(this);
+}
+var f1 = func.bind(null);
+var f2 = func.bind(undefined);
+f1(); //null
+f2(); //undefined
+```
+
+            

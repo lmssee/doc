@@ -1,0 +1,64 @@
+---
+title: 版本
+
+
+---
+
+# 裸版本库
+
+裸（ bare ）版本库可以使用 git clone --bare 创建。这个用于发布版本和保存版本用。
+
+## 当前版本
+
+版本跟进是 git 的优势。在 git 中，当前版本用 HEAD 标识，上一个版本用 HEAD^ 标识，上上个版本就是 HEAD^^ ， n 多版本就是 HEAD~n 。
+
+## 回退
+
+使用 git reset 命令，可以撤销之前的一些操作（ add 、 commit...）：
+
+git reset 命令主要有三个选项： --soft 、 --mixed 、 --hard 。
+
+## git reset --soft
+
+--soft 会将 HEAD 引用指向给定的提交。索引和工作目录保持不变，这个版本的命令是“最小”的影响，只改变一个符号引用使其指向一个新提交。
+
+## git reset --mixed
+
+--mixed 会将 HEAD 指向给定的索引。索引内容也跟着改变以适应提交的树结构，但是工作目录的内容保持不变。这个版本的命令将索引变成刚刚暂存提交全部变化时的状态，他会显示目录中什么修改。
+
+--mixed 为默认的 git reset 模式
+
+## git reset --hard
+
+该命令将直接将 HEAD 引用指向给定的提交。索引的内容也会改变以适应给定的树结构。此外，工作目录的内容也会随之改变以适应提交表示树的状态。
+
+当改变工作目录时，整个目录会改变成给定提交的样子。修改会丢失，新文件会丢失，删除的文件会恢复。
+
+| 选项    | HEAD | 索引 | 工作目录 |
+| :------ | :--- | :--- | -------- |
+| --soft  | 是   | 否   | 否       |
+| --mixed | 是   | 是   | 否       |
+| --hard  | 是   | 是   | 是       |
+
+```sh
+git reset # 可能是会退上一个 add
+  git reset --soft HEAD^  # 回到上一提交
+  git reset --hard HEAD^  # 回到上一版本
+  git reset --hard ORIG_HEAD  # 撤销 git pull ，但是会清空工作区
+  git reset --merge ORIG_HEAD  # 撤销 git pull ，不会清空工作区
+  git reset -- {文件名}  # 移除索引中的某文件
+```
+
+## 强推
+
+回退只是本地的回退，若想远端也进行回退，只能强制推送到远端：
+
+```sh
+git push -f origin master:master
+```
+
+## 反回退
+
+可以通过 commit-id 找回。使用 git reflog 命令。
+
+            

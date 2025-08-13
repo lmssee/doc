@@ -1,0 +1,49 @@
+---
+title: 插入排序
+
+
+---
+
+# 插入排序
+
+给定的一组数据，初识时假设第一个记录自有一个序列，其余的无序。从第二个开始，按照大小依次进行处理插入到有序序列中，直至最后一个有序的为止。
+
+```js
+function insertSort(arr) {
+  let tem;
+  for (let i = 1, length = arr.length; i < length; i++) {
+    tmp = arr[i];
+    for (let j = i - 1; j >= 0; j--) {
+      if (tmp < arr[j]) arr[j + 1] = [arr[j], (arr[j] = tmp)][0];
+      else break;
+    }
+  }
+  return arr;
+}
+```
+
+书上说用下面的二分法更简便，经测试下面循环次数更多：
+
+```js
+ function insertSort(arr) {
+  let key, left, right, middle, int = 0
+   for (let i = 1, length = arr.length; i < length; i++) {
+    key = arr[i];
+    left = 0;
+    right = i - 1;
+    while (left <= right) {
+     middle = Math.floor((left + right) / 2);
+      if (key < arr[middle]) right = middle - 1;
+      else left = middle + 1;
+    }
+    for (let j = i - 1; j >= left; j--)#
+     rr[j+ 1] = arr[j];
+    arr[left] = key;
+   }
+  return arr;
+ }
+```
+
+最佳情况：`T(n) = O(n)`；最坏情况：`T(n) = O(n*n)`；平均：`T(n) = O(n*n)`。
+
+            

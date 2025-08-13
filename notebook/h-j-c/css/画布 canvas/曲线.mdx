@@ -1,0 +1,193 @@
+---
+title: 曲线
+
+
+---
+
+# 绘制弧形和圆形
+
+beginPath 方法用于开始绘制路径， closePath 方法用于结束绘制路径 , 在这两个语句中间的 arc 方法用于绘制圆形。
+
+```js
+arc(x, y, radius, startAngle, endAngle, bAntiClockwise);
+```
+
+- x,y ：是 arc 的中心点
+- radius ：是半径长度
+- startAngle ：是以 starAngle 开始（弧度）
+- endAngle ：是以 endAngle 结束（弧度）
+- bAntiClockwise ：是否是逆时针，设置为 true 则为逆时针 , 设置为 false 则为顺时针
+
+arc() 方法不仅可以绘制圆弧，还可以绘制圆形 ,arcTo() 方法的参数中包括两个点，而且这两个点中并没有表示圆心的点，只是最后的参数表示圆的半径。
+
+fill() 填充当前的路径，默认为黑色。可以使用 fillStyle 属性重设为填充色或是渐变。
+
+```js
+context.fill();
+```
+
+stroke （） 绘制已定义的路径。默认为黑色，可以使用 strokeStyle 属性重设为另一种颜色或渐变 。
+
+```js
+context.stroke();
+```
+
+绘制图形，需要使用路径。在开始绘制前，需要取得上下文，然后执行。
+
+- 使用 beginPath() 方法，开始创建路径
+- 创建图形的路径，如使用 arc() 方法
+- 路径创建完成后，使用 closePath() 方法关闭路径。本步可选
+- 设定绘制样式
+- 调用绘制方法，绘制路径，如使用 fill() 和 stroke （）
+
+## 绘制曲线
+
+使用 arcTo() 方法可以绘制曲线，该方法是 lineTo() 的曲线版，它能够创建两个切线之间的弧或曲线。
+
+```js
+context.arcTo(x1, y1, x2, y2);
+```
+
+## 绘制二次方贝塞尔曲线
+
+quadraticCurveTo 方法用于绘制二次方贝塞尔曲线， context.quadraticCurveTo(cp1x, cp1y, x, y) 其中参数 cp1x 和 cp1y 是控制点的坐标， x 和
+y 是终点坐标< 。
+
+```js
+var c = document.getElementById('l_7');
+var context = c.getContext('2d'); // 下面开始绘制二次方贝塞尔曲线
+context.strokeStyle = 'dark';
+context.beginPath();
+context.moveTo(0, 200);
+context.quadraticCurveTo(75, 50, 300, 200);
+
+context.stroke();
+context.globalCompositeOperation = 'source-over';
+// 下面绘制的直线用于表示上面曲线的控制点和控制线，控制点坐标即两直线的交点（ 75,50 ）
+context.strokeStyle = '#ff00ff';
+context.beginPath();
+context.moveTo(75, 50);
+context.lineTo(0, 200);
+context.moveTo(75, 50);
+context.lineTo(300, 200);
+context.stroke();
+```
+
+## 绘制三次方贝塞尔曲线
+
+bezierCurveTo 方法用于绘制三次方贝塞尔曲线 context.bezierCurveTo(cp1x,cp1y,cp2x,cp2y, x, y) 其中参数 cp1x 和 cp1y 是第一个控制点的坐标， cp2x 和
+cp2y 是第二个控制点的坐标， x 和 y 是终点坐标。
+
+```js
+var c = document.getElementById('l_8');
+var context = c.getContext('2d'); // 下面开始绘制三次方贝塞尔曲线
+context.strokeStyle = 'dark';
+context.beginPath();
+context.moveTo(0, 200);
+context.bezierCurveTo(25, 50, 75, 50, 300, 200);
+
+context.stroke();
+context.globalCompositeOperation = 'source-over';
+//下面绘制的直线用于表示上面曲线的控制点和控制线，控制点坐标为（ 25,50 ）和（ 75,50 ）
+context.strokeStyle = '#ff00ff';
+context.beginPath();
+context.moveTo(25, 50);
+context.lineTo(0, 200);
+context.moveTo(75, 50);
+context.lineTo(300, 200);
+context.stroke();
+```
+
+```js
+var c = document.getElementById('this_l_c3');
+var context = c.getContext('2d');
+for (var i = 0; i < 15; i++) {
+  context.strokeStyle = '#FF00FF';
+  context.beginPath();
+  context.arc(0, 150, i * 10, 0, (Math.PI * 3) / 2, true);
+  context.stroke();
+}
+var c = document.getElementById('l_c4');
+var context = c.getContext('2d');
+for (var i = 0; i < 15; i++) {
+  context.strokeStyle = '#FF00FF';
+  context.beginPath();
+  context.arc(0, 150, i * 10, 0, (Math.PI * 3) / 2, true);
+  context.closePath();
+  context.stroke();
+}
+var canvas = document.getElementById('myCanvas');
+var context = null;
+var context = canvas.getContext('2d');
+DrawBranches(canvas.width / 2, canvas.height, 50, 0);
+function DrawBranches(startX, startY, trunkWidth, level) {
+  if (level < 12) {
+    var changeX = 100 / (level + 1);
+    var changeY = 200 / (level + 1);
+    var topRightX = startX + Math.random() * changeX;
+    var topRightY = startY - Math.random() * changeY;
+    var topLeftX = startX - Math.random() * changeX;
+    var topLeftY = startY - Math.random() * changeY;
+    context.beginPath(); // 绘制右侧分枝
+    context.moveTo(startX + trunkWidth / 4, startY); // 定位坐标
+    context.quadraticCurveTo(
+      startX + trunkWidth / 4,
+      startY - trunkWidth,
+      topRightX,
+      topRightY,
+    );
+    context.lineWidth = trunkWidth; // 指定线条宽度
+    context.lineCap = 'round'; // 指定线条末端的样式
+    context.stroke(); // 开始绘制右侧分枝
+    context.beginPath(); // 绘制左侧分枝
+    context.moveTo(startX - trunkWidth / 4, startY); // 定位坐标
+    context.quadraticCurveTo(
+      startX - trunkWidth / 4,
+      startY - trunkWidth,
+      topLeftX,
+      topLeftY,
+    );
+    context.lineWidth = trunkWidth; // 指定线条宽度
+    context.lineCap = 'round'; // 指定线条末端的样式
+    context.stroke(); // 开始绘制左侧分枝
+    drawBranches(topRightX, topRightY, trunkWidth * 0.7, level + 1);
+    drawBranches(topLeftX, topLeftY, trunkWidth * 0.7, level + 1);
+  }
+}
+var c = document.getElementById('l_7');
+var context = c.getContext('2d');
+// 下面开始绘制二次方贝塞尔曲线
+context.strokeStyle = 'dark';
+context.beginPath();
+context.moveTo(0, 200);
+context.quadraticCurveTo(75, 50, 300, 200);
+context.stroke();
+context.globalCompositeOperation = 'source-over';
+// 下面绘制的直线用于表示上面曲线的控制点和控制线，控制点坐标即两直线的交点（ 75,50 ）
+context.strokeStyle = '#ff00ff';
+context.beginPath();
+context.moveTo(75, 50);
+context.lineTo(0, 200);
+context.moveTo(75, 50);
+context.lineTo(300, 200);
+context.stroke();
+var c = document.getElementById('l_8');
+var context = c.getContext('2d');
+// 下面开始绘制三次方贝塞尔曲线
+context.strokeStyle = '#0f0';
+context.beginPath();
+context.moveTo(0, 200);
+context.bezierCurveTo(25, 50, 75, 50, 300, 200);
+context.stroke();
+context.globalCompositeOperation = 'source-over';
+// 下面绘制的直线用于表示上面曲线的控制点和控制线，控制点坐标为（ 25,50 ）和（ 75,50 ）
+context.strokeStyle = '#ff00ff';
+context.beginPath();
+context.moveTo(25, 50);
+context.lineTo(0, 200);
+context.moveTo(75, 50);
+context.lineTo(300, 200);
+context.stroke();
+```
+
+            

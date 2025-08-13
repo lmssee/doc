@@ -1,0 +1,23 @@
+---
+title: 删除数据
+
+
+---
+
+# delete
+
+```sql
+delete from main where ... ;
+```
+
+## 删除指定列的长度
+
+使用 limit 来指定删除的数量（建议使用 order by 进行排序）：
+
+```sql
+delete from main
+order by ...
+limit length ;
+```
+
+            

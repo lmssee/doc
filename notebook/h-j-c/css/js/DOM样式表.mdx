@@ -1,0 +1,312 @@
+---
+title: DOM 样式表
+
+
+---
+
+# DOM 样式表
+
+DOM 样式（ DOM Style ）规范也是由 W3C 制定的，目前包含两个部分： DOM StyleSheets 和 DOM CSS 。 IE8及以前的版本不支持 DOM Style 规范， IE9支持该规范。
+
+为兼容主流浏览器，在使用前应该先检测用户了浏览器的类型，以便调用不同的对象。
+
+```js
+var cssRule = document.styleSheet[0].cssRules || document.styleSheets[0].rules;
+```
+
+stylesheets 包括文档所有的样式表，每个数组元素代表一个样式表，数组的索引位置根据样式在文档中的位置决定的。
+
+styleSheet[1] 代表文档中第二个 style 元素内容。而 cssRules[0] 就代表了该样式表中的第一条规则。 cssRules[0].style.color 就代表该规则下的颜色设置。
+
+## selectorText 对象
+
+使用 styleSheets 和 cssRules 可以获取文档样式表中的任意样式。另外，每个 CSS 样式包含 selectorText 属性，使用该属性可以获取样式的选择符。
+
+```html
+<style>
+  div {
+    width: 700px;
+  }
+  .d {
+    background-color: #0ff;
+  }
+  #box {
+    height: 500px;
+    border: 2px dotted #00f;
+  }
+</style>
+<div id="box" class="d"></div>
+<script>
+  var box = document.querySelector('#box');
+  var cssRules =
+    document.styleSheets[0].cssRules || document.styleSheets[0].rules;
+  box.innerHTML =
+    '第一个样式表中的第三个样式选择符 = ' + cssRules[2].selectorText;
+</script>
+```
+
+## 编辑样式
+
+cssRules 不仅可以访问属性，还可以设置属性值。
+
+上述方法修改样式表中的类样式，会影响其它对象或其它文档样式对当前表的引用，因此在使用时应当谨慎。
+添加样式
+
+使用 addRule() 可以为样式表增加一个样式。
+
+```js
+stylesheet.addRule(selector, style [,index]);
+```
+
+Firefox 浏览器不支持 addRule() 方法，但是支持 insertRule()　方法添加样式。 insertRule() 方法添加样式。
+
+```js
+styleSheet.inertRule(rule[, index]);
+```
+
+```html
+<style>
+  #box {
+    color: #088;
+  }
+  .red {
+    color: #f00;
+  }
+  .blue {
+    color: #00f;
+  }
+</style>
+<p>一段废话</p>
+<script>
+  var styleSheets = document.styleSheets[0];
+  var index = styleSheets.length;
+  if (styleSheets.insertRule) {
+    styleSheets.insertRule(
+      'p{background-color:#f00;color:#f0f;padding:1rem;}',
+      index,
+    );
+  } else {
+    styleSheets.addRule(
+      'P',
+      'background-color:#f00;color:#f0f;padding:1rem',
+      index,
+    );
+  }
+</script>
+```
+
+## 访问计算样式
+
+CSS 样式能够重叠，这会导致当一个对象被定义许多样式后，显示的效果未必都是某个样式所设计的效果。
+
+## IE 浏览器
+
+IE 浏览器定义了一个 currentStyle 对象，该对象是一个只读对象。 currentStyle 对象包含了文档所有的 style 对象定义的属性，以及未被覆盖的 CSS 规则的 style 属性。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+initial-scale=1.0"
+    />
+    <title>Document</title>
+    <style>
+      #p {
+        color: #088;
+      }
+      .red {
+        color: #f00;
+      }
+      .blue {
+        color: #00f;
+      }
+    </style>
+  </head>
+  <body>
+    <p class=" blue red" id="p">一段废话</p>
+  </body>
+  <script>
+    var styleSheets = document.styleSheets[0];
+    var index = styleSheets.length;
+    if (styleSheets.insertRule) {
+      styleSheets.insertRule(
+        'p{background-color:#f00;color:#f0f;padding:1rem;}',
+        index,
+      );
+    } else {
+      styleSheets.addRule(
+        'P',
+        'background-color:#f00;color:#f0f;padding:1rem',
+        index,
+      );
+    }
+    var p = document.querySelector('p');
+    p.innerHTML =
+      '背景色：' +
+      p.currentStyle.backgroundColor +
+      '字体颜色：' +
+      p.currentStyle.color;
+    alert(p);
+  </script>
+</html>
+```
+
+非 IE 浏览器
+
+DOM 中定义了一个 getComputedStyle() 方法，该方法可以获取目标对象的样式，但是它需要使用 document.defaultView 对象进行访问。
+
+getComputedStyle() 方法包含两个参数：第 1 个参数表示元素，用来获取样式的对象；第 2 个参数表示伪类字符串，定义显示的位置，一般可省略。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+initial-scale=1.0"
+    />
+    <title>Document</title>
+    <style>
+      #p {
+        color: #fff;
+      }
+      .red {
+        color: #f00;
+      }
+      .blue {
+        color: #00f;
+      }
+    </style>
+  </head>
+  <body>
+    <p class=" blue red" id="p">一段废话</p>
+  </body>
+  <script>
+    var styleSheets = document.styleSheets[0];
+    var index = styleSheets.length;
+    if (styleSheets.insertRule) {
+      styleSheets.insertRule(
+        'p{background-color:#a008;color:#0ff;padding:1rem;}',
+        index,
+      );
+    } else {
+      styleSheets.addRule(
+        'P',
+        'background-color:#a008;color:#0ff;padding:1rem',
+        index,
+      );
+    }
+    var p = document.querySelector('p');
+    if (document.defaultView && document.defaultView.getComputedStyle) {
+      p.innerHTML =
+        '背景色：' +
+        document.defaultView.getComputedStyle(p, null).backgroundColor +
+        '字体颜色：' +
+        document.defaultView.getComputedStyle(p, null).color;
+    } else if (p.currentStyle) {
+      p.innerHTML =
+        '背景色：' +
+        document.currentStyle.backgroundColor +
+        '字体颜色：' +
+        document.currentStyle.color;
+    } else {
+      p.innerHTML = '当前浏览器无法获取最终样式';
+    }
+  </script>
+</html>
+```
+
+## 嗯
+
+DOM StyleSheets 定义了几个基础接口，用于标示 HTML 或 XML 文档中的样式定义，包括 StyleSheet 、 StyleSheetList 和 MediaList 接口。这些接口不仅仅用于 CSS 样式，还可以用于 XSL 样式。
+
+## StyleSheet 接口
+
+StyleSheet 接口是 HTML 文档中 link 元素和 style 元素的抽象表示，它为 DOM CSS 规范中的 CSSStyleSheet 接口提供基接口。
+
+| 属性名           | 数据类型   | 只读                               | 描述                                                                      |
+| :--------------- | :--------- | :--------------------------------- | :------------------------------------------------------------------------ |
+| type             | DOMString  | Y                                  | link 或 style 元素的 type 属性                                            |
+| disabled         | boolean    | 返回或设置当前文档是否应用该样式表 |                                                                           |
+| ownerNode        | Node       | Y                                  | 样式表                                                                    |
+| parentStyleSheet | StyleSheet | Y                                  | 样式表的父级，例如，@import 包含在另一个样式表中，如果不存在，则返回 null |
+| href             | DOMString  | Y                                  | link 或 ste 的 href 属性                                                  |
+| title            | DOMString  | Y                                  | link 或 style 的 title 属性                                               |
+| media            | MediaList  | Y                                  | link 或 style 的 media 属性</td>                                          |
+
+## StyleSheetList 接口
+
+StyleSheetList 表示一系列 StyleSheet 对象组成的列表，使用 document.styleSheets 属性可以返回一个 StyleSheetList ，其中包含了一系列 StyleSheet 对象，然后可以使用 StyleSheetList 接口定义的方法和属性获取列表中的 StyleSheet 对象。
+
+| 属性名 | 数据类型 | 可读 | 描述                                                                                                   |
+| :----- | :------- | :--- | :----------------------------------------------------------------------------------------------------- |
+| length | int      | Y    | 返回列表中 StyleSheet 对象是数量，适合的子杰点索引范围为0~stylesheetList 列表中的 styleSheet 对象</td> |
+
+| 方法名 | 数据类型 | 描述                                                  |
+| :----- | :------- | :---------------------------------------------------- |
+| item() | Node     | 根据索引获取 stylesheet 列表中的 stylesheet 对象</td> |
+
+item()方法有3种等同效果的语法格式：
+
+- styleSheetList.item(0)
+- styleSheetList[0]
+- styleSheetList(0)
+
+## MediaList 接口
+
+MediaList 表示 StyleSheet 所应用的介质组成的列表， StyleSheet.media 属性可以返回一个 MediaList ，其中包含了一系列介质字符串，然后可以使用 MediaList 接口定义的方法和属性操作介质。
+
+| 属性名    | 数据类型  | 只读                               | 描述                                                            |
+| :-------- | :-------- | :--------------------------------- | :-------------------------------------------------------------- |
+| length    | int       | Y                                  | 返回列表中介质描述符的数量，适合的索引值为0～ mediaListLength-1 |
+| mediaText | DOMString | 使用逗号分割的介质描述符的字符串"] |                                                                 |
+
+| 方法名         | 数据类型 | 描述                                           |
+| :------------- | :------- | :--------------------------------------------- |
+| deleteMedium() | void     | 删除一个介质描述符                             |
+| appendMedium() | void     | 添加一个介质描述符                             |
+| item()         | Node     | 根据索引获取 MediaList 列表用的介质描述符</td> |
+
+默认情况下， StyleSheet.media 属性会返回空列表，因为没有定义 media 属性（这时其实是定义介质为 all ）。
+
+其中， item()方法也有3种等同效果的语法格式：
+
+```js
+styleSheetList.item(0)styleSheetList[0]styleSheetList(0)
+```
+
+## LinkStyle 接口
+
+通过 LinkStyle 接口定义的属性可以从定义样式表的元素直接获取样式表。例如 link 和 style 元素都可以定义样式表，这两个元素分别为 HTMLLinkElement 和 HTMLStyleElement ，通过对这两个元素节点应用 sheet 属性就可以返回 StyleSheet 对象：
+
+```js
+var oStyleSheet = oHTMLLinkElement.sheet;
+var oStyleSheet = oHTMLStyleElement.sheet;
+```
+
+| 属性名 | 数据类型   | 只读 | 描述                                 |
+| :----- | :--------- | :--- | :----------------------------------- |
+| Sheet  | StyleSheet | N    | 返回 link 或 style 定义的样式表</td> |
+
+## DocumentStyle 接口
+
+通过 DocumentStyle 接口定义的属性可以从定义文档直接获取样式表，这是最常用的方法：
+
+```js
+var styleSheetList = document.styleSheets;
+var oStyleSheet = styleSheetList[0];
+```
+
+| 属性名      | 数据类型       | 只读 | 描述                                          |
+| :---------- | :------------- | :--- | :-------------------------------------------- |
+| StyleSheets | StyleSheetList | N    | 返回文档中所有 StyleSheet 对象组成的列表</td> |
+
+            

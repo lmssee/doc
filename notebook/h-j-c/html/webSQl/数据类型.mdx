@@ -1,0 +1,84 @@
+---
+title: 数据类型
+
+
+---
+
+# 数据类型
+
+_很久之前写的。我也不知道写的什么玩意_
+**很久之前写的。我也不知道写的什么玩意**
+**_很久之前写的。我也不知道写的什么玩意_**
+
+当使用参数化查询，绑定的参数被转换为 SQL 数据类型时，会使用 JavaScript 抽象操作将其转换为原始数据。下面是一些范例。
+
+```js
+/**************************
+ * 首先创建一个表，注意每个字段的数据类型
+ **************************/
+ CREATE TABLE t1( t TEXT, nu NUMERIC, i INTEGER, r REAL, no BLOB );
+
+/**************************
+ * 下面的 INSERT 语句最终会将插入的数据转换为：
+ *
+ * TEXT, INTEGER, INTEGER, REAL, TEXT INSERT
+ **************************/
+INTO t1 VALUES( '500.0', '500.0', '500.0', '500.0', '500.0');
+select typeof(t), typeof(nu), typeof(i), typeof(r), typeof(no) FROM t1;
+/**************************
+ * select 语句可以用来检验，结果如下：
+ *
+ * text|integer|integer|real|text
+ *
+ * 下面的 INSERT 语句最终会将插入的数据转换为：
+ *
+ *  TEXT, INTEGER, INTEGER, REAL, REAL.
+ **************************/
+DELETE FROM t1
+INSERT INTO t1 VALUES(500.0, 500.0, 500.0, 500.0, 500.0);
+SELECT typeof(t), typeof(nu), typeof(i), typeof(r), typeof(no) FROM t1;
+/**************************
+ *  select 语句可以用来检验，结果如下：
+ *
+ *  text|integer|integer|real|real
+ *
+ * 下面的 INSERT 语句最终会将插入的数据转换为：
+ *
+ * TEXT, INTEGER, INTEGER, REAL,
+ **************************/
+INTEGER.DELETE FROM t1;
+INSERT INTO t1 VALUES(500, 500, 500, 500, 500);
+select typeof(t), typeof(nu), typeof(i), typeof(r), typeof(no) FROM t1;
+/**************************
+ * SELECT 语句可以用来检验，结果如下
+ *
+ * text|integer|integer|real|integer
+ *
+ * 下面的 INSERT 语句最终会将插入的数据转换为：
+ *
+ *  BLOB, BLOB, BLOB, BLOB, BLOB
+ **************************/
+DELETE FROM t1;
+INSERT INTO t1 VALUES(x '0500', x '0500', x '0500', x '0500', x '0500');
+select typeof(t), typeof(nu), typeof(i), typeof(r), typeof(no) FROM t1;
+/**************************
+ * select 语句可以用来检验，结果如下：
+ *
+ *  blob|blob|blob|blob|blob
+ *
+ * 下面的 INSERT 语句最终会将插入的数据转换为：
+ *
+ * NULL, NULL, NULL, NULL, NULL
+ **************************/
+DELETE FROM t1;
+NSERT INTO t1 VALUES(NULL, NULL, NULL, NULL, NULL);
+/**************************
+ * select 语句可以用来检验，结果如下：
+ *
+ * null|null|null|null|null
+ **************************/
+select typeof(t), typeof(nu), typeof(i), typeof(r), typeof(no) FROM t1;
+
+```
+
+            

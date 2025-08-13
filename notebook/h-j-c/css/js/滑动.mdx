@@ -1,0 +1,71 @@
+---
+title: 滑动
+
+
+---
+
+# 滑动
+
+在 JavaScript 中，主要利用循环和定时器（ setTimeout 和 setInterval ）来实现。动画设计思路：通过循环改变某个元素的 CSS
+样式属性，从而达到动态效果。为了达到更加逼真的效果，则通过高频率小步伐快速修改样式属性值。
+
+```html
+<style>
+  .block {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 20px;
+    top: 200xp;
+    background-color: #f00;
+  }
+</style>
+<div class="block" id="block"></div>
+<script>
+  var temp = document.querySelector('div');
+  slide(temp, 400, 400, 60);
+  function slide(e, x, y, t) {
+    var t = t || 100; // 初始化步数
+    var o = getB(e); // 当前元素的绝对位置
+    var xo = o.x;
+    var yo = o.y;
+    var stepX = Math.round((x - xo) / t); // 计算 x 轴步长
+    var stepY = Math.round((y - yo) / t); // 计算 y 轴步长
+    var out = setInterval(function () {
+      var o = getB(e); // 每次移动后的绝对位置
+      var xo = o.x;
+      var yo = o.y;
+      e.style['left'] = xo + stepX + 'px';
+      e.style['top'] = yo + stepY + 'px';
+      if (
+        Math.abs(x - xo) <= Math.abs(stepX) ||
+        Math.abs(y - yo) <= Math.abs(stepY)
+      ) {
+        e.style['left'] = x + 'px';
+        e.style['top'] = y + 'px';
+        clearTimeout(out);
+      }
+    }, 2);
+  }
+  function getB(e) {
+    return {
+      x: parseInt(getStyle(e, 'left')) || 0,
+      y: parseInt(getStyle(e, 'top')) || 0,
+    };
+  }
+  function getStyle(e, n) {
+    if (e.style[n]) {
+      return e.style[n];
+    } else if (e.currentStyle) {
+      return e.currentStyle[n];
+    } else if (document.defaultView && document.defaultView.getComputedStyle) {
+      n = n.replace(/([A-Z])/g, '-$1');
+      n = n.toLowerCase();
+      var s = document.defaultView.getComputedStyle(e, null);
+      if (s) return s.getPropertyValue(n);
+    } else return null;
+  }
+</script>
+```
+
+            

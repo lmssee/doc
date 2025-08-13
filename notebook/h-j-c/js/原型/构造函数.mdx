@@ -1,0 +1,87 @@
+---
+title: 构造函数
+pagination_prev: null
+
+---
+
+# 定义构造函数
+
+建议构造函数的名称首字母大写。构造函数有两个显著特点：
+
+- 函数体内使用 this ，引用要生成的实例对象
+- 必须使用 new 命令调用，生成实例
+
+## 调用构造函数
+
+使用 new 命令调用构造函数，创建实例，并返回这个对象。
+
+```js
+function Point(x, y) {
+  // 构造函数
+  if (!(this instanceof Point)) return new Point(x, y);
+  this.x = x; //私有属性
+  this.y = y; // 私有属性
+  this.sum = function () {
+    // 方法 return this.x +
+    this.y;
+  };
+}
+var p1 = Point(100, 200); // 实例化对象1
+var p2 = new Point(300, 400); // 实例化对象2
+console.log(p1.x); // 100
+console.log(p2.x); // 300
+console.log(p1.sum()); // 300
+console.log(p2.sum()); // 700
+```
+
+若果不使用 new ，直接使用小括号调用构造函数，这时的构造函数就是普通的函数， this 指向调用函数的对象，即客户端指代全局的 window 。
+
+## 构造函数返回值
+
+构造函数允许返回值，如果返回值为简单值，者被忽略，直接返回 this 指代的实例对象；如果返回值为对象，这回覆盖 this 指代的实例，返回 return 后面的对象。
+
+这与 new 的解析过程有关：
+
+- 当使用 new 命令调用构造函数，先创建一个空对象，作为势力返回
+- 设置实例的原型，指向构造函数的 prototype 属性
+- 设置构造函数体内的 this ，让它指向实例
+- 开始执行实例内部代码
+- 如果构造函数内部有 return 语句，而且 return 后面跟着一个对象，会返回 return 语句指定的对象。否则，会忽略 return 返回值，直接返回 this 对象。
+
+```js
+function Point(x, y) {
+  // 构造函数
+  this.x = x; // 私有属性
+  this.y = y; // 私有属性
+  return {
+    x: true,
+    y: false,
+  };
+}
+var p1 = new Point(100, 200); // 实例化对象1
+console.log(p1.x); // true
+console.log(p1.y); // false
+```
+
+## 引用构造函数
+
+在普通函数内，可以通过 arguments.callee 引用自身。若果在严格模式下，不允许使用 arguments.callee 引用函数。这时需要用 new.target 来访问构造器。
+
+```js
+function Point(x, y) {
+  // 构造函数
+  'use strict'; // 启用严格模式
+  if (!(this instanceof new.target)) return new new.target(x, y); // 检测 this 是否为实例对象
+  this.x = x; // 私有属性
+  this.y = y; // 私有属性
+  this.sum = function () {
+    // 方法
+    return this.x + this.y;
+  };
+}
+var p1 = new Point(100, 200); // 实例化对象1
+console.log(p1.x); // 100
+console.log(p1.sum()); // 300
+```
+
+            

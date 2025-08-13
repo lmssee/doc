@@ -1,0 +1,102 @@
+---
+title: 模板字符串
+
+
+---
+
+# 模板字符串
+
+模板字符串有助于构建字符串，其功能类似于 Perl 或 Python
+等其它语言中的字符串插值。模板字符串必须包含在两个反单引号（ ' ）而不是标准的单引号之间。这一要求带来的一个方便的副作用是，可以在字符串中使用引号而不需要再进行转义。
+
+模板字符串另一个很酷的作用是，它们能够扩展到多行。
+
+这些就是应用正则表达式的范例，在这两个范例中，它们匹配的字符串文本其实就是文件名。只要是字符串文本，就可以使用正则表达式进行匹配，并且快捷、高效。目前，正则表达式已经在很多软件中得到广泛的应用，包括 JavaScript 。
+
+## 字符串插值
+
+模板字面量最常用的一个特性是支持字符串插值，也就是可以在一个连续定义中插入一个或多个 值。技术上讲，模板字面量不是字符串，而是一种特殊的 JavaScript 句法表达式，只不过求值后得到的
+是字符串。模板字面量在定义时立即求值并转换为字符串实例，任何插入的变量也会从它们最接近的作 用域中取值。
+
+字符串插值通过在 ${} 中使用一个 JavaScript 表达式实现。
+
+```js
+let value = 5;
+let exponent = 'second'; // 以前，字符串插值是这样实现的：
+let interpolatedString =
+  value + ' to the ' + exponent + ' power is ' + value * value;
+// 现在，可以用模板字面量这样实现： let
+interpolatedTemplateLiteral = `${value} to the ${exponent} power is ${
+  value * value
+}`;
+console.log(interpolatedString); // 5 to the second power is 25
+console.log(interpolatedTemplateLiteral); // 5 to the second power is 25
+```
+
+模板可以插入自己之前的值 :
+
+```js
+let value = '';
+function append() {
+  value = `${value}abc`;
+  console.log(value);
+}
+append(); // abc
+append(); // abcabc
+append(); //abcabcabc
+```
+
+## 模板字面量标签函数
+
+模板字面量也支持定义标签函数（ tag function ），而通过标签函数可以自定义插值行为。标签函数 会接收被插值记号分隔后的模板和对每个表达式求值的结果。
+
+标签函数本身是一个常规函数，通过前缀到模板字面量来应用自定义行为，标签函数 接收到的参数依次是原始字符串数组和对每个表达式求值的结果。这个函数的返回值是对模板字面量求 值得到的字符串。
+
+```js
+let a = 6;
+let b = 9;
+function simpleTag(strings, ...expressions) {
+  console.log(strings);
+  for (const expression of expressions) {
+    console.log(expression);
+  }
+  return 'foobar';
+}
+let taggedResult = simpleTag`${a} + ${b} = ${a + b}`;
+// ["", " + ", " = ", ""]
+// 6 // 9 // 15
+console.log(taggedResult); // ('foobar');
+```
+
+也可以
+
+```js
+let a = 6;
+let b = 9;
+function zipTag(strings, ...expressions) {
+  return (
+    strings[0] + expressions.map((e, i) => `${e}${strings[i + 1]}`).join('')
+  );
+}
+let untaggedResult = `${a} + ${b} = ${a + b}`;
+let taggedResult = zipTag`${a} + ${b} = ${a + b}`;
+console.log(untaggedResult); // "6 + 9 = 15"
+console.log(taggedResult); // "6 + 9 = 15"
+```
+
+## 原始字符串
+
+使用模板字面量也可以直接获取原始的模板字面量内容（如换行符或 Unicode 字符），而不是被转 换后的字符表示。为此，可以使用默认的 String.raw 标签函数
+
+```js
+// Unicode 示例
+// \u00A9 是版权符号
+console.log(`\u00A9`); // ©
+console.log(String.raw`\u00A9`); // \u00A9
+// 换行符示例
+console.log(`first line\nsecond line`);
+// first line // second line
+console.log(String.raw`first line\nsecond line`); // "first line\nsecond line"
+```
+
+            

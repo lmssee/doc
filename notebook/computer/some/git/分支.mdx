@@ -1,0 +1,76 @@
+---
+title: 分支
+
+
+---
+
+# git 分支管理
+
+## 查看分支
+
+```sh
+git branch  #  查看当前分支,带 * 的是当前活跃分支
+  git branch --list #  查看当前分支
+  git branch -r #  查看远程分支
+  git branch -a  #  查看所有分支
+```
+
+查看 git 分支的详细每一个版本：
+
+```sh
+git show-branch
+```
+
+## 创建分支
+
+```sh
+git branch {新分支名称} {分支}
+```
+
+如果是在当前分支进行创建新的分支，可以省略后买呢分支。
+
+## 切换分支
+
+切换分支属于危险操作：
+
+```sh
+git checkout {要切换的分支名}
+git checkout -b {待创建的分支名} origin #  创建新分支并切换过去
+git checkout --force {要切换的分支名}  #  强制覆盖并切换分支
+```
+
+git checkout 也可用于恢复文件/文件夹使用：
+
+```sh
+git checkout HEAD {待恢复文件（文件夹）名}
+```
+
+## 重命名分支
+
+```sh
+git branch -m {旧分支名} {新分支名} #
+```
+
+## 删除本地分支
+
+删除分支前，需要先切换到其他分支
+
+```sh
+git branch -d {待删除分支名称}
+git branch -D {待删除分支名称}  #  强制删除指定分支
+```
+
+## 恢复删除分支
+
+```sh
+git reflog #  查找散列值
+git branch {待恢复已删除分支名} HEAD@{上面查找的散列值} #  根据散列值恢复已删除分支
+```
+
+## 强制创建并切换分支
+
+```sh
+git checkout -b {branch name}
+```
+
+            

@@ -1,0 +1,179 @@
+---
+title: 操作
+
+
+---
+
+# 保存与恢复 Canvas 状态
+
+canvas 状态是指当前画面的所有样式、变形、裁切的一个快照，以堆（ stack ）的方式保存。使用 save() 和 restore() 方法可以保存和恢复 canvas 状态。
+
+- save() 方法。该方法用于将当前 canvas 中的所有状态信息保存入堆中
+- restore() 方法。该方法用于弹出并开始使用堆最上面保存的状态信息
+
+使用状态保存与恢复的目的是防止绘制代码过于膨胀，例如，可以在创建画布的 Context 对象时就把初始状态保存下来，这样，在每次重画时都可以直接恢复成初始的状态，而不用每次都使用 clearRect() 方法擦除。
+
+上两个图形中，第一个绘制完第一个方块，绘制完成后保存状态，并在第二个之后恢复。而第二个未保存，所以在绘制完成后，依旧采用第二个方块的样式。
+
+## 清除绘图
+
+使用 clearRect(x,y,width,height) 方法清除指定区域内绘制的图形，
+
+## 移动坐标空间
+
+画布的坐标空间默认以画布左上角（ 0,0 ）为原点， x 轴水平向右为正向， y 轴垂直向下为正向，该坐标空间的单位通常为像素。在绘制图形时，可以使用 translate
+方法移动坐标空间，使画布的变换矩阵发生水平和垂直方向的偏移。
+
+## 旋转坐标空间
+
+rotate 方法用于以原点为中心旋转 Canvas ，实质仍是旋转 Canvas 上下文对象的坐标空间。
+
+## 缩放
+
+使用 scale(x,y) 方法可以缩放当前所绘图形， x 为横轴缩放因子， y 为纵轴缩放因子。
+
+## 矩阵变换
+
+transform 方法用于直接对变形矩阵作修改，即进行矩阵变换。矩阵变换常用于坐标变换不能达到预期效果的情况，能够实现比普通的坐标变换更为复杂的变形。
+
+```js
+transform(a, b, c, d, e, f);
+```
+
+- a ：水平缩放绘图
+- b ：水平倾斜绘图
+- c ：垂直倾斜绘图
+- d ：垂直缩放绘图
+- e ：水平移动绘图
+- f ：垂直移动绘图
+
+- translate(x,y) 可以用 transform 方法来代替 context.transform(0,1,1,0,dx,dy); 或 context.transform(1,0,0,1,dx,dy);
+- scale(x,y) 可以用下面的 transform 方法来代替 context.transform(m11,0,0,m22,0,0); 或 context.transform(0,m12,m21,0,0,0);
+- rotate(angle) 比较复杂一些，需要用到三角函数的知识，可以用下面的 transform 方法来代替 context.transform(cos θ ,sin θ ,- sin θ , cos θ
+  ,0,0);
+
+## 裁切路径
+
+clip 方法用于裁切路径，其原理与绘制普通 Canvas 图形类似，只不过 clip 的作用是形成一个蒙版，没有被蒙版的区域会被隐藏。
+
+```js
+function l*1_drawTop(ctx, fillStyle) {
+ctx.fillStyle = fillStyle;
+ctx.beginPath();
+ctx.arc(0, 0, 30, 0, Math.PI, true);
+ctx.closePath();
+ctx.fill();
+} function l_1_drawGrip(ctx) {
+// ctx.save();
+ctx.fillStyle = "blue";
+ctx.fillRect(-1.5, 0, 1.5, 40);
+ctx.beginPath();
+ctx.strokeStyle = "blue";
+ctx.arc(-5, 40, 4, Math.PI, Math.PI * 2, true);
+ctx.stroke();
+ctx.closePath();
+// ctx.restore();
+}
+// function l*1_draw() {
+var ctx = document.getElementById('l_11').getContext("2d");
+// 注意：所有的移动都是基于这一上下文
+ctx.translate(100, 80);
+for (var i = 1; i < 10; i++) {
+ctx.save();
+ctx.translate(60 * i, 0);
+l*1_drawTop(ctx, "rgb(" + (10 * i) + "," + (255 - 40* i) + ",125)");
+l_1_drawGrip(ctx);
+ctx.restore();
+} function l_2_drawTop(ctx, fillStyle) {
+ctx.fillStyle = fillStyle;
+ctx.beginPath();
+ctx.arc(0, 0, 30, 0, Math.PI, true);
+ctx.closePath();
+ctx.fill();
+} function l_2_drawGrip(ctx) {
+ctx.save();
+ctx.fillStyle = "blue";
+ctx.fillRect(-1.5, 0, 1.5, 40);
+ctx.beginPath();
+ctx.strokeStyle = "blue";
+ctx.arc(-5, 40, 4, Math.PI, Math.PI * 2, true);
+ctx.stroke();
+ctx.closePath();
+ctx.restore();
+}
+var ctx = document.getElementById('l*12').getContext("2d");
+ctx.translate(150, 150);
+for (var i = 1; i < 9; i++) {
+ctx.save();
+ctx.rotate(Math.PI * (2 / 4 + i / 4));
+ctx.translate(0, -100);
+l*2_drawTop(ctx, "rgb(" + (20 * i) + "," + (255 - 40\_ i) + ",125)");
+l_2_drawGrip(ctx);
+ctx.restore();
+}
+var ctx = document.getElementById('l_13').getContext("2d");
+ctx.translate(200, 20);
+for (var i = 1; i < 90; i++) {
+ctx.save();
+ctx.transform(0.95, 0, 0, 0.95, 30, 30);
+ctx.rotate(Math.PI / 12);
+ctx.beginPath();
+ctx.fillStyle = "#00aaaa";
+ctx.globalAlpha = "0.4";
+ctx.arc(0, 0, 50, 0, Math.PI \* 2, true);
+ctx.closePath();
+ctx.fill();
+}
+ctx.setTransform(1, 0, 0, 1, 10, 10);
+ctx.fillStyle = "blue";
+ctx.fillRect(0, 0, 50, 50);
+ctx.fill();
+var c = document.getElementById("l_9");
+var context = c.getContext("2d");
+// 开始绘制矩形
+context.fillStyle = "#ff00ff";
+context.strokeStyle = "blue";
+context.fillRect(20, 20, 100, 100);
+context.strokeRect(20, 20, 100, 100);
+context.fill();
+context.stroke();
+// 保存当前 Canvas 状态
+context.save();
+// 绘制另外一个矩形
+context.fillStyle = "#ff0000";
+context.strokeStyle = "#ffff00";
+context.fillRect(140, 20, 100, 100);
+context.strokeRect(140, 20, 100, 100);
+context.fill();
+context.stroke();
+// 恢复第一个矩形的状态
+context.restore();
+// 绘制两个矩形
+context.fillRect(20, 140, 50, 50);
+context.strokeRect(80, 140, 50, 50);
+var c = document.getElementById("l_10");
+var context = c.getContext("2d");
+// 开始绘制矩形
+context.fillStyle = "#ff00ff";
+context.strokeStyle = "blue";
+context.fillRect(20, 20, 100, 100);
+context.strokeRect(20, 20, 100, 100);
+context.fill();
+context.stroke();
+// 保存当前 Canvas 状态
+context.save();
+// 绘制另外一个矩形
+context.fillStyle = "#ff0000";
+context.strokeStyle = "#ffff00";
+context.fillRect(140, 20, 100, 100);
+context.strokeRect(140, 20, 100, 100);
+context.fill();
+context.stroke();
+// 恢复第一个矩形的状态
+// context.restore();
+// 绘制两个矩形
+context.fillRect(20, 140, 50, 50);
+context.strokeRect(80, 140, 50, 50);
+```
+
+            

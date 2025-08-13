@@ -1,0 +1,476 @@
+---
+title: 元素大小
+
+
+---
+
+# 简介
+
+DOM 2 级样式规范中没有规范如何确定页面中元素的大小。但是，总经常需要获取或修改元素的大小。
+
+## 访问 CSS 宽度和高度
+
+每个元素的显示属性都存储在 CSS 样式表中，能够读取元素的 width 和 height 属性，也就知道了元素的宽度和高度。
+
+在 JavaScript 中设置或读取 CSS 属性时，都必须包括单位。且，在 style 属性中并不包括默认值。
+
+```js
+function getStyle(e, n) {
+  if (e.style[n]) {
+    //如果存在，则直接返回
+    return e.style[n];
+  } else if (e.currentStyle) {
+    // 如果是 IE
+    return e.currentStyle[n];
+  } else if (document.defaultView && document.defaultView.getComputedStyle) {
+    n = n.replace(/([A-Z])/g, '-$1'); // 转换参数名称
+    n = n.toLowerCase();
+    var s = document.defaultView.getComputedStyle(e, null); // 获取元素属性对象
+    if (s) return s.getPropertyValue(n);
+  } else return null; // 如果都不支持，则返回 null
+}
+```
+
+使用：
+
+```html
+<div id="div"></div>
+<script>
+  var div = document.querySelector('#div');
+  var w = getStyle(div, 'width');
+  alert(w); // 1520px
+</script>
+```
+
+## 把值转换为整式
+
+auto 是父元素的宽度，但是需要通过人工计算才能获得。
+
+```html
+<div style="height: 200px ;width: 200px;">
+  <div style="height:50%;width:50%">
+    <div style="height:50%;width:50%">
+      <div style="height:50%;width:50%">
+        <div id="div" style="height: 50%;width: 50%;border: solid;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  var div = document.getElementById('div');
+  var w = getStyle(div, 'width');
+  alert(w); // 50%
+  var k = formStyle(div, 'width');
+  alert(w + '\n' + k); // 50% 12
+  // 获取元素属性
+  function getStyle(e, n) {
+    if (e.style[n]) {
+      //如果存在，则直接返回
+      return e.style[n];
+    } else if (e.currentStyle) {
+      // 如果是 IE
+      return e.currentStyle[n];
+    } else if (document.defaultView && document.defaultView.getComputedStyle) {
+      n = n.replace(/([A-Z])/g, '-$1');
+      //转换参数名称
+      n = n.toLowerCase();
+      var s = document.defaultView.getComputedStyle(e, null); // 获取元素属性对象
+      if (s) return s.getPropertyValue(n);
+    } else return null; // 如果都不支持，则返回 null
+  } // 元素宽高变整数
+  function formStyle(e, w, p) {
+    var a = getStyle(e, w);
+    var p = arguments[2];
+    if (!p) p = 1;
+    if (/px/.test(a) && parseInt(a)) return parseInt(parseInt(a) - p);
+    else if (/\%/.test(a) && parseInt(a)) {
+      var b = parseInt(a) / 100;
+      if (p != 1 && p) b = p;
+      e = e.parentNode;
+      if (e.tagName == 'BODY')
+        throw new Error(
+          '整个文档结构没有都没有定义固定尺寸，没法计算，请用其它方式获得元素尺寸',
+        );
+      a = getStyle(e, w);
+      return arguments.callee(e, w, b); // 回调计算
+    } else if (/auto/.test(a)) {
+      var b = 1;
+      if (p != 1 && p) b *= p;
+      e = e.parentNode;
+      if (e.tagName == 'BODY')
+        throw new Error(
+          '整个文档结构没有都没有定义固定尺寸，没法计算，请用其它方式获得元素尺寸',
+        );
+      //
+      a = getStyle(e, w);
+      return arguments.callee(e, w, b); // 回调计算
+    } //
+    else throw new Error('元素或其父元素定义了其它特殊尺寸的单位');
+  }
+</script>
+```
+
+## 使用 offsetWidth 和 offsetHeight
+
+使用 offsetWidth 和 offsetHeight 属性可以获取元素的大小，其中 offsetWidth 表示元素在页面中占据的总宽度， offsetHeight 表示元素在页面中占据的总高度。
+
+```html
+<div style="height: 200px ;width: 200px;">
+  <div style="height:50%;width:50%">
+    <div style="height:50%;width:50%">
+      <div style="height:50%;width:50%">
+        <div style="height:50%;width:50%">
+          <div id="div" style="height: 50%;width: 50%;border: solid;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  var div = document.getElementById('div');
+  var w = div.offsetWidth;
+  var h = div.offsetHeight;
+  alert(w + '\n' + h); // 11 11
+</script>
+```
+
+若元素被隐藏，则无法读取
+
+```html
+<div style="height: 700px ;width: 200px;">
+  <div style="height:50%;width:50%">
+    <div style="height:50%;width:50%">
+      <div style="height:50%;width:50%">
+        <div
+          id="div"
+          style="height: 50%;width: 50%;border: solid;padding: 0;margin: 0;border:
+0;"
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  var div = document.getElementById('div');
+  var w = getStyle(div, 'width');
+  alert(w); // 50%
+  var k = formStyle(div, 'width'); //
+  alert(w + '\n' + k);
+  //50% 12
+  var j = getWRH(div, 'width'); // 13
+  alert(j);
+  var h = getStyle(div, 'height');
+  alert(h); // 50%
+  var i = getWRH(div, 'height');
+  alert(i); // 44
+  // // 获取元素属性
+  function getStyle(e, n) {
+    if (e.style[n]) {
+      // 如果存在，则直接返回
+      return e.style[n];
+    } else if (e.currentStyle) {
+      // 如果是 IE
+      return e.currentStyle[n];
+    } else if (document.defaultView && document.defaultView.getComputedStyle) {
+      n = n.replace(/([A-Z])/g, '-$1'); // 转换参数名称
+      n = n.toLowerCase();
+      var s = document.defaultView.getComputedStyle(e, null); // 获取元素属性对象
+      if (s) return s.getPropertyValue(n);
+    } else return null; // 如果都不支持，则返回
+    null;
+  } //  元素宽高变整数
+  function formStyle(e, w, p) {
+    var a = getStyle(e, w);
+    var p = arguments[2];
+    if (!p) p = 1;
+    if (/px/.test(a) && parseInt(a)) return parseInt(parseInt(a) - p);
+    else if (/%/.test(a) && parseInt(a)) {
+      var b = parseInt(a) / 100;
+      if (p != 1 && p) b -= p;
+      e = e.parentNode;
+      if (e.tagName == 'BODY')
+        throw new Error(
+          '整个文档结构没有都没有定义固定尺寸，没法计算，请用其它方式获得元素尺寸',
+        );
+      a = getStyle(e, w);
+      return arguments.callee(e, w, b); // 回调计算
+    } else if (/auto/.test(a)) {
+      var b = 1;
+      if (p != 1 && p) b *= p;
+      e = e.parentNode;
+      if (e.tagName == 'BODY')
+        throw new Error(
+          '整个文档结构没有都没有定义固定尺寸，没法计算，请用其它方式获得元素尺寸',
+        );
+      a = getStyle(e, w);
+      return arguments.callee(e, w, b); // 回调计算
+    } else throw new Error('元素或其父元素定义了其它特殊尺寸的单位');
+  }
+  function setCSS(e, o) {
+    for (var i in o) {
+      a[i] = e.style[i];
+      e.style = o[i];
+    }
+    return a;
+  }
+  function resetCSS(e, o) {
+    for (var i in o) {
+      e.style[i] = o[i];
+    }
+  }
+  function getWRH(e, c) {
+    if (getStyle(e, 'display') != 'none')
+      return (
+        e['offset' + c.slice(0, 1).toUpperCase() + c.slice(1)] ||
+        formStyle(e, c)
+      );
+    var r = setCSS(e, {
+      display: '',
+      position: 'absolute',
+      visibility: 'hidden',
+    });
+    var w =
+      e['offset' + c.slice(0, 1).toUpperCase() + c.slice(1)] || formStyle(e, c);
+    resetCSS(e, r);
+    return w;
+  }
+</script>
+```
+
+测试表明，数据倒换还是会出现更大误差。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+initial-scale=1.0"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="div" style="height: 200px;width: 100px; display: none;"></div>
+  </body>
+  <script>
+    var a = 'width';
+    alert('offset' + a.slice(0, 1).toUpperCase() + a.slice(1));
+    var div = document.getElementById('div');
+    var w = getStyle(div, 'width');
+    alert(w); //100px
+    var div = document.getElementById('div');
+    var k = fromStyle(div, 'width');
+    alert(w + '\n' + k); //100px 100
+    var div = document.getElementById('div');
+    var j = getWRH(div, 'width'); //
+    alert(j); //1520
+    var div = document.getElementById('div');
+    var h = getStyle(div, 'height');
+    alert(h); // 200px
+    var div = document.getElementById('div');
+    var h = fromStyle(div, 'height');
+    alert(h); //200
+    var div = document.getElementById('div');
+    var hi = getWRH(div, 'height');
+    alert(hi); // 一直报错 // 获取元素属性
+    function getStyle(e, n) {
+      if (e.style[n]) {
+        // 如果存在，则直接返回
+        return e.style[n];
+      } else if (e.currentStyle) {
+        // 如果是 IE
+        return e.currentStyle[n];
+      } else if (
+        document.defaultView &&
+        document.defaultView.getComputedStyle
+      ) {
+        n = n.replace(/([A-Z])/g, '-$1'); // 转换参数名称
+        n = n.toLowerCase();
+        var s = document.defaultView.getComputedStyle(e, null); // 获取元素属性对象 if (s)
+        return s.getPropertyValue(n);
+      } else return null; // 如果都不支持，则返回 null
+    } // 元素宽高变整数
+    function fromStyle(e, w, p) {
+      var a = getStyle(e, w);
+      alert(getStyle(e, w));
+      var p = arguments[2];
+      if (!p) p = 1;
+      if (/px/.test(a) && parseInt(a)) return parseInt(parseInt(a) - p);
+      else if (/%/.test(a) && parseInt(a)) {
+        var b = parseInt(a) / 100;
+        if (p != 1 && p) b -= p;
+        e = e.parentNode;
+        if (e.tagName == 'BODY')
+          throw new Error(
+            '整个文档结构没有都没有定义固定尺寸，没法计算，请用其它方式获得元素尺寸',
+          );
+        a = getStyle(e, w);
+        return arguments.callee(e, w, b); // 回调计算
+      } else if (/auto/.test(a)) {
+        var b = 1;
+        if (p != 1 && p) b *= p;
+        e = e.parentNode;
+        if (e.tagName == 'BODY')
+          throw new Error(
+            '整个文档结构没有都没有定义固定尺寸，没法计算，请用其它方式获得元素尺寸',
+          );
+        a = getStyle(e, w);
+        return arguments.callee(e, w, b); // 回调计算
+      } else throw new Error('元素或其父元素定义了其它特殊尺寸的单位');
+    }
+    function setCSS(e, o) {
+      var a = {};
+      for (var i in o) {
+        a[i] = e.style[i];
+        e.style = o[i];
+      }
+      return a;
+    }
+    function resetCSS(e, o) {
+      for (var i in o) {
+        e.style[i] = o[i];
+      }
+    }
+    function getWRH(e, c) {
+      if (getStyle(e, 'display') != 'none')
+        return (
+          e['offset' + c.slice(0, 1).toUpperCase() + c.slice(1)] ||
+          fromStyle(e, c)
+        );
+      var r = setCSS(e, {
+        display: 'block',
+        position: 'absolute',
+        visibility: 'hidden',
+      });
+      var w =
+        e['offset' + c.slice(0, 1).toUpperCase() + c.slice(1)] ||
+        fromStyle(e, c);
+      resetCSS(e, r);
+      return w;
+    }
+  </script>
+</html>
+```
+
+## 元素尺寸
+
+一些属性
+
+| 元素尺寸专用属性 | 说明                                                                                                               |
+| :--------------- | :----------------------------------------------------------------------------------------------------------------- |
+| clientWidth      | 获取可视部分的宽度，即 CSS 的 width 和 padding 属性值之和，元素边框和滚动条不包括在内，也不包括任何可能的滚动区域  |
+| clientHeight     | 获取可视部分的高度，即 CSS 的 height 和 padding 属性值之和，元素边框和滚动条不包括在内，也不包括任何可能的滚动区域 |
+| offsetWidth      | 元素在页面中占据的宽度总和，包括 width 、 padding 、 border 、以及滚动条宽度                                       |
+| offsetHeight     | 元素在页面中占据的高度总和，包括 height 、 padding 、 border 、以及滚动条高度                                      |
+| scrollWidth      | 当元素设置了 overflow: visible 样式属性时，元素的总宽度。                                                          |
+| scrollHeight     | 当元素设置了 overflow: visible 样式属性时，元素的总高度。</td>                                                     |
+
+```html
+<div
+  id="div"
+  style="height: 200px;width: 200px;border: solid 50px #f86;overflow:
+        auto;padding: 50px;"
+>
+  <div
+    id="info"
+    style="height: 400px;width: 400px;border:
+        solid 1px #088;"
+  ></div>
+</div>
+<script>
+  var info = document.getElementById('info');
+  var m = 0,
+    n = 1,
+    s = '';
+  while (m++ < 19) {
+    s += m + ' ';
+  }
+  s += '';
+  while (n++ < 21) {
+    s += n + '';
+  }
+  info.innerHTML = s;
+  var div = document.getElementById('div'); // chrome(edge) IE Opera Firefox
+  var dh = div.offsetHeight; // 400 400 400 399
+  var ds = div.scrollHeight; // 502 452 502 488
+  var dc = div.clientHeight; // 283 283 286 283
+  var dg = getWRH(div, 'height'); // 400 400 400 399
+</script>
+```
+
+## 视图尺寸
+
+scrollLeft 和 scrollTop 可以获取移除可视区域外面的宽度和高度。
+
+| 元素尺寸专用属性 | 说明                      |
+| :--------------- | ------------------------- |
+| scrollLeft       | 元素左侧已经滚出的距离    |
+| scrollTop        | 元素顶部已滚出的距离</td> |
+
+```html
+<textarea name="" id="text" cols="30" rows="10"></textarea>
+<div
+  id="div"
+  style="height: 200px;width: 200px;border: solid 50px #f86;overflow: auto;padding: 50px;"
+>
+  <div
+    id="info"
+    style="height: 400px;width: 400px;border: solid 1px
+        #088;"
+  ></div>
+</div>
+<script>
+  var info = document.getElementById('info');
+  var m = 0,
+    n = 1,
+    s = '';
+  while (m++ < 19) {
+    s += m + ' ';
+  }
+  s += '';
+  while (n++ < 21) {
+    s += n + '';
+  }
+  info.innerHTML = s;
+  var div = document.getElementById('div');
+  div.scrollLeft = 200;
+  div.scrollTop = 200;
+  var text = document.querySelector('#text');
+  div.onscroll = function () {
+    text.value =
+      'scrollLeft =' +
+      div.scrollLeft +
+      '\n' +
+      'scrollTop = ' +
+      div.scrollTop +
+      '\n' +
+      'scrollWidth = ' +
+      div.scrollWidth +
+      '\n' +
+      'scrollHeight = ' +
+      div.scrollHeight;
+  };
+</script>
+```
+
+## 窗口尺寸
+
+如果获取 `<html>` 标签的 clientWidth 和 clientHeight 属性，就知道了浏览器窗口的可视宽度和高度，而 `<html>` 标签在脚本中表示为
+document.documentElement 。
+
+```js
+var h = document.documentElement.clientHeight;
+var w = document.documentElement.clientWidth;
+```
+
+不过在 IE 怪异模式下，需要用 body 元素的宽高来获取文档的可视宽和高。
+
+```js
+var h = document.documentElement.clientHeight || document.body.clientHeight;
+var w = document.documentElement.clientWidth || document.body.clientWidth;
+```
+
+            

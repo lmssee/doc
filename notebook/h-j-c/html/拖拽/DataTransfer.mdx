@@ -1,0 +1,160 @@
+---
+title: DataTransfer
+
+
+---
+
+# 使用 DataTransfer 对象
+
+| 属性/方法      | 类型 | 说明                                                                                                                                      |
+| :------------- | :--- | :---------------------------------------------------------------------------------------------------------------------------------------- |
+| dropEffect     | 属性 | 表示拖放元素的视觉效果，允许设置： none 、 copy 、 link 、 move 该效果必须在 effectAllowed 属性指定的视觉效果内                           |
+| effectAllowed  | 属性 | 指定当前元素被拖放时允许的视觉效果可以指定值为： none 、 copy 、 copyLinK 、 copyMove 、 link 、 linkMove 、 move 、 all 、 uninitialized |
+| types          | 属性 | 存入的数据类型，字符串的伪数组                                                                                                            |
+| clearData()    | 方法 | 清除 DataTransfer 对象中存放的数据包含一个参数，设置清除的类型；如果省略参数，则清除全部数据                                              |
+| setData()      | 方法 | 向 DataTransfer 中储存数据                                                                                                                |
+| getData()      | 方法 | 从 DataTransfer 中获取数据                                                                                                                |
+| setDragImage() | 方法 | 设置拖拽图标，部分浏览器支持使用                                                                                                          |
+
+正确使用 DataTransfer 对象的属性和方法，可以实现拖放图标，或者定义只支持特定的拖放，如复制、移动等，甚至是更复杂的拖放操作。
+
+dropEffect 和 effectAllowed 属性结合可以设置拖放时的视觉效果。 effectAllowed 属性表示当一个元素被拖动时允许的视觉效果，一般在 dragstart 事件中定义。
+
+| 属性值      | 说明                                                                                         |
+| :---------- | :------------------------------------------------------------------------------------------- |
+| copy        | 允许被拖动元素复制到相应的目标元素中                                                         |
+| move        | 允许被拖动的元素移动到相应的目标元素中                                                       |
+| link        | 通过拖放操作，被拖动元素会连接到目标元素上                                                   |
+| copyLink    | 别拖动元素被复制或链接到目标元素将根据拖动的元素来决定是执行复制，还是链接                   |
+| copyMove    | 别拖动元素被复制或移动到目标元素将根据拖动的元素来决定是执行复制，还是移动                   |
+| linkMove    | 别拖动元素被链接或移动到目标元素将根据拖动的元素来决定是执行链接，还是移动                   |
+| all         | 允许所有的操作，包括复制、移动、链接操作                                                     |
+| none        | 不允许任何操作                                                                               |
+| unintialize | 不指定 effectAllowed 将执行浏览器的默认允许拖动动作。但是该操作不通过 effectAllowed 来获取值 |
+
+DataTransfer 对象的 dropEffect 属性表示实际拖放时的视觉效果，一般在 dragover 事件中指定，允许设置值为 none 、 copy 、 link 、 move 。 dropEffect
+属性所表示的实际视觉效果必须与 effectAllowed 属性值所允许的操作相匹配，规则如下：
+
+- 如果 effectAllowed 属性值设置为 none ，则不允许拖放元素
+- 如果 dropEffect 属性设置为 none ，则不允许被拖放到目标元素
+- 如果 effectAllowed 属性值设置为 all 或不设置，则 dropEffect 属性允许被设置为任何值
+- 如果 effectAllowed 属性设置为具体操作，而 dropEffect 也设置了具体的视觉效果，则 dropEffect 属性值必须与 effectAllowed
+  属性值相匹配，否则不允许被拖放的元素放置到目标元素内
+
+```js
+e(source, 'dragstart', function (event) {
+  let d = event.dataTransfer;
+  d.effectAllowed = 'copy';
+  d.setData('text/plain', this.innerHTML);
+});
+e(dest, 'dragover', function (event) {
+  let t = event.dataTransfer;
+  t.dropEffect = 'copy';
+});
+```
+
+DataTransfer 对象的 setDragImage() 包括三个参数：
+
+- 第 1 个参数设置拖放图标的图标元素
+- 第 2 个参数设施拖放图标离鼠标指针的 x 轴方向的位移偏量
+- 第 3 个参数设置拖放图标离鼠标指针的 y 轴方向的位移偏量
+
+```html
+<head>
+  <style>
+    #drag {
+      width: 200px;
+      height: 200px;
+      background-color: #f0f;
+      border-radius: 12px;
+      text-align: center;
+      line-height: 200px;
+      color: #ff0;
+    }
+    #target {
+      position: relative;
+      left: 1000px;
+      top: 100;
+      width: 400px;
+      height: 400px;
+      border: 1px dotted #00f;
+      margin: -100px 12px 12px; /* float: right; */
+      overflow: auto;
+      padding: 2rem 0;
+    }
+    #target h1 {
+      text-align: center;
+      width: 100%;
+      position: relative; /* background-color: #; */
+      z-index: 100;
+      top: 0;
+      left: 0;
+      text-align: center;
+      color: #0f0;
+      margin: 6px 0;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div id="drag" draggable="true">圆圆的屁股</div>
+  <div id="target"><h1>大大的脸</h1></div>
+</body>
+<script>
+  let dIcon = document.createElement('img');
+  dIcon.src = 'image/lmssee.ico';
+  dIcon.width = '20px';
+  function init() {
+    let source = mi('drag');
+    let dest = mi('target');
+    e(source, 'dragstart', function (event) {
+      let d = event.dataTransfer;
+      d.setDragImage(dIcon, -10, -10);
+      d.effectAllowed = 'copy';
+      d.setData('text/plain', this.innerHTML);
+    });
+    e(dest, 'dragover', function (event) {
+      let t = event.dataTransfer;
+      t.dropEffect = 'copy';
+    });
+    e(dest, 'dragend', function (event) {
+      event.preventDefault();
+    });
+    e(dest, 'drop', function (event) {
+      var t = event.dataTransfer;
+      var x = t.getData('text/plain');
+      dest.innerHTML += '<p>' + x + '</p>';
+      event.preventDefault();
+      event.stopPropagation();
+    });
+  }
+  init();
+  document.ondragover = function (event) {
+    event.preventDefault();
+  };
+  document.ondrop = function (event) {
+    event.preventDefault();
+  };
+  function mi(id) {
+    return document.querySelector('#' + id);
+  }
+  function e(n, event, fn) {
+    if (n.nodeType != 1 && mi(n) != null) {
+      n = mi(n);
+    } else if (n.nodeType == 1) {
+      n = n;
+    } else if (n.nodeType != 1 && mi(n) == null) {
+      throw new Error('为捕获元素');
+    }
+    if (n.addEventListener) {
+      n.addEventListener(event, fn, false);
+    } else if (n.attachEvent) {
+      n.attachEvent('on' + event, fn);
+    } else {
+      n['on' + event] = fn;
+    }
+  }
+</script>
+```
+
+            

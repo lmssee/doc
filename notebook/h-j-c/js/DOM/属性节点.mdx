@@ -1,0 +1,235 @@
+---
+title: 属性节点
+
+
+---
+
+# 属性节点
+
+属性节点由 Attr 类型表示，在文档树中被称为元素的特性，习惯称为标签的属性
+
+- nodeType 值为 11
+- nodeName 值为特性的名称
+- nodeValue 值为特性的值
+- parentNode 值为 null
+- 在 HTML 中不包含子节点
+- 在 XML 中子节点可以是 Text 、 EntityReference
+
+尽管属性也是节点，但是不被认为是 DOM 树的一部分， DOM 中没有提供关系指针，很少直接引用属性节点。
+
+## 访问属性节点
+
+Attr 是 Element 的属性，作为一种节点类型，它继承了 Node 类型的属性和方法。不过 Attr 没有父节点，同时属性不被认为是元素的子节点，对于很多 Node 的属性返回都将返回 null 。
+
+- name 表示属性名，等同于 nodeName
+- value 表示属性值，等同于 nodeValue
+- specified 如果属性值是在代码中使用的，则返回 false ，如果默认值，则为 true
+
+为了将新创建的属性添加到元素，必须使用元素的 setAttributeNode() 方法。添加属性之后，可以通过下列方式访问该属性： attributes 属性、 getAttributeNode()
+方法、 getAttribute() 方法。
+
+其中， attributes 属性、 getAttributeNode() 方法将返回对应属性的 Attr 节点，而 getAttribute() 方法直接返回属性的值。不建议使用 attribute[]
+数组方式读取某个位置上的属性节点，因为不同浏览器对其支持存在差异。
+
+在传统的 DOM 中，常用点语法直接访问 HTML 属性，如 img.src 、 a.href 。虽然不标准，但获得了所有浏览器的支持。
+
+## 读取属性值
+
+使用元素的 getAttribute() 方法可以快速读取指定元素的属性值，传递的参数是一个字符串形式的表示的元素属性的名称。
+
+在传统的 DOM 中，常用点语法直接访问 HTML 属性，如 img.src 、 a.href 。使用点语法比较方便，也获得所有的浏览器支持。
+
+对于 class 属性，则必须使用 className 属性名，因为 class 是 javascript 语言的保留字；对于 for 属性，则必须使用 htmlFor 属性名，这与 CSS 中的 float 和
+text 属性被改为 cssFloat 和 cssText 是一个道理。
+
+## 创建属性节点
+
+使用 document 的 createAttribute() 方法可创建属性节点。
+
+```js
+document.createAttribute(name);
+```
+
+```html
+<div id="box">document.createAttribute(name)</div>
+<script>
+  var element = document.getElementById('box');
+  var attr = document.createAttribute('align');
+  attr.value = 'center';
+  element.setAttributeNode(attr);
+  console.log(element.attributes['align'].value);
+  console.log(element.getAttributeNode('align').value);
+  console.log(element.getAttribute('align'));
+</script>
+```
+
+直接采用 className 添加类会覆盖掉原有的样式.这时就需要采用叠加的方式进行添加。
+
+```html
+<div>id="c">代码显示眼样式</div>
+<script>
+  var c = document.getElementById('c');
+  red.className = 'c';
+  red.className += 'p';
+</script>
+```
+
+使用叠加容易产生重复类,所以应当先判断,再添加 。
+
+```js
+function hasClass(element, className) {
+  var reg = new RegExp('\\s|^' + className + '\\s|$');
+  return;
+  reg.test(element.className);
+}
+function addClass(element, className) {
+  if (!hasClass(element, className)) {
+    element.className += '' + className;
+  }
+}
+{
+  /* <div id="c">代码区</div> */
+}
+var c = document.getElementById('c');
+addClass(c, 'c');
+addClass(c, 'p');
+```
+
+## 设置属性值
+
+使用元素的 setAttribute() 方法可以设置元素的属性，用法如下：
+
+```js
+setAttribute(name, value);
+```
+
+name 和 value 参数分别表示属性的名称和属性值。属性名和属性值必须以字符串的形式传递。
+
+```html
+<img id="img_1" alt="" src="" />
+<script>
+  var img = document.getElementById('img_1');
+  img.setAttribute('src', 'https://lmssee.cn/image/lmssee.jpg');
+  img.src = 'https://lmssee.cn/image/lmssee.jpg';
+</script>
+```
+
+## 删除属性
+
+使用 removeAttribute() 方法可以删除特定的属性。
+
+```js
+removeAttribute(name);
+```
+
+```html
+<script>
+
+      window.onload = function() { var
+  table = document.getElementsByTagName("table")[0]; var del =
+  document.getElementById("del"); var reset = document.getElementById("reset");
+
+  del.onclick = function() { table.removeAttribute("border") } reset.onclick = function() { table.setAttribute("border", "2");
+  }
+  }
+</script>
+<table width="100%" border="2">
+  <tr>
+    <td>数据表格</td>
+  </tr>
+</table>
+<button id="del">删除</button> <button id="reset">恢复</button>
+```
+
+## attributes 属性
+
+Element 类型是唯一使用 attributes 属性的 DOM 节点类型。 attributes 属性包含一个 NamedNodeMap 实例，是一个类似 NodeList 的"实时"集合。元素的每个属性都表示为一个
+Attr 节 点，并保存在这个 NamedNodeMap 对象中。
+
+- getNamedItem(name)，返回 nodeName 属性等于 name 的节点
+- removeNamedItem(name)，删除 nodeName 属性等于 name 的节点
+- setNamedItem(node)，向列表中添加 node 节点，以其 nodeName 为索引
+- item(pos)，返回索引位置 pos 处的节点
+
+removeNamedItem()方法与元素上的 removeAttribute()方法类似，也是删除指定名字的属性。
+下面的例子展示了这两个方法唯一的不同之处，就是 removeNamedItem()返回表示被删除属性的 Attr 节点 。
+
+## 使用类选择器
+
+HTML5 为 document 对象和 HTML 增加了 getElementsByClassName() 方法，使用该方法可以直接选择指定的类名的元素。 getElementsByName()
+方法可接受一个字符串，包含一个或多个类名，类名用空格分割，不分前后顺序，方法返回指定类的所有的元素的 NodeList 。
+
+```html
+<div id="box">
+  <div
+    class="red blue
+green"
+  >
+    456
+  </div>
+</div>
+<div
+  class="blue red
+black"
+>
+  123
+</div>
+<script>
+  var divs = document.getElementById('box').getElementsByTagName('blue red');
+  for (var i = 0; i < divs.length; i++) {
+    console.log(divs[i], innerHTML);
+  }
+</script>
+```
+
+## 自定义属性
+
+HTML 5 允许用户自定义属性，就是需要加前缀 data- 目的是为元素提供与渲染无关的附加信息，或者提供寓意。
+
+```html
+<div id="box" data-myId="2468" data-myName="随笔记" data-myPass="g123">
+  自定义属性
+</div>
+```
+
+添加自定义属性后，可通过 元素的 datalist 属性访问自定义属性。 datalist 的属性值是一个 DOMStringMap 实例，也就是一个名值对的映射。在这个映射中，每个 data-name
+形式的属性都会有一个对应的属性，只不过属性名没有 data- 。
+
+```js
+var div = document.getElementById('box');
+var id = div.dataset.id;
+var name = div.dataset.myname;
+var pass = div.dataset.pass;
+div.dataset.id = '2468';
+div.dataset.myname = '随笔记';
+div.dataset.pass = 'g123';
+if (div.dataset.myname) {
+  console.log(div.dataset.myname);
+}
+```
+
+## Document 对象的常用属性
+
+| 属性             | 额                                                                   |
+| :--------------- | -------------------------------------------------------------------- |
+| alinkColor       | 链接颜色，对应`<body>`标记中的 alink 属性                            |
+| all[]            | 储存 HTML 标记的一个数组（该属性本身也是一个对象）                   |
+| anchors[]        | 储存锚点的一个数组（该属性本身也是一个对象）                         |
+| bgColor          | 文档的背景颜色，对应`<body>`标记中的 bgColor 属性                    |
+| cookie           | 表示 cookie 的值                                                     |
+| fgColor          | 文档的文本颜色（不包含超链接的文字），对应`<body>`标记中的 text 属性 |
+| form[]           | 储存窗体对象的一个数组（该属性本身也是一个对象）                     |
+| fileCreatedDate  | 创建文档的日期                                                       |
+| fileModifiedDate | 文档的最后修改日期                                                   |
+| fileSize         | 文档的大小                                                           |
+| lastModified     | 文档的最后的修改的时间                                               |
+| images[]         | 储存图像对象的一个数组（该属性本身也是一个对象）                     |
+| linkColor        | 未访问的链接文字的颜色，对应`<body>`中的 link 属性                   |
+| links[]          | 储存 link 对象的一个数组（该属性本身也是一个对象）                   |
+| vlinkColor       | 表示已访问的链接文字的颜色，对应`<body>`标记的 vlink 属性            |
+| title            | 当前文档标题对象                                                     |
+| body             | 当前文档的主体对象                                                   |
+| readyState       | 获取某个对象的当前状态                                               |
+| URL              | 获取和设置 URL"]                                                     |
+
+            

@@ -1,0 +1,124 @@
+---
+title: 基础
+
+
+---
+
+# 概念
+
+首先需要一个渲染器（ Renderer ）。传入一个场景（ Scene ）和摄像机（ Camera ）到渲染器，然后将摄像机视锥体的三维场景渲染成一个二维图片显示在画布（ canvas ）上。
+
+## 场景图
+
+场景图是一个树状结构，包含一个场景（ Scene ）对象，多个网格（ Mesh ）对象，光源（ Light ）对象，群组（ Group ），三维物体（ Object3D ）和摄像机（ Camera ）。
+
+## 网格
+
+网格（ Mesh ）对象是一种特殊的材质（ Material ）来绘制特定的几何体（ Geometry ）。材质（ Material ）和几何体（ Geometry ）可以被多个网格（ Mesh ）使用。
+
+## 图元
+
+图元（ Geometry ）对象代表了一些物体的顶点信息。
+
+## 材质
+
+材质（ Material ）对象带遍绘制几何体的表面属性，包括颜色、光亮程度。一种材质可以引入多个问题（ Texture ）。
+
+## 纹理
+
+纹理（ Texture ）对象通常表示一幅图像。可以是外部引入文件、画布生成、另一个渲染器渲染出来的。
+
+## 光源
+
+光源（ Light ）对象代表了不同种类的光
+
+材质会收到灯光的影响
+
+## 一个旋转的方块
+
+```js
+// 构建渲染器
+const renderer = new three.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight - 80); //设置摄像头
+const camera = new three.PerspectiveCamera(
+  1,
+  window.innerWidth / window.innerHeight,
+  1,
+  500,
+);
+camera.position.set(0, 0, 100);
+camera.lookAt(0, 0, 0); // 创建场景
+const scene = new three.Scene(); // 材质可能影响到灯光的效果
+const material = new three.MeshPhongMaterial({ color: 0x00ff00 });
+const newGeometry = new three.BoxGeometry(1, 1, 1);
+const cube = new three.Mesh(newGeometry, material);
+scene.add(cube); // 添加灯光 const
+light = new three.DirectionalLight(0xffffff, 1); // 设置灯光位置
+light.position.set(-1, 2, 4);
+scene.add(light);
+renderer.render(scene, camera); // 将生成的视图画到画布上
+const canvas = renderer.domElement;
+canvas.id = canvasId;
+document.querySelector('#index')!.appendChild(canvas);
+function render(time: any) {
+  time *= 0.001;
+  cube.rotation.x = cube.rotation.y = time;
+  renderer.render(scene, camera);
+  requestAnimationFrame(render);
+}
+requestAnimationFrame(render);
+
+```
+
+## 三个旋转的方块
+
+```js
+// 构建渲染器
+const renderer = new three.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight - 80);
+// 设置摄像头
+const camera = new three.PerspectiveCamera(
+  15,
+  window.innerWidth / window.innerHeight,
+  1,
+  500,
+);
+camera.position.set(0, 0, 100);
+camera.lookAt(0, 0, 0); // 创建场景
+const scene = new three.Scene();
+function makeInstance(geometry: any, color: any, x: any) {
+  // 材质可能影响到灯光的效果 const material = new
+  three.MeshPhongMaterial({ color });
+  const cube = new three.Mesh(geometry, material);
+  scene.add(cube);
+  cube.position.x = x;
+  return cube;
+}
+const geometry = new three.BoxGeometry(1, 1, 1);
+const cubes = [
+  makeInstance(geometry, 0x44aa88, 0),
+  makeInstance(geometry, 0x8844aa, -2),
+  makeInstance(geometry, 0xaa8844, 2),
+]; // 添加灯光
+const light = new three.DirectionalLight(0xffffff, 1); // 设置灯光位置
+light.position.set(-1, 2, 4);
+scene.add(light);
+renderer.render(scene, camera); // 将生成的视图画到画布上
+const canvas = renderer.domElement;
+canvas.id = canvasId;
+document.querySelector('#index')!.appendChild(canvas);
+function render(time: any) {
+  time *= 0.001;
+  cubes.forEach((cube, ndx) => {
+    const speed = 1 + ndx * 0.3;
+    const rot = time * speed;
+    cube.rotation.x = cube.rotation.y = rot;
+  });
+  renderer.render(scene, camera);
+  requestAnimationFrame(render);
+}
+requestAnimationFrame(render);
+
+```
+
+            

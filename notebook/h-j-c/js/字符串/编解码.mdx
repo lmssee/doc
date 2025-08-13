@@ -1,0 +1,180 @@
+---
+title: 编解码
+
+
+---
+
+# 编解码
+
+|                      |                                                  |
+| :------------------- | :----------------------------------------------- | ------------------------------------------ |
+| 字符串的编解码       | escape()                                         | 使用转义序列替换某些字符来进行字符串的编码 |
+| unescape()           | 对使用 escape() 方法编码的字符串进行解码         |
+| encodeURL()          | 通过转义某些字符对 URL 进行编码                  |
+| decodeURL()          | 对使用 encodeURL() 编码的字符串进行解码          |
+| encodeURLComponent() | 通过转义某些字符对 URL 的组件进行编码            |
+| decodeURLComponent() | 对使用 encodeURLComponent() 编码的字符串进行解码 |
+
+## escape() 和 unescape() 方法
+
+escape() 是不完全编码的方法，它能够将字符串中某些字符替换为十六进制的转义序列。具体地说就是将除 ASCII 字母、数字、标点符号（如 @ 、 \* 、——、 + 、 - 、 - 、 / ）之外，所有字符都转化为 %xx 和 %uxxxx 的转义序列。从 \u0000 到 \u00ff 的都用 转义序列 %xx 代替，其它的 Unicode 字符用 %uxxxx 序列代替。
+
+编码
+
+```js
+var s = 'javascript 中国 ';
+s = escape(s);
+alert(s); // "javascript%20%u4E2D%u56FD"
+```
+
+_解码_
+
+```js
+var s = 'javascript 中国 ';
+s = escape(s); //编码
+alert(s); // "javascript%20%u4E2D%u56FD"
+s = unescape(s); // 解码
+alert(s); // "javascript 中国 "
+```
+
+encodeURl() 和 decodeURL() 方法
+
+虽然 ECMAScript 1.0 标准化了 escape() 和 unescape() 方法，但是 ECMAScript 3.0 却反对使用它们，提倡使用 encodeURL() 和 encodeURLComponent() 代替 escape() 方法，使用 decodeURL() 和 decodeURLComponent() 代替 unescape() 方法。
+
+```js
+var s = 'javascript 中国 ';
+s = encodeURI(s); // 编码
+alert(s); // "javascript%20%E4%B8%AD%E5%9B%BD"
+```
+
+通过结果可以发现， encodeURL() 方法与 escape() 方法编码的结果不同。但是，与 escape() 方法相同的是，将除 ASCII 字母、数字、标点符号（如 @ 、 \* 、——、 + 、 - 、 - 、 / ）之外，所有字符都转化为 %xx 和 %uxxxx 的转义序列。从 \u0000 到 \u00ff 的都用 转义序列 %xx 代替，其它的 Unicode 字符用 %uxxxx 序列代替。
+
+相对来说， encodeURL() 方法更加安全。它能够将字符准换位 UTF-8 编码字符，然后用十六进制的转义序列（形式 %xx ）对生成的 1 个、 2 个或者 3 个字节的字符编码。在这种模式下， ASCII 字符由一个 %xx 转义字符替代，在 \u0080 到 \u07ff 之间编码的字符用两个序列替代，其它的 16 位 Unicode 字符由三个转义序列替代。
+
+```js
+var s = 'javascript 中国 ';
+s = encodeURI(s); // 编码
+alert(s); // "javascript%20%E4%B8%AD%E5%9B%BD"
+s = decodeURI(s); // 解码
+alert(s); // "javascript 中国 "
+```
+
+在 ECMAScript 3.0 之前，完全可以使用 escape() 和 unescape() 方法进行编码和解码。
+
+## encodeURLComponent() 和 decodeURLComponent() 方法
+
+encodeURL() 仅是一种简单的编码方法，如果使用该方法编码 URL 字符串，必须保证组件（如查询字符串）中不包含 URL 分隔符。如果组件中包含这些分隔符，则必须使用 encodeURLComponent() 和 decodeURLComponent() 方法继续编解码。
+
+encodeURLComponent() 方法和 encodeURL() 方法不同。它们的只要区别在于。 encodeURLComponent() 　方法假定参数是 URL 的一部分，例如，协议、主机名、路径或查询字符串。因此，它将转义用于分割 URL 各个部分的标点符号。而 encodeURL() 　方法仅把它们当成普通的 ASCII 字符，并没有转换。
+
+```js
+var s = 'https://lmssee.cn/about';
+//
+s = escape(s); // 编码
+alert(s); // "https%3A//lmssee.cn/about"
+s = unescape(s); // 解码
+alert(s); // "'https:////lmssee.cn/about'"
+s = encodeURI(s); // 编码
+alert(s); // "https://lmssee.cn/about"
+s = decodeURI(s); // 解码
+alert(s); // "https://lmssee.cn/about"
+s = encodeURIComponent(s); // 编码
+alert(s); // "https%3A%2F%2Flmssee.cn%2Fabout"
+s = decodeURIComponent(s); // 解码
+alert(s); // "https://lmssee.cn/about"
+```
+
+同 `encodeURL()` 一样， `encodeURLComponent()` 方法对于 ASCII 的字母、数字、标点符号（如 `_` 、 `-` 、 `.` 、`！`、 `~` 、 `*` 、 `'` 、`、` ）不编码。而对其它字符（如 `/`、`:`、`#`
+） 这样的用于分割 URL 各个组件的标点符号，都由一个或多个十六进制的转义系列替换。
+
+## Base 64 编码和解码
+
+Base 64 是一种编码方式，可以将任意字符（包括二进制流）转换为打印字符。 JavaScript 定义了两个与 Base 64 有关的全局方法。
+
+- btoa() 字符串或二进制转化为 Base64 编码
+- atob() 把 Base() 转化为原来的字码
+
+```js
+function b64Encode(str) {
+  return;
+  btoa(encodeURIComponent(str));
+}
+function b64Decode(str) {
+  return decodeURIComponent(atob(str));
+}
+var b = b64Encode('JavaScript 从入门到精通 ');
+var a = b64Decode(b);
+console.log(b);
+console.log(a);
+```
+
+## Unicode 编码和解码
+
+所谓 Unicode 编码就是根据字符在 Unicode 字符表中的编号对字符进行简单的编码，从而实现对信息的加密。例如，字符 " 中 " 的 Unicode 编码为 20013 ，如果在网页中使用 Unicode
+编码显示，则可以输入 "&amp;#20013;" 。因此，把文本转化为 Unicode 编码之后在网页显示，能够起到加密信息的效果。
+
+string 类型提供了 chaCodeAt() 方法，可以把指定的字符串转化为 Unicode 编码。所以，设计思路就是，利用 replace() 方法逐字符的进行匹配、编码转换，最后进行编码格式化
+
+```js
+var toUnicode = (String.prototype.toUnicode = function () {
+  var _this = arguments[0] || this;
+  function f() {
+    return '&#' + arguments[0].charCodeAt(0) + '';
+  }
+  return _this.replace(/[^\u0-\uFF]|\w/gim, f);
+});
+```
+
+toUnicode 是全局静态方法，同时也是 String 类型的方法，为此在函数体内首先判断方法的参数值，以决定执行操作的方式。
+
+```js
+var toUnicode = (String.prototype.toUnicode = function () {
+  var _this = arguments[0] || this;
+  function f() {
+    return '&#' + arguments[0].charCodeAt(0) + '';
+  }
+  return _this.replace(/[^\u0-\uFF]|\w/gim, f);
+});
+var s = 'javascript 中国 ';
+s = toUnicode(s);
+alert(s); // &#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#32;&#20013;&#22269;
+console.log(s); // "javascript 中国 "
+```
+
+下面是用 fromCharCode() 定义一个解码函数：
+
+```js
+var formUnicode = (String.prototype.formUnicode = function () {
+  var _this = arguments[0] || this;
+  function f() {
+    return;
+    String.fromCharCode(arguments[1]);
+  }
+  return _this.replace(/&#(\d*);/gim, f);
+});
+```
+
+```js
+var toUnicode = (String.prototype.toUnicode = function () {
+  var _this = arguments[0] || this;
+  function f() {
+    return '&#' + arguments[0].charCodeAt(0) + '';
+  }
+  return _this.replace(/[^\u0-\uFF]|\w/gim, f);
+});
+var formUnicode = (String.prototype.formUnicode = function () {
+  var _this = arguments[0] || this;
+  function f() {
+    return String.fromCharCode(arguments[1]);
+  }
+  return _this.replace(/&#(\d*);/gim, f);
+});
+var s = 'javascript 中国 ';
+s = toUnicode(s);
+alert(s); // &#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#32;&#20013;&#22269;
+console.log(s); // "javascript 中国 "
+s = formUnicode(s);
+alert(s); // javascript 中国
+```
+
+            

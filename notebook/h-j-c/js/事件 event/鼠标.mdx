@@ -1,0 +1,304 @@
+---
+title: 鼠标
+
+
+---
+
+# 简介
+
+| 事件类型  | 说明                                                                                     |
+| :-------- | :--------------------------------------------------------------------------------------- |
+| click     | 单击鼠标左键时发生，若右键同时按下则不发生；当用户的焦点在按钮上，且按了回车，同样会发生 |
+| dblclick  | 双击鼠标会发生，如果右键也按下则不会发生                                                 |
+| mousedown | 单击任意一个鼠标按钮时发生                                                               |
+| mouseout  | 鼠标指针位于某个元素上，且要移除元素的边界时                                             |
+| mouseover | 鼠标指针移出某个元素，到另一个元素上时发生                                               |
+| mouseup   | 松开任意一个鼠标按钮时发生                                                               |
+| mousemove | 鼠标在某个元素上时发生                                                                   |
+
+## 鼠标的单击事件
+
+鼠标单击事件一般包括 4 个： click 、 dblclick 、 mousedown 、 mouseup 。其中， click 比较常用，而 mousedown 和 mouseup
+事件类型常用在鼠标拖拽和拉伸操作中。当这些事件处理函数的返回值为 false 时，则会禁止对象的默认行为。
+
+单击事件一般应用于 Button 对象、 Checkbox 对象、 Image 对象、 Link 对象、 Radio 对象、 Reset 对象和 Submit 对象。 Button 对象一般只会用到
+onclick 事件处理程序，因为该对象不能从用户那里得到任何信息，如果没有 onclick 事件处理程序，按钮对象将不会有任何作用。
+
+在使用对象的单击事件时，如果在对象上按下鼠标键，然后移动鼠标到对象外再松开鼠标，单击事件无效。单击事件必须在对象上按下松开后，才会执行单击事件的处理程序 。
+
+```js
+var a = document.getElementsByTagName('a');
+for (var i = 0; i < a.length; i++) {
+  if (new RegExp(window.location.href).test(a[i].href)) {
+    a[i].onclick = function () {
+      return false;
+    };
+  }
+}
+```
+
+## 鼠标的按下和松开事件
+
+鼠标的按下和松开事件分别是 onmousedown 和 onmouseup 事件。其中， onmousedown 事件用于在鼠标按下时触发事件处理程序，
+onmouseup 事件用于在鼠标松开时触发事件处理程序。在用鼠标单击对象时，可以用这两个事件实现其动态效果。
+
+## 鼠标的移入和移出事件
+
+鼠标的移入和移出事件分别是 onmouseover 和 onmouseout 事件。其中， onmouseover 事件在鼠标移动到对象上方时触发事件处理程序，
+onmouseout 事件在鼠标移出对象上方时触发事件处理程序。可以用这两个事件在指定的对象上移动鼠标时，实现其对象的动态效果。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+            initial-scale=1.0"
+    />
+    <title>Document</title>
+    <style>
+      div {
+        margin: 30px auto;
+        padding: 20px;
+        border: 3px dotted #0f0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <div>
+        <div>盒子</div>
+      </div>
+    </div>
+  </body>
+  <script>
+    var div = document.getElementsByTagName('div');
+    for (var i = 0; i < div.length; i++) {
+      div[i].onmouseover = function (e) {
+        this.style.border = 'solid #00f';
+      };
+      div[i].onmouseout = function (e) {
+        this.style.border = 'solid #f00';
+      };
+    }
+  </script>
+</html>
+```
+
+## 鼠标的移动事件
+
+鼠标移动事件（ onmousemove ）是鼠标在页面上进行移动时触发事件处理程序，可以在该事件中用 Document 对象实时读取鼠标在页面中的位置。每次至少移动一格像素。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+            initial-scale=1.0"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="box"></div>
+  </body>
+  <script>
+    var a = document.getElementById('box');
+    a.style.position = 'absolute';
+    a.style.width = '160px';
+    a.style.height = '120px';
+    a.style.backgroundColor = '#f00';
+    var ax, ay, bx, by;
+    function t(event) {
+      if (!event) {
+        event = window.event;
+        event.target = event.srcElement;
+        event.layerX = event.offsetX;
+        event.layerY = event.offsetY;
+      }
+      event.ax = event.pagX || event.clientX + document.body.scrollLeft;
+      event.ay = event.pageY || event.clientY + document.body.scrollTop;
+      return event;
+    }
+    document.onmousedown = function (event) {
+      event = t(event);
+      b = event.target;
+      bx = parseInt(b.offsetLeft);
+      by = parseInt(b.offsetTop);
+      ax = event.ax;
+      ay = event.ay;
+      document.onmousemove = move;
+      document.onmouseup = stop;
+    };
+    function move(event) {
+      event = t(event);
+      b.style.left = bx + event.ax - ax + 'px';
+      b.style.top = by + event.ay - ay + 'px';
+    }
+    function stop(event) {
+      event = t(event);
+      bx = parseInt(b.offsetLeft);
+      by = parseInt(b.offsetTop);
+      ax = event.ax;
+      ay = event.ay;
+      b = document.onmousemove = document.onmouseup = null;
+    }
+  </script>
+</html>
+```
+
+## 鼠标来源 当一个事件发生后，可以使用事件对象的 target
+
+属性获取事件的元素节点。如果在 IE 中，可以使用 srcElement 属性。 另外，在 DOM
+中，还定义了 currentTarget 属性，当事件在传播过程中（如捕获或冒泡），该属性值与
+target 值不同。因此，在处理事件的函数中，应该使用该属性而不是 this
+关键词获取但前对象。 除此之外，如果想获取鼠标移动哪个元素，在 DOM
+事件模型中，可以使用 relatedTarget 属性获取当前事件对象的相关节点元素；而在 IE
+事件模型中，使用 formElement 获取 mouseover 事件中鼠标移到过哪些元素，使用
+toElement 属性获取在 mouseout 事件中鼠标移到过的文档元素。 ## 鼠标定位
+
+| 属性                                              | 说明                                      | 兼容性                                            |
+| :------------------------------------------------ | :---------------------------------------- | :------------------------------------------------ | ----------------------------------------- | ----------- |
+| clientX                                           | 以浏览器窗口左上顶角为原点，定位 x 轴坐标 | 所有浏览器，不兼容                                |
+| Safari                                            |                                           | clientY                                           | 以浏览器窗口左上顶角为原点，定位 y 轴坐标 |
+| 所有浏览器，不兼容 Safari                         |                                           | offsetX                                           |
+| 以当前事件的目标对象左上顶角为原点，定位 x 轴坐标 | 所有浏览器，不兼容 Mozilla                |
+|                                                   | offsetY                                   | 以当前事件的目标对象左上顶角为原点，定位 Y 轴坐标 |
+| 所有浏览器，不兼容 Mozilla                        |                                           | pageX                                             | 以 document 对象 (即文档窗口              |
+| )左上顶角为原点，定位 x 轴坐标                    | 所有浏览器 ,不兼容 IE                     |                                                   | pageY                                     | 以 document |
+| 对象 (即文档窗口 )左上顶角为原点，定位 Y 轴坐标   | 所有浏览器 ,不兼容 IE                     |                                                   |
+| screenX                                           | 计算机屏幕左上顶角为原点，定位 x 轴坐标   | 所有浏览器                                        |                                           | screenY     |
+| 计算机屏幕左上顶角为原点，定位 Y 轴坐标           | 所有浏览器                                |                                                   | layerX                                    |
+
+最近的绝对定位的父元素（如果没有，则为 document 对象）左上顶角为原点，定位 x
+轴坐标 | Mozilla 、 Safari || layerY | 最近的绝对定位的父元素（如果没有，则为
+document 对象）左上顶角为原点，定位 Y 轴坐标 | Mozilla 、 Safari | ## screenX
+&& screenY 先来看看 screenX 和 screenY
+属性。这两个属性获得了所有的浏览器支持，应该说是最优选择使用属性但是它们的定位是计算机屏幕，也就是说，是以计算机左上角定位原点。这对于以浏览器窗口为活动的空间网页来说，没有价值。因为不同分辨率的屏幕，不同的浏览器窗口大小和位置都使在网页中定位鼠标成为一件困难的事。
+
+```js
+(pageX && pageY) || (clientX && clientY);
+```
+
+其次，如果以 document对象为坐标系，则考虑 pageX 和 pageY 两个属性，实现在浏览器窗口中进行定位。在 mousemove 事件处理函数中把 pageX 和 pageY 属性值传递给绝对定位的 top 和 left 样式属性即可。 但是， IE 不支持上面的属性，为此还必须兼容 IE 。 clientX 和 clientY 属性是以 window 对象为坐标系，且 IE 支持它们。但考虑到 window 等对象可能会出现滚动条偏移量，所以，还需要加上 window 对象的页面的滚动偏移量。
+
+```js
+var posX = 0,
+  posY = 0;
+var event = event || window.event;
+if (event.pageX || event.pageY) {
+  posX = event.pageX;
+  posY = event.pageY;
+} else if (event.clientX || event.clientY) {
+  posX =
+    event.clientX +
+    document.documentElement.scrollLeft +
+    document.body.scrollLeft;
+  posY =
+    event.clientY +
+    document.documentElement.scrollTop +
+    document.body.scrollTop;
+}
+```
+
+封装成一个鼠标跟随的小栗子：
+
+```js
+var pos = function (o, x, y, event) {
+  var posX = 0,
+    posY = 0;
+  var event = event || window.event;
+  if (event.pageX || event.pageY) {
+    posX = event.pageX;
+    posY = event.pageY;
+  } else if (event.clientX || event.clientY) {
+    posX =
+      event.clientX +
+      document.documentElement.scrollLeft +
+      document.body.scrollLeft;
+    posY =
+      event.clientY +
+      document.documentElement.scrollTop +
+      document.body.scrollTop;
+  }
+  o.style.position = 'absolute';
+  o.style.top = posY + y + 'px';
+  o.style.left = posX + x + 'px';
+};
+{
+  /* <div id="a">鼠标跟随 </div>  */
+}
+var a = document.getElementById('a');
+document.onmousemove = function (event) {
+  pos(a, 20, 20, event);
+};
+```
+
+## offsetX && offsetY |
+
+layerX && layerY
+使用 offsetX 和 offsetY 可以获取元素自身为参照的鼠标指针定位，但是 Mozilla 不支持。不过可以使用 layerX 和 layerY 来兼容 Mozilla 。
+
+```js
+var event = event || window.event;
+if (event.offsetX || event.offsetY) {
+  // 适用非 Mozilla
+  x = event.offsetX;
+  y = event.offsetY;
+} else if (event.layerX || event.layerY) {
+  // 兼容 Mozilla
+  x = event.layerX;
+  y = event.layerY;
+}
+```
+
+但是， layerX 和 layerY 是以父元素进行的定位。，而非自身元素。所以在设计时，就需要通过脚本或者手动添加的方式，设计在元素外包围一个绝对定位的父元素。考虑到元素之间的距离造成的误差，可以适当减去 1
+个像素或是更多。
+
+```html
+<input type="text" id="text" />
+<span style="position:absolute">
+  <div
+    id="div"
+    style="width: 200px;height: 160px;border: 1px #f00
+dotted;"
+  >
+    鼠标跟随
+  </div>
+</span>
+<script>
+  var t = document.getElementById('text');
+  var div = document.getElementById('div');
+  div.onmousemove = function (event) {
+    var event = event || window.event;
+    if (event.offsetX || event.offsetY) {
+      t.value = event.offsetX + '\__' + event.offsetY;
+    } else if (event.layerX || event.layerY) {
+      t.value = event.layerX - 1 + '_ \_' + (event.layerY - 1);
+    }
+  };
+</script>
+```
+
+## 鼠标的按键
+
+| 单击 | IE 事件模型 | DOM 事件模型 |
+| :--- | :---------- | :----------- |
+| 左键 | 1           | 0            |
+| 右键 | 2           | 2            |
+| 中键 | 4           | 1            |
+
+在鼠标点击时，会触发很多事件： mousedown 、 mouseup 、 click 、 dblclick 。顺序为
+
+```html
+mousedown -< mouseup -< click -< mousedown -< mouseup -< click -< dblclick
+```
+
+            

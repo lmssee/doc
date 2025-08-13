@@ -1,0 +1,96 @@
+---
+title: 简单例子
+
+
+---
+
+# 基础
+
+## 基本用法
+
+```js
+app.get('/hi', (req, res) => {
+  res.render('hello World!!!');
+});
+```
+
+## 返回 404
+
+```js
+app.get('/err', (req, res) => {
+  res.status(404);
+  res.render('404 ， NO Find!!!');
+  /**
+   * res.status(404).render('404 , NO Find!!!'); // 一行更比两行强
+   */
+});
+```
+
+## 将上下文传给视图
+
+```js
+app.get('/login', (req, res) => {
+  res.render('can', {
+    message: 'welcome',
+    style: req.query.style,
+    userid: req.cookie.userid,
+    username: req.session.username,
+  });
+});
+```
+
+## 无布局
+
+```js
+app.get('/noLayout', (req, res) => {
+  res.render('no-layout', { layout: null });
+});
+```
+
+## 定义布局
+
+```js
+app.get('/customLayout', (req, res) => {
+  res.render('custom-layout', { layout: 'custom' });
+});
+```
+
+## 纯文本
+
+```js
+app.get('/text', (req, res) => {
+  res.type('text/plain').send('this is a test');
+});
+```
+
+## 添加错误处理
+
+```js
+app.use((err, req, res, next) => {
+  res.status(500).render('您的访问被不被允许！！');
+});
+```
+
+## 404
+
+```js
+app.use((req, res) => {
+  res.status(404).render('你的请求飞到外太空了！');
+});
+```
+
+## 表单
+
+## 简单数据
+
+```js
+app.post('/login',(req,res)=>{
+  if(req.body.user ...){ //数据库比对成功
+  res.redirect(200,'/admin')
+  } else {
+  res.render({login:false,message:'账号与密码不匹配'});
+  }
+  });
+```
+
+            

@@ -1,0 +1,99 @@
+---
+title: 合并
+
+
+---
+
+# 合并分支
+
+```sh
+git merge origin  # {合并到分支}
+  git merge -s ours origin/{合并到分支}  #  使用 ours 策略合并到当前分支
+  git merge --no-commit origin/{合并到分支}  #  不自动提交合并
+  git merge --squash origin/{合并到分支}  #  将多天记录合并为一条
+```
+
+通过 git merge master 命令来合并这些修改，然后再用 rebase 命令理顺其历史纪录。该命令需要一个参数，以说明要将活动分支上的最新修改纳入哪一个分支。
+
+```sh
+git rebase master
+```
+
+但如果 rebase 命令在执行过程中遇到冲突情况，该命令进程就会被打断，相关文件中也会出现冲突标志。需要先手动或通过合并工具对文件进行清理，并重新将它们添加到暂存区中。然后再执行 rebase 命令加--continue 选项，从该点继续之前的进程。
+
+```sh
+git rebase --continue
+```
+
+也可以用--abort 选项取消这次的 rebase 命令，或者用--skip 选项跳过引起冲突的提交。这样该次提交就被直接忽略，其中的修改将不会出现在新分支上。
+
+## 解决冲突
+
+git mergetool 命令用于合并冲突解决工具并解决冲突，通常在合并后使用：
+
+```sh
+git mergetool
+```
+
+查看冲突版本
+
+```sh
+git diff
+```
+
+## 手动解决
+
+在编辑器内进行解决是最好的办法。
+
+## 取消合并
+
+```sh
+git reset --merge
+```
+
+或：
+
+```sh
+git reset --hard HEAD
+```
+
+上述命令将还原到 git merge 之前。
+
+如果想在中止或在它已经结束后放弃：
+
+```sh
+git reset --hard ORIG_HEAD
+```
+
+## git cherry-pick
+
+git cherry-pick 提交命令会将当前分支应用到给定提交的变更，这将创建一个新的提交。
+
+常用于维护分支和的提交移植到开发版本：
+
+```sh
+git cherry-pick {另一个分支}~{哪次提交}
+```
+
+之前， git cherry-pick 命令一次只能应用于一个提交，而现在可以应用于一个提交范围：
+
+```sh
+git cherry-pick M..P
+```
+
+## git revert
+
+git revert 提交命令跟 git cherry-pick 提交命令大致是相同的，但有一个重要区别：它应用给定提交的逆过程。因此，此命令用于引入一个新提交来抵消给定提交的影响。
+跟 git cherry-pick 命令一样， revert 命令不修改版本库的现存历史记录。相反它往历史记录中添加新提交。
+
+```sh
+git revert {}~{}
+```
+
+## 强制合并两个不相干的分子
+
+```sh
+ git merge {branch name} --allow-unrelated-histories
+```
+
+            

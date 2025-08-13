@@ -1,0 +1,304 @@
+---
+title: 盒模型
+
+
+---
+
+# 定义显示模式
+
+现代浏览器都支持两种显示方式：怪异模式和标准模式。在怪异模式下， border 和 padding 都在 width 和 height 之中；在标准模式下， border 、 padding 、 width 和 height 都有自己独立的区域。
+
+```css
+box-sizing: content-box | border-box;
+```
+
+- content-box 标准盒模型。 padding 和 border 不包含在 width 和 height
+  中，元素的实际宽度 = width + padding + margin
+- border-box 怪异盒模型。 padding 和 border 包含在 width 和 height
+  中，即元素实际宽度 = width
+
+IE 模式虽然不符合 W3C的规范，但是这种解析有它的好处：无论如何改动元素的边框或者补白的大小，都不会影响元素的总尺寸发生变化，也就不会打乱页面的整体布局。
+
+而在标准模式下，如果改变下padding 和 border的值，就不得不重新计算元素的尺寸大小，从而影响整个页面的布局。虽然 IE怪异模式不符合标准，但是这种方法还是值得学习。
+
+## 调整大小
+
+resize 属性可以允许用户自己调整元素的尺寸。
+
+```css
+resize ： both | horizontal | vertical
+```
+
+- none 默认值，不允许用户调整
+- both 宽和高都可以调整
+- horizontal 可调宽度
+- vertical 可调高度
+- inherit ：默认继承
+
+```css
+#resize {
+  /*以背景方式显示图像，这样可以更轻松的控制缩放操作*/
+  background: url(iamges/1.jpg) no-repeat center;
+  /*设计背景图像仅在内容区域显示，留出补白区域*/
+  -moz-background-clip: content;
+  -webkit-background-clip: content;
+  background-clip: content; /*设计元素最小和最大显示尺寸，用户也只能够在该范围内自由调整*/
+  width: 200px;
+  height: 120px;
+  max-width: 800px;
+  max-height: 600px;
+  padding: 6px;
+  border: 1px solid red;
+  /*必须同时定义 overflow 和 resize ，否则 resize 属性声明无效，元素默认溢出显示为 visible*/
+  resize: both;
+  overflow: auto;
+}
+```
+
+## 缩放大小
+
+zoom 是 IE 专有属性，用于设置对象的缩放比例。另外，它还会出发 IE 的 haslayout 属性（布局属性），清除浮动，清除 margin 重叠，常用这个属性解决 IE 浏览器的存在的布局 BUG 。
+
+```css
+zoom: normal | <number> | <percentage>;
+```
+
+## 文本溢出
+
+text-overflow 属性用于设置文本的溢出显示方式。
+
+```css
+text-overflow ： clip | ellipsis
+```
+
+- clip 溢出部分裁剪，默认值
+- ellipsis 溢出替换成 ...
+
+## 内容溢出
+
+```css
+overflow ： visible | hidden | scroll | auto | no-display | no-content
+```
+
+- visible : 不剪切内容，也不添加滚动条。该属性是默认值，元素被裁减为包含对象的窗口大小，且 clip 属性设置失效
+- auto ： 在需要的时剪切内容并添加滚动条。该属性是 body 和 textarea 元素的默认值
+- hidden ： 不显示超出的尺寸
+- scroll ：当元素超出了尺寸，则显示滚动条
+- no-display ：当内容显示超出了元素尺寸，则不显示元素，此时类似于添加了 display : none 声明。该属性是新增的，仅作交流
+- no-content ： 当内容超出元素尺寸，这不显示内容，此时类似于添加了 visibility: hidden 声明。该属性值是新增的，仅做技术交流
+
+```css
+#cont1 div,
+#cont3 div,
+#cont5 div {
+  width: 300px;
+  height: 200px;
+}
+#cont2 div,
+#cont4 div,
+#cont6 div {
+  width: 100px;
+  height: 50px;
+}
+.cont {
+  float: left;
+  margin: 4px;
+  overflow-y: visible;
+  padding: 10px;
+  width: 200px;
+  height: 100px;
+}
+.cont,
+.cont div {
+  border: solid 2px red;
+}
+```
+
+## 定义轮廓
+
+```css
+ outline ：[outline-color] | [outline-style] |
+ [outline-width] | [outline-offset(偏移位置)] |
+ inherit
+```
+
+轮廓是不占空间，仅在获得焦点时显示:
+
+## outline-width
+
+-
+- thin: 细
+- medium: 中等
+- thick ：粗
+- `<length>`
+- inherit
+
+## outline-style
+
+```css
+outline-style: auto | <border-style> | inherit;
+```
+
+- auto
+- `<border-style>`: none 、 dotted 、 dashed 、 solid 、 double 、 groove 、 ridge 、 inset 、 outset
+- inherit
+
+## outline-color
+
+```css
+outline-color: <color> | invert | inherit;
+```
+
+- `<color>` : 可用颜色名
+- invert :　全部实行反转
+- inherit ： 全部继承
+
+## outline-offset:偏移
+
+```css
+outline-offset: <length> | inherit;
+```
+
+```css
+body {
+  font-family: 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial,
+    Helvetica, sans-serif;
+  font-size: 12px;
+} /*清除常用元素的边界、补白、边框默认样式*/
+p,
+h1,
+form,
+button {
+  border: 0;
+  margin: 0;
+  padding: 0;
+} /*定义一个强制换行显示类*/
+.spacer {
+  clear: both;
+  height: 1px;
+} /*定义表单外框样式*/
+.myform {
+  margin: 0 auto;
+  width: 400px;
+  padding: 14px;
+} /*定制当前表单样式*/
+#stylized {
+  border: solid 2px #b7ddf2;
+  background: #ebf4fb;
+} /*设计表单内 div 和 p 通用样式效果*/
+#stylized h1 {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+#stylized p {
+  font-size: 11px;
+  color: #666666;
+  margin-bottom: 20px;
+  border-bottom: solid 1px #b7ddf2;
+  padding-bottom: 10px;
+}
+#stylized label {
+  /*定义表单标签样式*/
+  display: block;
+  font-weight: bold;
+  text-align: right;
+  width: 140px;
+  float: left;
+} /*定义小字体样式类*/
+#stylized .small {
+  color: #666666;
+  display: block;
+  font-size: 11px;
+  font-weight: normal;
+  text-align: right;
+  width: 140px;
+} /*统一输入文本框样式*/
+#stylized input {
+  float: left;
+  font-size: 12px;
+  padding: 4px 2px;
+  border: solid 1px #aacfe4;
+  width: 200px;
+  margin: 2px 0 20px 10px;
+} /*定义图形化按钮样式*/
+#stylized button {
+  clear: both;
+  margin-left: 150px;
+  width: 125px;
+  height: 31px;
+  background: #666666 url(images/button.png) no-repeat;
+  text-align: center;
+  line-height: 31px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: bold;
+} /*设计表单内文本框和按钮在被激活和获取焦点状态下时，轮廓线的宽、样式和颜色*/
+input:focus,
+button:focus {
+  outline: thick solid #b7ddf2;
+}
+input:active,
+button:active {
+  outline: thick solid #aaa;
+}
+```
+
+##
+
+- box-align ：定义子元素在盒子内垂直方向上的空间分配方式
+- box-direction ：定义盒子的显示顺序
+- box-flex ：定义子元素在盒子内的自适用尺寸
+- box-flex-group ：定义自适应子元素群组
+- box-lines ：定义子元素分列显示
+- box-ordinal-group ：定义子元素在盒子内的显示位置
+- box-orient ：定义盒子分布的坐标轴
+- box-pack ：定义子元素在盒子内水平方向的空间分配方式
+
+## calc 方法
+
+通过使用该方法来自动计算元素的宽度、高度等数值类型的样式属性值。
+
+calc （）方法的另一个妙用是可以用来对各种不同的计数单位进行混合运算。
+
+## 滤镜
+
+滤镜特效是指在页面被渲染之后在页面中某个局部呈现的一些特殊的视觉效果。滤镜特效来源于SVG （ Scalable Vector Graphics ，可缩放矢量图形）标准。在 SVG标准中，滤镜特效被用于对一个矢量图形图像应用一些基于像素的图像特效。
+
+## grayscale 滤镜（灰度滤镜）
+
+该滤镜将彩色图像转换为灰度图像。样式属性值中使用一个数值或数值百分比作为参数，该参数用于控制图像灰度。如果值为 100 ％，则图像变为黑白图像，如果该值为 0 ％，则图像不做任何修改，仍然为彩色图像。可以使用浮点数作为属性值， 0 代表 0 ％， 1 代表 100 ％。
+
+## sepia 滤镜
+
+该滤镜为彩色图像添加一层棕褐色色调，使其呈现出老照片的效果。样式属性中使用一个数值或数值百分比作为参数，该参数用于控制棕褐色调的浓度。如果值为 100 ％，则图像呈现出黑白色老照片的效果，如果该值为 0％，则图像不做任何修改，仍然为彩色图像。可以使用浮点数作为属性值， 0 代表 0％， 1 代表 100 ％。
+
+## saturate 滤镜（饱和度滤镜）
+
+该滤镜用于增强彩色图像的饱和度，使色彩变得更加鲜明。该滤镜可以使照片呈现海报或卡通效果。样式属性中可以使用一个大于 100 ％的百分比作为参数来增强色彩的饱和度，也可以使用一个小于 100％的百分比作为参数来削弱色彩的饱和度。
+
+## hue-rotate 滤镜
+
+该滤镜是一个非常特殊的滤镜，可以用于产生特殊的视觉效果。请将颜色光谱设想为一个从红色到紫色的一个颜色环（在光学中，为对光的色学性质研究方便，将所有可见颜色光谱围成一个圆环，称之为颜色环），该滤镜将图像中的所有颜色沿光环旋转一个角度。样式属性中使用一个角度值（例如 `90deg` ）为参数，参数值代表图像颜色沿颜色环旋转的角度。
+
+## invert 滤镜（颜色翻转滤镜）
+
+该滤镜将图像颜色翻转，样式属性使用一个百分比数值作为参数，用于定义图像颜色的翻转程度，当参数值为100 ％时的作用相当于为一幅照片进行反相处理。
+
+## opacity 滤镜（透明度滤镜）
+
+该滤镜为图像产生透明或半透明效果。样式属性使用一个百分比数值或浮点数作为参数，用于定义图像的透明度，当参数值为 10％ 时图像为完全不透明，即不对图像进行修改。当参数值越小时透明度越高，这当然意味着被使用滤镜的元素叠放在其它元素上时其它元素将变得越来越清晰。当参数值降为 0 时被使用滤镜的元素变为完全透明（即完全消失），但仍可捕捉到该元素的诸如被鼠标单击等事件。因此，该滤镜的作用与 `opacity` 样式属性的作用相同。但是 `opacity` 属性不具有硬件加速特性，而在某些浏览器中当使用 `opacity` 滤镜时将利用硬件加速特性，因而拥有更高的页面性能。
+
+## contrast 滤镜（对比度滤镜）
+
+就像控制电视机上的亮度一样，该滤镜可以在全黑与原图像亮度之间调整图像的对比度。样式属性使用一个百分比数值或浮点数作为参数，用于定义图像的对比度，当参数值为 0％ 时图像为全黑效果，当参数值在 0％ 增长到 100％ 的过程中，图像对比度将变得越来越强，当参数值为 100％时图像对比度变为原图像对比度。该参数值可以大于 100 ％，当参数值为 200％ 时图像对比度为原图像对比度的 2 倍。
+
+## blur 滤镜（模糊滤镜）
+
+该滤镜的作用类似于在图像上添加一层玻璃遮罩，使图像具有一种烟雾效果。样式属性使用一个带有像素值单位的整数值，用于指定图像的模糊度。参数值为 0 时图像不发生变化。
+
+## drop-shadow 滤镜（阴影滤镜）
+
+该滤镜的作用是为图像添加一层阴影效果，就好像太阳照在图像上使其产生一个影子一样。该滤镜为原图像产生一个快照，使其颜色单一化并将之模糊，然后将模糊结果进行偏离，使其看起来就像原图像的一个阴影。样式属性中使用多个可选参数，分别用于指定阴影的横方向偏移距离、纵方向偏移距离、阴影的模糊半径以及阴影的颜色。
+
+            

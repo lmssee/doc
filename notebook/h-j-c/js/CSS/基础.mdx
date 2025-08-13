@@ -1,0 +1,284 @@
+---
+title: 基础
+
+
+---
+
+# 注意事项
+
+- 由于 float 是 JavaScript 保留字，禁止使用，因此使用 cssFloat 表示 float 属性的脚本名称
+- 在 JavaScript 中，所有的 CSS 都是字符串，必须加上引号，以表示字符串数据
+- CSS 结尾的分号不能作为属性值的一部分被引用， JavaScript 脚本中的分号只是 JavaScript 语法规则的一部分
+- 声明中的属性和值必须作为值的一部分，完整的传给 CSS 脚本属性，省略单位则摄制无效
+- 在脚本中可以动态设置属性值，但最终传给属性的值应该是字符串
+- 如果没有为 HTML 设置 style 值，那么 style 对象中可能会包含一些属性的默认值，但这些值并不能准确的反应该元素的样式信息
+
+## 嵌入式
+
+使用 HTML 的 style 元素，可以在 HTML 网页内定义 CSS 样式，这也就是嵌入式的 CSS 定义。 style 元素的定义位于 HTML 文档头部，即位于 head 元素内。
+
+CSS 样式定义内容位于 style 元素之间，其 type 属性必须被定义为 text/css ，以表明这里定义的是 CSS 。例如下面的 HTML 代码片段：
+
+```html
+<head>
+  <style type="text/css">
+    h1 {
+      color: red;
+    }
+    p {
+      color: blue;
+    }
+  </style>
+</head>
+```
+
+## 外部引用式
+
+外部引用指 HTML 文档本身不含有 CSS 样式定义，而是通过动态引用外部 CSS 文件来定义 HTML 文档的表现形式，有以下几种方式。
+
+## 使用样式表的处理指令语句
+
+在 HTML 文档的开头部分写一个关于样式表的处理指令语句，如下所示：
+
+```html
+<?xml-stylesheet type="text/css" href="style.css" ?>
+<html>
+  …
+</html>
+```
+
+按照这条声明语句的指令，该文档在浏览器上的表现方式由 CSS 样式文件 style.css 所决定。 CSS 样式文件 style.css 将会被导入当前 HTML 文档，最终形成内嵌的模式，就像在该文档中定义的一样。
+
+不过只有使用 XML 语法格式编写的 HTML 文档才支持使用处理指令，并且大多数浏览器仅当该文档被保存为 XHTML 或 XML 格式时才会有效，并且， JavaScript 不能处理这样的 CSS 样式表。所以不推荐使用处理指令引用外部样式表。
+
+## 使用@import 指令
+
+也可以在 style 元素之间使用@import 指令导入外部的 CSS 样式表文件，例如下面的代码：
+
+```html
+<head>
+  <style type="text/css">
+    /* 下面两行代码的效果是相同的 */
+    @import 'style.css';
+    @import url('style.css');
+  </style>
+</head>
+```
+
+任何@import 规则必须出现在样式表中所有规则之前。@import 指令的参数是一个 CSS 样式表文件的 URL 地址，表示 URL 地址的字符串也可以包含在 url()函数内。上述代码中两个@import 规则实现的效果是相同的。
+
+在一个单独的 CSS 样式表文件中，也可以使用@import 指令将另一个 CSS 样式文件导入当前文件中。
+
+## 使用 link 元素
+
+在 HTML 代码中使用 link 元素也可以引用外部样式表，可使用 href 属性指定样式表文件所在的 URL ，并且指定 rel="stylesheet" type="text/css"，前者表示引用的是样式表，后者表示引。
+
+用的是 CSS 样式表。例如：
+
+```html
+<head>
+  <link
+    href="https://lmssee.com/example/css/html/h5-layout.css"
+    rel="stylesheet"
+    type="text/css"
+  />
+</head>
+```
+
+## 使用 HTTP 消息报头链接到样式表
+
+可以使用 HTTP 消息报头的 link 字段链接一个外部样式表， link 字段的功能和 HTML link 元素的功能相同，有相同的属性设置，例如下面的字段：
+
+```html
+link: <style.css>; rel=stylesheet</style.css>
+```
+
+等同于：
+
+```html
+<link
+  href="https://lmssee.com/example/css/html/h5-layout.css"
+  rel="stylesheet"
+  type="text/css"
+/>
+```
+
+HTTP 报头中可以使用多个 link 字段，从而可以使用 link 字段链接多个外部样式表。并且， HTTP 报头中的 link 字段比 HTML 文档中的 link 元素具有优先级。
+
+## 内联式
+
+每一个 HTML 元素都包含有一个 style 属性，使用该属性可以直接指定样式，当然，该样式仅能用于该元素的内容，对于另一个同名的元素则不起作用。
+
+例如下面的 HTML 代码片断：
+
+```html
+<p style="color:#FF0000;font-weight:bold;">
+  请点击<a href="page.html">网站链接</a>
+</p>
+```
+
+## 处理 style 和 link 元素定义的样式表
+
+当使用 link 元素链入外部样式表或者使用 style 元素来定义嵌入式样式表时，可以使用 document 的 styleSheets 属性获取文档中所有的 link 和 style 元素，而后通过访问列表中的元素获取每个元素对象，每个元素对象（ style 元素或者 link 元素）被描述为一个 styleSheet 对象，每个 styleSheet 对象中包含很多的规则，进而可以获取规则中的样式数据。
+
+例如下面的代码定义了一个嵌入式样式表，又定义了 link 元素链入一个外部样式表：
+
+```html
+<head>
+  <link
+    href="https://lmssee.com/example/css/html/h5-layout.css"
+    rel="stylesheet"
+    type="text/css"
+  />
+  <style type="text/css">
+    div {
+      color: #ff0000;
+      font-weight: bold;
+    }
+    p {
+      color: #ffffff;
+      font-size: 14px;
+    }
+  </style>
+</head>
+```
+
+那么，通过以下3个步骤即可以处理其中定义的样式信息：
+
+首先使用 document.styleSheets 属性获取外部和嵌入式样式表该列表返回的是一个数组对象，使用数组语法可以访问其中的样式表：
+
+```js
+// link 元素链入的外部样式表
+document.styleSheets[0];
+// style 元素定义的嵌入式样式表
+document.styleSheets[1];
+```
+
+document.styleSheets[0] 和 document.styleSheets[1] 都是 styleSheet 对象，其中包含了规则的定义，也包含了@import 指令导入的样式表。
+
+使用 styleSheet.rules 属性获取规则，该属性返回一个数组对象，数组中的每个元素就是一条规则，使用数组语法可以访问这些规则例如下面的代码访问 style 元素中定义的第2条规则：
+
+```js
+var oStyleSheet = document.styleSheets[1];
+var oRule = oStyleSheet.rules[1];
+```
+
+即：
+
+```css
+p {
+  color: #ffffff;
+  font-size: 14px;
+}
+```
+
+获得规则（这是一个 rule 对象）后，使用 rule 对象的 style 属性返回一个 style 对象（ rule.style ），该对象代表了这个规则中定义的所有样式例如下面的代码：
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>JavaScript Sample</title>
+    <style type="text/css">
+      div {
+        color: #ff0000;
+        font-weight: bold;
+      }
+      p {
+        color: #ff0000;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="oDiv">请点击<a href="page.html">网站链接</a></div>
+    <script>
+      var oStyleSheet = document.styleSheets[0];
+      var oRule = oStyleSheet.rules[0];
+      alert(oRule.style.color); // 访问规则中定义的样式属性 color
+      oRule.style.color = 'green'; // 改变规则中定义的样式属性 color
+      oRule.style.fontSize = '13 px';
+      // 在规则中新增样式属性 fontSize
+      alert(oRule.style.color);
+      // //访问改变后的样式属性 color
+    </script>
+  </body>
+</html>
+```
+
+## 处理导入的样式表
+
+对于使用@import 指令导入的样式表，可以使用 styleSheet.imports 属性获取每个@import 指令导入的样式表，这些样式表构成了一个列表。该列表中每个元素就是一个 styleSheet 对象。然后，就可以使用 styleSheet.rules 属性获取其中定义的规则，进而获取每条规则定义的 style 对象，从而访问该规则定义的样式。
+
+例如下面的代码，定义了一个名为 `https://lmssee.com/example/css/html/h5-layout.css` 的样式表，该样式表中包含了两条规则：
+
+```css
+div {
+  color: #ff0000;
+  font-weight: bold;
+}
+p {
+  color: #00ff00;
+  font-size: 14px;
+}
+```
+
+然后在网页文档中使用@import 指令导入该样式表，并访问其中的规则：
+
+```html
+<head>
+  <style type="text/css">
+    @import https: ; //lmssee.com/example/css/html/h5-layout.css;
+  </style>
+</head>
+<body>
+  <div id="oDiv">请点击<a href="page.html">网站链接</a></div>
+  <script>
+    var oStyleSheet = document.styleSheets[0]; // 获取 style 元素定义的样式表
+    var oImport = oStyleSheet.imports[0]; // 获取其中第一个@import 指令
+    oRule = oImport.rules[0]; // 获取样式表中的第一个规则
+    alert(oRule.style.color);
+    //   下面就是访问规则
+    oRule.style.color = 'green';
+    oRule.style.fontSize = '13 px';
+    alert(oRule.style.color);
+  </script>
+</body>
+```
+
+可以看到这与前面范例有相同的效果。
+
+另一种可能的情况是导入的样式表中也定义有@import 指令，例如下面的名为 anotherStyle.css 的样式表，其中定义了@import 指令导入 `https://lmssee.com/example/css/html/h5-layout.css` 样式表：
+
+```css
+@import https: ; //lmssee.com/example/css/html/h5-layout.css;
+```
+
+然后，在网页文档中导入这个 anotherStyle.css 样式表：
+
+```html
+<head>
+  <style type="text/css">
+    @import anotherStyle.css;
+  </style>
+</head>
+
+<body>
+  <div id="oDiv">请点击<a href="page.html">网站链接</a></div>
+  <script>
+    var oStyleSheet = document.styleSheets[0];
+    var oImport = oStyleSheet.imports[0]; // 获取 anotherStyle 中第一个@import 指令
+    var oImport2 = oImport.imports[0];
+    oRule = oImport2.rules[0];
+    alert(oRule.style.color);
+    oRule.style.color = 'green';
+    oRule.style.fontSize = '13 px';
+    alert(oRule.style.color);
+  </script>
+</body>
+```
+
+这时，要访问样式信息，就必须首先获得对 anotherStyle.css 样式表的引用，这是一个 styleSheet 对象，然后通过该 styleSheet 对象的 imports 属性获取对 `https://lmssee.com/example/css/html/h5-layout.css` 样式表的引用，从而访问其中的规则，进而访问样式。
+
+            

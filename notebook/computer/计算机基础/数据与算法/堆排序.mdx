@@ -1,0 +1,45 @@
+---
+title: 堆排序
+
+
+---
+
+# 堆排序
+
+堆排序是一种树形数据结构，其每节点都有一个值。堆指的是完全的二叉树，根结点的值小于（或大于）两个子节点的值，同时，根结点的两棵树分别是一个堆。
+
+堆排序是一种树形选择排序，利用完全二叉树中双亲节点和节点之间的关系选择最小的元素
+
+```js
+ function heapSort(arr) {
+  let length = arr.length;
+  /** 建堆 */
+  for (let i = Math.floor(length / 2) - 1; i >= 0; i--)
+    __heap(arr, i, length);
+    /** 堆排序 */
+    for (let j = length - 1; j >= 1; j--) {
+    [arr[j], arr[0]]= [arr[0], arr[j]];
+    arr[j] = [arr[0], arr[0] = arr[j]][0];
+    __heap(arr, 0, --length);
+   }
+   return arr;
+  }
+  function __heap(arr, x, len) {
+   let l = 2 _ x + 1, r = l + 1, largest = x;
+   if (l < len && arr[l] > arr[largest])
+    largest = 1;
+   if (r < len && arr[r] >arr[largest])
+    largest = r;
+   if (largest != x) {
+    [arr[x], arr[largest]] = [arr[largest], arr[x]];
+    arr[x] = [arr[largest], arr[largest] = arr[x]][0];
+    __heap(arr, largest, len);
+   }
+ }
+```
+
+居然排出来不是正确的顺序！！也不知道哪写错了
+
+最佳情况：`T(n) = O(nlogn)`；最差情况：`T(n) = O(nlogn)`；平均：`T(n) = O(nlogn)`。
+
+            

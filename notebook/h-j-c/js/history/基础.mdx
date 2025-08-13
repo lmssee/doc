@@ -1,0 +1,50 @@
+---
+title: 基础
+
+
+---
+
+# History 基础
+
+在 HTML 5 中，新增了如下：
+
+- 允许用户在浏览器历史记录中添加项目
+- 在不刷新页面的前提下，允许显示改变浏览器地址栏的 URL 地址
+- 新添了一个当激活的历史记录发生改变时的触发事件，如前进或后退浏览器浏览页面
+
+## History API 处理方式
+
+URL 是 Universal Resource Locator 的首字母缩写，中文表示为统一资源定位符，俗称网页糊 ;于定位浏览器中显示的网页资源。可以在页面上或 Email 中显示一个 URL 地址链接，也可以将某个
+u 地址标记为一个书签，当用户单击某个 URL 地址链接时，浏览器将定位到某个网页资源。
+
+在 HTML5之前，使用 JavasScript 实现在浏览器地址栏中切换 URL 地址，都会触发一个页面刷新过程，这个过程将耗费大量时间和资源。在很多情况下，这种刷新是没有必要的，导致重复加载。
+
+HTML 5 的 History API 允许在不刷新页面的前提下，通过 JavaScript 方式更新页面内容。 History API 执行过程如下。
+
+- 通过 Ajax 向服务器端请求页面需要更新的信息
+- 使用 JavaScript 加载并显示更新的页面信息
+- 通过 History API 在不刷新页面的前提下，更新浏览器地址栏中的 URL 地址
+
+在整个处理过程中，页面信息得到更新，浏览器的地址栏也发生了变化，但是页面并没有被删新实际上， History API 的诞生，主要任务就是为了解决 Ajax 技术与浏览器历史记录之间存在的冲突
+
+完善 Ajax 与 History API 融合，需要注意两个问题
+
+- 将 Ajax 请求的地址嵌入到 `<a>` 标记的 href 属性中
+- 确保在 JavaScript 的 click 事件处理程序中返回 true ，这样当用户使用中键单击或命令单击时不会影序被意外覆盖
+
+## 浏览器的兼容和扩展
+
+History API 最王要的功能是不重新加载页面，之前用户只能通过改变 window.location 的值来修改当前页面的 URL ，不过这会导致整个页面被重新加载。
+
+目前， IE 10+、 Firefox 4+、 Chrome 8+、 Safari 5+、 Opera 11+等主流版本浏览器支持 HTML5 中的 History API 。
+
+如果只修改 URL 中的 hash ，则不会导致页面被刷新。使用传统的 hashbang 方法可以改变页面的 URL ，但不刷新页面。 Twitter 网站就使用这种方法，不过这种方法广受诟病，毕竟 hash 在 location
+中并不被作为一个真正的资源来对待。 2012 年 Twitter 抛弃了 hashbang 方法，推出 pushState()方法，随后各浏览器支持了这个规范。
+
+如果想大范围地使用 History API 技术，可以考虑使用一些专有的工具，如 [pjax](https://github.com/defunkt/jquery-pjax) ，它是一个 jQuery 插件，使用它可以大大提高用户同时使用
+Ajax 和 pushState （）方法进行开发的速度，不过它只支持那些使用
+History API 接口的现代浏览器。
+
+对于不支持 History API 接口的浏览器，可以使用 history.js 进行兼容，它使用旧的 URL hash 的方式来实现同样的功能。下载地址 [https://github.com/browserstate/history.js/](https://github.com/browserstate/history.js/)。
+
+            

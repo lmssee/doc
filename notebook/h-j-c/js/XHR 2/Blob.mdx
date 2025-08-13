@@ -1,0 +1,95 @@
+---
+title: Blob
+
+
+---
+
+# blob
+
+当 XMLHttpRequest 对象的 responseType 属性设置为 blob 时，服务器端响应数据将是一个 Blob 对象。
+
+所有的 File 对象都有一个 Blob 对象。因此可以使用发送 Blob 对象的方式发送文件 。
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>123</title>
+
+    window.URL = window.URL | | window.webkitURL;// 复制当前页面 function
+    uploadDocument() {var bb = new Blob([document.documentElement.outerHTML]);
+    var xhr = new XMLHttpRequest();xhr.open('POST', 'test.php?fileName=' +
+    getFileName(), true);var progressBar =
+    document.getElementById('progress');xhr.upload.onprogress = function(e) { if
+    (e.lengthComputable) {progressBar.value = (e.loaded / e.total) \*
+    100;document.getElementById("result").innerHTML = ' 已完成进度： ' +
+    progressBar.value + '%';} }xhr.send(bb);}// 获取当前页面文件的文件名
+    function getFileName() {var url = window.location.href;var pos =
+    url.lastIndexOf("\\"); if (pos == -1) //pos==-1 表示为本地文件 pos =
+    url.lastIndexOf("/"); // 本地文件路径分割符为 "/" var fileName =
+    url.substring(pos + 1); // 从 url 中获得文件名 return fileName; }
+  </head>
+  <body>
+    <input type="button" value=" 复制文件 " onclick="uploadDocument()" />
+    <progress min="0" max="100" value="0" id="progress"></progress
+    ><output id="result" />
+  </body>
+</html>
+```
+
+## 接收 Blob
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>13</title>
+
+    window.indexedDB = window.indexedDB || window.webkitIndexedDB
+    ||window.mozIndexedDB || window.msIndexedDB; window.IDBTransaction =
+    window.IDBTransaction || window.webkitIDBTransaction ||
+    window.msIDBTransaction; window.IDBKeyRange = window.IDBKeyRange ||
+    window.webkitIDBKeyRange ||window.msIDBKeyRange; window.IDBCursor =
+    window.IDBCursor || window.webkitIDBCursor || window.msIDBCursor; window.URL
+    = window.URL || window.webkitURL; var dbName = 'imgDB'; // 数据库名 var
+    dbVersion = 20190418; // 版本号 var idb; function init() {var dbConnect =
+    indexedDB.open(dbName, dbVersion); // 连接数据库 dbConnect.onsuccess =
+    function(e) { // 连接成功 idb = e.target.result; // 获取数据库
+    };dbConnect.onerror = function() {alert(' 数据库连接失败
+    ');};dbConnect.onupgradeneeded = function(e) {idb = e.target.result; var tx
+    = e.target.transaction;tx.onabort = function(e) {alert(' 对象仓库创建失败
+    ');};var name = 'img';var optionalParameters = { keyPath:
+    'id',autoIncrement: true};var store = idb.createObjectStore(name,
+    optionalParameters);alert(' 对象仓库创建成功 '); };} function downloadPic()
+    {var xhr = new XMLHttpRequest();xhr.open('GET', 'images/1.png', true);
+    xhr.responseType = 'blob';xhr.onload = function(e) {if (this.status == 200)
+    {var bb = new Blob([this.response]);var reader = new FileReader();
+    reader.readAsDataURL(bb);reader.onload = function(f) {var result =
+    document.getElementById("result ");// 在 IndexDB 数据库中保存二进制数据 var
+    tx = idb.transaction(['img'], "readwrite ");tx.oncomplete = function()
+    {alert(' 保存数据成功 ');}tx.onabort = function() { alert(' 保存数据失败
+    ');}var store = tx.objectStore('img');var value = {img: this.result};
+    store.put(value);}}};xhr.send();} function showPic() { var tx =
+    idb.transaction(['img'], "readonly ");var store = tx.objectStore('img');var
+    req = store.get(1);req.onsuccess = function() { if (this.result ==
+    undefined) {alert(" 没有符合条件的数据 ");} else {var img =
+    document.createElement('img'); img.src = this.result.img;
+    document.body.appendChild(img);}}req.onerror = function() {alert("
+    获取数据失败 "); }}
+  </head>
+  <body onload="init() ">
+    <input type="button " value=" 下载图片 " onclick="downloadPic() " />
+    <input
+      type="button "
+      value=" 显示图片 "
+      onclick="showPic()
+    "
+    />
+    <output id="result "></output>
+  </body>
+</html>
+```
+
+            

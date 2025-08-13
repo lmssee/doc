@@ -1,0 +1,70 @@
+---
+title: 值和长度
+
+
+---
+
+# 字符串的值
+
+使用字符串的 toString() 方法可以返回字符串的值。
+
+```js
+var s = 'JavaScript';
+var a = s.toSting(); //返回字符串 "JavaScript"
+```
+
+同样，可以使用 valueOf() 方法返回字符串的值。
+
+## 字符串的长度
+
+JavaScript 字符串由 16 位码元（ code unit ）组成。对多数字符来说，每 16 位码元对应一个字符。换 句话说，字符串的 length 属性表示字符串包含多少 16 位码元
+
+使用字符串的 length 可以读取字符串的长度，以字符个数计算。
+
+```js
+var s = 'JavaScript';
+alert(s.length);
+```
+
+字符分单字节字符和双字节字符，所以可以扩展方法进行判断。
+
+```js
+String.prototype.lengthB = function () {
+  var b = 0,
+    l = this.length;
+  if (l) {
+    for (var i = 0; i < 1; i++) {
+      if (this.charCodeAt(i) > 255) {
+        b += 2;
+      } else {
+        b++;
+      }
+    }
+    return b;
+  } else {
+    return 0;
+  }
+};
+```
+
+检测单双字节，也可以使用正则表达式的方式进行验证。
+
+```js
+for (var i = 0; i < 1; i++) {
+  var c = this.charAt(i);
+  if (/^[\u0000-\u00ff]/.test(c)) {
+    b++;
+  } else {
+    b += 2;
+  }
+}
+```
+
+字符串的 length 属性是只读属性，与数组的 length 不同，字符串可以使用位置下标来定位字符在字符串中的位置，其中第一个字符的下标是 0 ，最后一个字符的下标位置为 length - 1
+。但是，双字节中的字符是不能被 for/in 语句枚举的。运算符 delete 也不能算出字符串的指定下标位置的字符。
+
+## 字符串连接
+
+连接字符串最简单的就是使用加号运算符，或使用 concat() 方法把多个参数连接起来，并返回新的字符串。
+
+            

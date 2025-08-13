@@ -1,0 +1,40 @@
+---
+title: 数据结构
+
+
+---
+
+# 数值类型
+
+MYSQL 有 5 种整数类型： tinyInt 、 smallint 、 mediumint 、 int （ interger ）、 bigint 。
+
+| 类型      | 字节 | 最小值        | 最大值                |
+| :-------- | :--- | :------------ | :-------------------- |
+| tinyInt   | 1    | -128~0        | 127~255               |
+| smallint  | 2    | -32768~0      | 32767~65535           |
+| mediumInt | 3    | -8388608~0    | 8388607~16777215      |
+| int       | 4    | -2147483648~0 | 2147483647~4294967295 |
+| bigint    | 8    | 特别小        | 特别大                |
+
+## 浮点类型
+
+float 、 double 、 decimal
+
+## 字符串类型
+
+CHAR 、 varChar 、 binary 、 varbinary 、 BLOB 、 TinyBlob 、 MediumBlob 、 LongBlob 、 TEXT 、 TinyText 、 MEDIUMTEXT 、 LongText 、 ENUM 、 set 。
+
+| 列类型                 | 储存需求                                                  |
+| :--------------------- | :-------------------------------------------------------- |
+| char(N)                | N 个字节，`0 <= N <=255`                                  |
+| varChar(N)             | L + 1 个字节，其中 `L <= N` 且 `0 <=N <=65535`            |
+| binary(N)              | N 个字节，`0 <= N <=255`                                  |
+| varBinary(N)           | L + 1 个字节，其中 `L <= N` 且 `0 <=N <=255`              |
+| tinyBlob,tinyText      | L + 1 个字节，其中 `L < 28`                               |
+| blob, text             | L + 2 个字节，其中 `L < 216`                              |
+| mediumBlob, mediumText | L + 3 个字节，其中 `L < 224`                              |
+| longBlob , longText    | L + 4 个字节，其中 `L < 232`                              |
+| enum(\'\',\'\')        | 1 或 2 个字节，取决于枚举值得个数。（最多 65535 个值）    |
+| set(\'\',\'\')         | 1、2、3、4、8 个字节，取决于 set 成员的数目（最多 64 个） |
+
+            

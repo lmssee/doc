@@ -1,0 +1,174 @@
+---
+title: Blob
+
+
+---
+
+# 文件域
+
+为了方便用户在脚本中访问将要提交的文件， HTML 5 新增了 FileList 和 file 对象表
+
+件
+
+- FileList ： 表示用户选择的文件列表
+- file ： 表示 file 控件内的每一个被选择的文件对象。 FIleList 对象为这些 file 对象的列表，代表用户选择的所有文件
+
+file 对象包括两个属性： name （文件名）、 lastModifiedDate （最后修改时间）。
+
+## 使用 Blob
+
+HTML 5 新增的 Blob 对象，他代表着原始二进制数据。不过与 MySQL 的 BLOB 类型在概念上有点区别， MySQL 中的 BLOB 类型只是二进制数据容器，而 HTML 5 中的 Blob
+对象除了二进制数据外，还可以设置 MIME 数据，这相当于文件的储存，其他很多二进制对象也是从这个对象继承的
+
+## 在文件域访问 Blob
+
+file 对象继承于 Blob 对象，因此可以在文件域访问 Blob 对象。 Blob 对象含有两个属性：
+
+- size ：该属性表示一个 Blob 对象的字节长度
+- type ： 该属性表示 Blob 的 MIME 类型，如果类型未知，则返回一个空字符串
+
+对于图像类型的文件， Blob 对象的 type 属性都是以 " image/ " 开头，后面是图像类型。 HTML 5 为 file 控件增加了 accept 属性，设置 file 控件只能接受某种类型的文件
+
+```js
+function fileUpload() {
+  var file;
+  for (var i = 0; i < document.getElementById('file').files.length; i++) {
+    file = document.getElementById('file').files[i];
+    if (!/image\/\w+/.test(file.type)) {
+      alert(file.name + '不是图像文件！');
+      continue;
+    } else {
+      //
+      此处可加入文件上传的代码;
+      alert(file.name + '文件已上传');
+    }
+  }
+}
+```
+
+## 创建 Blob 文件
+
+HTML 5 直接使用 new 创建 Blob 对象
+
+```js
+var Blob = new Blob(blobParts, type);
+```
+
+- blobParts ： 可选参数，数组类型，其中可以存放任何类型的对象，这些对象中所携带的数据将被追加到 Blob 中
+
+- ArrayBuffer 对象
+- ArrayBufferView 对象
+- Blob 对象
+- string 对象
+
+- type : 可选参数，字符串类型，设置被创建的 Blob 对象的 type 属性，即定义 Blob 对象的 MIME 类型。默认为空字符串，表示未知类型
+
+HTML 5 支持 URL 对象，通过该对象的 createObjectURL() 方法可以根据一个 Blob 对象的二进制数据创建一个 URL 地址，并返回该地址，当用户访问该地址时，可以直接下载原始二进制数据
+
+```js
+function test() {
+  var text = document.getElementById('textarea').value;
+  var result = document.getElementById('result'); // 创建 Blob 对象
+  if (!window.Blob) result.innerHTML = '浏览器不支持 Blob 对象。';
+  else var blob = new Blob([text]);
+  //   Blob 中数据为文字时默认使用 utf8格式
+  // // 通过 createObjectURL 方法创建文字链接
+
+  if (window.URL) {
+    result.innerHTML =
+      '<a download href="' +
+      window.URL.createObjectURL(blob) +
+      '" >Blob 对象文件下载</a>';
+  }
+}
+```
+
+## 截取 Blob 对象
+
+Blob() 含有 slice() 方法，它可以从 Blob 对象截取一部分数据，然后把这些数据创建成新的 Blob 数据返回
+
+```js
+var newBlob = blob.slice(start, end, contentType);
+```
+
+- start ∶ 可选参数，整数值，设置起始位置
+
+- 如果值为 0 时，表示从第一个字节开始复制数据
+- 如果值为负数，且 Blob 对象的 size 属性值 +start 参数值大于等于 0 ，则起始位置为 Blob 对象的 size 属性值 +start 参数值
+- 如果值为负数，且 Blob 对象的 size 属性值 +start 参数值小于 0 ，则起始位置为 Blob 对象的起点 位置
+- 如果值为正数，且大于等于 Blob 对象的 size 属性值，则起始位置为 Blob 对象的 size 属性值
+- 如果值为正数，且小于 Blob 对象的 size 属性值，则起始位置为 start 参数值
+
+- end ∶ 可选参数，整数值，设置终点位置
+
+- 如果忽略该参数，则终点位置为 Blob 对象的结束位置
+- 如果值为负数，且 Blob 对象的 size 属性值 +end 参数值大于等于 0 ，则终点位置为 Blob 对象的 size 属性值 + end 参数值
+- 如果值为负数，且 Blob 对象的 size 属性值 +start 参数值小于 0 ，则终点位置为 Blob 对象的起点位置
+- 如果值为正数，且大于等于 Blob 对象的 size 属性值，则种植位置为 Blob 对象的 size 属性值
+- 如果值为正数，且小于 Blob 对象的 size 属性值，则终止位置为 end 参数值
+
+- contentType 可选参数，字符串值，制定新的 Blob 对象的 MIME 类型
+
+如果 slice 三个参数都省略，这说明是把一个 Blob 对象复制出来
+
+```js
+var file = document.getElementById('file').files[0];
+if (file) {
+  var file1 = file.slice(); // 复制 file 对象
+  var file2 = file.slice(0, file.size); // 复制 file 对象
+  // 复制 file 对象的后半部分
+  var file3 = file.slice(-Math.round(file.size / 2)); // 复制 file 对象的前半部分
+  var file4 = file.slice(0, Math.round(file.size / 2));
+  // 复制 file 对象，从开始处复制到结束处之前的 150 个字节处，并设置 MIME 类型
+  var file5 = file.slice(0, -150, 'application/plain');
+}
+```
+
+## 保存 Blob 对象
+
+HTML 5 支持在 indexedDB 数据库中保存 Blob 对象
+
+```js
+window.indexedDB =
+  window.indexedDB ||
+  window.webkitIndexedDB ||
+  window.mozIndexedDB ||
+  window.msIndexedDB;
+window.IDBTransaction =
+  window.IDBTransaction ||
+  window.webkitIDBTransaction ||
+  window.msIDBTransaction;
+window.IDBKeyRange =
+  window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+window.IDBCursor =
+  window.IDBCursor || window.webkitIDBCursor || window.msIDBCursor;
+var dbName = 'test'; // 数据库名
+var dbVersion = 20170202; // 版本号
+var idb;
+var dbConnect = indexedDB.open(dbName, dbVersion);
+dbConnect.onsuccess = function (e) {
+  idb = e.target.result;
+};
+dbConnect.onerror = function () {
+  alert('数据库连接失败 ');
+};
+dbConnect.onupgradeneeded = function (e) {
+  idb = e.target.result;
+  idb.createObjectStore('files');
+};
+function saveFile() {
+  var file = document.getElementById('file').files[0];
+  // 得到用户选择的第一个文件
+  var tx = idb.transaction(['files'], 'readwrite'); // 开启事务
+  var store = tx.objectStore('files');
+  var req = store.put(file, 'blob');
+  req.onsuccess = function (e) {
+    alert(' 文件保存成功 ');
+  };
+  req.onerror = function (e) {
+    alert(' 文件保存失败 ');
+  };
+}
+```
+
+            

@@ -1,0 +1,75 @@
+---
+title: 样式处理
+
+
+---
+
+# 样式隔离
+
+使用 [mini-css-extract-plugin](https://www.npmjs.com/package/mini-css-extract-plugin) 可以将 css 单独出来。
+
+## 样式预处理
+
+## Sass 和 SCSS
+
+sass-loader 搭配 css-loader 和 style-loader ,且 sass 本身需要安装 node-sass 进行编译。
+
+## less
+
+[less](https://lesscss.org/usage/#less-options) 也是一种预编译 css
+
+```sh
+npm i --save-dev less-loader less
+```
+
+## PostCSS
+
+PostCSS 可以更智能化 css ：
+
+```sh
+npm i --save-dev postcss-loader
+```
+
+## 自动前缀
+
+与 Autoprefixer 结合，为 css 自动添加厂商前缀。
+
+```sh
+npm i --save-dev autoprefixer
+```
+
+## stylelint
+
+```sh
+npm i --save-dev stylelint
+```
+
+## CSSNext
+
+安装 CSSNext 可以使用 css 新特性：
+
+```sh
+npm i --save-dev postcss-cssnext
+```
+
+## css modules
+
+将 css 模块化：
+
+- 每个 CSS 文件中的样式都拥有单独的作用域，不会和外界发生命名冲突
+- 对 CSS 进行依赖管理，可以通过相对路径引入 CSS 文件
+- 可以通过 composes 轻松复用其他 CSS 模块
+
+使用 CSS Modules 不需要额外安装模块，只要开启 css-loader 中的 modules 配置项即可。
+
+```json
+{
+  "loader": "css-loader",
+  "options": {
+    "modules": true,
+    "localedirName": "[name]**[local]**[hash:base64:5]"
+  }
+}
+```
+
+            

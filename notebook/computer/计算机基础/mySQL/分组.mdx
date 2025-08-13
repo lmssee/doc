@@ -1,0 +1,31 @@
+---
+title: 分组
+
+
+---
+
+# 分组
+
+按照参数进行统计，可以是 count (统计) 、 sum （求和）、 avg （平均） ：
+
+```sql
+select main_age,count(main_age) from main group by main_name group by main_age;
+```
+
+## 使用 with rollup
+
+统计后的统计
+
+```sql
+select main_name,count(*) from main group by main_name with rollup;
+```
+
+## coalesce
+
+使用 coalesce 可以讲上面统计的 null 替换成好看的词：
+
+```sql
+select coalesce(main_name,'总计','总共') ,count(*) from main group by main_name with rollup;
+```
+
+            

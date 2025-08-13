@@ -1,0 +1,174 @@
+---
+title: 三弟
+
+
+---
+
+# 3 哥
+
+09 年 3 月 W3C 正式发布了 3D 变形标准草案（ [http://www.w3.org/TR/css3-3d-transforms](http://www.w3.org/TR/css3-3d-transforms/) ）。
+
+与 2 哥变形的相同属性：
+
+## 透视图
+
+一般来讲，透视图（ perspective ）是以一种特定的方式绘制 2D 对象的过程，用以提供当从特定点（没影点 [vanishing point]）查看时它们彼此之间的高度、宽度和深度的正确表示。
+
+3 弟 较 2 哥变形要麻烦些，需要先定义 3 维空间，才可以完美展现。在其爷级元素上定义视距 perspective ： length ,然后在其父级元素上定义变幻风格 transform-style:
+preserve-3d; ，之后就可以定义 3 弟变幻了。
+
+## 观察者视距 perspective （爷爷元素）
+
+定义视距：
+
+```css
+perspective ： length;
+```
+
+## 3D 元素观察者基点位置 perspective-origin （爷爷元素）
+
+```css
+perspective-origin: x-axis y-axis;
+```
+
+取值包括： left 、 right 、 center 、 length 、%
+
+该属性必须和 perspective 属性一起使用。
+
+## 创建舞台 transform-style （父亲元素）
+
+```css
+transform-style: preserve-3d;
+```
+
+transform-style 是否保留其子元素的 3D 转换。
+
+```css
+transform-style: flat|preserve-3d;
+```
+
+- flat ： 子元素将不保留其 3D 转换
+- preserve-3D ：子元素将保留其 3D 转换
+
+## 定义 3 D 变形 transform （目标元素）
+
+```css
+transform: translate3d(x, y, z);
+```
+
+## 3D 位移
+
+## translate3d() 函数
+
+```css
+.stage {
+  width: 300px;
+  height: 300px;
+  float: left;
+  margin: 15px;
+  position: relative;
+  background: #93fb40;
+  -webkit-perspective: 1200px;
+  -moz-perspective: 1200px;
+  -ms-perspective: 1200px;
+  -o-perspective: 1200px;
+  perspective: 1200px;
+}
+.container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+.container img {
+  position: absolute;
+  margin-left: -80px;
+  margin-top: -100px;
+}
+.container img:nth-child(1) {
+  z-index: 1;
+  opacity: 0.6;
+}
+.s1 img:nth-child(2) {
+  z-index: 2;
+  opacity: 0.6;
+  -webkit-transform: translateZ(200px);
+  -moz-transform: translateZ(200px);
+  -ms-transform: translateZ(200px);
+  -o-transform: translateZ(200px);
+  transform: translateZ(200px);
+}
+```
+
+## translateZ() 函数
+
+```css
+translateZ(t);
+```
+
+translateZ() 函数仅让元素在 Z 轴进行位移，当值越大时，元素离浏览者越近，在视觉上元素越大，反之元素越小。
+
+translateZ() 函数在实际应用中效果等于 translate3d(0,0,tz)。仅从视觉效果来看， translateZ() 和 translate3d(0,0,tz) 函数功能类似于二维
+的 scale() 函数，但实际上完全不同。 translateZ() 和 translate3d(0,0,tz) 变形是发生在 z 轴，而不是 X 轴和 Y 轴。当使用 3D 变形，能够在 -Z-
+轴移动一个确实很大的好处，比如说建立一个 3D 的盒子时。
+
+## 3D 缩放
+
+```css
+scale3d(sx,sy,sz);
+scaleZ(s);
+```
+
+scaleZ(-1) 定义了一个原点在 Z 轴的对称点（按照元素的变换原点）。
+
+scaleZ() 和 scale3d() 函数单独使用时没有任何效果，需要配合其他的变形函数才会有效果。
+
+## 3 D 旋转
+
+CSS 3 新增了 3 个 旋转函数： rotateX()、 rotateY()、 rotateZ()。
+
+## rotateX()
+
+rotateX() 函数指定一个元素围绕 X 轴旋转，旋转的量别定为指定的角度；如果值为正值，元素围绕 X 轴顺时针旋转；反之，如果是负值，元素围绕 X 轴逆时针旋转。
+
+```css
+rotateX(a);
+```
+
+## rotateY()
+
+rotateY() 函数指定一个元素围绕 Y 轴旋转，旋转的量别定为指定的角度；如果值为正值，元素围绕 Y 轴顺时针旋转；反之，如果是负值，元素围绕 Y 轴逆时针旋转。
+
+```css
+rotateY(a);
+```
+
+## rotateZ()
+
+rotateZ() 函数指定一个元素围绕 Z 轴旋转，旋转的量别定为指定的角度；如果值为正值，元素围绕 Z 轴顺时针旋转；反之，如果是负值，元素围绕 Z 轴逆时针旋转。
+
+```css
+rotateZ(a);
+```
+
+rotateZ() 函数指定元素围绕 Z 轴旋转，如果仅在视觉上来看， rotateZ() 函数让元素顺时针或逆时针旋转，与 rotate() 效果相同，但他不能在 2 D 平面旋转。
+
+在三维里，除了 rotateX()、 rotateY()、 rotateZ() 函数可以让一个元素在三维空间中旋转之外，还有一个就是 rotate3D() 函数。在 3D 空间，旋转由一个 [x,y,z,a]
+向量并经过元素原点定义。
+
+rotate3d() 中取值说明如下：
+
+- x ： 一个 0~1 之间的值，主要用来描述围绕 X 轴旋转的矢量值
+- y ： 一个 0~1 之间的值，主要用来描述围绕 Y 轴旋转的矢量值
+- z ： 一个 0~1 之间的值，主要用来描述围绕 Z 轴旋转的矢量值
+- a ： 一个角度值，主要用来指定元素在 3D 空间的旋转的角度。如果是正值，这说明 顺时针旋转，如果是负值，这说明逆时针旋转
+
+- rotateX(a) 函数功能等同于 rotate3d(1,0,0,a)
+- rotateY(a) 函数功能等同于 rotate3d(0,1,0,a)
+- rotateZ(a) 函数功能等同于 rotate3d(0,0,1,a)
+
+            

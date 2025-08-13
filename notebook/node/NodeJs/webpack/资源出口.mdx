@@ -1,0 +1,106 @@
+---
+title: 资源出口
+
+
+---
+
+# 出口配置
+
+所有的出口配置在 output 对象中
+
+## filename
+
+资源输出的文件名，为字符串：
+
+```js
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'lmssee',
+  },
+};
+```
+
+在多入口中，可以对应每一个入口指定不同的名字：
+
+```js
+module.exports = {
+  entry: {
+    index: './src/index.js',
+    lmssee: './src/lmssee.js',
+  },
+  output: {
+    filename: '[name].js',
+  },
+};
+```
+
+|             |                                  |
+| :---------- | :------------------------------- |
+| [name]      | 指代 chunk 的名                  |
+| [hash]      | 指代 Webpack 此次打包生成的 hash |
+| [chunkhash] | 指代当前 chunk 内容的 hash       |
+| [id]        | 指代当前 chunk 的 id             |
+| [query]     | 指代 filename 配置项中的 query   |
+
+作用：
+
+- 当有多个 chunk 存在时对不同的 chunk 进行区分。如 [name] 、[ chunkhash ]和 [id] ，它们对于每个 chunk 来说都是不同的
+- 控制客户端缓存。表中的 [hash] 和 [chunkhash] 都与 chunk 内容直接相关，在 filename 中使用了这些变量后，当 chunk
+  的内容改变时，可以同时引起资源文件名的更改，从而使用户在下一次请求资源文件时会立即下载新的版本而不会使用本地缓存。 [query] 也可以起到类似的效果，只不过它与 chunk 内容无关，要由开发者手动指定
+
+在实际工程中，使用比较多的是 [name] ，它与 chunk 是一一对应的关系，并且可读性较高。如果要控制客户端缓存，最好还要加上[chunkhash]，因为每个 chunk 所产生的 [chunkhash]
+只与自身内容有关，单个 chunk 内容的改变不会影响其他资源，可以最精确地让客户端缓存得到更新。
+
+```js
+module.exports = {
+  entry: {
+    index: './src/index.js',
+    lmssee: './src/lmssee.js',
+  },
+  output: {
+    filename: '[name]@[chunkhash].js',
+  },
+};
+```
+
+更新缓存一般只用在生产环境的配置下，在开发环境中可以不必配置[chunkhash]
+
+## path
+
+指定资源输出的位置，值需是绝对路径：
+
+```js
+module.exports = {
+  entry: {
+    index: './src/index.js',
+    lmssee: './src/lmssee.js',
+  },
+  output: {
+    filename: '[name]@[chunkhash].js',
+    path: 'dist', // 默认 dist
+  },
+};
+```
+
+## publicPath
+
+publicPath 是一个非常重要的配置项，并且容易与 path 相混淆。从功能上来说， path 用来指定资源的输出位置，而 publicPath 则用来指定资源的请求位置。
+
+由 JS 或 CSS 所请求的间接资源路径。页面中的资源分为两种，一种是由 HTML 页面直接请求的，比如通过 script 标签加载的 JS ；另一种是由 JS 或 CSS 请求的，如异步加载的 JS 、从 CSS 请求的图片字体等。 publicPath 的作用就是指定这部分间接资源的请求位置。
+
+## html 有关的
+
+与 HTML 相关，也就是说我们可以将 publicPath 指定为 HTML 的相对路径，在请求这些资源时会以当前页面 HTML 所在路径加上相对路径，构成实际请求的 URL 。
+
+## Host 相关
+
+若 publicPath 的值以“/”开始，则代表此时 publicPath 是以当前页面的 host name 为基础路径的。
+
+以当两种前路径为相对路径
+
+## CDN 相关
+
+这种情况一般发生于静态资源放在 CDN 上面时，由于其域名与当前页面域名不一致，需要以绝对路径的形式进行指定。当 publicPath 以协议头或相对协议的形式开始时，代表当前路径是 CDN 相关。
+
+            

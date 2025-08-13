@@ -1,0 +1,95 @@
+---
+title: 多选
+
+
+---
+
+# 复选框
+
+除了文本框之外，最简单的输入类型之一就是复选框（ check box ），它显示了一个小正方形。用户可以单击复选框，以选择或取消选择组中的一个或多个项目。
+
+name 属性中的方括号（ [ ] ）的使用指示后端脚本将把一系列值放入这一个变量中，而不是只使用一个值（如果用户只选择一个复选框，那么它可能就只是一个值）。
+
+```html
+<input type="checkbox" name="fiel_name" checked value="value" />
+```
+
+checked ：表示此项为默认选中。 value ：表示选中项目后传送到服务器端的值。
+
+## 多项选择列表
+
+多项选择列表是指一次可以选择多个列表选项，且一次可以显示 1个以上选项的选择列表。 select> 标签中的 size 属性取值大于或等于 1 ，通常会大于 1，否则用户体验很差。在 HTML5 中， multiple属性可以不用设置值，即直接在标签中添加 multiple 属性即可。当标签中包含了multiple 属性后，按住" Shift "或" Ctrl "键时，列表可实现多项选择；如果没有multiple 属性则只能单项选择。 selected 属性用于设置选项是否是默认选中项。在HTML5 中， selected 属性和 multiple属性一样，可以在标签中只写属性名。当列表可多项选择时，可以在一到多个
+
+```html
+<option>标签中设置 selected 属性，否则最多只能有一个</option>
+<option>
+  标签设置该属性。 value 属性可选，如果没有设置，将提交选项的文本标签。
+  <form>
+    <p>学员 ID ：<input type="text" value="" /></p>
+    <fieldset>
+      <legend>选学技术</legend>
+      <label><input name="web" type="checkbox" value="html" /> HTML5</label>
+      <label><input name="web" type="checkbox" value="css" />CSS3</label>
+      <label><input name="web" type="checkbox" value="js" /> JavaScript</label>
+    </fieldset>
+    <p><input type="submit" value="提交" /></p>
+  </form>
+</option>
+```
+
+## 限制复选框最多选择几项
+
+```js
+window.onload = function () {
+  var _forbidCheckSelects = document.getElementsByName('forbidCheckSelects'),
+    banNum = 3; // 限制复选框最多选择 3 项
+  for (var i in _forbidCheckSelects) {
+    // 遍历所有元素
+    _forbidCheckSelects[i].onclick = function () {
+      var forbidCheckSelects = document.getElementsByName('forbidCheckSelects'),
+        selectNum = 0; // 初始化选择的数目为 0
+      for (var i in forbidCheckSelects) {
+        if (i == 'length') break;
+        if (__forbidCheckSelects[i].checked) {
+          // 如果选中 ++
+          selectNum++;
+        }
+      }
+      // 如果选中的复选项超过限制的最大数，将当前选项设置为未选中
+      if (selectNum > banNum) {
+        this.checked = false;
+      }
+    };
+  }
+};
+```
+
+## 复选框全选、取消全选、反选
+
+```js
+window.onload = function () {
+  var targets = document.getElementsByName('actionSelects'), // 获取目标元素
+    targetsLen = targets.length, // 目标元素的个数
+    i = 0;
+  document.getElementById('allSelect').onclick = function () {
+    // 绑定单击事件，全选
+    for (i = 0; i < targetsLen; i++) {
+      targets[i].checked = true;
+    }
+  };
+  document.getElementById('canelallSelect').onclick = function () {
+    // 绑定单击事件，取消
+    for (i = 0; i < targetsLen; i++) {
+      targets[i].checked = false;
+    }
+  };
+  document.getElementById('select').onclick = function () {
+    // 绑定单击事件，反选
+    for (i = 0; i < targetsLen; i++) {
+      targets[i].checked = !targets[i].checked; // 选择取反即可
+    }
+  };
+};
+```
+
+            

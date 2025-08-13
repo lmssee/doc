@@ -1,0 +1,88 @@
+---
+title: 文件系统
+
+
+---
+
+# ~~文件系统~~
+
+HTML 5 新增 FileSteam API ，使用该 API 可以将数据存储到用户磁盘的文件系统中。实现 Web 数据的永久保存。
+
+- HTML 5 支持跨域通信，但是每一个域的文件系统只能被该域专用，不能被其它域访问
+- 文件系统中存储的数据是永久的，不被浏览器所删除。但是在临时文件系统中的数据可以被浏览器自行删除
+- 当 Web 应用连续发出多次对文件系统的操作请求时，每一个请求都应得到响应，同时第一个请求中保存的数据可以被之后的请求立即得到
+
+```js
+window.requestFileSystem =
+  window.requestFileSystem || window.webkitRequestFileSystem;
+window.requestFileSystem(type, size, successCallback, opt_errorCallback);
+```
+
+## 访问文件系统
+
+FileSystem API 包括两部分：一部分内容为除后台线程之外的任何场所使用的异步 API ,另一部分内容为后台线程中专用的 同步 API 。
+
+使用 window 对象的 requestFileSystem() 方法可以请求受到浏览器沙箱保护的本地文件系统：
+
+- type ∶设置请求访问的文件系统使用的文件存储空间的类型，取值包括 window.TEMPORARY 和 window.PERSISTENT 。当值为 window.TEMPORARY
+  时，表示请求临时的存储空间，存储在临时存储空间中的数据可以被浏览器自行删除;当值为 window.PERSISTENT
+  时，表示请求永久存储空间，存储在该空间的数据不能被浏览器在用户不知情的情况下将其清除，只能通过用户或应用程序来清除，请求永久存储空间需要用户为应用程序指定一定的磁盘配额
+- size ∶ 设置请求的文件系统使用的文件存储空间的大小，尺寸为 byte
+- successCallback ∶设置请求成功时执行的回调函数，该回调函数的参数为一个 FileSystem 对象 ，表示请求访问的文件系统对象
+- opt_errorCallback ∶ 可选参数，设置请求失败时执行的回调函数，该回调函数的参数为一个 FileError 对象，其中存放了请求失败时的各种信息 FileError 对象包含一个 code 属性，其属性值为 FileSystemAPI 中预定义的常量值，说明如下
+
+- FileErrorQUOTA_EXCEEDED_ERR ∶ 文件系统所使用的存储空间的尺寸超过磁盘配额控制中指定的空间尺寸
+- FileError.NOT_FOUND_ERR ∶ 未找到文件或目录
+- FileError.SECURITY_ERR ∶ 操作不当引起安全性错误
+- FileError.INVALID_MODIFICATION_ERR ∶对文件或目录所指定的操作（如文件复制、删除、目录复制、目录删除等处理）不能被执行
+- FileError.INVALID_STATE_ERR ∶ 指定的状态无效
+- FileError.ABORT\_ ERR ∶ 当前操作被终止
+- FileError.NOT_READABLE_ERR ∶指定的目录或文件不可读
+- FileError.ENCODING_ERR ∶ 文字编码错误
+- FileError.TYPE_MISMATCH_ERR ∶用户企图访问目录或文件，但是用户访问的目录事实上一个文件或用户访问的文件事实上是一个目录
+- FileError.PATH_EXISTS_ERR ∶ 用户指定的路径中不存在需要访问的目录或文件
+
+```js
+window.requestFileSystem =
+  window.requestFileSystem || window.webkitRequestFileSystem;
+var fs = null;
+if (window.requestFileSystem) {
+  window.requestFileSystem(
+    window.TEMPORARY,
+    1024 * 1024,
+
+    function (filesystem) {
+      fs = filesystem;
+    },
+    errorHandler,
+  );
+}
+function errorHandler(e) {
+  switch (e.code) {
+    case FileError.QUOTA_EXCEEDED_ERR:
+      console.log(
+        '文件系统所使用的存储空间的尺寸超过磁盘限额控制中指定的空间尺寸',
+      );
+      break;
+    case FileError.NOT_FOUND_ERR:
+      console.log('未找到文件或目录');
+      break;
+    case FileError.SECURITY_ERR:
+      console.log('操作不当引起安全性错误');
+      break;
+    case FileError.INVALID_MODIFICATION_ERR:
+      console.log('对文件或目录所指定的操作不能被执行');
+      break;
+    case FileError.INVALID_STATE_ERR:
+      console.log('指定的状态无效');
+  }
+}
+```
+
+## 申请配额
+
+webkit 才需要？不懂，后期补上吧。
+
+## 创建文件
+
+            

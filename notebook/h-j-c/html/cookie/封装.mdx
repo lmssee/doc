@@ -1,0 +1,62 @@
+---
+title: 封装
+
+
+---
+
+# 封装
+
+本着若常用，则装之的至高理论。封装 cookie 函数如下，可设置，可获取，可删除。
+
+```js
+function cookie(name, value, options) {
+  if (typeof value != 'undefined') {
+    options = options || {};
+    if ((value = null)) {
+      value = '';
+      options.expires = -1;
+    }
+    var expires = '';
+    if (
+      options.expires &&
+      (typeof options.expires == 'number' || options.expires.toUTCString())
+    ) {
+      var date;
+      if (typeof options.expires == 'number') {
+        date = new Date();
+        date.setTime(date.getDate() + options.expires * 24 * 60 * 60 * 1000);
+      } else {
+        date = option.expires;
+      }
+      expires = ';expires=' + date.toUTCString();
+    }
+    var path = options.path ? ';path=' + options.path : '';
+    var domain = options.domain ? ';domain=' + options.domain : '';
+    var secure = options.secure ? ';secure' : '';
+    document.cookie = [
+      name,
+      '=',
+      encodeURIComponent(value),
+      expires,
+      path,
+      domain,
+      secure,
+    ].join('');
+  } else {
+    var CookieValue = null;
+    if (document.cookie && document.cookie != '') {
+      var cookie = document.cookie.split('');
+      for (var i = 0; i < cookie.length; i++) {
+        var cookie = (cookie[i] || '').replace(/^\s+|\s+$/g, '');
+        if (cookie.substring(0, name.length + 1) == name + '=') {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+}
+```
+
+            

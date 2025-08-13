@@ -1,0 +1,35 @@
+---
+title: 捕错
+
+
+---
+
+# try/catch/finally
+
+```js
+try {
+  1 = 1;
+} catch (error) {
+  console.log(error.name);
+}
+
+```
+
+废了，废了。浏览器截胡了。显示错误，却捕捉不到。
+
+## throw
+
+```js
+try {
+  throw new Error('虽然没有错 ');
+} catch (error) {
+  console.log(error.name);
+  console.log(error.message);
+} finally {
+  console.log('1 = 1');
+}
+```
+
+在异常处理结构中，大括号不能省略
+
+            

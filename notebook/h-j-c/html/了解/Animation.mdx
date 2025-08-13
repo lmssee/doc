@@ -1,0 +1,216 @@
+---
+title: Animation
+
+
+---
+
+# requestAnimation API
+
+window.requestAnimationFrame() 方法用来页面重绘之前，通知浏览器调用指定的函数，以满足开发者的需求。
+
+如果想得到连贯的逐帧动画，函数中必须重新调用 requestAnimationFrame() 。
+
+```js
+requestID = window.requestAnimationFrame(callback);
+/*
+    Firefox 23 / IE 10 / Chrome / Safari */
+requestID = window.mozRequestAnimationFrame(callback);
+/* Firefox < 23 */
+requestID = window.webkitRequestAnimationFrame(callback);
+/* Oldversions Chromes / webkit */
+```
+
+callback : 每次重新绘制，都会调用这个回调函数。这个回调函数会收到一个参数，这个 DOMHighResTimeStamp 类型的参数指示当前时间距离开始触发 requestAnimationFrame de
+回调函数的时间。
+
+返回值 requestId 是一个长整型的非零数值。作为一个唯一的标识符，可以将该值传递给 window.cancelAnimationFrame() 来取消这个回调函数。
+
+## 优势
+
+- 经过浏览器优化，动画更流畅
+- 窗口没激活时，动画将停止，节省计算资源
+- 更省电，尤其对移动端
+
+```js
+function animation() {
+  /* some any code */ requestAnimationFrame(
+    animation,
+  ); /* some animation code */
+} /* request animation */
+requestAnimationFrame(animation);
+```
+
+有时候需要控制，就需要句柄：
+
+```js
+let globalID;
+function animation() {
+  /* some any code */
+  globalID = requestAnimationFrame(animation);
+  /* some animation code*/
+}
+/* request animation*/
+globalID = requestAnimationFrame(animation);
+/* stop*/
+cancelAnimationFrame(globalID);
+```
+
+## 例 1
+
+初始 div 宽度为 1 px ，在 step() 函数中将进度加 1 ，然后更新到 div 宽度上，在进度达到 100 之前，一直重复这个过程：
+
+```js
+window.requestAnimationFrame =
+  window.requestAnimationFrame ||
+  window.mozRequestAnimationFrame ||
+  window.webkitRequestAnimationFrame ||
+  window.msRequestAnimationFrame;
+var start = null;
+var ele = document.getElementById('test');
+var progress = 0;
+function step(timestamp) {
+  progress += 1;
+  ele.style.width = progress + '%';
+  ele.innerHTML = progress + '%';
+  if (progress < 100) {
+    requestAnimationFrame(step);
+  }
+}
+requestAnimationFrame(step);
+document.getElementById('run').addEventListener(
+  'click',
+  function () {
+    ele.style.width = '1px';
+    progress = 0;
+    requestAnimationFrame(step);
+  },
+  false,
+);
+```
+
+## 例 2
+
+首先在页面中插入一个 `<canvas id="motion">` 标签；然后设计一块画布，在画布上随机生成一个圆点，颜色、运动方向随机；接着从画布中央随机向四周运动，同时逐步增大半径；最后调用
+requestAnimationFrame() 方法，传递回调函数生成 animate() ，从而设计随机粒子放射运动的效果。
+
+```js
+(function () {
+  'use strict';
+  var vendors = ['webkit', 'moz'];
+  for (var i = 0; i < vendors.length && !window.requestAnimationFrame; ++i) {
+    var vp = vendors[i];
+    window.requestAnimationFrame = window[vp + 'RequestAnimationFrame'];
+    window.cancelAnimationFrame =
+      window[vp + 'CancelAnimationFrame'] ||
+      window[vp + 'CancelRequestAnimationFrame'];
+  }
+  if (
+    /iP(ad|hone|od)._OS 6/.test(window.navigator.userAgent) || // iOS6 is buggy
+    !window.requestAnimationFrame ||
+    !window.cancelAnimationFrame
+  ) {
+    var lastTime = 0;
+    window.requestAnimationFrame = function (callback) {
+      var now = Date.now();
+      var nextTime = Math.max(lastTime + 16, now);
+      return setTimeout(function () {
+        callback((lastTime = nextTime));
+      }, nextTime - now);
+    };
+    window.cancelAnimationFrame = clearTimeout;
+  }
+})();
+var getRandomColor = function () {
+  return '#' + ((Math.random() * 0xffffff) << 0).toString(16);
+};
+var canvas = document.getElementById('motion'),
+  c = canvas.getContext('2d'),
+  particles = {},
+  particleIndex = 0,
+  particleNum = 0.2;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+function Particle() {
+  this.x = canvas.width / 2;
+  this.y = canvas.height / 2;
+  this.vx = Math.random() * 6 - 3;
+  this.vy = Math.random() * 4 - 2;
+  this.growth = (Math.abs(this.vx) + Math.abs(this.vy)) * 0.007;
+  particleIndex++;
+  particles[particleIndex] = this;
+  this.id = particleIndex;
+  this.size = Math.random() * 1;
+  this.color = getRandomColor();
+}
+Particle.prototype.draw = function () {
+  this.x += this.vx;
+  this.y += this.vy;
+  this.size += this.growth;
+  if (this.x > canvas.width || this.y > canvas.height) {
+    delete particles[this.id];
+  }
+  c.fillStyle = this.color;
+  c.beginPath();
+  c.arc(this.x, this.y, this.size, 0 * Math.PI, 2 * Math.PI);
+  c.fill();
+};
+function animate() {
+  requestAnimationFrame(animate);
+  c.fillStyle = '#000';
+  c.fillRect(0, 0, canvas.width, canvas.height);
+  if (Math.random() > particleNum) {
+    new Particle();
+  }
+  for (var i in particles) {
+    particles[i].draw();
+  }
+}
+requestAnimationFrame(animate);
+```
+
+## 例 3
+
+```js
+window.requestAnimFrame = (function () {
+  return (
+    window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.oRequestAnimationFrame ||
+    window.msRequestAnimationFrame ||
+    function () {
+      window.setTimeout(callback, 1000 / 60);
+    }
+  );
+})();
+var canvas, context;
+init();
+animate();
+function init() {
+  canvas = document.createElement('canvas');
+  canvas.style.left = 0;
+  canvas.style.top = 0;
+  canvas.width = 210;
+  canvas.height = 210;
+  context = canvas.getContext('2d');
+  document.body.appendChild(canvas);
+}
+function animate() {
+  requestAnimFrame(animate);
+  draw();
+}
+function draw() {
+  var time = new Date().getTime() * 0.002;
+  var x = Math.sin(time) * 96 + 105;
+  var y = Math.cos(time * 0.9) * 96 + 105;
+  context.fillStyle = 'pink';
+  context.fillRect(0, 0, 255, 255);
+  context.fillStyle = 'rgb(255,0,0)';
+  context.beginPath();
+  context.arc(x, y, 10, 0, Math.PI * 2, true);
+  context.closePath();
+  context.fill();
+}
+```
+
+            

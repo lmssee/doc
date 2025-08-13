@@ -1,0 +1,23 @@
+---
+title: 发送
+
+
+---
+
+# 发送 JSON
+
+JSON 是 JavaScript 原生支持的内容，比较复杂的数据就可以使用 JSON 进行传递。例如以下代码：
+
+```js
+postMessage({ cmd: 'init', timestamp: Date.now() });
+```
+
+## 数据处理错误
+
+当线程发生错误的时候，它的 onerror 事件回调函数会被调用，所以处理错误的方式很简单，就是挂接线程实例的 onerror 事件。这个回调函数有一个参数对象 error ，这个对象有以下三个常用的属性。
+
+- message ：错误消息
+- filename ：发生错误的脚本文件
+- lineno ：发生错误的行
+
+            

@@ -1,0 +1,118 @@
+---
+title: IE
+
+
+---
+
+# 注释
+
+- lte ：即 Less than or equal to 的简写，也就是小于或等于的意思
+- lt ：即 Less than 的简写，也就是小于的意思
+- gte ：即 Greater than or equal to 的简写，也就是大于或等于的意思
+- gt ：即 Greater than 的简写，也就是大于的意思
+- ! ：即不等于的意思，跟 JavaScript 里的不等于判断符相同
+
+## 让 IE 支持 HTML 5 标签
+
+```html
+<!--[if IE]>
+  document.createElement("header"); // 创建 header 节点
+  document.createElement("footer"); document.createElement("nav");
+  document.createElement("article"); document.createElement("section");
+<![endif]-->
+```
+
+```html
+<!--[if IE]>
+  (function(){if(!/*@cc_on!@*/0)return;var e =
+  "abbr,article,aside,audio,bb,canvas,
+  datagrid,datalist,details,dialog,eventsource,figure,footer,header,hgroup,mark,menu,meter,nav
+  ,output,progress,section,time,video".split(','),i=e.length;while(i--){document.createElement(e[i]
+  )}})()
+<![endif]-->
+```
+
+```html
+<!- – [if It IE 9]-->
+<script src="
+    http://html5shiv.googlecode.com/svn/trunk/html5.js "></script>
+```
+
+## E 浏览器窗口扩展 ## 模式窗口
+
+模式窗口很像一个标准的对话框。模式窗口会屏蔽主窗口，直到将其关闭。其基本语法为：
+
+```js
+window.showModalDialog( 对话框 URL ，参数，特征 )
+```
+
+对话框 URL ：指要显示的文档的 URL 地址; 参数：指要传递给模式对话框的对象或值;
+
+```html
+<!-- window.showModalDialog("index.htm", window,
+"dialogHeight:150px;dialogWidth:300px;center:yes;help:no;resizable:no;status:no;");
+//-->
+```
+
+## 无模式窗口
+
+无模式窗口与模式窗口完全不同。模式窗口永远停留在原窗口的上层，即使原窗口获得焦点，仍然如此。通常用无模式窗口显示帮助信息或其它上下文相关信息。其基本语法结构为：
+
+```html
+<!-- window = window.showModalDialog("index.htm", window,
+"dialogHeight:150px;dialogWidth:300px;center:yes;help:no;resizable:no;status:no;");
+//-->
+```
+
+## 弹出窗口 创建一个弹出窗口很简单，利用 Window 对象的 showModalDialog
+
+方法即可。该方法用于弹出网页（模式）对话框。 语法格式如下：
+
+```js
+variant=window.showModalDialog(sURL[,vArguments[,sFeatures]])
+```
+
+- sURL ：指定 URL 文件地址。
+  -vArguments：用于向网页对话框传递参数。传递参数的类型不限制。对于字符串类型，最大为 4 096
+  字符，但也可以传递对象，例如 index.htm
+
+下注册多个事件监听器与移除监听器。 IE 浏览器中， HTML 元素有个 attachEvent
+方法，允许外界注册该元素多个事件监听器，例如。
+
+```js
+element.attachEvent('onclick', observer);
+```
+
+注意　在 IE 7
+中注册多个事件时，后加入的函数先被调用。 如果要移除先前注册的事件监听器，调用
+element 的 detachEvent 方法即可，参数相同，例如。
+
+```js
+element.detachEvent('onclick', observer);
+```
+
+## 区分 IE 及非 IE 浏览器
+
+```js
+if (!+[1]) {
+  //IE 11 不支持
+  alert(' 这是 IE 浏览器 ');
+} else {
+  alert(' 这不是IE 浏览器 ');
+}
+```
+
+非 IE 浏览器下将类数组对象" arguments "转为数组：
+
+```js
+Array.prototype.slice.call(arguments);
+```
+
+arguments 不是 Array的实例，因此不是真正的数组，也就没有 slice() ，那为什么使用" Array.prototype.slice "而不是" Array().slice "或" [].slice"呢？因为这两种方法效率比较低，故使用代码中的写法访问 Array 的内置函数。 \
+
+## 判断
+
+IE 版本`window.navigator.appVersion` 上述代码返回一个字符串，表示所使用浏览器的版本号。它可能只包含一个数字，比如 5.0
+，还可能包含一些其它的相关信息。
+
+            

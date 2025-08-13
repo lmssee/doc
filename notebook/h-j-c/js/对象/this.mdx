@@ -1,0 +1,139 @@
+---
+title: this
+
+
+---
+
+# this 指针
+
+通常 this 在传统面向对象的语言中，是在类中声明的，表示对象本身。而在 JavaScript 中， this 表示当前上下文（ context ），即对调用者的引用。
+
+this 的值并非由函数如何被声明而确定，而是被函数如何被调用而确定，这一点与传统的面向对象语言截然不同。
+
+引用指向的是地址，也就是说，引用不会指向引用本身，而是指向该引用所对应的实际对象。
+
+## 使用 this 关键字定义方法和属性
+
+属性是类中声明的变量，与其它地方变量的声明基本相同，只是属性必须属于 this 关键字，并且这里没有使用 var 关键字。
+
+如果在闭包方法中使用了 this 关键字就要非常小心。闭包方法并不能确保 this 关键字总是引用在其中定义了方法的对象或类。
+
+可以参考闭包函数的介绍来了解闭包方法，二者的基本原理是相同的。
+
+例如下面的代码，演示了作为值从函数返回的方法如何成为闭包方法：
+
+```js
+function warp() {
+  function HelloWorld() {
+    var temp = 'abc'; // 这是一个私有变量
+    this.B = function () {
+      return this.A; // 返回闭包方法
+    };
+    this.A = function () {
+      // 定义一个闭包方法
+      console.log('$1 包函数处理本地变量 temp 的值 : ' + temp + ';');
+      console.log(this + ';');
+    };
+  }
+  var oHelloWorld = new HelloWorld();
+  var myFunc = oHelloWorld.B(); // 调用方法 B ，返回的是闭包方法 A myFunc(); // 调用闭包方法 A
+  console.log(this);
+}
+warp();
+```
+
+调用方法 B 将返回方法 A ，注意到方法 A 中使用了本地环境中的变量，例如私有属性 temp 以及指向 HelloWorld 实例的 this 关键字。
+
+接下来调用 myFunc() ，实际上是调用 HelloWorld 类内定义的方法 A ，这时，注意 A 调用是在类定义的外边，按照常理，它不应该再访问到私有属性 temp ，但实际上仍可以访问私有属性 temp
+，这就是闭包方法的作用，它保留了闭包方法所定义的环境的变量。
+
+注意 A 函数内的 this 关键字， myFunc() 调用不是在 HelloWorld 一个实例上的调用，实际上相当于 window.myFunc() ，因此，其中的 this 引用的应该是 window ，而不是
+HelloWorld 实例。
+
+就像闭包函数那样，将方法传递给一个函数作为参数也可以实现闭包的效果。
+
+```js
+function warp() {
+  function HelloWorld() {
+    var temp = 'abc'; // 这是一个私有变量
+    this.D = function () {
+      // 定义一个闭包方法;
+      console.log(' 闭包函数处理本地变量 temp 的值 : ' + temp + '');
+      console.log(this + '');
+    };
+    this.C = function (param) {
+      param(); // 调用闭包方法 D
+    };
+  }
+  var oHelloWorld = new HelloWorld();
+  oHelloWorld.C(oHelloWorld.D); // 调用函数 C ，传递的参数是闭包方法 D
+  console.log(this);
+}
+warp();
+```
+
+## 事件处理中的闭包
+
+闭包方法最值得注意的一种情况是使用事件处理方法，因为注册事件监听方法要使用 addEventListener() 方法来实现，该方法要求将事件监听函数或方法作为参数来传递，这时，事件监听函数或方法就是闭包方法（函数）。
+
+例如下面的代码，在 HelloWorld 类内定义鼠标单击的事件监听函数：
+
+```js
+function HelloWorld() {
+  // 注册一个鼠标单击事件，用于处理该事件的是函数 onClick
+  document.body.addEventListener('click', onClick);
+}
+function onClick(evt) {
+  var temp = 'abc';
+  console.log(' 闭包函数处理本地变量 temp 的值 : ' + temp + '');
+  console.log(this);
+}
+var oHelloWorld = new HelloWorld();
+```
+
+注意事件监听函数访问了本地变量 temp ，并且查看关键字 this 的引用。
+
+在浏览器中测试，单击页面就可以触发鼠标单击事件，从而会调用事件处理函数处理该事件，可以看到下面的结果：
+
+闭包函数处理本地变量 temp 的值 : abc 。
+
+```js
+[object HTMLBodyElement]
+```
+
+虽然事件是在 HelloWorld 类内触发的，但事件处理函数还是形成了闭包，它会访问定义它的环境中的变量，并且 this 也指向它的环境。
+
+## 另一个使用 this 时易犯的错误
+
+注意， this 指向它执行的环境，如果构造方法不是使用 new 运算符创建实例，而是直接像调用函数那样调用，那么 this 关键字就不会代表该类的实例。
+
+例如下面的代码直接调用函数：
+
+```js
+function HelloWorld() {
+  alert(this); // window 而不是 HelloWorld 的实例
+}
+HelloWorld();
+```
+
+下面的代码是面向对象的用法：
+
+```js
+function HelloWorld() {
+  alert(this instanceof HelloWorld); // true
+}
+var oHelloWorld = new HelloWorld();
+```
+
+技巧与提示。
+
+在调用函数时， this 关键字的意义可以改变，下面是几种直接调用函数的方法：
+
+```js
+oFunction();
+oFunction.apply();
+oFunction.call();
+oFunction.bind();
+```
+
+            

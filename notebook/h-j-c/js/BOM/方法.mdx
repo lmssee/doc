@@ -1,0 +1,106 @@
+---
+title: 方法
+
+
+---
+
+# 方法
+
+| 方法                      | 额                                                                      |
+| :------------------------ | :---------------------------------------------------------------------- |
+| alert()                   | 弹出对话框                                                              |
+| confirm （）              | 在确认的对话框中显示指定的字符串                                        |
+| prompt()                  | 弹出一个提示对话框                                                      |
+| open()                    | 打开浏览器对话框并且显示由 URL 或名字引用的文档，并设置创建对话框的属性 |
+| close()                   | 关闭被引用的对话框                                                      |
+| focus()                   | 将被引用的对话框放在所有打开对话框的前面                                |
+| blur()                    | 将被引用的对话框放在所有打开对话框的后面                                |
+| scrollTo(x,y)             | 把对话框滚动到指定的坐标                                                |
+| scrollBy(offsetX,offsetY) | 按照指定的位移量滚动对话框                                              |
+| setTimeout(timer)         | 在指定的毫秒数之后，对传递的表达式求值                                  |
+| setInterval(interval)     | 指定的周期性执行代码                                                    |
+| moveTo(x,y)               | 将对话框移到指定的坐标处                                                |
+| moveBy(offsetX,offsetY)   | 将对话框移到指定的位移量处                                              |
+| resizeTo(x,y)             | 设置对话框的大小                                                        |
+| resizeBy(offsetX,offsetY) | 按照指定的位移量设置对话框的大小                                        |
+| print()                   | 相当于浏览器工具栏中的\"打印\"按钮                                      |
+| navigate(URL)             | 使用对话框显示 URL 指定的页面                                           |
+| status()                  | 状态条， 位于对话框下部的信息条                                         |
+| defaultStatus()           | 状态条， 位于对话框下部的信息条                                         |
+
+## 取消文档加载
+
+当文档正在加载时，使用 window.stop()方法可以取消加载。该方法的语法格式如下：
+
+```js
+window.stop();
+```
+
+## 获取窗口引用
+
+## 调整窗口的焦点
+
+blur()方法使窗口失去焦点并触发 window.onblur 事件，其语法格式如下：
+
+```js
+window.blur();
+```
+
+当窗口失去焦点时，它将隐藏在其它打开的窗口之后。如果当前打开的仅仅是一个窗口，那么该方法不起作用。与
+blur()方法对应，使用
+window.focus()方法可以使另一个不是当前窗口的窗口获取焦点，并成为当前窗口，其语法格式如下：
+
+window.focus()。
+
+使用
+open()方法打开一个新窗口时，新窗口便成为当前窗口，且获得焦点。但是，某些情况下，当打开新窗口时，我们并不想把焦点从当前窗口转移到新窗口，那么就可以使用下面的代码：
+
+```js
+window.open('', ' \_blank');
+window.focus();
+```
+
+前一个语句打开新窗口，后一个语句使用
+focus()方法将焦点重新转移到之前打开的窗口。
+
+## 网页和浏览器交互
+
+HTML5规定了几个属性用于实现网页和浏览器交互：
+
+```js
+window.locationbar.visible;
+```
+
+返回地址栏是否可见，如果可见返回 true ；反之，返回 false 。
+
+```js
+window.menubar.visible;
+```
+
+返回菜单栏是否可见，如果可见返回 true ；反之，返回 false 。
+
+```js
+window.personalbar.visible;
+```
+
+返回个人栏是否可见，如果可见返回 true ；反之，返回 false 。
+
+```js
+window.scrollbars.visible;
+```
+
+返回滚动栏是否可见，如果可见返回 true ；反之，返回 false 。
+
+```js
+window.statusbar.visible;
+```
+
+返回状态栏是否可见，如果可见返回 true ；反之，返回 false 。
+
+```js
+window.toolbar.visible;
+```
+
+返回主工具栏是否可见，如果可见返回 true ；反之，返回 false 。
+
+            

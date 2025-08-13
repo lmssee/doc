@@ -1,0 +1,18 @@
+---
+title: 更新数据
+
+
+---
+
+# update
+
+```sql
+update [low_priority] [ignore] main set
+  main_name='jerry',main_age=30
+  where main_id= 2;
+```
+
+- low_priority 修饰符会延迟 update 的更新，知道没有从表中读取数据的连接。
+- ignore 会忽略错误，继续执行
+
+            

@@ -1,0 +1,201 @@
+---
+title: 简介
+pagination_prev: null
+
+---
+
+# 协议
+
+HTTP 协议（ Hypertext Transfer Protocol ，超文本传输协议）是用于从 WWW 服务器传输超文本到本地浏览器的传送协议，最早由万维网的发明者伯纳斯·李（ Berners Lee
+）制定，它可以使浏览器更加高效，使网络传输减少。它不仅能保证计算机正确、快速地传输超文本文档，还能确定传输文档中的哪一部分以及哪部分内容首先显示（如文本先于图形）等。
+
+目前 HTTP 协议由 W3C 维护，有两个稳定的版本： HTTP 1.0 和 HTTP 1.1 。 HTTP 1.0 协议的完全版本从下面的两个网址都可以获得：
+
+[http://www.ietf.org/rfc/rfc1945.txt](http://www.ietf.org/rfc/rfc1945.txt) 。
+
+[http://www.w3.org/Protocols/rfc1945/rfc1945](http://www.w3.org/Protocols/rfc1945/rfc1945)。
+
+HTTP 1.1 协议的完全版本可以从下面的网址获得：
+
+[http://www.w3.org/Protocols/rfc2616/rfc2616](http://www.w3.org/Protocols/rfc2616/rfc2616)。
+
+[http://www.ietf.org/rfc/rfc2817.txt](http://www.ietf.org/rfc/rfc2817.txt) 。
+
+HTTP 是应用层协议，是建立在 TCP 协议基础之上的（ TCP 是一个底层协议）。 HTTP 是一个基于 " 请求 / 响应 " 模式的、无状态的协议。
+
+## 了解 HTTP 消息的内容
+
+浏览器和 Web 服务器之间会通过 HTTP 在 Internet 上进行数据的发送和接收，这些数据也被称为 HTTP 消息（ Message ）。 HTTP
+消息可以是客户端到服务器的请求消息，也可以是服务器到客户端的响应消息。
+
+请求和响应消息都是由开始行（ start-line ）、消息报头（ message header ，可选）、空行（只有 CRLF 的行）和消息正文（ message body ，可选）组成的，如下所示：
+
+```html
+message = start-line*message-headerCRLF[ message-body ]
+```
+
+对于请求或者响应，开始行有所不同。对于请求消息，开始行就是请求行（ Request-Line ）；对于响应消息，开始行就是状态行（ Status-Line ）：
+
+```js
+start-line = Request-Line | Status-Line
+```
+
+消息报头就是请求和响应的 HTTP 消息报头；消息正文就是 HTML 文档或者图片等文件，它们之间由一个空行隔开。
+
+## 了解 HTTP 请求的内容
+
+客户端通过发送 HTTP 请求向服务器请求对资源的访问，这时， HTTP 请求由下面的内容（ HTTP 消息）组成：
+
+```js
+message = Request - Line * message - headerCRLF[message - body];
+```
+
+## 请求行
+
+请求行的结构如下：
+
+```js
+Method Request-URI HTTP-Version CRLF
+```
+
+| 参数         | 含义                                                   |
+| :----------- | :----------------------------------------------------- |
+| Method       | 表示 HTTP 的请求方法，例如 GET,POST 等                 |
+| Request-URL  | 表示一个统一资源标识符                                 |
+| HTTP-Version | 表示请求的 HTTP 的协议版本 , 一般是 HTTP1.1 或 HTTP1.0 |
+| CRLF         | 表示回车换行                                           |
+
+例如前面介绍的请求行的例子：
+
+GET [http://localhost/index.html](http://localhost/index.html) HTTP/1.1(CRLF) 。
+
+## HTTP 请求的方法
+
+常见的 HTTP 请求的方法就是 GET 、 POST 和 HEAD ，也包含其它方法。
+
+| 方法    | 作用                                                                      |
+| :------ | :------------------------------------------------------------------------ |
+| GET     | 通过请求 URL 的资                                                         |
+| HEAD    | 类似于 GET ，但是不返回正文信息，用于检查对象是否存在以及得到对象的元数据 |
+| POST    | 用于添加新的内容                                                          |
+| PUT     | 用于修改某个内容                                                          |
+| DELETE  | 用于删除某个内容                                                          |
+| OPTIONS | 询问可以执行那些方法                                                      |
+| TRACE   | 用于远程诊断服务器                                                        |
+
+## 了解 HTTP 响应的内容
+
+服务器对客户端请求做出响应，这时， HTTP 响应由下面的内容（ HTTP 消息）组成：
+
+```js
+message = Status - Line * message - headerCRLF[message - body];
+```
+
+## 状态行
+
+状态行的结构如下：
+
+```js
+HTTP-Version Status-Code Reason-Phrase CRLF
+```
+
+| 参数          | 意义                                                  |
+| :------------ | :---------------------------------------------------- |
+| HTTO-Version  | 表示服务器 HTTP 协议的版本，一般是 HTTP1.1 或 HTTP1.0 |
+| Status-Code   | 表示服务器发回的状态代码                              |
+| Reason-Phrase | 表示状态码的文本描述                                  |
+| CRLF          | 表示回车换行                                          |
+
+例如前面介绍的状态行的例子：
+
+```js
+HTTP/1.1 200 OK
+```
+
+## 状态代码
+
+状态代码（ Status-Code ）由 3 位数字组成，表示请求是否被理解或满足。状态代码的第一个数字定义了响应的类别，后面两位数字没有代表任何具体的分类。
+
+| 可选值 | 意义                                             |
+| :----- | :----------------------------------------------- |
+| 1xx    | 指示信息，表示请求已接收，继续处理               |
+| 2xx    | 成功，表示请求已被成功接收，并已被处理和接受     |
+| 3xx    | 重定向，必须采取进一步行动以完成情书             |
+| 4xx    | 客户端错误，请求中包含有错误无法或包含不能被完成 |
+| 5xx    | 服务器错误，服务器失败，尽管请求是正确的         |
+
+## 原因短语
+
+原因短语（ Reason-Phrase ）使用短语简单地说明了状态代码所要表达的意思。
+
+## 了解 HTTP 消息报头的内容
+
+HTTP 消息报头包括普通报头（ general-header ）、请求报头（ request-header ）、响应报头（ response-header ）和实体报头（ entity-header
+）。每个报头字段都由下面的格式组成：
+
+```html
+名字 + ";:"; + 空格 + 值
+```
+
+并且，消息报头字段的名字是不区分大小写的。
+
+## 普通报头
+
+有少数报头字段既可以应用于请求消息，也可以应用于响应消息，但并不用于被传输的实体，这些报头字段只用于传输的消息。
+
+常用的普通报头包括：
+
+```html
+Cache-ControlDateConnectionPragmaTransfer-EncodingUpgradeVia
+```
+
+## 请求报头
+
+请求报头允许客户端向服务器端传递该请求的附加信息以及客户端自身的信息，就像是为程序提供附加的参数。
+
+常用的请求报头包括：
+
+```html
+AcceptAccept-CharsetAccept-EncodingAccept-LanguageAuthorizationFromHost
+If-Modified-SinceIf-MatchIf-None-MatchIf-RangeIf-Unmodified-SinceMax-ForwardsProxy-Authorization
+RangeRefererUser-Agent
+```
+
+## 响应报头
+
+响应报头允许服务器传递不能放在状态行中的附加响应信息以及关于服务器的信息和对 Request-URI 所标识的资源进行下一步访问的信息。
+
+常用的响应报头包括：
+
+```html
+AgeLocationProxy-AuthenticatePublicRetry-AfterServerVaryWarning WWW-Authenticate
+```
+
+## 实体报头
+
+实体是由实体报头和实体正文组成的。实体正文就是请求消息中的请求正文或者响应消息中的响应正文；实体报头定义了关于实体正文所标识的资源的元数据信息。
+
+常用的实体报头包括：
+
+```html
+AllowContent-EncodingContent-LanguageContent-LengthContent-TypeLast-ModifiedExpires
+```
+
+除了这些字段，实体报头还可以自定义字段。
+
+技巧与提示。
+
+由上面的表述也可以看出，如果将 HTTP 消息报头分解，再来看一下请求和响应的详细组成。
+
+HTTP 请求。
+
+```js
+Request = Request-Line_( general-header|
+request-header| entity-header )CRLF[
+message-body ]HTTP 响应
+Response = Status-Line_( general-header|
+response-header| entity-header )CRLF[
+message-body ]
+```
+
+            

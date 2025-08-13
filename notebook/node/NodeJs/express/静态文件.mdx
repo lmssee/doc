@@ -1,0 +1,15 @@
+---
+title: 静态文件
+
+
+---
+
+# 使用中间件
+
+应该把中间件加在所有的路由之前：
+
+```js
+app.use(express.static(__dirname + '/public'));
+```
+
+            

@@ -1,0 +1,235 @@
+---
+title: Fullscreen
+
+
+---
+
+# Fullscreen API
+
+HTML 5 新增了一个 Fullscreen API ，即全屏显示。
+
+## 基础
+
+Fullscreen API 可以通过编程的交互向用户请求全屏显示。如果交互完成，随时可以退出全屏模式。用户可以通过 DOM 的根节点（ document.documentElement ）或某个元素的
+requestFullscreen() 方法请求 Fullscreen API 。
+
+```js
+function launchFullscreen(e) {
+  return (
+    (e.requestFullscreen && e.requestFullscreen) ||
+    (e.mozRequestFullscreen && e.mozRequestFullscreen) ||
+    (e.msRequestFullscreen && e.msRequestFullscreen) ||
+    (e.WebkitRequestFullscreen && e.WebkitRequestFullscreen)
+  );
+}
+```
+
+使用时，可以针对某个元素，也可以是整个页面:
+
+```js
+launchFullscreen(document.documentElement);
+launchFullscreen(document.querySelector('#id'));
+```
+
+## 取消全屏
+
+使用 exitFullscreen() 或 CanvelFullScreen() 方法可以取消 全屏：
+
+```js
+function exitFullscreen() {
+  return (
+    (document.exitFullscreen && document.exitFullscreen()) ||
+    (document.msExitFullscreen && document.msExitFullscreen()) ||
+    (document.mozCancelFullscreen && document.mozCancelFullscreen()) ||
+    (document.WebkitExitFullscreen && document.WebkitExitFullscreen())
+  );
+}
+```
+
+## 属性
+
+- document.fullscreenElement ： 返回正在处于全屏的元素
+- document.fullscreenEnabled : 返回一个布尔值，表示当前是否处于全屏
+
+```js
+let fsEn =
+  document.fullscreenEnabled ||
+  document.mozFullScreenEnabled ||
+  document.WebkitFullscreenEnabled ||
+  document.msFullscreenEnabled;
+let fsEl =
+  document.fullscreenElement ||
+  document.mozFullScreenElement ||
+  document.WebkitFullscreenElement;
+```
+
+## css
+
+在全屏模式下，大多数浏览器都支持 :full-screen 伪类，而 IE 11 支持 :fullscreen 伪类。使用这个伪类，可以对全屏状态下设置单独的 CSS 样式：
+
+```css
+_:-webkit-full-screen {
+  width: auto;
+}
+_:-moz-full-screen {
+  width: auto;
+}
+_:-ms-fullscreen {
+  width: auto;
+}
+_:fullscreen {
+  width: auto;
+}
+:-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+}
+```
+
+## 事件
+
+当退出或是进入全屏，会触发 fullscreenchange 事件。利用该事件可以监控全屏状态的变化，以便及时做出各种页面的响应：
+
+```js
+document.addEventListener(
+  'fullscreenchange',
+  function () {
+    fsState.innerHTML = document.fullscreen ? '全屏？' : '非全屏';
+    btnFS.value = document.fullscreen ? '退出' : '全屏';
+  },
+  false,
+);
+document.addEventListener(
+  'mozfullscreenchange',
+  function () {
+    fsState.innerHTML = document.mozFullscreen ? '全屏？' : '非全屏';
+    btnFS.value = document.mozFullscreen ? '退出' : '全屏';
+  },
+  false,
+);
+document.addEventListener(
+  'Webkitfullscreenchange',
+  function () {
+    fsState.innerHTML = document.WebkitIsFullScreen ? '全屏？' : '非全屏';
+    btnFS.value = document.WebkitIsFullScreen ? '退出' : '全屏';
+  },
+  false,
+);
+```
+
+## 案例 1
+
+```html
+<style>
+  html:-moz-full-screen {
+    background-color: #0ff;
+  }
+  html:-webkit-full-screen {
+    background-color: #a0f;
+  }
+  html:fullscreen {
+    background-color: #0f0;
+  }
+  div {
+    width: 100%;
+  }
+</style>
+<body>
+  <input
+    type="button"
+    id="btnFullScreen"
+    value="全屏"
+    onclick="toggleFullscreen();"
+  />
+  <div id="fullscreenState">非全屏显示</div>
+</body>
+<script>
+  let dEl = document.documentElement;
+  let fsState = document.querySelector('#fullscreenState');
+  let btnFS = document.querySelector('#btnFullScreen');
+  fsState.style.height = dEl.clientHeight + 'px';
+  document.addEventListener(
+    'fullscreenchange',
+    function () {
+      fsState.innerHTML = document.fullscreen ? '全屏？' : '非全屏';
+      btnFS.value = document.fullscreen ? '退出' : '全屏';
+    },
+    false,
+  );
+  document.addEventListener(
+    'mozfullscreenchange',
+    function () {
+      fsState.innerHTML = document.mozFullscreen ? '全屏？' : '非全屏';
+      btnFS.value = document.mozFullscreen ? '退出' : '全屏';
+    },
+    false,
+  );
+  document.addEventListener(
+    'Webkitfullscreenchange',
+    function () {
+      fsState.innerHTML = document.WebkitIsFullScreen ? '全屏？' : '非全屏';
+      btnFS.value = document.WebkitIsFullScreen ? '退出' : '全屏';
+    },
+    false,
+  );
+  function toggleFullscreen() {
+    if (btnFS.value == '全屏') {
+      (dEl.requestFullscreen && dEl.requestFullscreen()) ||
+        (dEl.mozRequestFullscreen && dEl.mozRequestFullscreen()) ||
+        (dEl.msRequestFullscreen && dEl.msRequestFullscreen()) ||
+        (dEl.WebkitRequestFullscreen && dEl.WebkitRequestFullscreen());
+    } else {
+      (document.exitFullscreen && document.exitFullscreen()) ||
+        (document.msExitFullscreen && document.msExitFullscreen()) ||
+        (document.mozCancelFullscreen && document.mozCancelFullscreen()) ||
+        (document.WebkitCancelFullscreen && document.WebkitCancelFullscreen());
+    }
+  }
+</script>
+```
+
+经检测：在 Edge 、 Chrome 、 Firefox 、 IE 能够进入全屏， Edge 、 Chrome 、 Firefox 能够按钮退出， IE 只能通过按 Esc 键退出， Safari 手机端和平板不能点击按钮进入全屏。
+
+## 例 2
+
+```html
+<body>
+  <video id="videoElement" autoplay controls width="480" height="270">
+    <source src="video/chrome.webm" type="video/webm" />
+    <source src="video/chrome.ogv" type="video/ogg" />
+    <source
+      src="video/chrome.mp4"
+      type="video/mp4; codecs='avc1.42E01E, mp4a.40.2'"
+    />
+  </video>
+</body>
+<script>
+  var videoElement = document.getElementById('videoElement');
+  function toggleFullScreen() {
+    if (!document.mozFullScreen && !document.webkitFullScreen) {
+      if (videoElement.mozRequestFullScreen) {
+        videoElement.mozRequestFullScreen();
+      } else {
+        videoElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+      }
+    } else {
+      if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else {
+        document.webkitCancelFullScreen();
+      }
+    }
+  }
+  document.addEventListener(
+    'keydown',
+    function (e) {
+      if (e.keyCode == 13) {
+        toggleFullScreen();
+      }
+    },
+    false,
+  );
+</script>
+```
+
+            

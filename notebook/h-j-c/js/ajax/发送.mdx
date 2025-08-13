@@ -1,0 +1,196 @@
+---
+title: 发送
+
+
+---
+
+# 建立 XMLHttpRequest 连接
+
+创建 XMLHttpRequest 对象后，接可以使用该对象的 open() 方法建立一个 HTTP 请求。 open() 方法用法如下：
+
+```js
+XMLHttpRequest.open(bstrMethod, bstrURl, varAsync, bstrUser, bstrPassword);
+```
+
+该方法包含 5 个参数，其中前 2 个参数是必须的。简单说明如下:
+
+- bstrMethod ∶ HTTP 方法字符串，如 POST 、 GET 等，不区分大小写
+- bstrUrl ∶ 请求的 URL 地址字符串，可以为绝对地址或相对地址
+- varAsync ∶ 布尔值，可选参数，指定请求是否为异步方式，默认为 true 。如果为 true （真），当 状态改变时会调用 onreadystatechange 属性指定的回调函数
+- bstrUser ∶ 可选参数，如果服务器需要验证，该参数指定用户名，如果未指定，当服务器需要验 证时，会弹出验证窗口
+- bstrPassword ∶ 可选参数，验证信息中的密码部分，如果用户名为空，则此值将被忽略
+
+建立连接之后，就可以使用 send （）方法发送请求到服务器端，并接收服务器的响应， send() 方法的用法如下
+
+```js
+XMLHttpRequest.send(varBody);
+```
+
+参数 varBody 表示将通过该请求发送的数据，如果不传递信息，可以设置参数为 null1 。
+
+该方法的同步或异步方式取决于 open 方法中的 varAsync 参数，如果 varAsync = False ，此方法将会等待请求完成或者超时才会返回，如果 varAsync = True ，此方法将立即返回。
+
+使用 XMLHttpRequest 对象的 responseBody 、 responseStream 、 responseText 、 responseXML 属性可以接收响应数据。
+
+```js
+var this_o_o = addAjax();
+this_o_o.open('GET', 'https://lmssee.cn/l/study/AJAX/ajax.asp', false);
+this_o_o.send(null);
+alert(this_o_o.responseText);
+{
+  /* <span class="r" id="hello">// 点我，点我 */
+}
+```
+
+## 发送 GEt 请求
+
+发送 GET 请求时，只需将查询字符串的 URL 传入 open() 方法，设置第一个参数为 GET 就可以了。服务器能够在 URL 尾部的查询字符串中接收用户传来的信息。
+
+使用 GET 请求很简单，也很方便，它适合传递一些简单的信息，不易传输较大容量和加密信息。
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <title></title>
+    <script>
+      // 定义 XMLHttpRequest 对象
+      /// 参数：无
+      // 返回值： XMLHttpRequest 对象实例
+      function createXMLHTTPObject() {
+        var XMLHttpFactories = [
+          // 兼容不同浏览器和版本的创建函数数组
+          function () {
+            return new XMLHttpRequest();
+          },
+          function () {
+            return new ActiveXObject('Msxml2.XMLHTTP');
+          },
+          function () {
+            return new ActiveXObject('Msxml3.XMLHTTP');
+          },
+          function () {
+            return new ActiveXObject('Microsoft.XMLHTTP');
+          },
+        ];
+        var xmlhttp = false;
+        for (var i = 0; i < XMLHttpFactories.length; i++) {
+          //尝试调用匿名函数，如果成功则返回 XMLHttpRequest 对象，否则继续调用下一个
+          try {
+            xmlhttp = XMLHttpFactories[i]();
+          } catch (e) {
+            continue;
+            // 如果发生异常，则继续下一个函数调用
+          }
+          break; // 如果成功，则中止循环
+        }
+        return xmlhttp;
+        // 返回对象实例
+      }
+      var xmlHttp = createXMLHTTPObject();
+      function request(url) {
+        xmlHttp.open('GET', url, false);
+        xmlHttp.send(null);
+        alert(xmlHttp.responseText);
+      }
+      window.onload = function () {
+        var b = document.getElementsByTagName('input')[0];
+        b.onclick = function () {
+          var url = 'server.asp?callback=functionName';
+          request(url);
+        };
+      };
+    </script>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <h1>Ajax 异步数据传输</h1>
+    <input
+      name="submit"
+      type="button"
+      id="submit"
+      value="
+向服务器发出请求"
+    />
+  </body>
+</html>
+```
+
+查询字符串通过 ？ 前缀附加在 URL 的尾部，发送数据是以 & 连接的一个或多个名/ 值对。每一个名值对都必须在编码后才能出现在 URL 中，用户使用 Javascript 的
+encodeURLComponent() 函数对其进行编码，服务器接收后也会使用 decodeURLComponent() 函数对其进行解码。 URL 的最长为 2048 字符（2KB ）。
+
+## 发送 POST 请求
+
+POST 请求支持发送任何格式、任意长度的数据，一般多用于表单提交。与 GET 发送的数据格式相似， POSS 发送的请求也必须进行编码。并用 & 进行分割。
+
+```js
+send('name1=value1&name2=value2...');
+```
+
+```js
+function request(url) {
+  xmlHttp.open('POST', url, false);
+  xmlHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xmlHttp.send('callback=functionName');
+  alert(xmlHttp.responseText);
+}
+```
+
+在 open() 方法中，设置第一个参数为 POST ，然后使用 setRequestHeader 方法设置请求消息的内容类型为 "application/x-www-form-urlencoded" ,
+它表示传递的是表单值，一般使用 POST 发送请求时都必须设置该项，否则服务器无法识别传递过来的数据。
+
+setRequestHeader() 方法的用法如下:
+
+```js
+xmlhttp.setRequestHeader('Header-name', 'value');
+```
+
+一般设置头部信息中 User-Agent 首部为 XMLHTTP ，以便服务端器能够辨别出 XMLHtRequest 异步请求和其它客户端普通请求。
+
+```js
+xmlhttp.setRequestHeader('User-Agent', 'XMLHTTP');
+```
+
+这样就可以在服务器端编写脚本分别为现代标准浏览器和不支持 JavaScript 的浏览器呈现不同的文档，以提高可访问性的手段。
+
+如果使用 POST 方法传递数据，还必须设置另一个头部信息。
+
+```js
+xmlhttp.setRequestHeader(
+  'Content-type ',
+  ' application/ x-www-form-urlencoded',
+);
+```
+
+然后，在 send （）方法中附加要传递的值，该值是一个或多个" 名/ 值" 对，多个" 名/ 值" 对之间使用"&" 分隔符进行分隔。在" 名/ 值" 对中，" 名" 可以为表单域的名称（与表单域相对应），" 值"
+可以是固定的值，也可以是一个变量。
+
+设置第 3 个参数值为 false ，关闭异步通信。
+
+用于发送 POST 请求的数据类型（ Content Type ）通常是 application/x-www-form-urlencoded ，这意味还可以以 tex/xml 或 application/xml
+类型给服务器直接发送 XML 数据，甚至以 application/json 类型发送 JavaScript 对象。
+
+```js
+function request(url) {
+  xmlHttp.open('POST', url, false);
+  xmlHttp.setRequestHeader('Content-type', 'text/xml');
+  xmlHttp.send(
+    "<bookstore><book id='1'> 书名1</book><book id='2'>书名2</book></bookstore>",
+  );
+  alert(xmlHttp.responseText);
+}
+```
+
+由于使用 GET 发送请求的信息量十分有限，所以在传输文件、大容量数据、传输安全信息、 XML 格式数据时，应使用 POST 方式发送。其传递的信息是不限字符数的，且不受编码形式的限制，还可以传入二进制信息。
+
+```js
+var this_click = document.querySelector('#hello');
+var this_o_o = addAjax();
+this_o_o.open('GET', 'https://lmssee.cn/l/study/AJAX/ajax.asp', false);
+this_o_o.send(null);
+this_click.onclick = function () {
+  alert(this_o_o.responseText);
+};
+```
+
+            

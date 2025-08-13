@@ -1,0 +1,86 @@
+---
+title: 链接
+
+
+---
+
+# 超链接
+
+- a:link
+- a:visited
+- a:hover
+- a:active
+
+## 滚动平滑
+
+scroll-behavior 属性用以显示单击可滚动框中链接时，是否平滑（具有动画特效的）滚动位置，为不是直接跳转。
+
+```css
+scroll-behavior: auto|smooth|initial|inherit;
+```
+
+- auto ：默认值，允许在滚动框内直接跳转至目标
+- smooth ：允许滚动框内的元素间平滑的“滚动”
+- initial ：默认值
+- inherit ：继承
+
+## pointer-events
+
+pointer-events 属性定义元素是否对指针做出反应：
+
+```css
+pointer-events: auto|none;
+```
+
+- auto ：默认值，元素对指针事件作出反应，比如 :hover 和 click
+- none ：元素不对指针事件作出反应
+- initial ：默认值
+- inherit ：继承
+
+## 光标
+
+cursor 是 css 2.0 的属性
+
+## 标准
+
+```css
+cursor: auto | crosshair | default | hand | move | help | pointer | text |
+  vertical-text | wait | * -resize | wait;
+```
+
+- auto ： 默认值，浏览器自动
+- crosshair ： 简单的十字线光标
+- default ：客户端默认样式
+- hand ： 手
+- move ： 十字箭头光标，意思为光标所在位置元素可拖动
+- help ： 问号
+- pointer ： 和手型类似，竖起一只手指的手型
+- text ： 可编辑文本，显示为 'I'
+- vertical-text ：可编辑垂直文本，显示为反转 90度 的 ' I'
+- \*-resize ： 用于标识对象的可改变尺寸的箭头形状
+- wait ：用户很忙。
+
+## IE6专用
+
+```css
+cursor: url(url) | all-scroll | col-resize | no-drop | not-allowed | progress |
+  row-resize;
+```
+
+- url （ url ）：用户自定义，后缀为 .cur 或 .ani
+- all-scroll: 有一个上下左右四个箭头、中间有一个原点的光标，用于标示页面可以上下左右滚动
+- col-scroll: 有一个左右的箭头、中间由竖线分割开来的光标，用于标示项目可以水平改变尺寸
+- no-drop ： 被斜线贯穿的圆圈的手型光标，用于表示被拖起对象不允许在此处放下
+- not-allow ： 禁止标记（被斜线贯穿的圆圈）光标，用于标示请求的操作不允许
+- progress ： 带沙漏标识的箭头，标识进程正后台运行
+- row-resize ： 有上下两个箭头，中间由横线分开，用于表示项目或标题可以垂直改变尺寸
+
+## Tooltip 工具
+
+通过 javaScript 设置。
+
+## css 精灵图
+
+将多张图合成为一张大图片。
+
+            

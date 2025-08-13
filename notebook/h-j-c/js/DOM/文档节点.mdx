@@ -1,0 +1,142 @@
+---
+title: 文档节点
+
+
+---
+
+# 文档片段
+
+Document 文本节点特征：
+
+- nodeType 值为 9
+- nodeName 值为 "#document"
+- nodeValue 值为 "null"
+- parentNode 值为 null
+- ownerDocument 值为 null
+- 其子节点可能是： DocumentType （最多一个）、 Element （最多一个）、 ProcessingInstruction 或 Comment
+
+## 访问文档子节点
+
+访问文档子节点方法有两种：
+
+- 使用 documentElement 属性，该属性始终指向 HTML 文档中的 html 元素
+- 使用 childNodes 列表访问文档元素
+
+```js
+var html = document.documentElement;
+var html = document.childNodes[0];
+var html = document.firstChild;
+```
+
+document 有一个 body 属性，使用它可以访问 body 元素。
+
+```js
+var body = document.body;
+```
+
+<!DOCTYPE>标签是一个与文档标签主体不同的实体，可以通过 doctype 属性访问它
+
+```js
+var doctype = document.doctype;
+```
+
+由于浏览器对 document.doctype 的支持不统一，所以很少用到。
+
+在 html 元素之外的注释也是文档的节点，但是不同的浏览器处理它们时存在较大的差异，在实际应用中也没什么用处。
+
+## 访问文档信息
+
+HTMLDocument 的实例对象包含 document 许多属性，用来访问文档信息，简单说明如下：
+
+- title 设置或返回 `<title>` 包含的文本信息；
+- lastModified 返回文档最后的修改日期
+- URl 返回当前文档完整的 URL ，即地址栏显示的信息
+- domain 返回当前文档的域名
+- referrer 返回链接到当前页面的那个页面的 URL 。在没有来源的情况下， referrer 属性中可能包含空字符串
+
+实际上，这些信息都包含在 请求的 http 请求头中，但通过这些属性更方便。
+
+## 访问文档属元素
+
+document 对象包含多个访问文档内元素的；
+
+- getElementById()
+- getElementsByTagName()
+- getElementsByName() 访问所有含有 name 属性的元素节点
+
+getElementsByTagName() 方法将返回一个 HTMLCollection 对象，与 nodeList 对象类似，可以使用方括号语法或者 item() 方法访问 HTMLCollection
+对象中的元素，并通过 length 属性获取这个对象中元素的数量。
+
+HTMLCollection 还包含一个 namedItem() 方法，该方法可以通过元素的 name 特性取得集合中的项目。
+
+```js
+{
+  /* <img src="i.gif" alt="1"> <img src="2.gif" alt="2" name="news"> */
+}
+var images = document.getElementsByTagName('img');
+var news = images.namedItem('name');
+```
+
+使用 参数 "\_" 可以获取所有的元素。
+
+```js
+var allElements = document.getElementsByTagName('_');
+```
+
+## 访问文档集合
+
+除了属性和方法， document 对象还定义了一些特殊的集合。这些集合都是 HTMLCollection 对象，为访问文档常用对象提供了快捷方式：
+
+- document.anchors 返回文档中所有的 Anchor 对象，及所有带 name 属性的 `<a>` 标签的
+- document.applets 返回文档中所有的 Applets 对象，及所有的 `<applet>` 标签的，不在推荐使用
+- document.forms 返回文档中所有 From 对象，与 document.getElementsByTagName("form") 得到的结果相同
+- document.images 返回文档中所有的 Image 对象，与 document.getElementsByTagName("image") 得到的结果相同
+- document.links 返回文档中所有 Area 和 Link 对象，及所有的带 href 特性的 `<a>`
+
+## 使用 HTML 5 Document
+
+HTML 5 Document 扩展了 HTMLDocument 很多新功能。
+
+## readyState
+
+document 的 readyState 属性包含两个可能的值
+
+- loading 正在加载的文档
+- complete 已经加载完的文档
+
+```js
+if (document.readyState == 'complete') {
+  //
+}
+```
+
+## compatMode
+
+document.compatMode 返回文档的渲染模式：标准模式（"CSS1Compar"）和怪异模式（"BackCompar"）
+
+```js
+if (document.compatMode == 'CSS1Compat') {
+  alert('标准模式');
+} else {
+  alert('怪异模式');
+}
+```
+
+## head
+
+document.body 引用文档中的 body 元素， document.head 类似，取文档的 head 元素。
+
+```js
+var head = document.head |
+| document.getElementsByTagName("head")[0];
+```
+
+## charset
+
+document.charset 表示文档中实际使用的字符集，也可以在指定的新字符集。默认值为 "UTF-8" ，可以通过`<meta>`元素、 HTTP 头部或直接设置 charset 的属性值。
+
+## defaultCharset
+
+document.defaultCharset 表示根据默认浏览器及操作系统的设置，当前文档默认的字符集应该是什么。如果文档没有默认的字符集，那么 charset 和 defaultCharset 的值可能不一样。
+
+            

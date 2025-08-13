@@ -1,0 +1,61 @@
+---
+title: 异步执行
+
+
+---
+
+# 异步执行脚本
+
+由于 JavaScript 语言的执行环境是 "单线程 "（ single thread ）的，即一次只能完成一件任务，如果有多个任务时就必须排队，前面一个任务完成，再执行后面的一个任务。因此，如果队伍很长，就会出现等待时间过长的现象。为了解决这个问题， JavaScript 语言将任务的执行模式分成两种：同步（ Synchronous ）和异步（ Asynchronous ）。
+
+广义上讲， JavaScript 异步执行脚本实际效果就是延时执行脚本。严格来说， JavaScript 中的异步编程能力都是由 BOM 与 DOM 提供的，如 setTimeout 、 XMLHttpRequest ，还有 DOM 的事件机制，还有 HTML 5 新增加的 webwork 、 postMessage 等。这些方法都有一个共同的特点，就是都有一个回调函数，便于实现控制。
+
+实现异步模式执行脚本有 4 种方法，分别是使用回调函数、事件监听、观察者模式、 Promise 对象。
+
+## 回调函数
+
+是异步编程最基本的方法。前文提到的 setTimeout 、 XMLHttpRequest 、 webwork 、 postMessage 等方法，都有一个回调函数，都可归属于使用回调函数实现异步编程的方法。
+
+回调函数简单、容易理解和部署。但是，回调函数的缺点是不利于代码的阅读和维护，各个部分之间高度耦合，流程会很混乱，而且每个任务只能指定一个回调函数。因此，需要了解其它模式的异步编程思想。
+
+## 监听
+
+第二种异步脚本执行的方法是基于事件监听的方法。基于事件监听的异步脚本执行的思路是基于事件的触发，而不依赖脚本的顺序。
+
+事件监听使得程序进度基于事件的编程逻辑。
+
+## 采取惰性载入的方案提高函数代码的性能
+
+```js
+function addEvents(type, element, fun) {
+  if (element.addEventListener) {
+    element.addEventListener(type, fun, false);
+  } else if (element.attachEvent) {
+    element.attachEvent('on' + type, fun);
+  } else {
+    element['on' + type] = fun;
+  }
+}
+```
+
+所谓惰性载入就是在第一次执行代码后，用函数代码内部的方法覆盖原有代码，代码如下：
+
+```js
+var addEvents = (function () {
+  if (document.addEventListener) {
+    return function (type, element, fun) {
+      element.addEventListener(type, fun, false);
+    };
+  } else if (document.attachEvent) {
+    return function (type, element, fun) {
+      element.attachEvent('on' + type, fun);
+    };
+  } else {
+    return function (type, element, fun) {
+      element['on' + type] = fun;
+    };
+  }
+})();
+```
+
+            

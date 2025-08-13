@@ -1,0 +1,128 @@
+---
+title: 删改
+
+
+---
+
+# 更改 cookie
+
+想要改变一个 cookie 值，只需要使用相同的名称和新值重新设置该 cookie 值即可。
+
+## 删除不用的 Cookie
+
+Cookie 除了可以在浏览器中存储信息之外，还可以使用代码进行删除。可以根据 Cookie 的名称删除指定的 Cookie ，例如。
+
+```js
+function deleteCookie(name) {
+  var date = new Date();
+  date.setTime(date.getTime() - 10000);
+  // 删除一个 Cookie ，就是将其过期时间设定为一个过去的时间
+  document.cookie = name + '= 删除' + 'expires=' + date.toGMTString();
+}
+```
+
+首先使用自定义 setCookie 函数创建一个 Cookie ，使用 alert 语句将 Cookie 值弹出，然后调用 deleteCookie 函数删除指定的 Cookie 值。其实，删除 Cookie 操作实际上就是将
+Cookie 的 expires 属性重新设置一个时间，该时间为当前时间的过去时间。这样再次使用 alert 语句将 Cookie 值弹出时，对话框中的值将为空值。
+
+```js
+function deleteCookie(name, path, domain) {
+  if (getCookie(name))
+    document.cookie =
+      name +
+      '=' +
+      /** 如果存在 , 则清空 */
+      (path ? '?path=' + path : '') +
+      /**  如果存在路径，则加上  */
+      (domain ? ';domain=' + domain : '') +
+      /** 如果存在域，则加上*/
+      ';expires=Thu,01-Jan-1970 00: 00:01 GMT';
+}
+```
+
+## 附加 cookie 信息
+
+浏览器对 cookie 信息都有个数限制，为了避免超出限制，可以把多条信息都保存在一个 cookie 中，而不是为每条信息都建议一个 cookie 。由于 cookie 可储存的字符串最大长度为 4KB （即 4096
+个字符），在实际应用中，这个字符串长度完全满足各种用户信息的储存。
+
+实现方法：在每一个名值对，再嵌套一组名 / 值对。子名 / 值对之间的分隔符，约定类于对象直接量。
+
+```js
+subName1:subValue1,subName2:subValue2,subName3:subValue3
+```
+
+然后把组名 / 值对作为值传递给 cookie 的名称。
+
+```js
+name=subName1:subValue1,subName2:subValue2,subName3:subValue3
+```
+
+为了确保名 / 值对不引起歧义，建议使用 escape() 方法对其进行编码，读取时再使用 unescape() 方法转码即可。
+
+```js
+var d = new Date();
+d.setMonth(d.getMonth() + 1);
+/**  子 / 名值串 */
+d = d.toGMString();
+/** 组合 cookie 字符串 */
+var a = 'name:a,age:20,addr:beijing';
+/** 设置有效期为 1 个月 document.cookie = c; */
+var c = 'user=' + escape(a);
+/** 写入 cookie 信息 */
+c += '' + 'expires' + d;
+```
+
+当读取 cookie 信息时，首先需要获取 cookie 值，然后调用 unescape() 方法对 cookie 值进行解码，最后访问再访问每一个 cookie 值
+
+```js
+function getSubCookie() {
+  var a = document.cookie.split('');
+  var o = {};
+  for (var i = 0; i < a.length; i++) {
+    // 遍历数组信息
+    a[i] && (a[i] = a[i].replace(/^\s+|\s+$/, ''));
+    var b = a[i].split('=');
+    var c = b[1];
+    c &&
+      ((c =
+        /**   清空 */
+        c.replace(/^\s+|\s+$/)),
+      '');
+
+    c = unescape(c);
+    /**   解码 */
+
+    if (!/\,/gi.test(c)) {
+      /** 若无则写  */
+
+      o[b[0]] = b[1];
+    } else {
+      var d = c.split(',');
+      /** 劈开 cookie 值 */
+
+      /** 遍历 cookie 数组 */
+      for (var j = 0; j < d.length; j++) {
+        /** 劈开名 / 值对 */
+        var e = d[j].split(':');
+        /**  写入 cookie */
+        [e[0]] = e[1];
+      }
+    }
+  }
+  /** 返回 cookie */
+  return o;
+}
+```
+
+## 检测支持
+
+有个别浏览器不支持 cookie 或者被禁用，在使用前可以先判断；
+
+```js
+if (navigator.cookieEnabled) {
+  setCookie();
+  /** or */
+  getCookie();
+}
+```
+
+            

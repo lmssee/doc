@@ -1,0 +1,45 @@
+---
+title: label
+
+
+---
+
+# 标记每一份表单数据
+
+标记表单数据与使用 name 或 id 属性标识表单元素以便往后使用并不是一回事。它代之以使用 `<label>` 标签对包围充当表单元素的一种文字说明的文本。表单元素 `<label>`为元素提供了额外的环境，它对于屏幕阅读器软件特别重要。
+
+## 组合表单元素
+
+`<fieldset>` 元素正是用于执行该任务，它把表单元素组包围起来，给用户提供额外的环境，无论它们是直接在 Web 浏览器中还是在屏幕阅读器软件的帮助下访问它。 `<fieldset>` 元素就定义了这种组合， `<legend>` 元素包含将显示或大声读出以描述这种组合的文本。
+
+## 在表单中包括隐藏的数据
+
+使用具有 type="hidden" 属性的 `<input />` 标签。这个属性不会对显示产生任何影响，它只会在提交表单时把你指定的任何名称和值添加到表单结果中。
+
+```html
+<form action="#" method="get" id="form1" name="form1">
+  <p class="row">
+    <label for="name">会员<span class="required">_</span></label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      required="required"
+      aria-required="true"
+    />
+  </p>
+  <p class="row">
+    <label for="password">密码<span class="required">_</span></label>
+    <input
+      type="password"
+      id="password"
+      name="password"
+      required="required"
+      aria-required="true"
+    />
+  </p>
+  <p class="row center"><input type="submit" value="登 录" /></p>
+</form>
+```
+
+            

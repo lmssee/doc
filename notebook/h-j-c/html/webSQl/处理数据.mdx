@@ -1,0 +1,130 @@
+---
+title: 处理数据
+
+
+---
+
+# 执行数据库事务
+
+一旦成功创建了数据库或者成功连接到了数据库创建了 DatabaseSync 对象，就可以执行数据库操作了。数据库操作都是事务的，有下面两个方法可用：
+
+```js
+DatabaseSync.transaction(callback);
+DatabaseSync.readTransaction(callback);
+```
+
+这两个方法的区别在于，前一个方法允许执行读写操作，而后一个方法仅允许执行读操作。例如后一个方法不能执行 SQL INSERT 操作。
+
+参数 callback 定义一个事务操作要执行的函数，该函数内执行的 SQL 操作都是事务的，要么全部成功，要么全部失败。该函数有一个参数，参数是 SQLTransactionSync 对象，使用该对象定义的方法可以执行 SQL 操作，代码如下：
+
+```js
+function callback(oSQLTransactionSync) {}
+```
+
+例如下面的代码，位于 worker.js 文件内，演示了如何使用 transaction() 方法：
+
+```js
+// 事务操作
+function callback(tx) {
+  // 在事务中执行 SQL 操作，并返回结果
+  var result = tx.executeSql('select _ FROM employees', []);
+  try {
+    // 获取所有记录行
+    var rowList = result.rows;
+    // 获取每个记录行
+    for (var i = 0; i < rowList.length; i++) {
+      var row = rowList.item(i);
+      // 获取每个记录行的内容：列名和值
+      for (var j in row) {
+        postMessage(j + '=' + row[j]);
+        //将结果发回页面
+      }
+    }
+  } catch (err) {
+    throw new Error(err.message ? err.message : err.toString());
+  }
+}
+// 创建数据库或建立连接
+try {
+  var db = openDatabaseSync(
+    'mydb2',
+    '1.0',
+    ' 我的第一个客户端数据库 ',
+    2 * 1024 * 1024,
+  );
+} catch (err) {
+  throw new Error(err.message ? err.message : err.toString());
+}
+if (!db) throw new Error(' 不能连接到数据库！ ');
+//执行事务
+db.transaction(callback);
+```
+
+在 HTML 网页中创建 Worker 并接收消息， 代码如下：
+
+```js
+if (window.Worker) {
+  // 使用构造方法创建 Worker ，构造方法的参数是要执行的 JavaScript 文件 URL
+  var worker = new Worker('worker.js');
+  // 注册 error 事件监听 Worker 出错
+  worker.onerror = function (e) {
+    alert(' 于第 [' + e.lineno + '] 行发生错误 : ' + e.message);
+  }; // 注册 message 事件监听 Worker 返回的数据，如果有数据返回就写到网页上
+  worker.onmessage = function (event) {
+    var result = event.data;
+    console.log(result + '');
+  };
+} else {
+  alert(' 浏览器不支持 Web Workers!');
+}
+```
+
+成功使用 executeSql() 方法执行的 SQL 语句可以返回一个执行结果，该执行结果作为 executeSql() 方法的一个参数返回，是一个 SQLResultSet 对象，由 SQLResultSet 接口定义，代码如下：
+
+```ts
+interface SQLResultSet {
+readonly attribute long insertId;
+readonly attribute long rowsAffected;
+readonly attribute SQLResultSetRowList rows;
+};
+```
+
+SQLResultSet 对象包含记录行，每一行表示一个结果。该结果包含分配给它的一组值，表示该特定结果的数据库中的每一列的值。
+
+- 属性 insertId 返回记录行的行 ID ，每个 SQL INSERT 插入操作都会自动插入一个行 ID ，这与我们过去所认识的数据库操作不同。如果插入多行记录，那么该属性就会返回最后一个行 ID ；如果不存在记录行，那么调用该属性将会抛出 INVALID_ACCESS_ERR 异常
+- 属性 rowsAffected 返回 SQL 语句所改变的记录的行数。如果没有任何改变，那么该属性返回 0 。对于 select 查询语句，因为它肯定没有改变任何行，所以返回 0
+- 属性 rows 返回一个 SQLResultSetRowList 对象，表示返回的所有记录行。结果按照数据库中的序列排列，如果没有数据，那么就会返回空对象，即 SQLResultSetRowList. length 属性值为 0
+
+SQLResultSetRowList 对象由 SQLResultSetRowList 接口定义，代码如下：
+
+```ts
+interface SQLResultSetRowList {
+readonly attribute unsigned long length;
+  getter any item(in unsigned long index);
+};
+```
+
+属性 length 表示行的总数量。
+
+用户也可以使用 item() 方法根据索引号获取一个指定的行。如果不存在指定的索引号，那么该方法返回 null 。
+
+一个行就是一个 JavaScript Object 类型的对象，行的每个列就相当于对象的属性，然后可以使用对象语法获取每个值。
+
+例如下面的代码用于遍历数据库查询结果。
+
+```js
+try {
+  // 获取所有记录行
+  var rowList = result.rows; // 获取每个记录行
+  for (var i = 0; i < rowList.length; i++) {
+    var row = rowList.item(i); // 获取每个记录行的内容：列名和值
+    for (var j in row) {
+      console.log(j + ';=' + row[j] + ';<br/>');
+    }
+  }
+} catch (err) {
+  alert(err.message ? err.message : err.toString());
+}
+```
+
+            

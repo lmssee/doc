@@ -1,0 +1,27 @@
+---
+title: 观测点
+
+
+---
+
+# 透视摄像机
+
+在 three 中，最常用的是是透视摄像机，可以产生一个类似眼观的 3D 视觉效果。
+
+PerspectiveCamera 定义了一个视锥。
+
+```js
+const camera = new three.PerspectiveCamera(fov, aspect, near, far);
+```
+
+- fov 视野
+- aspect 视锥前端和后端的宽度
+- near 据观测点多近不渲染
+- far 据观测点多远不显示
+
+## 正交摄像机
+
+蒸饺摄像机由 OrthographicCamera 构建。与上面的透视摄像机（ PerspectiveCamera ）不同的是，需要设置 left 、 right 、 top 、 bottom 、 near 、 far
+来制定一个长方形，使得视野是平行的而不是透视的。
+
+            

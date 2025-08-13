@@ -1,0 +1,84 @@
+---
+title: 例
+
+
+---
+
+# 将 Ajax 请求和响应封装
+
+Ajax 的请求和响应比较简单，但是本着"若常用，则封装"的原则，封装如下。
+
+```js
+function createXMLHTTPObject() {
+  var XMLHttpFactories = [
+    function () {
+      return new XMLHttpRequest();
+    },
+    function () {
+      return new ActiveXObject('Msxml2.XMLHTTP');
+    },
+    function () {
+      return new ActiveXObject('Msxml3.XMLHTTP');
+    },
+    function () {
+      return new ActiveXObject('Microsoft.XMLHTTP');
+    },
+  ];
+  var xmlhttp = false;
+  for (var i = 0; i < XMLHttpFactories.length; i++) {
+    try {
+      xmlhttp = XMLHttpFactories[i]();
+    } catch (e) {
+      continue;
+    }
+    break;
+  }
+  return xmlhttp;
+} // 封装异步请求函数
+function request(url, callback, data) {
+  var xmlHttp = createXMLHTTPObject();
+  if (!xmlHttp) return;
+  var method = data ? 'POST' : 'GET';
+  xmlHttp.open(method, url, true);
+  xmlHttp.setRequestHeader('User-Agent', 'XMLHTTP/1.0');
+  if (data)
+    xmlHttp.setRequestHeader(
+      'Content-type',
+
+      'application/x-www-form-urlencoded',
+    );
+
+  xmlHttp.onreadystatechange = function () {
+    if (xmlHttp.readyState != 4) return;
+    if (xmlHttp.status != 200 && xmlHttp.status != 304) {
+      alert('HTTP 请求错误 ' + xmlHttp.status);
+      return;
+    }
+    callback(xmlHttp);
+  };
+  if (xmlHttp.readyState == 4) return;
+  xmlHttp.send(data);
+}
+```
+
+## 动态显示提示信息
+
+为了更加直观的与客户沟通，避免交互过程页面过于枯燥，可以给 onreadystatechange
+中绑定回调函数，下面简单例子：
+
+```js
+function Dan() {
+  var info = document.getElementById('info');
+  if (xhr.readyState == 1) {
+    info.innerHTML = "<img src='images/loading.gif' />连接中......";
+  } else if (xhr.readyState == 2 || xhr.readyState == 3) {
+    info.innerHTML = "<img src='images/loading.gif' />读数据......";
+  } else if (xhr.readyState == 4) {
+    if (xhr.status == 200) {
+      info.innerHTML = '' + xhr.responseText + '</span>';
+    } else alert(xhr.status);
+  }
+}
+```
+
+            

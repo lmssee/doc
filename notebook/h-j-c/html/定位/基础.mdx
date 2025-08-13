@@ -1,0 +1,44 @@
+---
+title: 基础
+
+
+---
+
+# 位置信息基础
+
+位置信息主要由一对维度和经度表示的：
+
+经纬值可以用十进制数值或是 DMS 角度格式表示， HTML 5 Geolocation 使用的是十进制的表示方法。
+
+## 浏览器支持
+
+各浏览器对 HTML 5 的支持情况不同，并且在不断地更新。在 HTML 5 的所有功能里， HTML 5 Geolocation 是第一批被全部接受和实现的功能之一。
+
+```js
+function testPosition() {
+  if (navigator.geolocation)
+    location.hash = '您的浏览器支持 HTML 5 Geolocation';
+  else location.hash = '您的浏览器不支持 HTML 5 Geolocation';
+}
+```
+
+```js
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else {
+    mi('#AA').innerHTML =
+      '浏览器不支持，或者您拒绝了定位权限正常显示详细应为： Latitude: xx.xxxx Longitude: xxx.xxxx ';
+  }
+}
+function showPosition(position) {
+  mi('#AA').innerHTML =
+    'Latitude: ' +
+    position.coords.latitude +
+    ' Longitude: ' +
+    position.coords.longitude;
+}
+getLocation();
+```
+
+            

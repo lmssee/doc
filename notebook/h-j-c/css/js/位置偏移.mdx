@@ -1,0 +1,186 @@
+---
+title: 位置偏移
+
+
+---
+
+# 窗口位置
+
+CSS 的 left 和 top 属性不能真实反映元素相对页面和其它对象的精准定位，不过每个元素都拥有 offsetLeft 和 offsetTop 属性，它们描述了元素的偏移位置。
+
+IE 会以父元素为参照，而支持 DOM 标准的浏览器会以最近定位元素为参照对象进行定位。
+
+但，对于任何浏览器来说 ， offsetParent 都能识别当前元素偏移的参照对象。所以不用担心 offsetParent 指代的元素是谁。
+
+```html
+<style type="text/css">
+  div {
+    width: 200px;
+    height: 100px;
+    border: solid 1px #f00;
+  }
+  #wrap {
+    position: relative;
+    border-width: 20px;
+  }
+</style>
+<div id="wrap">
+  <div id="sup"><div id="box"></div></div>
+</div>
+```
+
+不用为包含元素定义边框，因为不同浏览器对边框的处理不同。例如， IE 浏览器总会忽略所有包含元素的边框，因为所有元素都是参照物，且以参照物对象的边框内壁作为边线来计算。 Firefox 和 Safari
+会把静态元素的边框当作实际距离来计算，因为对它们来说，静态元素不作为参照物。而对 Opera 浏览器来说，它根据非静态元素边框的外壁作为边线进行计算，所以各个浏览器的取值不同。
+
+```js
+function getPoint(e) {
+  var x = (y = 0);
+  while (e.offsetParent) {
+    x += e.offsetLeft;
+    y += e.offsetTop;
+    e = e.offsetParent;
+  }
+  return { x: x, y: y };
+}
+```
+
+## 相对定位
+
+要想获得绝对定位，就必须知道元素与父元素之间的距离。
+
+```js
+function getP(e) {
+  if (e.parentNode == e.offsetParent) {
+    var x = e.offsetLeft;
+    var y = e.offsetTop;
+  } else {
+    var o = getPoint(e);
+    var p = getPoint(e.patentNode);
+    var x = o.x - p.x;
+    var y = o.y - p.y;
+  }
+  return { x: x, y: y };
+}
+```
+
+## 定位位置
+
+定位包含框就是定位元素参照的包含框对象。一般为距离当前元素最近的上级定位元素。获取定位元素相对包含框的位置就是直接读取 CSS 中的 left 和 top 属性。
+
+```js
+function getB(e) {
+  return {
+    x: parseInt(getStyle(e, 'left')) || 0,
+    y: parseInt(getStyle(e, 'top')) || 0,
+  };
+}
+```
+
+## 设置偏移位置
+
+与获取元素位置相比，设置元素的偏移位置比较容易。可以直接使用 CSS 进行设置，也可以封装函数。
+
+```js
+function setP(e, o) {
+  e.style.position || e.style.position == 'absolute';
+  e.style.left = o.x + 'px';
+  e.style.top = o.y + 'px';
+}
+```
+
+## 设置相对位置
+
+偏移位置是重新定位元素的位置。不考虑元素可能存在的定位值。但是，在动画设计中，经常需要设置元素当前位置为起点进行偏移。
+
+```js
+function offsetP(e, o) {
+  e.style.position || e.style.position == 'absolute';
+  e.style.left = getB(e).x + o.x + 'px';
+  e.style.top = getB(e).y + o.y + 'px';
+}
+```
+
+## 鼠标指针绝对位置
+
+要获取鼠标指针的页面位置，就必须捕获当前事件对象，然后读取对象中包含的位置信息。
+
+```js
+function getMP(e) {
+  var e = e || window.event;
+  return {
+    x:
+      e.pageX ||
+      e.clientX +
+        (document.documentElement.scrollLeft || document.body.scrollLeft),
+    y:
+      w.pageY ||
+      e.clientY +
+        (document.documentElement.scrollTop || document.body.scrollTop),
+  };
+}
+```
+
+## 鼠标指针相对位置
+
+除了考虑鼠标在页面的相对位置之外，还需要考虑指指针在元素内位置。这需要用到事件对象的 offsetX/offsetY 或 layerX/layerY 属性对。由于早期的 Mozilla 不支持 offsetX 和
+offsetY 属性，可以考虑使用 layerX 和 layerY 属性对。但是这两属性是以定位包含框为参照物，而不是元素本身的左顶角，因此还需要减去该元素的 offsetLeft 和 offsetTop 值。
+
+```js
+function getME(e, o) {
+  var e = e || window.event;
+  return {
+    x: e.offsetX || e.layerX - o.offsetLeft,
+    y: e.offsetY || e.layerY - o.offsetTop,
+  };
+}
+```
+
+修改后的，兼容 Mozilla 和 Safari 。
+
+```js
+function getME(e) {
+  var e = e || window.event;
+  var bl =
+    parseInt(getStyle(o, 'borderLeftWidth')) ||
+    (o.style.borderLeftStyle && o.style.borderLeftStyle != 'none' ? 3 : 0);
+  var bt =
+    parseInt(getStyle(o, 'borderTopWidth')) ||
+    (o.style.borderTopStyle && o.style.borderTopStyle != 'none' ? 3 : 0);
+  var x = e.offsetX || e.layerX - o.offsetLeft - bl;
+  var y = e.offsetY || e.layerY - o.offsetTop - bt;
+  var u = navigator.userAgent;
+  if (
+    u.indexOf('KHTML') > -1 ||
+    u.indexOf('Konqueror') > -1 ||
+    u.indexOf('AppleWebkit') > -1
+  ) {
+    x -= bl;
+    // 为 Safari 浏览器减去边框影响
+    y -= bt;
+  }
+  return { x: x, y: y };
+}
+```
+
+## 滚动条位置
+
+```js
+function getPS() {
+  var h = document.documentElement;
+  var x = self.pageXOffset || (h && h.scrollLeft) || document.body.scrollLeft;
+  var y = self.pageYOffset || (h && h.scrollTop) || document.body.scrollTop;
+  return { x: x, y: y };
+}
+```
+
+## 设置滚动条位置
+
+Window 对象定义了 scrollTo(x,y) 方法，该方法能够根据传递的参数值定位滚动条的位置，其中参数 x 可以宋伟页面内容在 x 轴方向的偏移量，二参数 y 可以定位页面中 y 轴方向上的偏移量。
+
+```js
+function setPS(e) {
+  window.scrollTo(getPoint(e).x, getPoint(e).y);
+}
+```
+
+            

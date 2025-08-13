@@ -1,0 +1,101 @@
+---
+title: 例
+
+
+---
+
+# 设计工厂模式
+
+将每个对象都共享的函数放置到外部，放到函数之前，可解决重复创建对象的问题。
+
+## 设计类继承
+
+需要考虑以下三点：
+
+- 在构造函数 B 的结构内部，使用函数 call （）调用构造函数 A ，把 B 的参数传递给调用函数，让 B 能够继承 A 的所有属性和方法
+- 在构造函数 A 和 B 之间建立原型链，即 B.prototype = new A();
+- 恢复 B 的原型对象的构造函数，即 B.prototype.constructor = B; 语句行
+
+## 设计原型模式
+
+原型模式存在两个问题：
+
+- 由于构造函数事先声明，而原型属性在类结构声明后才被定于，因此无法通过构造函数参数向属性动态传递值
+- 当原型属性的值为引用类型的数据时，如果在一个对象实例中修改该属性值，则将影响所有的实例
+
+## 设计动态原型模式
+
+## 使用 prototype 定义方法和属性
+
+每个类都有 prototype 属性，该属性是一个静态属性，因此无需实例化，只需使用类引用该属性即可。
+
+要为一个类定义方法，只需将该方法赋给类的 prototype 属性。
+
+```js
+function Person(myName, myAge) {
+  this.nickName = myName;
+  this.age = myAge;
+}
+Person.prototype.showInfo = function () {
+  return (
+    'Tom ！我的名字是 ' + this.nickName + '; ，我现在 ' + this.age + ' 岁了。 '
+  );
+};
+```
+
+## 使用 prototype 定义属性
+
+也可以使用 prototype 为类定义属性，但那样将会失去为构造器定义参数的功能。例如下面的代码：
+
+```js
+function Person(myName, myAge) {}
+Person.prototype.nickName = null;
+Person.prototype.age = null;
+Person.prototype.showInfo = function () {
+  return '我的名字是 ' + this.nickName + '; ，我现在 ' + this.age + '$1 了。 ';
+};
+```
+
+显然，这里构造器参数没什么作用。
+
+prototype 的另一个重要作用是为类添加新的成员，例如下面的代码：
+
+```js
+function showHistory() {
+  return '10 年开发体验 ';
+}
+Person.prototype.showHistory = showHistory;
+var person_1 = new Person('JOHN', 32);
+console.log(person_1.showHistory()); // 输出 "10 年开发体验 "
+```
+
+这里，定义了一个函数 showHistory() 封装一段逻辑代码运算，然后将该函数赋给 Person 类原型的 showHistory 成员，这样 showHistory 成员便作为 Person
+类一个新的方法存在，并且该方法拥有函数 showHistory() 封装的逻辑代码。
+
+## 使用 Object 类为实例定义方法和属性
+
+可以使用 Object 类直接定义一个实例，并为该对象赋属性和方法。
+
+```js
+var person_1 = {
+  nickName: 'john',
+  age: 15,
+  showInfo: function () {
+    return (
+      '我的名字是 ' + this.nickName + '; ，我现在 ' + this.age + '$1 了。 '
+    );
+  },
+};
+console.log(person_1.showInfo());
+console.log('$1 性 nickName 的值为： ' + person_1.nickName);
+```
+
+person_1 本身就是一个实例，所以无需实例化就可以调用其方法和属性，不过这种定义其实是利用对象命名键的形式，所以不推荐使用。
+
+## 使用 return 语句定义方法和属性
+
+可以使用 return 语句定义方法和属性。只需为构造方法定义返回值，在 return 语句中声明一个对象，该对象即可以利用对象命名键定义方法和属性。
+
+## 使用 prototype 和 Object 配合为类定义方法和属性
+
+            

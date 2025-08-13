@@ -1,0 +1,161 @@
+---
+title: 背景
+
+
+---
+
+# 简述
+
+```css
+background-image 、 background-color 、 background-origin 、 background-clip 、
+    background-repeat 、 background-size 、 background-position 、 background-attachment
+```
+
+## 背景
+
+background 属性与 CSS2中的用法基本相同，不过 CSS3允许在该属性中添加多个背景图像组，背景图像之间通过逗号进行分隔。其中 `<bg-layer>`表示一个背景图像层。每个背景图像层都可以包含下面的值：
+
+```css
+[background-image] | [background-color] | [background-origin] | [background-clip] |
+[background-repeat] | [background-size] | [background-position]
+| [background-attachment]
+```
+
+为了方便定义背景图像， background 属性又派生了 8个子属性。
+
+- background-image ：定义背景图像
+- background-color ：定义背景颜色
+- background-origin ：指定背景的显示区域
+- background-clip ：指定背景的裁剪区域
+- background-repeat ：设置背景图像是否及如何重复铺排
+- background-size ：定义背景图片的大小
+- background-position ：设置背景图像位置
+- background-attachment ：定义背景图像的显示方式
+- mix-blend-mode ：定义元素与父元素的背景混合方式
+
+## 背景色
+
+```css
+background-color: 颜色英文单词 | 颜色的十六进制数 | 颜色的 rgb 值 | transparent
+  | inherit;
+```
+
+## 背景定位
+
+```css
+background-position ： percentage | length;
+
+background-position: left | right | center | top | bottom;
+```
+
+## 定位参考
+
+```css
+background-origin: border-box | padding-box | content-box;
+```
+
+WebKit 支持 -webKit-background-origin 私有属性， Mozilla Gecko 支持 -moz-background-origin 私有属性， Presto 引擎和 IE 浏览器支持标准属性。
+
+```css
+iv {
+  height: 600px;
+  width: 416px;
+  border: solid 1px red;
+  padding: 120px 4em 0;
+  background: url(images/p3.jpg) no-repeat;
+  -moz-background-origin: border-box;
+  -webkit-background-origin: border-box;
+  background-origin: border-box;
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  background-size: cover;
+  overflow: hidden;
+}
+```
+
+## 固定背景
+
+```css
+background-attachment ： fixed | scroll | local
+```
+
+## 定义裁剪区域
+
+```css
+background-clip ： border-box | padding-box | content-box | text
+```
+
+- border-box : 从边框区域向外裁剪背影
+- padding-box :　从补白向外裁剪背景
+- content-box ： 从内容区域向外裁剪背景
+- text ：从前景内容（如文字）区域向外裁剪背景
+
+WebKit 支持 -webKit-background-clip 私有属性， Mozilla Gecko 支持 -moz-background-clip 私有属性， Presto 引擎和 IE
+浏览器支持该属性部分取值， Firefox 不支持 text 。
+
+```css
+div {
+  height: 50px;
+  width: 200px;
+  border: solid 50px gray;
+  padding: 50px;
+  background: url(images/bg2.jpg) no-repeat;
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  background-size: cover;
+  -moz-background-clip: content-box;
+  -webkit-background-clip: content-box;
+  -o-background-clip: content-box;
+  -khtml-background-clip: content-box;
+  background-clip: content-box;
+}
+```
+
+## 定义大小
+
+```css
+background-size: [<length> | <percentage> | auto ]{1,2} | cover | contain
+
+```
+
+background-size 属性值初始值为 auto ，适用于所有的元素。
+
+WebKit 支持 -webKit-backgroundsize 私有属性， Mozilla Gecko 支持 -moz-background-size 私有属性， Presto 引擎、 IE 浏览器支持标准属性
+
+## 背景平铺
+
+```css
+background-repeat ： repeat-x | repeat-y | repeat | no-repeat | space | round
+```
+
+- space 背景图像以相同间距平铺且填满整个容器
+- round 背景图像自动缩放到适应且填充满整个容器
+
+CSS Sprite 是一种图像处理技术，将零散的小图标整合在一起，形成一张大图 ，这张图可称为雪碧图或精灵图。当用这张大图做背景图像时，可以利用
+background-position 属性进行背景定位，找到想要的小图标。这么处理图像，不但可以解决命名困扰，还能减少
+HTTP 请求数和图像字节数，提升网页性能。但制作和维护这张雪碧图比较烦琐，当加一个小图标的时候，必须修改原图，还不能破坏原先图标的位置。
+
+## mix-blend-mode
+
+mix-blend-mode 属性规定元素的内容应如何与其直接父背景混合。
+
+```css
+mix-blend-mode: normal | multiply | screen | overlay | darken | lighten |
+  color-dodge | color-burn | difference | exclusion | hue | saturation | color |
+  luminosity;
+```
+
+## isolation 属性
+
+isolation 属性定义元素是否创建新的堆叠上下文。与 background-blend-mode 和 mix-blend-mode 一起使用时， isolation 属性很有用。
+
+```css
+isolation: auto|isolate|initial|inherit;
+```
+
+- auto 默认，只在应用于元素的属性之一需要的它时，才创建新的堆叠上下文
+- isolate 必须创建新的堆叠上下文
+- initial 将此属性设置为默认值
+- inherit 继承
+
+            

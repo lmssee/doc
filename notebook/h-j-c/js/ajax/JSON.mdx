@@ -1,0 +1,267 @@
+---
+title: JSON
+
+
+---
+
+# JSON 数据
+
+JSON 是谁 Ajax 技术诞生的一种轻量级的数据格式，它是 javascript
+的一个子集，符合 ECMA SCript 语法规则， JSON
+实际上就是一段原生代码，因此易于阅读和编写，同时也易于机器的解析和生成。
+
+## JSON 结构
+
+JSON 结构由下面 3 种类型的数据组成：
+
+- 值：表示字符串、数值、布尔值、对象、数组、 null ，但不支持 JavaScript 的
+  undefined
+- 对象：表示一种无序键值对。每个键、值对中的值可以是最简单的值，也可以是复杂类型的值
+- 数组：表示一个无序的值列表，可以通过数字索引访问其中的值。数组的值也可以是任意类型。 JSON
+  可以是无数的对象、数组嵌套组合而成，构成一个复杂的数据结构
+
+JSON 仅是一种结构化数据的格式，不支持变量、函数、或者类型实例，与 JavaScript
+数据语法相同，但仅是 JavaScript 的一个子集
+
+_值_
+
+JSON 字符串和 javascript 字符串直达的区别就是， JSON 字符串不允许使用单引号。
+
+对于特殊字符必须使用转义序列来表示。
+
+数值可以是整数、浮点数，也可以是科学计数法来表示。数值可以直接引用，不加引号。逻辑值也可以直接使用，不加引号。在
+JSON
+中，分隔符是不被解析的，因此在结构数据行内任意位置增加空白，以实现对数据的格式化排版。
+
+_对象_
+
+对象是无序的键值对集合。
+
+```js
+{ "string1": "value1",  "string2": "value2",  "string3": "value3", ...,  "stringN": "valueN" }
+```
+
+因为不是 javascript 语句，所以末尾不需要添加分号。
+
+同一对象不可以拥有两个相同名字的属性
+
+_数组_
+
+数组是有序值的集合。
+
+## XML 和 JSON 对比
+
+## 可读性
+
+两者的可读性都特别强。 XML 数据严格遵循 XML DOM 模型规范，而 JSON 严格遵循
+Javascript 语法。
+
+## 可扩展性
+
+两者都具有很强的可扩展性。 XML
+数据通过自定义标签，可以设计更复杂的数据嵌套结构，而 JSON
+可以通过数组和对象的嵌套
+
+## JSON 优化
+
+```js
+function parseJSON(responseText) {
+  var users = [];
+  var usersArray = '(' + responseText + ')';
+  for (var i = 0, len = usersArray.length; i < len; i++) {
+    users[i] = {
+      id: usersArray[i][0],
+      usersName: usersArray[i][1],
+      realName: usersArray[i][2],
+      email: usersArray[i][3],
+    };
+  }
+  return users;
+}
+```
+
+在上面的代码中，使用 () 将字符串转化为本地的 JavaScript
+数组，然后再将其转化为对象数组，用一个更复杂的解析函数换取较小的文件尺寸和更快的时间。数组形式的
+JSON 在每一项性能比较中均获胜，它的文件尺寸更小，下载更快，平均解析时间更短。
+
+事实上 JSON 可以被本地执行有几个重要的性能影响。当使用 XHR 时， JSON
+数据转化为一个字符串返回。该字符串通过 ()
+　转化为一个本地对象。然而，在调用动态脚本插入时， JSON 被视为另一个 JavaScript
+文件并被作为本地代码执行，为做到这一点，数据必须包裹在回调函数内，这就是所谓的
+JSONP （ JSON 填充）。
+
+```js
+parseJSON([
+  { id: 1, username: 'alice', realName: 'Alice ', email: 'alice@163.com' },
+  { id: 2, username: 'bob', realName: 'Bob ', email: 'bob@163.com' },
+  { id: 3, username: 'carol', realName: 'Carol', email: 'carol@163.com' },
+  { id: 4, username: 'dave', realName: 'Dave ', email: 'dave@163.com' },
+]);
+```
+
+由于回调函数的包装原因， JSONP
+略微增加了尺寸，但是在更解析性能上比，这点增加微不足道。由于数据被作为本地
+JavaScript 处理，它的解析速度与本地 JavaScript 一样快。
+
+JSON 下载速度和文件大小几乎和 XHR 测试相同，但解析速度几乎快了 10 倍。
+
+最快的 JSON 格式是使用数组的 JSON 格式，虽然这种格式只比使用 XHR 的 JSON
+略快，但是这种差距会随着列表尺寸增大而增大。
+
+## 解析 JSON
+
+ECMAScript 5 提供一个一个全局的 JSON 对象，用来序列化和反序列化对象为 JSON
+格式。
+
+如果浏览器不支持，可以考虑使用 DOuglas Crockford 的 json2.js 插件 ([http://gihub.com/douglascrockford/JSON-js/blob/master/json2.js](http://gihub.com/douglascrockford/JSON-js/blob/master/json2.js) ) 确保浏览器支持。
+
+JSON.parse() 方法能够把 JSON 格式的文本转化为一个 ECMAScript
+值（如对象或者数组）。
+
+```js
+JSON.parse(text[, reviver]);
+```
+
+```js
+var jsonText =
+  '{"name":"Tom","qq":"527893246","phone":["18411000420","18411013142"]}';
+var contact = JSON.parse(jsonText);
+console.log(contact.name + ' , ' + contact.qq);
+
+// Tom , 527893246
+```
+
+reviver 参数为可选参数，它表示一个转换函数， JSON.pase()
+将为对象的每一个成员调用该函数。如果成员包含嵌套对象，则先于父对象转换嵌套函数。对于每一个成员。
+
+- 如果 reviver 函数返回一个有效值，则成员值替代为转化后的值
+- 如果 reviver 函数返回它接受的相同值，则不修改成员
+- 如果 reviver 函数返回一个 null 或者 undefined ，则删除成员
+
+```js
+var n = '{"a": "1.5", "b": "2.3"}';
+var result = JSON.parse(n, int);
+console.log(result.a); // 输出：1
+function int(key, value) {
+  if (typeof value == 'string') {
+    return parseInt(value);
+  } else {
+    return value;
+  }
+}
+```
+
+JSON 有两种解析方式： eval 和 JSON.parse 。 eval
+在解析字符串时，会执行字符串中的代码，由于用 eval 执行解析会照成 JSON 的
+value 值的改变，所以在代码中使用 eval
+是很危险的，特别是在执行第三方的代码时，所以尽可能使用 JSON.parse
+方法解析字符串本身。该方法可以捕捉到 JSON 中的错误。
+
+```js
+var jsonText2 =
+  '{ "hireDate": "2015-01-01T12:00:00Z", "birthdate":"2015-12-25T12:00:00Z" }';
+var dates = JSON.parse(jsonText2, dateReviver);
+// 输出： Fri, 25 Dec 2015 12:00:00 UTC
+console.log(dates.birthdate.toUTCString());
+function dateReviver(key, value) {
+  var a;
+  if (typeof value === 'string') {
+    a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/.exec(
+      value,
+    );
+    if (a) {
+      return new Date(Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4], +a[5], +a[6]));
+    }
+  }
+  return value;
+}
+```
+
+## JSON 序列化
+
+JSON.stringify() 函数能够将 JavaScript 值转化为 JSON 字符串。
+
+```js
+JSON.stringify(value [,replacer][,space]);
+```
+
+- value 参数，设置要转换的 JavaScript 值，通常为对象或数组
+- replacer 参数，用于返回转换结果和函数或数组
+- space 参数，用于向返回值 JSON 字符串添加空格、缩进、换行符，以便于阅读
+
+```js
+var arr = ['a', 'b', 'c'];
+var str = JSON.stringify(arr);
+console.log(str); // ["a","b","c"]
+console.log('');
+var newArr = JSON.parse(str);
+while (newArr.length > 0) {
+  console.log(newArr.pop() + '');
+}
+```
+
+使用 replacer 函数过滤结果
+
+```js
+var num = { first: 7, second: 14, third: 13 };
+var luckyNum = JSON.stringify(num, replacer);
+console.log(luckyNum);
+
+// {"first":7,"second":14}
+function replacer(key, value) {
+  if (value == 13) {
+    return undefined;
+  } else {
+    return value;
+  }
+}
+```
+
+加入参数 space 进行格式化。
+
+```js
+var num = { first: 7, second: 14, third: 13 };
+var luckyNum = JSON.stringify(num, replacer, 4);
+console.log('<pre>' + luckyNum + '</pre>');
+function replacer(key, value) {
+  if (value == 13) {
+    return undefined;
+  } else {
+    return value;
+  }
+}
+```
+
+```js
+var contact = {
+  qq: '111111111',
+  name: ' 张三',
+  tel: '13555556666',
+  sex: 'men',
+  url: 'http://www.mysite.cn/',
+};
+var memberFilter = ['name', 'sex', 'tel'];
+var jsonText = JSON.stringify(contact, memberFilter, '\t');
+console.log('<pre>' + jsonText + '</pre>');
+```
+
+```js
+var continents = [
+  'Europe',
+  'Asia',
+  'Australia',
+  'Antarctica',
+  'NorthAmerica',
+  'South America',
+  'Africa',
+];
+var jsonText = JSON.stringify(continents, replaceToUpper);
+function replaceToUpper(key, value) {
+  return value.toString().toUpperCase();
+}
+console.log(jsonText);
+
+// 输出："EUROPE,ASIA,AUSTRALIA,ANTARCTICA,NORTH AMERICA,SOUTH AMERICA,AFRICA"
+```
+
+            

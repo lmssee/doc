@@ -1,0 +1,35 @@
+---
+title: 基础
+
+
+---
+
+# 版本控制
+
+- 文件（ blob ）：文本及二进制的数据
+- 目录（ tree ）：目录中包含内容或其他的目录
+- 版本（ commit ）：每一个版本所定义的都是响应目录的某个可恢复的状态
+
+git 将文件分为已追踪的（ Tracked ）、已被忽略的（ Ignored ）、未被追踪的（ Untracked ）。
+
+已被追踪的文件始终处于已提交（ committed ）、已修改（ modified ）、已暂存（ staged ）。
+
+在任何时刻都可以执行 git status 查看 git 状态，也可以执行 git log 参看日志。
+
+git status 可以用于查看工作目录和暂存区的状态。 git status 不会显示已经 commit 到项目历史的信息，要向下看就需要使用 git log 命令。
+
+```sh
+git status  #  参看当前状态
+git status --short #  参看当前状态的简短显示
+```
+
+## 优点
+
+- 高性能
+- 冗余度
+- 分布式版本号
+- 版本库间的高效同步
+- 数据完整性
+- 自动重名名检测
+
+            

@@ -1,0 +1,93 @@
+---
+title: 并发
+
+
+---
+
+# 多任务并发处理
+
+使用后台线程不能访问页面和窗口对象，但是后台线程可以和页面之间进行数据交互。一个工作线程还可以包含其它的工作线程，即线程之间可以进行嵌套 。
+
+利用线程可以嵌套的特性，可以在 Web 应用中实现多个任务并发处理，这样能够提高 Web 应用程序的执行效率和反应速度。同时通过线程嵌套把一个较大的后台任务切分成几个子线程，在每个子线程中各自完成相对独立的一部分工作。
+
+- 在主页面中定义一个线程。设计不向该线程发送数据，在 onmessage 事件回调函数中进行后期数据处理，并把返回的数据显示在页面中
+- 在后台主线程文件 script.js 中，随机生成由 200 个整数构成的数组，然后把这个数组提交到子线程，在子线程中把可以被 3 整除的数字挑选出来，然后送回主线程，主线程再把挑选结果送回页面进行显示
+- 设计子线程的任务处理代码。下面是子线程代码，子线程在接收到的随机数组中挑选能被 3 整除的数字，然后拼接成字符串并返回
+- 主页面的主线程回调函数中处理后台线程返回的数据，并将这些数据显示在页面中
+
+## 主页面
+
+```html
+<head>
+  <script>
+    if (window.Worker) {
+      var worker = new Worker('213.js');
+      worker.postMessage('');
+      worker.onmessage = function (event) {
+        if (event.data != '') {
+          var j, k, tr, td;
+          var r = event.data.split('');
+          var t = document.querySelector('#table');
+          for (let i = 0, n = r.length; i < n; i++) {
+            j = parseInt(i / 10, 0);
+            k = i % 10;
+            if (k == 0) {
+              tr = document.createElement('tr');
+              tr.id = 'tr' + j;
+              t.appendChild(tr);
+            } else {
+              tr = document.getElementById('tr' + j);
+            }
+            td = document.createElement('td');
+            tr.appendChild(td);
+            td.innerHTML = r[j * 10 + k];
+          }
+        }
+      };
+    } else {
+      alert(' 浏览器不支持 Web Workers!');
+    }
+  </script>
+</head>
+<body>
+  <table id="table"></table>
+</body>
+```
+
+## 主线程
+
+```js
+onmessage = function (e) {
+  var intArray = new Array(200);
+  for (let i = 0; i < 200; i++) {
+    intArray[i] = parseInt(Math.random() * 200);
+  }
+  var worker;
+  worker = new Worker('413.js');
+  worker.postMessage(JSON.stringify(intArray));
+  worker.onmessage = function (event) {
+    postMessage(event.data);
+  };
+};
+```
+
+## 子线程
+
+```js
+onmessage = function (event) {
+  var intArray = JSON.parse(event.data);
+  var r = '';
+  for (let i = 0, n = intArray.length; i < n; i++) {
+    if (parseInt(intArray[i]) % 3 == 0) {
+      if (r != '') {
+        r += '';
+      }
+      r += intArray[i];
+    }
+  }
+  postMessage(r);
+  close();
+};
+```
+
+            

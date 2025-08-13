@@ -1,0 +1,118 @@
+---
+title: 账户
+
+
+---
+
+# 权限
+
+| 序号 | 权限                    | 级别                   | 说明               |
+| :--- | :---------------------- | :--------------------- | :----------------- |
+| 1    | create                  | 数据库、表、索引       | 创建库、表、索引   |
+| 2    | drop                    | 数据库或表             | 删除库或表         |
+| 3    | grant option            | 数据库、表或保存的程序 | 表约束表（子表）   |
+| 4    | REFERENCES              | 数据库或表             | 更改表             |
+| 5    | alter                   | 表                     | 更改表             |
+| 6    | delete                  | 表                     | 删除数据权限       |
+| 7    | index                   | 表                     | 索引权限           |
+| 8    | insert                  | 表                     | 插入权限           |
+| 9    | select                  | 表                     | 查询权限           |
+| 10   | update                  | 表                     | 更新权限           |
+| 11   | create VIEW             | 视图                   | 创建试图权限       |
+| 12   | show VIEW               | 视图                   | 查看视图权限       |
+| 13   | alter ROUTINE           | 储存过程               | 更改储存过程       |
+| 14   | create ROUTINE          | 储存过程               | 创建储存过程       |
+| 15   | EXECUTE                 | 储存过程               | 执行储存权限       |
+| 16   | FILE                    | 服务器主机上文件访问   | 文件访问权限       |
+| 17   | create temporary tables | 服务器管理             | 创建临时表权限     |
+| 18   | LOCK tables             | 服务器管理             | 锁表权限           |
+| 19   | create user             | 服务器管理             | 创建用户           |
+| 20   | PROCESS                 | 服务器管理             | 查看进程           |
+| 21   | RELOAD                  | 服务器管理             | 某些命令权限       |
+| 22   | REPLICATION CLIENT      | 服务器管理             | 复制权限           |
+| 23   | REPLICATION SLAVE       | 服务器管理             | 复制权限           |
+| 24   | show databases          | 服务器管理             | 查看数据库权限     |
+| 25   | SHUTDOWN                | 服务器管理             | 关闭数据库权限     |
+| 26   | SUPER                   | 服务器管理             | 执行 kill 线程权限 |
+
+- 权限最小化
+- 限制 IP
+- 初始化数据库删除没密码的账户
+- 定期清理过期用户
+
+## 添加用户
+
+<!-- # grant 命令 -->
+
+```sql
+ grant all privileges -- 给所有权限
+   on *.* -- 给特定表权限
+   to `lmssee`@`%` -- 用户名 @ 后填位置，% 代表任何位置
+  -- 指定新用户的密码，非新用户不可以添加下面的指定密码
+   identified by 'password'
+  with grant option -- 用户可以将自己的权限给别人
+  ;
+```
+
+添加一个账户：
+
+```sql
+create user 'user name'@'where'' identified by 'password';
+```
+
+## 赋予权限
+
+```sql
+grant select,insert,update,delete on main.* to`lmssee`@`localhost`;
+show grants; -- 查看本人权限
+show grants for 'who'@'where'; -- 查看权限
+```
+
+刷新权限
+
+```sql
+flush privileges; -- 刷新权限，使立即生效
+```
+
+## 回收权限
+
+```sql
+revoke 某权限 on 表 from 'who'@'where';
+```
+
+## 账户重命名
+
+```sql
+rename user 'who@'where' to 'who@'where';
+```
+
+## 修改密码
+
+```sql
+set password for 'who@'where' = password(' password ');
+  update mysql.user set password = password(' password ') where user='';
+  alter user 'userName'@'localhost' identified by 'new password'; -- 新版本密码更改方式
+  alter user user() identified by 'new password'; -- 实名登陆时
+```
+
+遗忘密码时候（记得改完密码删掉）：
+
+```bash
+vim /etc/my.cnf # 打开会创建配置文件
+[mysqld] # 添加配置组（或将下面的配置添加到已有的该组）
+skip-grant-tables # 添加免密登陆
+```
+
+查询用户
+
+```sql
+ select host,user from MySQL.user;
+```
+
+## 删除用户
+
+```sql
+drop user`who`@`where`;
+```
+
+            

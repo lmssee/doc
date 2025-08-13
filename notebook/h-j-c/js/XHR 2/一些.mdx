@@ -1,0 +1,265 @@
+---
+title: 一些
+
+
+---
+
+# 使用灯标
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <title></title>
+    <style type="text/css">
+      #login {
+        position: relative;
+        width: 300px;
+      }
+      #title {
+        position: absolute;
+        right: 20px;
+        top: 80px;
+      }
+    </style>
+
+    window.onload = function() {var b = document.getElementById("submit");
+    b.onclick = login;}var login = function() {var user =
+    document.getElementById("user");var pass = document.getElementById("pass");
+    var s = "server.php?user=" + user.value + "&pass=" +
+    pass.value;imgRequest(s);} //img 异步通信函数 var imgRequest = function(url)
+    { if (typeof url != "string") return;var image = new Image();image.src =
+    url;image.onload = function() {var title = document.getElementById("title");
+    title.innerHTML = "";if (this.width > 2) {console.log(" 登录成功 ");var
+    image1 = new Image();image1.src = "2.png"; title.appendChild(image1);} else
+    {console.log(" 你输入的用户名或密码有误，请重新输入 ");var image1 = new
+    Image();image1.src = "1.png"; title.appendChild(image1);}};image.onerror =
+    function() {console.log(" 加载失败 ");}; }
+
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <div id="login">
+      <h1>用户登录</h1>
+      用户名 <input name="" id="user" type="text" /> 密　码
+      <input name="" id="pass" type="password" />
+      <input name="submit" type="button" id="submit" value=" 提交 " /><span
+        id="title"
+      ></span>
+    </div>
+  </body>
+</html>
+```
+
+## 接收 json
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>test</title>
+
+    function createXHR() { var XHR = [ function () { return new
+    XMLHttpRequest(); }, function () { return new
+    ActiveXObject('Msxml2.XMLHTTP'); }, function () { return new
+    ActiveXObject('Msxml3.XMLHTTP'); }, function () { return new
+    ActiveXObject('Microsoft.XMLHTTP'); }, ]; var xhr = null; for (var i = 0; i
+    < XHR.length; i++) { try { xhr = XHR[i](); } catch (e) { continue; } break;
+    } return; xhr; } function JSONtoString(data) { var a = []; if
+    (data.constructor == Array) { for (var i = 0; i < data.length; i++) {
+    a.push(data[i].name + '=' + encodeURIComponent(data[i].value)); } } else {
+    for (var i in data) { a.push(i + '=' + encodeURIComponent(data[i])); } }
+    return a.join('&'); }
+  </head>
+  <body>
+    <input name="submit" type="button" id="submit" value=" 向服务器发出请求 " />
+
+    window.onload = function() { var b =
+    document.getElementsByTagName("input")[0]; b.onclick = function() { var xhr
+    = createXHR(); xhr.open("GET", "server.js", true); xhr.onreadystatechange =
+    function() { if (xhr.readyState == 4) { if (xhr.status == 200 | | xhr.status
+    == 0) { var info = xhr.responseText; var o = eval("(" + info + ")");
+    console.log(info); console.log(o.user); } } } xhr.send(); } }
+  </body>
+</html>
+```
+
+## 二进制
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    function uploadFile() { var formData = new FormData(); var files =
+    document.getElementById('file1').files; for (var i = 0; i < files.length;
+    i++) { var file = files[i]; formData.append('myfile[]', file); } var xhr =
+    new XMLHttpRequest(); xhr.open('POST', 'test.php', true); xhr.onload =
+    function (e) { if (this.status == 200) {
+    document.getElementById('result').innerHTML = this.response; } };
+    xhr.send(formData); }
+  </head>
+  <body>
+    <form id="form1" enctype="multipart/form-data">
+      选择文件 <input type="file" id="file1" name="file" multiple />
+      <input type="button" value=" 发送 " onclick="uploadFile();" />
+    </form>
+    <output id="result"></output>
+  </body>
+</html>
+```
+
+## 接收 XML 数据
+
+在 XMLHttpRequest 1.0 版本中可以通过 responseBody 、 responseStream 、 responseText 、 responseXML 属性获取响应信息。
+
+| 响应信息       | 嗯                                          |
+| :------------- | :------------------------------------------ |
+| responseBody   | 将响应信息正文以 Unsigned Byte 数组形式返回 |
+| responseStream | 以 ADO Stream 对象的形式返回响应信息        |
+| responseText   | 将响应信息以字符串返回                      |
+| responseXML    | 将响应信息格式化为 XML 文档返回             |
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>test</title>
+
+    // 创建 XMLHttpRequest 对象 // 参数：无；返回值： XMLHttpRequest 对象
+    function createXHR() { var XHR = // 兼容不同浏览器和版本的创建函数数组 [
+    function () { return new XMLHttpRequest(); }, function () { return new
+    ActiveXObject('Msxml2.XMLHTTP'); }, function () { return new
+    ActiveXObject('Msxml3.XMLHTTP'); }, function () { return new
+    ActiveXObject('Microsoft.XMLHTTP'); }, ]; var xhr = null; for (var i = 0; i
+    < XHR.length; i++) { // 尝试调用函数，如果成功则返回 XMLHttpRequest
+    对象，否则继续尝试 try { xhr = XHR[i](); } catch (e) { continue; //
+    如果发生异常，则继续下一个函数调用 } break; // 如果成功，则中止循环 } return
+    xhr; // 返回对象实例 } // 把 JSON 数据转换为串行字符串 // 参数： data
+    表示数组或对象类型数据；返回值：串行字符串 function JSONtoString(data) { var
+    a = []; // 临时数组 if (data.constructor == Array) { // 处理数组 for (var i
+    = 0; i < data.length; i++) { a.push(data[i].name + '=' +
+    encodeURIComponent(data[i].value)); } } else { // 处理对象 for (var i in
+    data) a.push(i + '=' + encodeURIComponent(data[i])); } return a.join('&');
+    //把数组转换为串行字符串，并返回 }
+  </head>
+
+  <body>
+    <input name="submit" type="button" id="submit" value=" 向服务器发出请求 " />
+
+    window.onload = function () { // 页面初始化 var b =
+    document.getElementsByTagName('input')[0]; b.onclick = function () { var xhr
+    = createXHR(); // 实例化 XMLHttpRequest 对象 xhr.open('GET', 'server2.php',
+    true); // 建立连接，要求异步响应 xhr.onreadystatechange = function () { //
+    绑定响应状态事件监听函数 if (xhr.readyState == 4) { // 监听 readyState 状态
+    if (xhr.status == 200 || xhr.status == 0) { // 监听 HTTP 状态码 var info =
+    xhr.responseXML; console.log(
+    info.getElementsByTagName('the')[0].firstChild.data, ); // 返回元信息字符串
+    "XML 数据 " } } }; xhr.send(); // 发送请求 }; };
+  </body>
+</html>
+```
+
+## post
+
+```js
+// 创建 XMLHttpRequest 对象
+// 参数：无；返回值： XMLHttpRequest 对象
+//
+function createXHR() {
+  var XHR = [
+    //兼容不同浏览器和版本的创建函数数组
+    function () {
+      return new XMLHttpRequest();
+    },
+    function () {
+      return new ActiveXObject('Msxml2.XMLHTTP');
+    },
+    function () {
+      return new ActiveXObject('Msxml3.XMLHTTP');
+    },
+    function () {
+      return new ActiveXObject('Microsoft.XMLHTTP');
+    },
+  ];
+  var xhr = null;
+  for (var i = 0; i < XHR.length; i++) {
+    // 尝试调用函数，如果成功则返回 XMLHttpRequest 对象，否则继续尝试
+    try {
+      xhr = XHR[i]();
+    } catch (e) {
+      continue; // 如果发生异常，则继续下一个函数调用
+    }
+    break; // 如果成功，则中止循环
+  }
+  return xhr; // 返回对象实例
+
+  window.onload = function () {
+    // 页面初始化 var b = document.getElementsByTagName("input")[0];
+    b.onclick = function () {
+      var url = 'server.php'; // 设置请求的地址
+
+      var xhr = createXHR(); // 实例化 XMLHttpRequest 对象
+
+      xhr.open('POST', url, false); // 建立连接
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded'); // 设置为表单方式提交
+      xhr.send('callback=functionName'); //  发送请求
+      console.log(xhr.responseText); // 接收数据
+    };
+  };
+}
+```
+
+## get
+
+```js
+// 创建 XMLHttpRequest 对象
+// 参数：无；返回值： XMLHttpRequest 对象
+function createXHR() {
+  var XHR = [
+    //兼容不同浏览器和版本的创建函数数组
+    function () {
+      return new XMLHttpRequest();
+    },
+    function () {
+      return new ActiveXObject('Msxml2.XMLHTTP');
+    },
+    function () {
+      return new ActiveXObject('Msxml3.XMLHTTP');
+    },
+    function () {
+      return new ActiveXObject('Microsoft.XMLHTTP');
+    },
+  ];
+  var xhr = null;
+  for (var i = 0; i < XHR.length; i++) {
+    // 尝试调用函数，如果成功则返回 XMLHttpRequest 对象，否则继续尝试
+    try {
+      xhr = XHR[i]();
+    } catch (e) {
+      continue;
+      // 如果发生异常，则继续下一个函数调用
+    }
+    break; // 如果成功，则中止循环
+  }
+  return xhr; // 返回对象实例
+}
+window.onload = function () {
+  // 页面初始化
+  var b = document.getElementsByTagName('input')[0];
+  b.onclick = function () {
+    var url = 'server.php?callback=functionName';
+    //设置向服务器端发送请求的文件，以及传递的参数信息
+    var xhr = createXHR(); // 实例化 XMLHttpRequest 对象
+    xhr.open('GET', url, false); // 建立连接
+    xhr.send(null); // 发送请求
+    console.log(xhr.responseText); // 接收数据
+  };
+};
+```
+
+            

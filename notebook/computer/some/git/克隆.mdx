@@ -1,0 +1,77 @@
+---
+title: 克隆
+
+
+---
+
+# clone
+
+## 克隆
+
+克隆项目不需要提前在本地上进行目录创建， copy 下来项目后，会根据项目名生成文件夹，将项目文件放进该文件内，并 git 初始化 。
+
+```sh
+git clone {远端地址或本地其他文件夹地址}
+```
+
+| 参数                         | 是否含前缀              | 含义 |
+| :--------------------------- | :---------------------- | :--- |
+| --template={}                |                         |      |
+| -l                           |                         |      |
+| -s                           |                         |      |
+| --no-hardlinks               |                         |      |
+| -q                           |                         |      |
+| -n                           |                         |      |
+| --bare                       |                         |      |
+| --mirror                     |                         |      |
+| -o {名字}                    |                         |      |
+| -b {名字}                    |                         |      |
+| -u {upload-pack}             |                         |      |
+| --reference {repository}     |                         |      |
+| --dissociate                 |                         |      |
+| --separate-git-dir {git dir} |                         |      |
+| --recurse-submodules         |                         |      |
+| --shallow-submodules         | --no-shallow-submodules |      |
+| --jobs {n}                   |                         |      |
+
+## 克隆到指定位置
+
+如果不想以项目名作为目录名，可以在命令后以参数形式更改目录名
+
+```sh
+git clone {目标地址} {本地仓库名}
+```
+
+## 命名
+
+如果经常需要访问某个版本库，为了访问起来容易，可以给它一个名字。例如，你可以通过 remote add 命令给它一个这样的昵称。
+
+```sh
+git remote add {名称} {地址}
+```
+
+当某个版本库被克隆时， Git 会自动将原版本库路径的路径存储为它的源版本库(origin)。如果这时我们调用带--verbose 选项的 remote 命令， Git 就会列出一些链接，以显示那些可被用于获取或推送提交的路径。
+
+```sh
+git remote --verbose
+```
+
+最后，也可以通过 remote rm 命令来删除这些昵称：
+
+```sh
+git remote rm {名称}
+```
+
+fetch 命令可用于从另一个版本库中获取提交，这种获取操作会将其他版本库中所有分支中尚未在本地版本库中存在的提交。
+
+```sh
+git fetch {名称}
+```
+
+通过带 -r 选项的 branch 命令来显示这些远程跟踪分支：
+
+```sh
+git branch -r
+```
+
+            

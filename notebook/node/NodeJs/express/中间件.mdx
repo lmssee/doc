@@ -1,0 +1,73 @@
+---
+title: 中间件
+
+
+---
+
+# 插件
+
+在 express 中使用 app.use 向管道中插入中间件。中间件是封装的、一般有三个参数（ req ， res ， next ）的函数。
+
+- 路由处理器是特殊的中间件
+- 路由的第一个参数必须是路径
+- 中间件的回调函数一般有 2、3、4 个参数
+- 如果不调用 next()，管道就会终止。若没有给客户端返回值，该请求就会超时
+- 一旦调用了中间件，则应避免多次响应（给客户端返回值），而后续的响应（给客户端的返回值）将会被忽略
+
+```mjs
+import express from express;
+
+const app = express();
+
+app.use((req,res,next) => {
+    // 匹配所有的路由，如果不调用 next()，直接完成本次请求
+    console.log(req.url);
+});
+
+app.get('/home',(req,res)=>{
+    res.send('i am a page , my name is home !');
+});
+
+app.use((err,req,res,next)=>{
+    console.log(`未知错误，${err.message}`);
+    res.send('你无权访问！！！');
+});
+
+app.use((req,res) => {
+    console.log(`有个家伙访问了为止 api （${req.url}）`);
+});
+```
+
+模块可以是导出的函数，而中间件又必须是一个函数。所以，我们可以导出一个符合中间件的模块。
+
+```js
+module.exports = function (req, res, next) {
+  var userName = req.session.uerName;
+  if (!userName) return next();
+};
+```
+
+| 中间件          | 所属中间件 | 简介                                                                                                                                     |
+| :-------------- | :--------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
+| connect         |            |                                                                                                                                          |
+| basicAuth       | connect    | 提供简单的访问权限。仅在 https 下才能使用 basic-auth                                                                                     |
+| directory       | connect    | 提供简单的静态文件的目录清单支持                                                                                                         |
+| body-parser     |            | 只连接 json 和 urlencoded 的便利中间件除非有单独的需求需要安装 json 和 urlencoded ，否则使用该包                                         |
+| json            |            | 解析 JSON 编码的请求体。大多数的 API 仍然使用 application/w-xxx-form-urlencoded ，这种编码可以被 urlencoded 中间件解析，但 json 可以     |
+| 让程序更加健壮  |            |                                                                                                                                          |
+| urlencoded      |            | 解析互联网媒体类型为 application/x-www-form-urlencoded 请求体。这是处理表单和 AJAX 的最常用方式                                          |
+| compress        |            | 用 gzip 压缩响应数据。唯一应该出现在 compress 之前的中间件只有 debugging 或 logging                                                      |
+| cookie-parser   |            | cookie 插件，用于给客户端发送 cookie 信息                                                                                                |
+| cookie-session  |            | 提供 cookie 储存的绘画支持                                                                                                               |
+| express-session |            | 提供会话 ID 的支持。默认储存在内存里，不适合生产环境，并且可以配置为使用为数据库储存                                                     |
+| csurf           |            | 防范跨域请求伪造（ CSRF ）攻击。需要使用会话，所以必须放在 expression-session 后面。他等同于 connect.csrf 中间件，单子这个中间件没什么效 |
+| errorhandler    |            | 提供 favicon ，网站图标                                                                                                                  |
+| static-favicon  |            | 为客户端提供栈追踪和错误的信息，不要再生产环境使用。                                                                                     |
+| morgan          |            | 提供自动的日志记录支持，所有请求都被记录                                                                                                 |
+| method-override |            | 提供对 x-http-method-override 请求头的支持。允许浏览器 “假装”使用除 get 和 post 之外的 http 方法                                         |
+| query           |            | 解析查询字符串，并将请求对象上的 query 属性。（默认存在于 express ）                                                                     |
+| response-time   |            | 向响应头中添加 X-Response-Time 请求头，提供以毫秒为单位的响应时间。一般在做性能调优时才需要用                                            |
+| static          |            | 提供对静态文案进的支持。这个中间件可以连入多次，并可指定不同的目录                                                                       |
+| vhost           |            | 虚拟主机，使得更好管理子域名                                                                                                             |
+
+            

@@ -1,0 +1,48 @@
+---
+title: 辅助机制
+pagination_prev: null
+
+---
+
+# 检测插件 jshint
+
+一种校验的插件，是 npm 安装包。
+
+## 死链检验 linkChecker
+
+是一种死链检验的软件，需要 [下载](http://wummel.github.io/linkchecker/) 。
+
+使用方案：安装完毕后将其指向首页。
+
+## 自动化 Grunt
+
+一款可以自动化的工具。
+
+安装：
+
+```bash
+ npm i -g grunt-cli
+ npm i -g grunt
+```
+
+Grunt 靠插件完成任务， Grunt [插件](http://gruntjs.com/plugins) 列表。使用的时候再安装相应的插件，最后在项目的目录下创建 Gruntfile.js 文件：
+
+```js
+ module.exports = function(grunt){
+[..,..,..].forEach((task)=>//加载插件
+grunt.loafNpmTasks(task)
+);
+grunt.initConfig({//配置插件
+...
+});
+grunt.registerTask('default',['','','']);// 注册任务
+}
+```
+
+最后，运行 grunt ：
+
+```bash
+ grunt
+```
+
+            

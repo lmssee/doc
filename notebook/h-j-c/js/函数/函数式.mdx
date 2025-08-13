@@ -1,0 +1,149 @@
+---
+title: 函数式
+
+
+---
+
+# 函数式编程
+
+函数式编程有两种基本模式： compose (函数合成) 和 curry （柯里化）。
+
+## 函数合成
+
+在函数式编程中，经常见到这样的表表达式：
+
+```js
+a(b(c(x)));
+```
+
+这种包菜式的多层函数调用，不是很优雅。于是，需要函数合成。
+
+```js
+var f = compose(a, b, c);
+f(x);
+```
+
+使用时需注意：
+
+- compose 的参数式函数，返回的也是一个函数
+- 出了初始函数，其它函数接收参数是上一函数的返回值，所以，初始函数的参数是多元化的，而其它函数的接受值是一元的
+- compose 函数可接受任何参数，所有的参数都是函数，且执行的方向自右向左，初始函数一定放在参数的最右侧
+
+```js
+// 函数合成，从右到左合成函数
+var compose = function () {
+  var _arguments = arguments; // 缓存外层参数
+  var length = _arguments.length; // 缓存长度
+  var index = length; // 定义游标变量
+  // //检测参数，如果存在非函数参数，则抛出异常
+  while (index--) {
+    if (typeof _arguments[index] !== 'function') {
+      throw new TypeError('参数必须为函数!');
+    }
+  }
+  return function () {
+    var index = length - 1; // 定位到最后一个参数下标;
+    // 如果存在2个及以上参数，则调用最后一个参数函数，并传入内层参数； // 否则直接返回第1个参数函数
+    var result = length
+      ? _arguments[index].apply(this, arguments)
+      : arguments[0];
+    // 迭代参数函数
+    while (index--) {
+      // 把右侧函数的执行结果作为参数传给左侧参数函数，并调用
+      result = _arguments[index].call(this, result);
+    }
+    return result; // 返回最左侧参数函数的执行结果
+  };
+}; // 反向函数合成，即从左到右合成函数
+var composeLeft = function () {
+  return compose.apply(null, [].reverse.call(arguments));
+};
+var add = function (x) {
+  return x + 5;
+}; // 加法运算
+var mul = function (x) {
+  return x * 5;
+};
+// 乘法运算
+var sub = function (x) {
+  return x - 5;
+}; // 减法运算
+var div = function (x) {
+  return x / 5;
+}; // 除法运算 var
+fn = compose(add, mul, sub, div);
+console.log(fn(50));
+var fn = compose(add, compose(mul, sub, div));
+console.log(fn(50));
+var fn = compose(compose(add, mul), sub, div);
+console.log(fn(50));
+```
+
+## 函数柯里化
+
+函数合成是把多个单一参数的函数合成一个多参数函数的运算。而柯里化，就是把一个多参数的函数，合成为单一参数的函数。
+
+## 实现
+
+先用传递给函数第一部分参数调用它，让它返回一个函数，然后去处理剩下的参数，也就是说，把多参数的函数分解成多部进行操作的元素，以实现每次调用函数时，仅需要传递一个参数。
+
+```js
+var add = function (x, y) {
+  return x + y;
+};
+```
+
+柯里化之后。
+
+```js
+var add = function (x) {
+  return function (y) {
+    return x + y;
+  };
+};
+console.log(add(2)(6)); //连续调用
+var add1 = add(100);
+console.log(add1(1)); //分步调用
+```
+
+```js
+// 柯里化函数
+function curry(fn) {
+  var _argLen = fn.length; // 记录原始函数的形参个数
+  var _args = [].slice.call(arguments, 1); // 把传入的第2个及以后参数转换为数组
+  // curry 函数
+  function wrap() {
+    // 把当前参数转换为数组，与前面参数进行合并
+    _args = _args.concat([].slice.call(arguments));
+    // 参数处理函数
+    function act() {
+      // 把当前参数转换为数组，与前面参数进行合并
+      _args = _args.concat([].slice.call(arguments));
+      // 如果传入参数总和大于等于原始参数的个数，触发执行条件
+      if (
+        (_argLen == 0 && arguments.length == 0) ||
+        (_argLen > 0 && _args.length >= _argLen)
+      ) {
+        // 执行原始函数，并把每次传入参数传入进去，返回执行结果，停止 curry
+        return fn.apply(null, _args);
+      }
+      return arguments.callee;
+    } // 如果传入参数大于等于原始函数的参数个数，即触发了执行条件
+    if (
+      (_argLen == 0 && arguments.length == 0) ||
+      (_argLen > 0 && _args.length >= _argLen)
+    ) {
+      // 执行原始函数，并把每次传入参数传入进去，返回执行结果，停止 curry
+      return fn.apply(null, _args);
+    }
+    // 定义处理函数的字符串表示为原始函数的字符串表示
+    act.toString = function () {
+      return fn.toString();
+    };
+    return act; // 返回处理函数
+  }
+  return wrap; // 返回 curry 函数
+}
+```
+
+            

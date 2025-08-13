@@ -1,0 +1,20 @@
+---
+title: 响应式
+
+
+---
+
+# 设置摄像机的配置
+
+将摄像机（ Camera ）的 aspect 属性设置为画布的宽高比，可防止变形：
+
+```js
+camera.aspect = canvas.clientWidth / canvas.clientHeight;
+camera.updateProjectionMatrix();
+```
+
+## 渲染器与画布同尺寸
+
+当渲染器与画布同尺寸时
+
+            

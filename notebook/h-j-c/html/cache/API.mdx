@@ -1,0 +1,186 @@
+---
+title: API
+
+
+---
+
+# cache api
+
+_浏览器可以有很多不同大小限制的缓存数据（有些浏览器允许 5M 的缓存数据）_
+
+## JavaScript 接口实现
+
+ApplicationCache API 是一个操作应用缓存的接口，新的 window.applicationCache 对象可触发一系列与缓存状态相关的事件。该对象有一个数值型属性
+window.applicationCache.status ，它代表了缓存的状态。缓存状态共有 6 种。
+
+| Status 值 | 说明                     |
+| :-------- | :----------------------- |
+| 0         | UNCACHED （未缓存）      |
+| 1         | IDLE （空闲）            |
+| 2         | CHECKING （检查中）      |
+| 3         | DOWNLOADING （下载中）   |
+| 4         | UPDATEREADY （更新就绪） |
+| 5         | OBSOLETE （过期）        |
+
+目前，互联网上大部分的页面都没有指定缓存清单，所以这些页面的状态就是 UNCACHED （未缓存）。 IDLE
+（空闲）是带有缓存清单的应用程序的典型状态。处于空闲状态说明应用程序的所有资源都已被浏览器缓存，当前不需要更新。如果缓存曾经有效，但现在 manifest 文件丢失，则缓存进入 OBSOLETE
+（过期）状态。对于上述各种状态， API 包含了与之对应的事件和回调特性。
+
+| 事件          | 说明                     |
+| :------------ | :----------------------- |
+| oncached      | IDLE （空闲）            |
+| onchecking    | CHECKING （检查中）      |
+| ondownloading | DOWNLOADING （下载中）   |
+| onupdateready | UPDATEREADY （更新就绪） |
+| onobsolete    | OBSOLETE （过期）        |
+
+此外，没有可用更新或者发生错误时，还有一些表示更新状态的事件： onerror 、 onnoupdate 和 onprogress 。
+
+window.applicationCache 有一个 update() 方法，调用 update() 方法会请求浏览器更新缓存。包括检查新版本的 manifest
+文件并下载必要的新资源。如果没有缓存或者缓存已过期，则会抛出错误。
+
+```js
+// 返回应用于当前 window 对象文档的 ApplicationCache 对象
+cache = window.applicationCache;
+// 返回应用于当前 shared worker 的 ApplicationCache 对象 [shared worker]
+cache = self.applicationCache;
+// 返回当前应用的缓存状态， status 有 6 种无符号短整型值的状态，
+// 调用当前应用资源下载过程
+cache.update();
+// //更新到最新的缓存，该方法不会使之前加载的资源突然被重新加载
+cache.swapCache();
+```
+
+调用 swapCache() 方法，图片不会重新加载，样式和脚本也不会重新渲染或解析，唯一的变化是在此之后发出请求页面的资源是最新的， applicationCache 对象和缓存宿主的关系是一一对应的， window 对象的
+applicationCache 属性会返回关联 window 对象的活动文档的 applicationCache 对象。在获取 status 属性时，它返回当前 applicationCache
+的状态，它的值有以下几种状态。
+
+- UNCACHED(0) ： ApplicationCache 对象的缓存宿主与应用缓存无关联
+- IDLE(1) ：应用缓存已经是最新的，并且没有标记为 obsolete
+- CHECKING(2) ： ApplicationCache 对象的缓存宿主已经和一个应用缓存关联，并且该缓存的更新状态是 checking
+- DOWNLOADING(3) ： ApplicationCache 对象的缓存宿主已经和一个应用缓存关联，并且该缓存的更新状态是 downloading
+- UPDATEREADY(4) ： ApplicationCache 对象的缓存宿主已经和一个应用缓存关联，并且该缓存的更新状态是 idle ，并且没有标记为 obsolete ，但是缓存不是最新的
+- OBSOLETE(5) ： ApplicationCache 对象的缓存宿主已经和一个应用缓存关联，并且该缓存的更新状态是 obsolete
+
+如果 update 方法被调用了，浏览器就必须在后台调用应用缓存下载过程；如果 swapCache 方法被调用了，浏览器会执行以下步骤。
+
+- 检查 ApplicationCache 的缓存宿主是否与应用缓存关联
+- 让 cache 成为 ApplicationCache 对象的缓存宿主关联的应用缓存
+- 如果 cache 的应用缓存组被标记为 obsolete ，那么就取消 cache 与 ApplicationCache 对象的缓存宿主的关联并取消这些步骤，此时所有资源都会从网络中下载而不是从缓存中读取
+- 检查在同一个缓存组中是否存在完成标志为"完成"的应用缓存，并且版本比 cache 更新
+- 让完成标志为"完成"的新 cache 成为最新的应用缓存
+- 取消 cache 与 ApplicationCache 对象的缓存宿主的关联并用新 cache 代替关联
+
+```js
+var appCache = window.applicationCache;
+switch (appCache.status) {
+  case appCache.UNCACHED: //UNCACHED == 0
+    alert('UNCACHED');
+    break;
+  case appCache.IDLE: //IDLE == 1
+    alert('IDLE');
+    break;
+  case appCache.CHECKING:
+    //CHECKING == 2
+    alert('CHECKING');
+    break;
+  case appCache.DOWNLOADING: //DOWNLOADING == 3
+    alert('DOWNLOADING');
+    break;
+  case appCache.UPDATEREADY:
+    //UPDATEREADY == 4
+    alert('UPDATEREADY');
+    break;
+  case appCache.OBSOLETE: //OBSOLETE == 5
+    alert('OBSOLETE');
+    break;
+  default:
+    alert('UKNOWN CACHE STATUS');
+    break;
+}
+```
+
+在支持 HTML5 离线存储的浏览器中， window 对象有一个 applicationcache 属性，通过 window applicationcache 可以获得一个 DOMApplicationCache 对象。
+
+首先获取 DOMApplicationCache 对象。
+var cache = window.applicationcache;
+
+接着触发 cache 对象的一些事件来检测缓存是否成功。
+
+```js
+/*oncached 事件表示：当更新已经处理完成，并且存储*
+    如果一切正常，这里 cache 的状态应该是 4 */ cache.addEventListener(
+  'cached',
+  function () {
+    console.log('Cached,Status:' + cache.status);
+  },
+  false,
+);
+/**
+ *   onchecking 事件表示：当更新已经开始进行，但资源还没有开始下载，即刚刚获取到最新的资源
+ * 如果一切正常，这里 cache 的状态应该是 2 */
+cache.addEventListener(
+  'checking',
+  function () {
+    console.log('Checking,Status:' + cache.status);
+  },
+  false,
+);
+/** ondownloading 事件表示：开始下载最新的资源
+ * 如果一切正常，这里 cache 的状态应该是 3 */
+cache.addEventListener(
+  'downloading',
+  function () {
+    console.log('Downloading,Status:' + cache.status);
+  },
+  false,
+);
+/**onerror
+ * 事件表示：有错误发生， manifest 文件找不到或服务端有错误或资源找不到都会触发 onerror 事件
+ *  如果一切正常，这里 cache 的状态应该是 0
+ */
+cache.addEventListener(
+  'error',
+  function () {
+    console.log('Error,Status:' + cache.status);
+  },
+  false,
+);
+/** onnoupdate 事件表示：更新已经处理完
+ *  但是 manifest文件还未改变，处理闲置状态
+ * 如果一切正常，这里 cache 的状态应该是 1 */
+cache.addEventListener(
+  'noupdate',
+  function () {
+    console.log('Noupdate,Status:' + cache.status);
+    cache.swapCache();
+  },
+  false,
+);
+```
+
+只有当 DOMApplicationCache 对象触发了 updateready 事件时，才真正更新了缓存文件。
+
+## 事件执行顺序
+
+applicationCache 对象是 window 的子对象，该对象中可以包含属性、方法和事件。
+
+| 事件          | 额                                                                                       |
+| :------------ | :--------------------------------------------------------------------------------------- |
+| onchecking    | 当更新已经开始进行，但资源还没有开始下载。如果一切正常，缓存状态是 2                     |
+| oncached      | manifest 中列举的资源已经下载完成，并且已经缓存。如果一切正常，缓存状态是 4              |
+| ondownloading | 开始下载最新的资源文件。如果一切正常，缓存状态是 3                                       |
+| onerror       | 有错误发生时触发该事件。如果一切正常，缓存状态是 0                                       |
+| onnoupdate    | 更新已经处理完成，但是 manifest 文件还没有改变，处于闲置状态。如果一切正常，缓存状态是 1 |
+| onupdateready | 更新已经处理完毕，新的缓存可以使用。如果一切正常，缓存状态是 4                           |
+| onprogress    | 下载完毕，资源被缓存之后触发该事件                                                       |
+| onobsolete    | 没有找到资源文件或者文件被删除时触发该事件                                               |
+
+任何与本地缓存有关的事件处理发生错误都会引发 onerror 事件。
+
+- 开始更新本地缓存时缓存名单被再次更改
+- 缓存名单中返回一个 404 错误（页面未找到）或者 410 错误（永久消失）
+- 缓存名单被找到且更改，但浏览器不能下载某个缓存名单中的资源
+- 缓存名单被找到且没有更改，但引用缓存名单中的 HTML 页面不能正确下载
+
+            

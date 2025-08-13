@@ -1,0 +1,597 @@
+---
+title: 验证
+
+
+---
+
+# 使用 HTML5 表单验证
+
+HTML5 默认会验证表单，除非在 `<form>` 元素中使用 novalidate 属性。
+
+可以使用 `<input />` 字段的 pattern 属性指定你自己的模式匹配要求。 pattern 属性使用正则表达式。
+
+| 验证属性 | 针对的元素                                                                                                        |
+| :------- | :---------------------------------------------------------------------------------------------------------------- |
+| required | textarea ， select ， input 类型为 text ， password ， checkbox ， radio ， file ， datetime ， datetime-local ， |
+
+date ，
+month ， time ， week ， number ， email ， url ， search ， tel 型 |
+| min | input 类型为 datetime ， datetime-local ， date ， month ， time ， week ， number ， range 型 |
+| max | input 类型为 datetime ， datetime-local ， date ， month ， time ， week ， number ， range 型 |
+| pattern | input 的类型为 text ， password ， email ， urk ， search ， tel 型 |
+
+## 验证用户是否输入
+
+## 显式验证
+
+HTML 5 新增 checkValidity （） 方法调用该方法，可以显式的对表单内所有的元素内容或单个元素内容进行有效的验证。该方法返回布尔值，以提示验证是否通过。
+
+在 HTMl 5 中， form 和 input 都有一个 validity 属性，该属性返回一个 ValidityState 对象。该对象具有许多属性，最简单的、重要的就是 valid
+属性，它表示单个所有的元素内容是否有效或单个的 input 元素是否有效。
+
+```html
+<body>
+  <form
+    action=""
+    id="testform"
+    onsubmit="
+    return check()"
+    novalidate
+  >
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" />
+    <input type="submit" />
+  </form>
+</body>
+<script>
+  function check() {
+    var email = document.querySelector('#email');
+    if (email.value == '' || !email.checkValidity) {
+      alert('请输入 Email 地址');
+      return false;
+    } else alert('您的输入有效');
+  }
+</script>
+```
+
+## 禁止输入
+
+disabled 属性规定禁用 input 元素，第 02 行和第 03 行是两种写法。
+
+disabled 属性无法与 `<input type="hidden">` 一起使用。
+
+被禁用的 input 元素既不可用，也不可单击。可以设置 disabled 属性，直到满足某些其它条件（比如选择了一个复选框等），然后再通过 JavaScript 来删除 disabled 值，将 input
+元素的值切换为可用。
+
+代码第 04 行应用了 readonly 。 readonly 属性规定输入字段为只读，只读字段是不能修改的。不过，用户仍然可以使用 Tab 键切换到该字段，还可以选中或复制其中的文本。
+
+readonly 属性可与 `<input type="text">` 或 `<input type="password">` 配合使用。
+
+## 通过事件来控制文本输入或控制焦点
+
+```js
+_inhibitingInput.blur();
+_inhibitingInput.value = '';
+```
+
+## 关闭输入法
+
+## 植入 CSS 特殊属性
+
+植入 CSS 特殊属性这种方案有一个弊端，就是不支持 Chrome 浏览器，但是其它主流浏览器（如 IE 、 FireFox 等）都支持。创建一个函数 banInputMethod() ，添加为指定元素增加 CSS
+特殊属性的业务逻辑。
+
+```js
+function banInputMethod(_elementArr) {
+  var arr = _elementArr, // 待处理的所有节点元素
+    self = this; // 判断元素是否为数组，如果不是数组将其变成数组
+  if (!(_elementArr instanceof Array)) {
+    arr = [_elementArr];
+  }
+  for (var i = 0, arrLen = arr.length; i < arrLen; i++) {
+    // 遍历元素节点
+    var arrI = arr[i];
+    arrI.onfocus = function () {
+      // 样式方案，只兼容除了 Chrome 浏览器之外的浏览器
+      this.style.imeMode = 'disabled';
+    };
+  }
+}
+```
+
+## 事件文本过滤
+
+为了修复 Chrome 的不兼容性，可以利用 JavaScript 中的事件来禁止输入中文，模拟关闭输入法。
+
+```js
+var arr = [
+    //创建节点数组
+    document.getElementById('banInputMethodGoogle'),
+    document.getElementById('banInputMethod'),
+  ],
+  self = this;
+for (var i = 0, arrLen = arr.length; i < arrLen; i++) {
+  // 遍历待处理的节点对象
+  var arrI = arr[i];
+  arrI.onfocus = function () {
+    // 获取焦点事件
+    this.style.imeMode = 'disabled'; // 样式方案，只兼容除了谷歌浏览器之外的浏览器
+  };
+  var banInputMethod = arrI.getAttribute('banInputMethod');
+  // 获取 banInputMethod 属性
+  if (banInputMethod) {
+    // 判断是否存在 banInputMethod
+    var clearChinese = function (_this) {
+      var _v = _this.value;
+      _this.value = _v.replace(/[\u4e00-\u9fa5]/g, ''); // 正则替换中文字符
+    };
+    arrI.onkeyup = function () {
+      //keyup 事件
+      clearChinese(this);
+    };
+    arrI.onblur = function () {
+      //blur 事件
+      clearChinese(this);
+    };
+  }
+}
+```
+
+## 禁止复制与粘贴
+
+```js
+var banCopyPaste = document.getElementById('banCopyPaste');
+banCopyPaste.oncopy = function () {
+  // 禁止复制事件
+  return false;
+};
+
+banCopyPaste.onpaste = function () {
+  // 禁止粘贴事件
+  return false;
+};
+```
+
+限制只能输入数字
+
+HTML 5 API 开放标准中有很多新的类型，其中 number 表示只能输入数字，在提交表单时会执行验证。
+
+HTML 5 中还增加了 pattern 属性，用来规定验证输入字段的正则匹配模式，适用于 text 、 search 、 url 、 telephone 、 email 、 password 等元素。
+
+```js
+var banNumber = document.getElementById('banNumber'),
+  clearNoNumber = function (tThis) {
+    // 过滤数字
+    var _v = tThis.value;
+    tThis.value = _v.replace(/D/g, '');
+  };
+banNumber.onfocus = function () {
+  // 绑定获取焦点事件
+  clearNoNumber(this);
+};
+banNumber.onkeyup = function () {
+  // 绑定键盘事件
+  clearNoNumber(this);
+};
+banNumber.onblur = function () {
+  // 失去焦点事件
+  clearNoNumber(this);
+};
+window.onload = function () {
+  var chineseStr = document.getElementById('chineseStr'),
+    clearNoNumber = function (tThis) {
+      // 过滤字符
+      var _v = tThis.value;
+      tThis.value = _v.replace(/[^\u4e00-\u9fa5]/g, ''); // 正则替换
+    };
+  chineseStr.onfocus = function () {
+    // 获取焦点事件
+    clearNoNumber(this);
+  };
+  chineseStr.onkeyup = function () {
+    // 键盘事件
+    clearNoNumber(this);
+  };
+  chineseStr.onblur = function () {
+    // 失去焦点事件
+    clearNoNumber(this);
+  };
+};
+```
+
+## 限制字符串长度
+
+## maxlength 属性
+
+在 HTML 的 input 中， maxlength 属性可以限制输入元素的字符长度，代码如下：
+
+## 使用 JavaScript
+
+通过 JavaScript 也可以很好地模拟以上的效果，而且兼容所有主流浏览器。
+
+```js
+window.onload = function () {
+  var limitLength = document.getElementById('limitLength '), // 获取限制对象
+    clearNoNumber = function (tThis) {
+      // 清除数字
+      var _v = tThis.value,
+        _vLen = _v.length,
+        dataLength = tThis.getAttribute('data-length'), // 获取长度属性
+        dataModel = tThis.getAttribute('data-model'),
+        subLen = dataLength;
+      if (_vLen > dataLength) tThis.value = _v.substr(0, subLen); // 判断长度
+      if (remainingCharacters) {
+        self.showRemainingCharacters(
+          !_vLen ? dataLength : _vLen > dataLength ? 0 : dataLength > _vLen,
+          remainingCharacters,
+        );
+      }
+    };
+  limitLength.onfocus = () => {
+    // 获取焦点事件
+    clearNoNumber(this);
+  };
+  limitLength.onkeyup = function () {
+    // 键盘事件
+    clearNoNumber(this);
+  };
+  limitLength.onblur = function () {
+    // 失去焦点事件
+    clearNoNumber(this);
+  };
+};
+```
+
+限制字符串长度（区分中英文）
+
+```js
+var strLen = (function () {
+  var trim = function (chars) {
+    return (chars || '').replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, '');
+  };
+  return function (_str, _model) {
+    _str = trim(_str);
+    _model = _model || 'Ch'; // 默认是中文
+    var _strLen = _str.length; // 获取字符长度
+    if (_strLen == 0) {
+      // 如果字符为 0 直接返回
+      return 0;
+    } else {
+      var chinese = _str.match(/[\u4e00-\u9fa5]/g); // 匹配中文
+      // 判断是什么模式
+      return _strLen + (chinese && _model == 'Ch ' ? chinese.length : 0);
+    }
+  };
+})();
+```
+
+实时提示可输入字符（区分中英文）
+
+```js
+window.onload = function () {
+  var forElementArr = function (_elementArr, callBack) {
+      // 遍历节点
+
+      var arr = _elementArr, // 所有节点对象
+        self = this;
+      // 外层环境;
+      if (!(_elementArr instanceof Array)) {
+        // 如果不是数组，变成数组对象方便处理
+        arr = [_elementArr];
+      }
+      for (var i = 0, arrLen = arr.length; i < arrLen; i++) {
+        // 遍历数组
+        var arrI = arr[i];
+        if (typeof arrI == 'string') {
+          // 判断是否为字符串
+          arrI = document.getElementById(arrI);
+        }
+        callBack && callBack(i, arrI); // 如果存在回调则执行回调
+      }
+    },
+    showRemainingCharacters = function (_num, _remainingCharacters) {
+      if (_remainingCharacters.search(',') != -1) {
+        _remainingCharacters = _remainingCharacters.split(','); // 英文字符串分割
+      }
+      forElementArr(_remainingCharacters, function (_index, _this) {
+        _this.innerHTML = (_num && _num.toString()) || '0';
+      });
+    },
+    strLen = (function () {
+      // 统计中英文字符数
+      var trim = function (chars) {
+        return (chars || '').replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, '');
+      };
+      return function (_str, _model) {
+        // 返回字符处理的函数
+        (_str = trim(_str)), (_model = _model || 'Ch'); // 默认为中文模式
+        var _strLen = _str.length; // 获取字符长度
+        if (_strLen == 0) {
+          // 如果字符长度为 0 直接返回
+          return 0;
+        } else {
+          var chinese = _str.match(/[\u4e00-\u9fa5]/g); // 匹配中文
+          return _strLen + (chinese && _model == 'Ch' ? chinese.length : 0);
+        }
+      };
+    })(), //
+    获取限制对象;
+  (remainingCharacters = document.getElementById('remainingCharacters')),
+    (clearNoNumber = function (tThis) {
+      // 清除数字字符
+      var _v = tThis.value,
+        _vLen = _v.length, // 文本内的字符长度
+        dataLength = tThis.getAttribute('data-length'),
+        remainingCharacters = tThis.getAttribute('data-remainingCharacters');
+      // 如果有实时显示的属性，则在指定元素上显示/_ 区分中英文前
+      if (_v.length > dataLength) tThis.value = _v.substr(0, dataLength);
+      var dataModel = tThis.getAttribute('data-model'); // 区分中英文后
+      var subLen = dataLength;
+      if (dataModel == 'Ch') {
+        // 如果为中文模式
+        _vLen = strLen(_v, dataModel); // 获取长度
+        var vv = _v.match(/[\u4e00-\u9fa5]/g);
+        subLen = dataLength - (!vv ? 0 : vv.length);
+      }
+      if (_vLen > dataLength) tThis.value = _v.substr(0, subLen);
+      if (remainingCharacters) {
+        showRemainingCharacters(
+          !_vLen ? dataLength : _vLen > dataLength ? 0 : dataLength - _vLen,
+          remainingCharacters,
+        );
+      }
+    });
+  remainingCharacters.onfocus = function () {
+    // 获取焦点
+    clearNoNumber(this);
+  };
+  remainingCharacters.onkeyup = function () {
+    // 键盘事件
+    clearNoNumber(this);
+  };
+  remainingCharacters.onblur = function () {
+    // 失去焦点
+    clearNoNumber(this);
+  };
+};
+```
+
+文本框内容自动滚动
+
+```js
+window.onload = function () {
+  var rollContent = document.getElementById('rollContent'), // 获取元素
+    _div = rollContent.innerHTML,
+    setCss = function (_this, cssOption) {
+      // 设置样式// 检测节点类型
+      if (
+        !_this ||
+        _this.nodeType === 3 ||
+        _this.nodeType === 8 ||
+        !_this.style
+      ) {
+        return;
+      }
+      for (var cs in cssOption) {
+        _this.style[cs] = cssOption[cs];
+      }
+      return _this;
+    };
+  rollContent.innerHTML = "<div id= 'rollContent_roll' >" + _div + ' < /div>';
+  setCss(rolContent, {
+    // 初始化样式
+    position: 'relative', // 相对位置
+    overflow: 'hidden', // 默认隐藏
+    wordWrap: 'break-word',
+    wordBreak: 'break-all',
+    width: rollContent.getAttribute('data-right'),
+    height: rollContent.getAttribute('data-right'),
+  });
+  var timeRol = document.getElementById('rollContent_roll'),
+    _h = timeRoll.offsetHeight;
+  timeoutRoll = function () {
+    // 修改 top 值
+    var _h = timeRoll.offsetHeight,
+      _t = parseInt(timeRol.style.top, 10),
+      // 是否将 top 设置为 0
+      _tt = _h > Math.abs(_t) || _t >= 0 ? _t - 10 : _h || 0;
+    setCss(timeRoll, {
+      // 修改样式
+      top: _tt + 'px',
+    });
+    setTimeout(timeoutRoll, 200); // 定时调用，模拟动画
+  };
+  if (_h > rollContent.getAttribute('data-right')) {
+    // 判断滚动高度是否大于 data-right
+    timeoutRoll();
+    setCss(timeRoll, {
+      position: 'relative', // 设置为相对浮动
+      'top ': '0px ',
+    });
+  }
+};
+```
+
+密码强度实时验证
+
+```js
+window.onload = function () {
+  function setCss(_this, cssOption) {
+    // 设置样式
+    // 判断节点类型
+    if (
+      !_this ||
+      _this.nodeType === 3 ||
+      _this.nodeType === 8 ||
+      !_this.style
+    ) {
+      return;
+    }
+    for (var cs in cssOption) {
+      _this.style[cs] = cssOption[cs];
+    }
+    return;
+    _this;
+  }
+  function trim(chars) {
+    // 去除字符串左右两边的空格 return
+    (chars || '').replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, ' ');
+  }
+  function passwordStrength(passwordStrength, showStrength) {
+    /* 字符权重：数字 1 ，字母 2 ，其它字符为 3
+当密码长度小于 6 时不符合标准；长度 >=6 ，强度小于 10 ，强度弱；长度 >=6 强度 >=10 且 <15 ，强度中；
+长度 >=6 强度 >=15 强 */
+    passwordStrength.onkeyup = function () {
+      var _color = ['red', 'yellow ', 'orange ', 'green '],
+        msgs = ['密码太短 ', ' 弱 ', ' 中 ', ' 强 '],
+        _strength = 0,
+        _v = trim(passwordStrength.value),
+        _vL = _v.length,
+        i = 0;
+      var charStrength = function (char) {
+        // 计算单个字符强度
+        if (char >= 48 && char <= 57) {
+          // 数字
+          return 1;
+        }
+        if (char >= 97 && char <= 122) {
+          // 小写
+          return 2;
+        } else {
+          return 3; // 特殊字符
+        }
+      };
+      if (_vL < 6) {
+        // 计算模式
+        showStrength.innerText = msgs[0];
+        setCss(showStrength, {
+          color: _color[0],
+        });
+      } else {
+        for (; i < _vL; i++) {
+          // 遍历字符
+          _strength += charStrength(_v.toLocaleLowerCase().charCodeAt(i));
+        }
+        if (_strength < 10) {
+          // 小于 10 的强度
+          showStrength.innerText = msgs[1];
+          setCss(showStrength, {
+            color: _color[1], // 设置颜色
+          });
+        }
+        if (_strength >= 10 && _strength < 15) {
+          // 大于10 且小于 15 的强度
+          showStrength.innerText = msgs[2];
+          setCss(showStrength, {
+            color: _color[2],
+          });
+        }
+        if (_strength >= 15) {
+          // 大于 15 的强度 \
+          showStrength.innerText = msgs[3];
+          setCss(showStrength, { color: _color[3] });
+        }
+      }
+    };
+  }
+  passwordStrength(
+    document.getElementById('passwordStrength'),
+    document.getElementById('showStrength'),
+  );
+};
+```
+
+回车提交表单
+
+```js
+window.onload = function () {
+  document.getElementById('enterSubmit').onkeyup = function (e) {
+    e = e || window.event; // 获取事件对象
+    var keycode = e.keyCode || e.which || e.charCode; // 获取键码
+    if (keycode === 13) {
+      // 判断键码是否为 13 （回车键）
+      alert('回车提交成 ');
+    }
+  };
+};
+```
+
+光标停留在文字最后
+
+```js
+window.onload = function () {
+  // 页面载入后执行
+  // 绑定两种事件，以达到最大兼容性
+  var cursorPos = document.getElementById('cursorPos');
+  cursorPos.onclick = cursorPos.onkeyup = function () {
+    // 绑定处理事件的函数
+    var _vLen = this.value.length;
+    if (this.setSelectionRange) {
+      // 非 IE
+      this.setSelectionRange(_vLen, _vLen);
+    } else {
+      //IE
+      var a = this.createTextRange();
+      a.moveStart('character', _vLen);
+      a.collapse(true);
+      a.select(); // 选中操作
+    }
+  };
+};
+```
+
+自动选定文本内容
+
+```js
+window.onload = function () {
+  // 调用浏览器内置的文本选定函数
+  document.getElementById('autoSelected').select();
+};
+```
+
+获取和失去焦点时改变样式
+
+```js
+window.onload = function () {
+  var strToJson = function (str) {
+      // 将字符转换为 JSON 对象
+      return typeof JSON == 'object'
+        ? JSON.parse(str)
+        : new Function('return ' + str)();
+    },
+    setCss = function (_this, cssOption) {
+      // 设置样式
+      // //检测节点类型
+      if (
+        !_this ||
+        _this.nodeType === 3 ||
+        _this.nodeType === 8 ||
+        !_this.style
+      ) {
+        return;
+      }
+      for (var cs in cssOption) {
+        // 遍历所有样式并设置
+        _this.style[cs] = cssOption[cs];
+      }
+      return _this;
+    },
+    autoUpdateCss = document.getElementById('autoUpdateCss'),
+    fCss = autoUpdateCss.getAttribute('data-fCss'),
+    fClass = autoUpdateCss.getAttribute('data-fClass'),
+    bClass = autoUpdateCss.getAttribute('data-bClass'),
+    bCss = autoUpdateCss.getAttribute('data-bCss');
+  autoUpdateCss.onfocus = function () {
+    // 获取焦点之后的样式
+    fCss && setCss(this, strToJson(fCss));
+    fClass && (this.className = fClass);
+  };
+  autoUpdateCss.onblur = function () {
+    //失去焦点之后的样式
+    bCss && setCss(this, strToJson(bCss));
+    bClass && (this.className = bClass);
+  };
+};
+```
+
+            

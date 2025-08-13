@@ -1,0 +1,127 @@
+---
+title: 场景图
+
+
+---
+
+# 场景图
+
+three 的核心就是场景图（ scene graph ）
+
+下面模拟地月关系制作的 [三星运转图](https://threejs.org/manual/#zh/scenegraph) ：
+
+```js
+// 构建渲染器
+const renderer = new three.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight - 80);
+// 设置渲染器分辨率为屏幕分辨率 。不建议//
+renderer.setPixelRatio(window.devicePixelRatio); // 设置摄像头
+const camera = new three.PerspectiveCamera(
+  50,
+  window.innerWidth / window.innerHeight,
+  1,
+  500,
+);
+camera.position.set(0, 50, 0);
+camera.up.set(0, 0, 1);
+camera.lookAt(0, 0, 0); // 将生成的视图画到画布上
+const canvas = renderer.domElement;
+canvas.id = canvasId; // 创建场景
+const scene = new three.Scene();
+const objects: any = [];
+const solarSystem = new three.Object3D();
+scene.add(solarSystem);
+objects.push(solarSystem); // 准备太阳图元
+const sphereGeometry = new three.SphereGeometry(1, 20, 6); // 准备太阳材质
+const sunMaterial = new three.MeshPhongMaterial({ emissive: 0xffff00 }); // 将图元和材质混合
+const sunMesh = new three.Mesh(sphereGeometry, sunMaterial);
+sunMesh.scale.set(5, 5, 5);
+solarSystem.add(sunMesh);
+objects.push(sunMesh);
+const earthOrbit = new three.Object3D();
+earthOrbit.position.x = 10;
+solarSystem.add(earthOrbit);
+objects.push(earthOrbit); // 设置地球材质
+const earthMaterial = new three.MeshPhongMaterial({
+  color: 0x2233ff,
+  emissive: 0x112244,
+});
+const earthMesh = new three.Mesh(sphereGeometry, earthMaterial);
+earthOrbit.add(earthMesh);
+objects.push(earthMesh);
+const moonOrbit = new three.Object3D();
+moonOrbit.position.x = 2;
+earthOrbit.add(moonOrbit); // 设置月球材质
+const moonMaterial = new three.MeshPhongMaterial({
+  color: 0x8888,
+  emissive: 0x222222,
+});
+const moonMesh = new three.Mesh(sphereGeometry, moonMaterial);
+moonMesh.scale.set(0.5, 0.5, 0.5);
+moonOrbit.add(moonMesh);
+objects.push(moonMesh);
+class AxisGridHelper {
+  grid: three.GridHelper;
+  axes: three.AxesHelper;
+  private _visible: any;
+  constructor(node: any, units = 10) {
+    const axes = new three.AxesHelper();
+    axes.material.depthTest = false;
+    axes.renderOrder = 2;
+    node.add(axes);
+    const grid = new three.GridHelper(units, units);
+    grid.material.depthTest = false;
+    grid.renderOrder = 1;
+    node.add(grid);
+    this.grid = grid;
+    this.axes = axes;
+    this.visible = false;
+  }
+  get visible() {
+    return;
+    this._visible;
+  }
+  set visible(v) {
+    this._visible = this.grid.visible = v;
+    this.axes.visible = v;
+  }
+}
+const gui = new GUI();
+function makeAxisGrid(node: any, label: any, units: any) {
+  const helper = new AxisGridHelper(node, units);
+  gui.add(helper, 'visible').name(label);
+} // 生成 gui
+makeAxisGrid(solarSystem, 'solarSystem', 25);
+makeAxisGrid(sunMesh, 'sunMesh', 25);
+makeAxisGrid(earthOrbit, 'earthOrbit', 25);
+makeAxisGrid(earthMesh, 'earthMesh', 25);
+makeAxisGrid(moonOrbit, 'moonOrbit', 25);
+makeAxisGrid(moonMesh, 'moonMesh', 25); // 添加灯光
+scene.add(new three.PointLight(0xffffff, 3)); // 执行动画
+function render(time: any) {
+  time *= 0.001;
+  if (resizeRendererToDisplaySize(renderer)) {
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+  }
+  objects.forEach((obj: any) => {
+    obj.rotation.y = time;
+  }); // 重新渲染
+  renderer.render(scene, camera); // 递归调用自己，执行动画
+  requestAnimationFrame(render);
+}
+requestAnimationFrame(render); // 挂载 canvas
+document.querySelector('#index')!.appendChild(canvas);
+/** 判断是否需要设置渲染器的尺寸 */
+function resizeRendererToDisplaySize(renderer: any) {
+  const pixelRatio = window.devicePixelRatio;
+  const width = (canvas.clientWidth * pixelRatio) | 0;
+  const height = (canvas.clientHeight * pixelRatio) | 0;
+  const needResize = canvas.width !== width || canvas.height !== height;
+  if (needResize) renderer.setSize(width, height, false);
+  return needResize;
+}
+
+```
+
+            

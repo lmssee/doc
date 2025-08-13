@@ -1,0 +1,45 @@
+---
+title: 读取
+
+
+---
+
+# Cookie 的读取
+
+特定网页的 Cookie 保存在 Document 对象的 cookie 属性中，所以可以使用 document.cookie 语句来获取 Cookie 。存在 Web 服务器中的 Cookie 由一连串的字符串组成，而且在
+Cookie 写入的过程中曾经使用 encodeURI 函数对这些字符串进行编码操作，所以获取 Cookie 时首先需要对这些字符串进行解码操作，可以调用 decodeURI 函数，然后调用 String
+对象的方法来提取相应的字符串。代码如下：
+
+```js
+var cookieString = decodeURI(document.cookie);
+var cookieArray = cookieString.split('');
+```
+
+上述代码使用 String 对象的 split 函数，将 Web 服务器中的 Cookie 以分号和空格隔开，然后将字符串中所有的字符放入相应数组中，可以循环遍历此数组的所有值，然后对数组中的所有值使用 split
+函数以等号进行分隔，可以取得 Cookie 的名称和值。代码如下：
+
+```js
+for (var i = 0; i < cookieArray.length; i++) {
+  var cookieNum = cookieArray[i].split('=');
+  var cookieName = cookieNum[0];
+  var cookieValue = cookieNum[1];
+}
+```
+
+在实际的操作中，是读取某一个 cookie 值，而不是读取所有的 cookie 值信息。
+
+```js
+function getCookie(name) {
+  var start = document.cookie.indexOf(name + '=');
+  var len = start + name.length + 1;
+  if (!start && name != document.cookie.substring(0, name.length)) {
+    return null;
+  }
+  if (start == -1) return null;
+  var end = document.cookie.indexOf('', len);
+  if (end == -1) end = document.cookie.length;
+  return unescape(document.cookie.substring(len, end));
+}
+```
+
+            

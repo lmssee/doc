@@ -1,0 +1,91 @@
+---
+title: 查询数据
+
+
+---
+
+# 查询数据
+
+```sql
+select ... from main // ... 表示要查询的字段
+  [inner | left right] join newMain on conditions // 根据条件查关联表
+  where conditions // 过滤结果
+  group by . // 通过 . 来分组
+  having group_conditions // 过滤器基于 group by 定义
+  order by ... // 指定 . 来排序
+  limit number // 限制返回的数量
+  offset number;// 返回数偏移量，结合 limit 做分页查询
+```
+
+可以将 `select` 获取的数据直接填充给 `insert into` ，达到复制表的副作用。
+
+```sql
+insert into newMain
+select \* from oldMain;
+```
+
+## where
+
+类似于编程语言中的 `if` （由于 `if` 用在了库，所以）：
+
+```sql
+... where main_age > 40;
+```
+
+`where` 中可用的操作符有 `=` 、`<>`、 `!=` 、`<`、`>`、`<=`、`>=` 。
+
+使用主键查询时速度贼快。
+
+`link` 匹配基于模式匹配的值， `in` 指定值是否包含匹配列表的任何值。 `is null` 检查该值是否为 `null` 。
+
+默认查询是不分大小写，可以使用 binary 来设定区分大小写。
+
+## link
+
+模糊查询，在 `delete` `、 update` 命令中使用 `where...link` 来指定语句。
+
+```sql
+select * from main where main_age LIKE '%0';
+```
+
+% 代表任意字符
+
+## regexp
+
+像正则一样去模糊匹配，比 like 更加嚣张，支持首尾限制的 ^、$；匹配任意的 . ；单字符控制的 []、[^]、|；及数量匹配的 \*、+、{n}、{n, m}
+
+## 主键冲突
+
+插入时，最后添加 on duplicate key update 来更新原有行
+
+## union
+
+`union` 操作符用于连接两个以上的 `select` 语句的结合组合到一个集合中，会默认（ distinct ）自动删除重复数据，除非 ALL 。
+
+## order by
+
+order 用于排序，默认 ASC 升序，也可以设置 DESC 降序来对查询后结果排序。
+
+```sql
+select * from main
+order by
+main_age
+asc;-- asc 升序， desc 降序
+```
+
+对于字符排序，如果是 gbk ，可直接 order by ；如果是 utf8，则需要转码：
+
+```sql
+select * from main
+  order by
+convert(main_name using gbk)
+asc;-- asc 升序， desc 降序
+```
+
+order by 通过 rand() 排序可以抓到随机顺序。
+
+## null
+
+当数据库读到 `null` 时就会失灵。所以应当用 `is null` 、 `is not null` 、 `<=>` 来处理。
+
+            

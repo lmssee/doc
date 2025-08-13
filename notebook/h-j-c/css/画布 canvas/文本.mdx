@@ -1,0 +1,92 @@
+---
+title: 文本
+
+
+---
+
+# 在画布中绘制文本
+
+| 属性或方法 | 基本描述                                                                                                                                                      |
+| :--------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| fillStyle  | 用于设置画笔填充路径内部的颜色、 渐变和模式。 该属性的值可以是表示 CSS 颜色值的字符串。 如果绘制需求比较复杂， 该属性的值还可以是一个 CanvasGradient 对象或者 |
+
+CanvasPattern 对象
+|
+| fillText(string text ， int x ， int y[， int maxWidth]) | 从指定坐标点位置开始绘制填充的文本文字。 参数 maxWidth 是可选的， 如果文本内容宽度超过该参数设置， 则会自动按比例缩小字体以适应宽度。 与本方法对应的样式设置属性为 fillStyle |
+| font | 设置绘制文字所使用的字体， 例如 20px 宋体， 默认值为 10px sans - serif 。 该属性的用法与 CSS 的 font 属性一致， 例如 italic bold 14 px / 30 px
+Arial ，
+宋体 |
+| strokeStyle | 用于设置画笔绘制路径的颜色、 渐变和模式。 该属性的值可以是一个表示 CSS 颜色值的字符串。 如果绘制需求比较复杂， 该属性的值还可以是一个 CanvasGradient 对象或者
+CanvasPattern 对象
+|
+| strokeText(string text ， int x ， int y[， int maxWidth]) | 从指定坐标点位置开始绘制非填充的文本文字（ 文字内部是空心的）。 参数 maxWidth 是可选的， 如果文本内容宽度超过该参数设置， 则会自动按比例缩小字体以适应宽度。 该方法与 fillText()
+用法一致，
+不过 strokeText() 绘制的文字内部是非填充（ 空心） 的， fillText() 绘制的文字是内部填充（ 实心） 的。 与本方法对应的样式设置属性为 strokeStyle |
+
+在 canvas 中可以使用两种方式来绘制文本文字， 一种是使用 fillText() 与 fillStyle 组合来绘制填充文字； 一种是使用 strokeText() + strokeStyle 绘制非填充（ 空心） 的文字。
+
+```js
+var c = document.getElementById('myCanvas');
+var ctx = c.getContext('2d');
+ctx.font = '20px Georgia';
+ctx.fillText('Hello World!', 10, 50);
+ctx.font = '30px Verdana';
+// 创建渐变
+var gradient = ctx.createLinearGradient(0, 0, c.width, 0);
+gradient.addColorStop('0', 'magenta');
+
+gradient.addColorStop('0.5', 'blue');
+gradient.addColorStop('1.0', 'red'); //用渐变填色
+ctx.fillStyle = gradient;
+ctx.fillText('HTML5+CSS3', 10, 90);
+```
+
+## 设置文字属性
+
+绘制上下文对象中提供了设置文字样式的属性以及绘制文字的方法，常用的文字设置属性有三个： font 、 textAlign 和 textBaseline 。
+
+- font 属性：获取或设置文字字体大小
+- textAlign 属性：获取或者设置文字对齐方式，其值包含 start （默认值）、 end 、 left 、 right 和 center
+- textBaseline 属性：获取或设置文字对齐基线，其值包含 alphabetic （默认值）、 top 、 bottom 、 middle 、 hanging 以及 ideographic
+
+## 绘制轮廓文字
+
+使用 strokeText() 方法可以在画布上绘制无填充色的文本。文本的默认颜色是黑色，类似于 fillStyle ，可以使用 strokeStyle 来改其它颜色或者渐变。
+
+```js
+var c = document.getElementById('myCanvas');
+var ctx = c.getContext('2d');
+ctx.font = '20px Georgia';
+ctx.strokeText('Hello World!', 10, 50);
+ctx.font = '30px Verdana';
+
+// 创建渐变
+var gradient = ctx.createLinearGradient(0, 0, c.width, 0);
+gradient.addColorStop('0', 'magenta');
+
+gradient.addColorStop('0.5', 'blue');
+gradient.addColorStop('1.0', 'red'); //用渐变填色
+ctx.strokeStyle = gradient;
+ctx.strokeText('HTML5+CSS3', 10, 90);
+```
+
+## 测量文字宽度
+
+使用 measureText 方法可以测量当前所绘制文字中指定文字的宽度，该方法会返回一个 TextMetrics 对象，使用该对象的 width 属性可以得到指定文字参数后所绘制文字的总宽度。
+
+```js
+metrics = context.measureText(text);
+```
+
+## 阴影特效
+
+canvas API 提供了与阴影有关的 4个全局属性，这些属性影响与绘制有关的操作。
+
+| 属性          | 额                                               |
+| :------------ | :----------------------------------------------- |
+| shadowBlur    | 返回或者设置阴影模糊等级，非大于等于 0的值被忽略 |
+| shadowColor   | 返回或者设置阴影颜色                             |
+| shadowOffsetX | 返回或者设置阴影的横向偏移量                     |
+| shadowOffsetY | 返回或者设置阴影的纵向偏移量                     |
+
+            

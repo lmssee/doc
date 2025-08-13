@@ -1,0 +1,101 @@
+---
+title: 桶排序
+
+
+---
+
+# 桶排序
+
+假设输入数据均匀分布，将数据分到有限数量的桶中，每一个桶在分别排序（使用别的排序算法或递归排序）后继续使用桶排序。
+
+- 设定一个数组当作空桶
+- 便利数据，并且把数据一个一个放到对象的桶中去
+- 对每个不是空的桶进行排序
+- 从不是空的桶里吧排好的序合并起来
+
+```js
+function countingSort(arr, num) {
+  let length = arr.length;
+  if (length < 2) return arr;
+  let buckets = [0],
+    result = [],
+    min = Math.min.apply(null, arr),
+    max = Math.max.apply(num, arr),
+    space = Math.ceil((max - min + 1) / num),
+    k,
+    index;
+  for (let j = 0; j < length; j++) {
+    index = Math.floor((arr[j] - min) / space);
+    if (buckets[index]) {
+      k = buckets[index].length - 1;
+      while (k && buckets[index][k] > arr[j]) {
+        buckets[index][k + 1] = buckets[index][k];
+        k--;
+      }
+      buckets[index][k + 1] = arr[j];
+    } else {
+      buckets[index] = [];
+      buckets[index].push(arr[j]);
+    }
+    let n = 0;
+    while (n < num) {
+      result = result.concat(buckets[n]);
+      n++;
+    }
+  }
+  return result;
+}
+```
+
+最后结果是一个空数组。。。
+
+最佳情况： T(n) = O(n + k)；最差情况： T(n) = O(n + k)；平均： T(n) = O(n + k)。
+
+```js
+function copy(arr) {
+  const newArr = [];
+  for (let i in arr) newArr[i] = arr[i];
+  return newArr;
+}
+let int = 0;
+function countingSort(arr, num) {
+  let length = arr.length;
+  if (length < 2) return arr;
+  let buckets = [0],
+    result = [],
+    min = Math.min.apply(null, arr),
+    max = Math.max.apply(num, arr),
+    space = Math.ceil((max - min + 1) / num),
+    k,
+    index;
+  for (let j = 0; j < length; j++) {
+    index = Math.floor((arr[j] - min) / space);
+    if (buckets[index]) {
+      k = buckets[index].length - 1;
+      while (k && buckets[index][k] > arr[j]) {
+        buckets[index][k + 1] = buckets[index][k];
+        k--;
+      }
+      buckets[index][k + 1] = arr[j];
+    } else {
+      buckets[index] = [];
+      buckets[index].push(arr[j]);
+    }
+    let n = 0;
+    while (n < num) {
+      result = result.concat(buckets[n]);
+      n++;
+    }
+  }
+  return result;
+}
+
+let a = [10, 12, 16, 1, 9, 3, 9, 1, 7, 0, 69, 4, 8, 69, 35, 2, 45, 1];
+// maoPao(a);
+// console.log(maoPao(a));
+console.log(countingSort(a));
+console.log(int);
+// maoPao2(a);
+```
+
+            

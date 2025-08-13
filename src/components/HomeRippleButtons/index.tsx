@@ -1,5 +1,8 @@
 import { useTimeId } from 'earthnut';
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
+import { HomeRippleButton } from './Button';
+import styles from './index.module.scss';
+import { xcn } from 'xcn';
 
 /**  首页的按钮组  */
 export function HomeRippleButtons({
@@ -10,55 +13,61 @@ export function HomeRippleButtons({
   setImgUrl(imgUrl: null | string | string[]): void;
 }) {
   /**  渲染列表  */
-  const renderList = useRef({
-    data: ['默认', '单色', '渐变', '图像'],
-    current: '默认',
-  });
+  const renderList = ['默认', '单色', '渐变', '图像'];
+  /**  当前渲染的项  */
+  const [current, setCurrent] = useState('默认');
+  /** 当前背景被抽离的项   */
+  const [deactivatingItem, setDeactivatingItem] = useState<null | string>(null);
+  /**  延迟的时间  */
+  const delayTime = 3000;
+
   /**  用于计时的定时器  */
   const timeId = useTimeId();
+  /**  抽离定时器  */
+  const deactivatingTimeId = useTimeId();
   /**  更改单前的展示形式  */
-  function changeImgUrl(e: string) {
-    const data = renderList.current.data;
-
-    switch (e) {
-      case data[0]:
-        setImgUrl(null);
-        break;
-      case data[1]:
-        setImgUrl(['#303']);
-        break;
-      case data[2]:
-        setImgUrl(['#f36', '#ff3']);
-        break;
-      case data[3]:
-        setImgUrl('/img/background-image-for-presentation.jpg');
-        break;
-      default:
-        setImgUrl(null);
-        break;
-    }
-
-    renderList.current.current = e;
+  function changeImgUrl(_current: string) {
+    // 禁止提旧账
+    if (current === _current || deactivatingItem === _current) return;
+    // 当选选择的元素先抽离状态
+    setDeactivatingItem(current);
+    setCurrent(_current);
+    setImgUrl(
+      [
+        null,
+        ['#303'],
+        ['#f36', '#ff3', '#3f9', '#6666'],
+        '/img/background-image-for-presentation.jpg',
+        null,
+      ][renderList.indexOf(_current) || 0] || null,
+    );
+    deactivatingTimeId.current = setTimeout(
+      () => setDeactivatingItem(null),
+      480,
+    );
   }
 
   useEffect(() => {
-    const { data, current } = renderList.current;
     if (timeId.current) clearTimeout(timeId.current);
     timeId.current = setTimeout(() => {
       /**  当前的下标  */
-      const subscript = data.indexOf(current);
+      const subscript = renderList.indexOf(current);
       /**  下一个类型  */
-      const nestType = [...data.slice(1), data[0]][subscript];
+      const nestType = [...renderList.slice(1), renderList[0]][subscript];
       changeImgUrl(nestType);
-    }, 3000);
+    }, delayTime);
   }, [imgUrl]);
 
   return (
-    <div>
-      {renderList.current.data.map(e => (
-        <button key={e} onClick={() => changeImgUrl(e)}>
-          {e}
-        </button>
+    <div className={xcn(styles.main)}>
+      {renderList.map(item => (
+        <HomeRippleButton
+          key={item}
+          onClick={() => changeImgUrl(item)}
+          isActive={item === current}
+          label={item}
+          isDeactivating={deactivatingItem === item}
+        />
       ))}
     </div>
   );

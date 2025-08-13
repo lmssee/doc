@@ -1,0 +1,151 @@
+---
+title: 预处理器
+
+
+---
+
+# 预处理器
+
+## loader
+
+每个 loader 本质是一个函数，可以是链式的。
+
+loader 的字面意思就是装载器。 Webpack 只认识 Javascript ，对于其他的资源需要预先定义一个或多个 loader 进行转义，输出为 Webpack 能够接受的形式再进行。
+
+## 引入
+
+loader 都是三方的 npm 模块， Webpack 并不包含 loader 。
+
+## css-loader
+
+[css loader](https://www.npmjs.com/package/css-loader) 仅是处理
+CSS 的各种加载方法，要想样式起作用还需要安装 [style-loader](https://www.npmjs.com/package/style-loader) 。安装：
+
+```sh
+npm i -s css-loader;
+npm i -s style-loader;
+```
+
+配置：
+
+```js
+module.export = {
+  module: {
+    rules: [{
+      test:/\.css$/i,
+      use:[''style-loader','css-loader'],
+    }],
+  },
+};
+```
+
+- test 可接收一个正则表达式或者一个元素为正则表达式的数组，只有正则匹配上的模块才会使用这条规则。在本例中以/\.css$/来匹配所有以 .css 结尾的文件
+- use 可接收一个数组，数组包含该规则所使用的 loader
+
+在 Webpack 打包时是按照数组从后往前的顺序将资源交给 loader 处理的，因此要把最后生效的放在前面。
+
+## loader options
+
+具体的 loader 需要查看 [npm](https://www.npmjs.com/) 说明。
+
+## 其他配置
+
+## exclude 和 include
+
+exclude 与 include 是用来排除或包含指定目录下的模块，可接收正则表达式或者字符串（文件绝对路径），以及由它们组成的数组。
+
+```js
+exclude: /node_modules/, // 排除
+include: /src/, // 仅包含
+```
+
+exclude 和 include 同时存在时， exclude 的优先级更高。
+
+## resource 和 issuer
+
+resource 和 issuer 可以更加精准的确定模块规则的作用范围。在 Webpack 中，被加载的是 resource ，加载者是 issuer 。
+
+下面是对加载项做限定，仅指定目录下可加载 css ：
+
+```js
+module.export = {
+  module: {
+    rules: [
+      {
+        use: ['style-loader', 'css-loader'],
+        resource: {
+          test: /\.css$/,
+          exclude: /node_modules/,
+        },
+        issuer: {
+          test: /\.js$/,
+          include: /src\/pages/,
+        },
+      },
+    ],
+  },
+};
+```
+
+## enforce
+
+enforce 用来制定一个 loader 的种类，只接受 “ pre ” （在所有正常执行的 loader 之前执行）和 “ post ”（在所有 loader 之后执行） 两种字符串类型的值。
+
+## babel-loader
+
+[babel-loader](https://www.npmjs.com/package/babel-loader)
+将处理 ES6+ 转化为 ES5：
+
+```sh
+npm i -s babel-loader @babel/core @babel/preset-env
+```
+
+## ts-loader
+
+[ts-loader](https://www.npmjs.com/package/ts-loader) 用于转化
+Webpack 和 [Typescript](https://www.npmjs.com/package/typescritp) 模块，其说明文档在 [github](https://github.com/TypeStrong/ts-loader) 上。
+
+旧项目引入 ts ，记得去 webpack.config.js 中修改入口文件。
+
+## html-loader
+
+[html-loader](https://www.npmjs.com/package/html-loader) 用于将
+HTML 文件转换为字符串并进行格式化，这样就可以把一个 HTML 片段加载进来。
+
+```sh
+npm i --save-dev html-loader
+```
+
+## handlebars-loader
+
+[handlebars-loader](https://www.npmjs.com/package/handlebars-loader) 用于处理 handlebars 模版。
+
+```sh
+npm i --save-dev handlebars-loader handlebars
+```
+
+实际使用中发现， handlebars 引入不能使用 ES6 的 import 引入，而应该使用 commonJS 的 require 引入。
+
+## file-loader
+
+[file-loader](https://www.npmjs.com/package/file-loader)
+用于打包文件类型的资源，并返回 publicPath 。
+
+## url-loader
+
+[url-loader](https://www.npmjs.com/package/url-loader) 与
+file-loader 作用类似，唯一的不同在于用户可以设置一个文件大小的阈值，当大于该阈值时与 file-loader 一样返回 publicPath ，而小于该阈值时则返回文件 base64
+形式编码。
+
+## vue-loader
+
+[vue-loader](https://www.npmjs.com/package/vue-loader) 用于处理
+vue 模块， [说明文档](https://vue-loader-v14.vuejs.org/zh-cn/) 内有更细的说明。
+
+## loader 初始化
+
+借助 npm 的如安链功能进行本地调试，
+
+在头部添加 'use strict' 以启动严格模式。
+
+            

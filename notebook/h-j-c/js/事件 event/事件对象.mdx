@@ -1,0 +1,143 @@
+---
+title: 事件对象
+
+
+---
+
+# 对象
+
+event 对象用来描述在浏览器窗口中发生的事件，一旦事件发生，便会生成 event 对象。
+
+IE 事件模型和 DOM 事件模型对于 event 的处理方式不同： IE 将 event 作为 window 对象的一个属性，而 DOM 将 event
+作为事件的默认参数。所以，在处理事件时，应当判断解析环境，如果当前浏览器支持，则使用 event ，若不支持，则使用 window.event 获取 event 对象。
+
+event.srcElement 是当前事件的源，即响应事件的当前对象，这是 IE 模式。但是， DOM 事件模型不支持该属性，需要使用 event 对象的 target
+属性，它是一个符合标准的源属性。为了能够兼容事件的不同浏览器，需要判断。
+
+尽管所有事件属性都可以通过 event 对象访问，但是在某些事件中某些属性可能无意义。例如， fromElement 和 toElement 属性仅当处理 onmouseover 和 onmouseout 事件时才有意义。
+
+另外，还要注意不同浏览器之间事件对象的差异。在低版本 IE 中，如果函数被一个事件调用，它可以通过 window.event 访问 event 对象，但是，其它浏览器把
+event 对象传递给事件处理函数，作为事件处理函数的参数。因此，要实现跨浏览器兼容，在定义事件触发时必须用参数把事件对象传递到函数中。
+
+跨浏览器兼容的事件处理代码可以写成这样：
+
+```html
+<div id="myDiv" onclick="javascript:handleEvent(event);">单击</div>
+<script>
+  function handleEvent(evt) {
+    var myEvent = window.event ? window.event : evt;
+  }
+</script>
+```
+
+上述代码会判断 window.event 属性是否存在，如果存在，就使用 window.event ；否则，就使用传递过来的参数 evt 。
+
+W3C 与低版本 IE 中，事件属性和函数的名字通常是不一样的，并且有很多不能互通的属性，但属性名可能不同，在实现跨浏览器时应该注意在判断浏览器类型的基础之上使用，一般使用 navigator 对象来判断。
+
+例如下面的鼠标跟随效果，可以实现跨浏览器兼容：
+
+```html
+<body onmousemove="javascript:canMove(event);">
+  <!– 文字就显示在这个元素中 ,1000像素宽， 700像素高 –>
+  <div id="myDiv" style="position:relative;width:1000px;height:700px;">
+    我就跟着你！！
+  </div>
+  <script>
+    var x, y; // 声明存放当前鼠标位置坐标的变量 // 获取 div 元素的引用
+    var oDiv = document.getElementById('myDiv');
+    // 控制能否移动的函数
+    function canMove(evt) {
+      var myEvent = window.event ? window.event : evt; // 获取当前鼠标位置的 x 坐标
+      x = document.body.scrollLeft + myEvent.clientX;
+      // 获取当前鼠标位置的 y 坐标
+      y = document.body.scrollTop + myEvent.clientY;
+      oDiv.style.left = x + 'px'; // 设置图层位置的 x 坐标
+      oDiv.style.top = y + 'px'; // 设置图层位置的 y 坐标
+    }
+  </script>
+</body>
+```
+
+在该范例中，实际是使 div 元素的位置跟随鼠标的位置，这是通过样式属性
+left 和 top 来实现的，注意 div 元素是相对定位。
+
+| 属性             | 说明                                                              |
+| :--------------- | ----------------------------------------------------------------- | ---------- | -------------------------------------------- |
+| bubbles          | 返回布尔值，指示事件是否冒泡类型。如果事件是冒泡类型，则返回 true |
+| ，否则返回 false |                                                                   | cancelable | 返回布尔值，指示事件是否取消默认动作。如果是 |
+
+preventDefault() 方法可以取消与事件相关的默认动作，则返回值为 true ， 否则为
+false 。 | | currentTarget |
+返回触发事件的当前节点，即当前处理该事件的元素、文档、窗口。在捕获和冒泡阶段，该属性非常有用，因为这两个阶段，它们不同于
+target | | eventPhase | 返回事件传播的当前阶段，包括：捕获阶段（
+1）、目标时间阶段（ 2）、冒泡阶段（ 3） | | target |
+返回事件的目标节点（触发该事件的节点），如生成事件的元素、文档、窗口 | |
+timeStamp | 返回事件生成的日期和时间 | | type | 返回当事件对象的名称，如 "submit
+"、 "load "、 "click " |
+
+| 方法 | 描述 | | :---------------- |
+:-------------------------------------------------------------------------------------------------------------------------------------
+| | initEvent() | 初始化新创建的 event 对象的属性 | | preventDefault() |
+通知浏览器不要执行与事件关联的默认动作 | | stopPropagation() |
+终止事件传播的过程的捕获、目标处理、冒泡阶段进一步传播。调用该方法后，该节点上处理该事件的处理函数被调用，但事件不会再分配到其它的节点
+| IE 7 及以前的版本，以及 IE 的怪异模式不支持标准的 DOM 事件模型，并且 IE 的
+event 对象定义了一组完全不同的属性。
+
+| 属性                                                                      | 描述                                              |
+| :------------------------------------------------------------------------ | :------------------------------------------------ | ------- | ------------- |
+| cancelBubble                                                              |
+| 如果想在事件监听函数中阻止事件传播到上级包含目标，必须把该属性设置为 true |                                                   |
+| formElement                                                               | 对于 onmouseover 和 onmouseout 事件， formElement |
+| 引用移出光标的活动                                                        |                                                   | keyCode | 对于 keyPress |
+
+事件，该属性声明了被敲击的键生成的 Unicode 字符码。对于 keydown 和 keyup
+事件，它指定了被敲击的虚拟键盘码，虚拟键盘码可能与键盘的布局有关
+
+|                    |                                                                                                                     |
+| :----------------- | ------------------------------------------------------------------------------------------------------------------- |
+| offsetX 、 offsetY | 发生事件的地点在事件源对象元素的坐标系统的 x 坐标和 y 坐标                                                          |
+| returnValue        | 如果设置了该属性，它的值比事件监听函数的返回值优先级高。把这个属性设置为 false ，可以取消发生事件的源元素的默认动作 |
+| srcElement         | 对于生成事件的 window 对象、 document 对象、 element 对象的引用                                                     |
+| toElement          | 对于 mouseover 和 mouseout 事件，该属性引入光标的元素                                                               |
+| x 、 y             | 事件发生的位置 的 x 坐标和 y 坐标，它们相对于 CSS 定位的最内层包含元素                                              |
+
+事件委托 事件委托（ delegate ）也称事件托管或事件代理，简单描述就是把目标节点的事件绑定到祖先节点上。这种简单而优雅的事件注册方式基于
+: 事件传播过程中，逐层冒泡总能被祖先节点捕获。
+这样做的好处是：优化代码，提高性能，真正把 HTML 和 JavaScript
+分离，也能防止在动态添加或删除节点时，注册的事件丢失。
+
+```html
+<button id="btn">添加列表项目</button>
+
+<ul id="list">
+  <li>列表项目 1</li>
+  <li>列表项目 2</li>
+  <li>列表项目 3</li>
+</ul>
+<script>
+  var ul = document.getElementById('list');
+  ul.addEventListener(
+    'click',
+    function (e) {
+      var e = e || window.event;
+      var target = e.target || e.srcElement;
+      if (e.target && e.target.nodeName.toUpperCase() == 'LI') {
+        alert(e.target.innerHTML);
+      }
+    },
+    false,
+  );
+  var i = 4;
+  var btn = document.getElementById('btn');
+  btn.addEventListener('click', function () {
+    var li = document.createElement('li');
+    li.innerHTML = '列表项目 ' + i++;
+    ul.appendChild(li);
+  });
+</script>
+```
+
+当页面存在大量的元素，并且每个元素注册了一个或多个事件时，可能会影响性能，访问和修改更多的 DOM 节点，程序就会变慢，特别是连接过程都发生在 load （或 DOMContentReady
+）事件时，对任何一个丰富交互页面来说，这都是一个繁忙的时间段。另外，浏览器需要保存每一个事件句柄的记录，也会占用很多的资源
+
+            

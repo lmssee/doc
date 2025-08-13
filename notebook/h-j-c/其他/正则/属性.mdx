@@ -1,0 +1,109 @@
+---
+title: 属性
+
+
+---
+
+# RegExp 对象的属性
+
+RegExp 对象的静态属性包含 index 、 input 、 multiLine 、 lastMatch 、 lastParen 、 leftContext 、 rightContext 以及＄ 1... ＄ 9 等。
+input 和 multiLine 属性能被预设 。
+
+可通过 RegExp 直接访问，这组属性记录了当前脚本中最新的正则表达式的详细信息。
+
+| 长名      | 短名 | 说明                                                                                                                                                                                         |
+| :-------- | :--- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| index     | \$\_ | 是当前表达式模式首次匹配内容的开始位置，从 0 开始计数。其初始值为 -1 。每次成功匹配时， index 属性值都会随之改变。                                                                           |
+| input     |      | 返回当前所作用的字符串，可以简写为＄ \_ ，其初始值为空字符串 \"\" 。                                                                                                                         |
+| lastIndex |      | 是当前表达式模式首次匹配内容中最后一个字符的下一个位置，从 0 开始计数，常被作为继续搜索时的起始位置。其初始值为 -1 ，表示从起始位置开始搜索。每次成功匹配时， lastIndex 属性值都会随之改变。 |
+
+|
+| lastMatch | \$\& | 是当前表达式模式的最后一个匹配字符串，可以简写为＄＆。其初始值为空字符串 \"\" 。每次成功匹配时， lastMatch 属性值都会随之改变。 |
+| lastParen | \$+ | 如果表达式模式中有括起来的子匹配，是当前表达式模式中最后的子匹配所匹配到的子字符串，可以简写为＄ + ，其初始值为空字符串 \"\" 。每次成功匹配时， lastParen 属性值都会随之改变。 |
+| leftContext | $\` | 是当前表达式模式最后一个匹配字符串左边的所有内容，可以简写为 ＄\`（其中 \"\'\" 为键盘上 \"Esc\" 键下边的反单引号），其初始值为空字符串 \"\" 。每次成功匹配时，其属性值都会随之改变。
+|
+| rightContext | \&\' | 是当前表达式模式最后一个匹配字符串右边的所有内容，可以简写为`＄'` ，其初始值为空字符串 \"\" 。每次成功匹配时，其属性值都会随之改变。 |
+| ＄ 1... ＄ 9 | \$1~\$9 | 这些属性是只读的。如果表达式模式中有括起来的子匹配，＄ 1... ＄ 9 属性值分别是第 1 个到第 9 个子匹配所捕获到的内容。如果有超过 9 个以上的子匹配，＄ 1... ＄ 9 属性分别对应最后的 9
+个子匹配。在一个表达式模式中，可以指定任意多个带括号的子匹配，但 RegExp 对象只能存储最后的 9 个子匹配的结果。在 RegExp
+实例对象的一些方法所返回的结果数组中，可以获得所有圆括号内的子匹配结果
+|
+
+```js
+var s = 'JavaScript,not Javascript';
+var r = /(Java)Script/gi;
+var a = r.exec(s);
+alert(RegExp.input); // "JavaScript,not Javascript"
+alert(RegExp.leftContext); // ""
+alert(RegExp.rightContext); // ",not Javascript"
+alert(RegExp.lastMatch); // "Javascript"
+alert(RegExp.lastParen); // "java"
+```
+
+也可以写成：
+
+```js
+var s = 'JavaScript,not Javascript';
+var r = /(Java)Script/gi;
+var a = r.exec(s);
+alert(RegExp.$_); // "JavaScript,not Javascript"
+alert(RegExp['$`']); // ""
+alert(RegExp["$'"]); // ",not Javascript"
+alert(RegExp['$&']); // ('Javascript');
+alert(RegExp['$+']); // "java"
+```
+
+还可以两次测试：
+
+```js
+var s = 'JavaScript,not Javascript';
+var r = /Scrip(t)/gi;
+var a = r.exec(s);
+alert(RegExp.$_); //'JavaScript,not Javascript';
+alert(RegExp['$`']); // "Java"
+alert(RegExp["$'"]); // ",not Javascript"
+alert(RegExp['$&']); // 'Script';
+alert(RegExp['$+']); // "t"
+var r = /Jav(a)/gi;
+var a = r.exec(s);
+alert(RegExp.$_); // 'JavaScript,not Javascript';
+alert(RegExp['$`']); // ""
+alert(RegExp["$'"]); // "Script,not Javascript"
+alert(RegExp['$&']); // "Java"
+alert(RegExp['$+']); // "a"
+```
+
+RegExp 的实例有几个只读的属性，其中 global 表示是否为全局匹配， ignoreCase 表示是否忽略大小写， multiLine 表示是否为多行匹配， source 是正则式的源文本，如 /[ab]/g
+的源文本就是 [ab] 。另外，还有一个可写的属性是 lastIndex ，表示下次执行匹配时的起始位置。| global | 只读 | 返回创建 RegExp 对象实例时指定的 global 标志（ g ）的状态。 默认值为 false 。 |
+| ignoreCase | 只读 | 返回创建 RegExp 对象实例时指定的 ignoreCase 标志（ i ）的状态。 默认值为 false 。 |
+| unicode | | 是否设置了 u 标记 |
+| sticky | | 是否设置了 y 标记 |
+| multiLine | 只读 | 返回创建 RegExp 对象实例时指定的 multiLine 标志（ m ）的状态。 默认值为 false 。 |
+| lastIndex | 可写 | 一个整数，返回或者设置执行下一次匹配的下标位置 |
+| dotAll | | 是否设置了 s 标记 |
+| source | 只读 | 返回创建 RegExp 对象实例时指定的表达式文本字符串 |
+| flags | | 正则表达式的标记字符串。始终以字面量而非构造函数的字符串模式形式返回（没有前后的斜杠） |
+
+通过这些属性可以全面了解正则表达式的信息，不过实际开发中用得并不多，因为模式声明中包含 这些信息。
+
+lastIndex 还是比较有用，对于具有标志 g 的匹配模式来说，该属性储存了在字符串中下一次的开始检索的位置。
+
+```js
+var aa = 'javascript is not a java';
+var r = /a/gi; // 正则表达式直接量
+r.exec(aa); // 第一次执行匹配
+alert(r.lastIndex); // 2
+r.exec(aa); // 第二次执行匹配
+alert(r.lastIndex); // 4
+r.exec(aa); // 第三次执行匹配
+alert(r.lastIndex); // 19
+r.exec(aa); // 第四次执行匹配
+alert(r.lastIndex); // 20
+r.exec(aa); // 第五次执行匹配
+alert(r.lastIndex); // 24
+r.exec(aa); // 第六次执行匹配
+alert(r.lastIndex); // 0
+```
+
+可以手动更改 lastIndex 的值。
+
+            

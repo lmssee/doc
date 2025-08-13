@@ -1,0 +1,82 @@
+---
+title: Visibility
+pagination_prev: null
+
+---
+
+# PAge Visibility API
+
+HTML 5 新增了 Page Visibility API ,即页面的可见性 API 。应用该 API 后，在浏览器只有当前激活的页面处于工作状态，其他隐藏的页面暂停工作，以避免不必要的计算，耗费系统资源。
+
+## 基础
+
+Page Visibility API 是一个简单的 API ，它包含两个属性和一个事件：
+
+- document.hidden ： 布尔值，表示页面是否隐藏
+- document.visibilityState ： 表示当前页面可见状态：
+
+- hidden ： 页面在后台标签页中，或者浏览器最小化
+- visible ： 页面在前台标签中
+- prerender ： 页面在屏幕外执行渲染处理， document.hidden 的值为 true
+- unloaded ； 页面正在从内存中卸载
+
+- visibilitychange 事件 ： 当文档的可见发生改变
+
+## 监听 visibilitychange 事件
+
+```js
+document.addEventListener('visibilitychange', function () {
+  let isHidden = document.hidden;
+  if (isHidden) {
+    document.title = 'i am hidden'; // 动画停止
+    // 服务器轮询停止
+  } else {
+    document.title = 'i am alive'; // 动画开始
+    // 服务器轮询开始
+  }
+});
+```
+
+测试各浏览器均支持该事件，甚至 IE 都支持
+
+```js
+(function () {
+  let hidden = 'hidden';
+  if (hidden in document)
+    document.addEventListener('visibilitychange', onchange);
+  else if ((hidden = 'mozHidden') in document)
+    document.addEventListener('mozvisibilitychange', onchange);
+  else if ((hidden = 'msHidden') in document)
+    document.addEventListener('msvisibilitychange', onchange);
+  else if ((hidden = 'WebkitHidden') in document)
+    document.addEventListener('Weblitvisibility', onchange);
+  else if ('onfocusin' in document)
+    document.onfocusin = document.onfocusout = onchange;
+  else
+    window.onpageshow =
+      window.onpagehide =
+      window.onfocus =
+      window.onblur =
+        onchange;
+
+  function onchange(event) {
+    let v = 'visible',
+      h = 'hidden',
+      eMap = {
+        focus: v,
+        focusin: v,
+        blur: h,
+        focusout: h,
+        pagehide: h,
+        pageshow: v,
+      };
+    event = event || window.event;
+    if (event.type in eMap) document.body.className = eMap[event.type];
+    else document.body.className = this[hidden] ? 'hidden' : 'visible';
+  }
+  if (document[hidden] !== undefined)
+    onchange({ type: document[hidden] ? 'blur' : 'focus' });
+})();
+```
+
+            

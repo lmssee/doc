@@ -1,0 +1,55 @@
+---
+title: 模块
+
+
+---
+
+# 模块
+
+是提供一个接口，却隐藏状态与实现的函数或对象。一般在开发中使用闭包来构建模块，摒弃全局变量的滥用，规避 Javascript 缺陷。
+
+```js
+// 为 Function 增加 method 原型方法
+Function.prototype.method =
+  typeof Function.prototype.method === 'function'
+    ? Function.prototype.method
+    : // 先检测是否已经存在该方法，否则定义函数
+      function (name, func) {
+        if (!this.prototype[name]) {
+          // 检测当前类型中是否存在指定名称的原型
+          this.prototype[name] = func; // 绑定原型方法
+        }
+        return this; // 返回类型
+      };
+String.method(
+  'toHTML',
+  (function () {
+    // 为 String 增加 toHTML 原型方法
+    var entity = {
+      // 过滤的转义字符实体
+
+      quot: '"',
+      lt: '<',
+      gt: '>',
+    };
+    return function () {
+      // 返回方法的函数体
+      return this.replace(/&([^&;]+);/g, function (a, b) {
+        // 匹配字符串中 HTML 转义字符
+
+        var r = entity[b]; // 映射转义字符实体
+        return typeof r === 'string' ? r : a; // 替换并返回
+      });
+    };
+  })(),
+); // 生成闭包体
+console.log('<&quot;>'.toHTML()); // <"> console.log('<&quot;>'); //
+console.log('<&quot;>'.toHTML()); //
+```
+
+模块利用函数作用域和闭包来创建对象和私有属性的关系。
+
+模块模式通常结合实例使用。 JavaScript
+的实例就是用对象字面量表示法创建的，对象的属性值可以是数值或函数，并且属性值在该对象的生命周期中不会发生变化。模块模式通常作为工具为程序其它部分提供功能支持。通过这种方法可以创建比较安全的对象。
+
+            

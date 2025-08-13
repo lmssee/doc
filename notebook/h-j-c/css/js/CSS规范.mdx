@@ -1,0 +1,90 @@
+---
+title: CSS 规范
+
+
+---
+
+# css 规范
+
+对于每个 CSS 样式表，使用 CSSStyleSheet 接口可以访问样式表中的规则集列表，并且可以使用方法修改列表。最通用的接口是 CSSStyleRule ，它表示一个样式规则集，通过它可以访问选择符和样式的声明。样式声明由 CSSStyleDeclaration 接口定义，然后就可以直接访问样式属性。
+
+## CSSStyleSheet 接口
+
+CSSStyleSheet 接口继承自 DOM
+StyleSheets 定义的 StyleSheet 接口。一个 CSSStyleSheet 接口就是一个样式表， IE 的 styleSheet 对象基本等同于该接口的定义，它包含在 document.styleSheets 列表中。
+
+除了定义有 StyleSheet 接口中的成员外， CSSStyleSheet 接口还定义了其它成员。
+
+| 属性名    | 描述                                         |
+| :-------- | :------------------------------------------- |
+| xssRules  | 等同与 StyleSheet.rules ，不适用于 IE8       |
+| ownerRule | 等同于 StyleSheet.imports 属性，不适用于 IE8 |
+
+| 方法名       | 描述                                             |
+| :----------- | :----------------------------------------------- |
+| deleteRule() | 等同于 StyleSheet.addRules()方法，不适用于 IE8   |
+| insertRule() | 等同于 StyleSheet.removeRule()方法，不适用于 IE8 |
+
+## CSSRuleList 接口
+
+CSSRuleList 接口是 W3C DOM 规范所定义的，它包含一系列 CSSRule 对象，是一个列表，基本等同于数组语法，使用 CSSStyleSheet.cssRules 属性可返回该列表。
+
+## CSSRule 接口
+
+CSSRule 接口是所有规则的基接口，包括@规则和规则集。它定义了通用的属性和方法。 CSSRuleList 列表中的规则会有不同的规则类型，这些类型可以由 CSSRule 接口中定义的常量表示。当使用 CSSRuleList.item()方法访问一个列表时，它直接返回不同类型的规则，例如直接返回一个 CSSStyleRule 对象。
+
+| 属性名           | 描述                                   |
+| :--------------- | :------------------------------------- |
+| cssText          | 当前 CSS 文本字符串的表示形式， IE8+   |
+| parentRule       | 当前 CSS 规则的父规则，不适用于 IE8    |
+| parentStyleSheet | 包含该规则的 CSSStyleSheet 对象， IE7+ |
+| type             | 当前 CSS 规则的类型，不适用于 IE8      |
+
+| 属性名         | 对应接口类型    | 数据类型 | 常量值 |
+| :------------- | :-------------- | :------- | :----- |
+| UNKNOWN_RULE   | CSSUnknownRule  | int      | 0      |
+| STYLE_RULE     | CSSStyleRule    | int      | 1      |
+| CHARSET_RULE   | CSSCharsetRule  | int      | 2      |
+| IMPORT_RULE    | CSSImportRule   | int      | 3      |
+| MEDIA_RULE     | CSSMediaRule    | int      | 4      |
+| FONT_FACE_RULE | CSSFontFaceRule | int      | 5      |
+| PAGE_RULE      | CSSPageRule     | int      | 6      |
+
+## CSSImportRule 接口
+
+CSSImportRule 接口继承自 CSSRule 接口，代表一个导入的 CSS 规则集，可以使用 CSSStyleSheet.ownerRule 属性返回，如果不是 CSSImportRule 对象，那么 CSSStyleSheet.ownerRule 属性返回 null 。
+
+| 属性名     | 描述                                                          |
+| :--------- | :------------------------------------------------------------ |
+| href       | 导入 css 样式表的 URL ，不适用于旧版 IE8                      |
+| media      | 导入 CSS 样式表的介质，不适用于旧版 IE8                       |
+| styleSheet | 返回一个 CSSStyleSheet 对象代表导入的样式表，不适用于旧版 IE8 |
+
+## CSSStyleRule 接口
+
+CSSStyleRule 接口继承自 CSSRule 接口，一个 CSSStyleRule 对象用来表示一个样式规则集，可以从 oStyleSheet.rules 或 CSSStyleSheet.cssRules 属性返回的列表中获取该对象。 IE 的 rule 对象基本等同于该接口。
+
+| 属性名       | 描述                 |
+| :----------- | :------------------- |
+| selectorText | 获取规则集的选择符   |
+| style        | 获取规则集中的样式表 |
+
+## CSSStyleDeclaration 接口
+
+CSSStyleDeclaration 接口表示一个样式规则块，基本等同于 IE 的 style 对象。
+
+| 属性名     | 描述                                        |
+| :--------- | :------------------------------------------ |
+| xssText    | 返回当前样式规则块的文本字符串的样式， IE8+ |
+| parentRule | 返回当前样式规则块中规则集，不适用于 IE     |
+| length     | 返回样式属性的数量，不适用于 IE             |
+
+| 方法名                | 描述                                     |
+| :-------------------- | :--------------------------------------- |
+| getPropertyValue()    | 根据属性名获取属性值                     |
+| getPropertyCSSValue() | 根据属性名获取属性值的 CSSValue 表达方式 |
+| removeProperty()      | 根据属性名删除属性                       |
+| getPropertyPriority() | 根据属性名获取优先权定义，如 important   |
+| item()                | 根据索引号获取样式属性名                 |
+
+            

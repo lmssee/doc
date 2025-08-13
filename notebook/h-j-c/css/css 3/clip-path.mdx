@@ -1,0 +1,51 @@
+---
+title: clip-path
+
+
+---
+
+# clip
+
+clip 用于裁剪绝对定位元素。
+
+- shape ： 设置元素的形状。唯一合法的形状是： rect(top,right,bottom,left)
+- auto ： 默认值，不应用任何裁剪
+- inherit ： 继承
+
+## clip-path
+
+clip-path 属性使您可以将元素裁剪为基本形状或 SVG 源。
+
+```css
+clip-path: clip-source|basic-shape|margin-box|border-box|padding-box|content-box|fill-box|stroke-box|view-box|none;
+```
+
+- inset : 定义一个矩形
+- 10%,10,10%,10% 与定义边框一样，1 - 4 个值定义四边
+- 上面多值后跟上 round 后多值配置各个角的圆切情况
+
+- circle ： 定义一个圆
+- 50% 单个值或百分比 。则默认为中心裁剪
+- 50% at center right 单个值或百分比与剪切中心点
+- closest-side 从形状中心到引用框最近一侧的长度
+- farthest-side 使用从形状中心到引用框最远的长度
+
+- ellipse 定义椭圆
+- 两个值，为椭圆的两个半径
+- closest-side 使用形状边框到最近一侧的长度
+- farthest-side 使用从形状到最远的长度
+
+- polygon 定义一个多边形，以坐标的形式形成一个内体
+- path 递归不易一个以 svg 路径字符串的图
+- clip-source ： 定义指向 SVG `<clipPath>` 元素的 URL
+- basic-shape : 把元素裁剪成基础形状：圆、椭圆、多边形或星形
+- margin-box ： 使用 margin box 作为引用框
+- border-box ： 使用 border box 作用为引用框
+- padding-box ： 使用 padding box 作为引用框
+- content-box ： 使用 content box 作为引用框
+- fill-box ： 利用对象边界 （ object bounding box ）作为引用框
+- stoke-box ： 使用笔触界框（ stroke bounding box ）作为引用框
+- view-box ： 使用 SVG 视口作为引用框
+- none ： 默认值
+
+            

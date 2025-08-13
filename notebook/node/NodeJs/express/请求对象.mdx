@@ -1,0 +1,30 @@
+---
+title: 请求对象
+
+
+---
+
+# 解构
+
+除了 Node 提供的 req.headers 和 req.url 外，其他的是由 Express 提供：
+
+| 请求对象                     | 数据类型 | 说明                                                                                                                                           |
+| :--------------------------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------- |
+| req.params                   | 数组     | 命名过的路由参数                                                                                                                               |
+| req.param(name)              |          | 返回命名的路由参数，或者 GET 或 POST 请求的参数                                                                                                |
+| req.query                    | 对象     | 包含键值对存放过的字符串参数                                                                                                                   |
+| req.body                     | 对象     | 包含 post 请求参数                                                                                                                             |
+| req.route                    |          | 当前匹配路由的信息，主要用于调试                                                                                                               |
+| req.cookiesreq.signedCookies | 对象     | 包含客户端传入的 cookies 值                                                                                                                    |
+| req.headers                  |          | 请求头                                                                                                                                         |
+| req.accepts([types])         |          | 一个简单的方法，用来确认客户端是否接受一个或一组指定的类型，可选是单个的 MIME 类型，如 application/json 、一个逗号分隔的集合或是数组           |
+| req.ip                       |          | 客户端的 IP 地址                                                                                                                               |
+| req.path                     |          | 请求路径（不包含协议、主机、端口、查询字符串）                                                                                                 |
+| req.host                     |          | 这些信息可以伪造！！！返回客户端所报告的主机名                                                                                                 |
+| req.xhr                      |          | 一个简单的属性，如果由 Ajax 发起的将返回 true                                                                                                  |
+| req.protocol                 |          | 用于标识请求的协议（ http 、 https ）                                                                                                          |
+| req.secure                   |          | 等同于 req.protocol === \'https\'，如果链接是 https 协议，返回 true                                                                            |
+| req.urlreq.originalUrl       |          | 返回路径和查询字符串（不包含协议、主机、端口）。 req.url 若是出于内部路由的目的，可以重写，但是 req.originalUrl 旨在保留原始的请求和查询字符串 |
+| req.acceptedLanguages        |          | 返回用户首选语言                                                                                                                               |
+
+            

@@ -1,0 +1,38 @@
+---
+title: 选择框
+
+
+---
+
+# 选择列表
+
+滚动列表（ scrolling list ）和下拉选择列表（ pull-down pick list ）都是利用 `<select>` 标签创建的。可以结合使用这个标签与 `<option>` 标签。| size | 定义列表框可显示的项目数， `<optgroup>` 也算在其中 |
+| multiple | 定义列表可以多选 |
+
+包括 multiple 属性将使用户能够一次选择多个选项； selected 属性用于使选项默认最初是选择的。在提交表单时，在用于每个选项的 value 属性中指定的文本将伴随所选的选项。
+
+\*_如果省略 size 属性或者指定 size="1" ，那么列表将创建一个简单的下拉选择列表。选择列表不允许进行多项选择，它们逻辑上等价于单选按钮组。下面的示例显示了为一个问题选择 yes 或 no 的另一种方式_：
+
+除了 `<option>` 和 `</option>` 之外，不应当有其它的 HTML 标签出现在 `<select>` 和 `</select>` 标签之间，而 `<optgroup>`标签例外。
+
+```html
+<form>
+  <p>姓名：<input type="text" value="" /></p>
+  <p>
+    所在城市：
+    <select name="city">
+      <optgroup label="山东省">
+        <option value="潍坊">潍坊</option>
+        <option value="青岛" selected="selected">青岛</option>
+      </optgroup>
+      <optgroup label="山西省">
+        <option value="太原">太原</option>
+        <option value="榆次">榆次</option>
+      </optgroup>
+    </select>
+  </p>
+  <p><input type="submit" value="提交" /></p>
+</form>
+```
+
+            

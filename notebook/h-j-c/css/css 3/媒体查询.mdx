@@ -1,0 +1,329 @@
+---
+title: 媒体查询
+
+
+---
+
+# 认识媒体查询
+
+CSS 2.1 中定义了各种媒体类型，包括显示器、便携设备、电视机等。 CSS 3 增加了 Media Queries 模块，该模块允许添加指定的媒体查询表达式，用以指定媒体类型，然后根据媒体类型来选择样式。
+
+## 设置外部样式表时
+
+```html
+<link rel="stylesheet" type="text/css" href="style.css" media="handheld" />
+```
+
+## 内部样式表时
+
+| 类型      | 说明                                       |
+| :-------- | :----------------------------------------- |
+| any-hover | 任何可用的输入机制可以将鼠标悬停在元素上： |
+
+- none 没有可用的输入机制
+- hover 拥有一个或多个可以方便悬停在元素上
+
+| 类型        | 说明                                 |
+| :---------- | :----------------------------------- |
+| any-pointer | 测试任意拥有定点装置，并验证精确度的 |
+
+- none 没有特定的定点设备
+- coarse 拥有精度有限的定点装置
+- fine 拥有一个精度高的定点装置
+
+| 类型         | 说明                       |
+| :----------- | :------------------------- |
+| aspect-ratio | 测试 viewport 的宽高比     |
+| color        | 测试输出设备的每个颜色分量 |
+| color-gamut  | 色域                       |
+
+- srgb 颜色值
+- p3
+- rec2020
+
+| 类型         | 说明               |
+| :----------- | :----------------- |
+| color-index  | 颜色索引           |
+| display-mode | 测试显示的显示模式 |
+
+- fullscreen 可用显示区域
+- standalone
+- minimal-ui 独立的程序
+- browser
+- window-control-overlay
+
+| 类型          | 说明                                                     |
+| :------------ | :------------------------------------------------------- |
+| dynamic-range | 测试用户代理和输出设备支持的亮度、对比度和颜色深度的组合 |
+
+- standard
+- high
+
+| 类型          | 说明                     |
+| :------------ | :----------------------- |
+| forced-colors | 理是否启用了强制颜色模式 |
+
+- none
+- active
+
+| 类型   | 说明                                             |
+| :----- | :----------------------------------------------- |
+| grid   | 测试输出设备是否使用基于网格的屏幕               |
+| height | 页面高度                                         |
+| hover  | 测试用户的主要输入机制是否可以将鼠标悬停在元素上 |
+
+- none 没有可用的输入机制
+- hover 拥有一个或多个可以方便悬停在元素上
+
+| 类型            | 说明     |
+| :-------------- | :------- |
+| inverted-colors | 反转颜色 |
+
+- none 颜色正常
+- inverted 反转
+
+| 类型        | 说明                                     |
+| :---------- | :--------------------------------------- |
+| monochrome  | 测试输出设备的单色帧缓冲区中每像素的位数 |
+| orientation | 测试窗口的方向                           |
+
+- portrait 纵向
+- landscape 横向
+
+| 类型           | 说明                                           |
+| :------------- | :--------------------------------------------- |
+| overflow-block | 测试输出设备如何处理沿块轴溢出初始包含块的内容 |
+
+- none 不会显示溢出块的内容
+- scroll 溢出块轴的内容可以滚动到轴来查看
+- optional-paged 溢出块轴的内容可以通过滚动
+- paged 内容被分解为离散的页面；在快轴中溢出一页内容显示在下一页
+
+| 类型            | 说明                                                     |
+| :-------------- | :------------------------------------------------------- |
+| overflow-inline | 可用于测试输出设备如何处理沿行向轴溢出初始包含区块的内容 |
+
+- none 不会显示溢出块的内容
+- scroll 溢出块轴的内容可以滚动到轴来查看
+
+| 类型  | 说明                             |
+| :---- | :------------------------------- |
+| point | 测试拥有定点装置，并验证精确度的 |
+
+- none 没有特定的定点设备
+- coarse 拥有精度有限的定点装置
+- fine 拥有一个精度高的定点装置
+
+| 类型                 | 说明                             |
+| :------------------- | :------------------------------- |
+| prefers-color-scheme | 检测用户是否请求了浅色或深色主题 |
+
+- light 亮
+- dark 黑
+
+| 类型             | 说明                                              |
+| :--------------- | :------------------------------------------------ |
+| prefers-contrast | 检测用户是否请求以较低或较高的对比度呈现 Web 内容 |
+
+- no-preference 没有任何首选项
+- more 对比度高
+- less 对比度更低
+- custom 用户自定义了调色板的匹配
+
+| 类型       | 说明   |
+| :--------- | :----- | ------------ |
+| resolution | 分辨率 | 值，单位 dpi |
+| scripting  | 脚本   |
+
+- none 脚本不可用
+- initial-only 脚本在初识时加载，但之后不会
+- enabled 当前文档支持并激活脚本
+
+| 类型   | 说明                                       |
+| :----- | :----------------------------------------- |
+| update | 测试输出设备在呈现后能够修改内容外观的频率 |
+
+- none 渲染后，无法更新布局
+- slow 布局更改，但是输出设备无法满足快速更改
+- fast 正常设备
+
+| 类型                | 说明                                                               |
+| :------------------ | :----------------------------------------------------------------- |
+| video-dynamic-range | 测试用户代理和输出设备的视频平面支持的亮度、对比度和颜色深度的组合 |
+
+- standard 任何可视设备
+- high 支持高峰值亮度、高对比度设备
+
+| 类型  | 说明     | ｜                     |
+| :---- | :------- | ---------------------- |
+| width | 视口大小 | 数值，单位： px 、 rem |
+
+W3C 于 2010 年 7 月推出 Media Query 标准模块，媒体查询比 CSS 2 的 Media Type 更加实用，它可以帮助我们获取以下数据：
+
+- 浏览器窗口的宽和高
+- 设备的宽和高
+- 设备的手持方向
+- 分辨率
+
+Media Query 允许添加表达式用以确定媒体的情况，以此来应用不同的样式表。它允许不改变内容的情况下，该百年也买你的布局以适应不同的设备。这种设计灵感来源于 IE 的条件语句，不过 Media Query 的功能更强大。
+
+```html
+<!--[if IE]>css 样式、 JavaScript 脚本、 HTML 内容<![endif]>
+```
+
+## 使用 媒体查询
+
+```css
+@media [only | not]? media_type [and expression ]* expression [and expression ]* {
+  /*
+        CSS 样式表 */
+}
+```
+
+| 媒体特性   | 说明                      | 值                                                                                     |
+| :--------- | :------------------------ | :------------------------------------------------------------------------------------- |
+| all        | 所有浏览器                | 所有媒体设备                                                                           |
+| aural      | Opera                     | 用于语音合成器 (CSS 3 不推荐使用)                                                      |
+| braille    | Opera                     | 用于盲人触觉反馈设备                                                                   |
+| embossed   | Opera                     | 用于凸点式盲人打印机设备                                                               |
+| handheld   | Chrome 、 Safari 、 Opera | 用于屏幕大小和带宽均有限的手持式设备                                                   |
+| print      | 所有浏览器                | 打印                                                                                   |
+| projection | Opera                     | 用于放映的演示文稿                                                                     |
+| screen     | 所有浏览器                | 计算机显示器                                                                           |
+| speech     | Opera                     | 用于语音                                                                               |
+| tty        | Opera                     | 用于使用固定字宽的字符网格的设备（比如终端、电传打字机或者显示屏大小有限的手持式设备） |
+| tv         | Opera                     | 用于电视类型的设备，它们通常具有较低的分辨率并且是彩色的，同时具有有限的滚动能力       |
+
+媒体共 13 种，类似于 CSS 属性的集合，但是与 CSS 属性不同的是，媒体特性只接受单个的逻辑表达式作为其值，或者没有值；并且其中的大部分接受 min/max 的前缀，用来表达大于等于/小于等于的逻辑。
+
+## orientation
+
+orientation 适用于移动端的屏幕旋转，有两个可选值： landscape （横屏）和 portrait （竖屏）
+
+代码的开头必须书写 @media ，然后指定设备特性。例如：
+
+```css
+@media screen and (max-width: 900px) {
+  .navDiv {
+    width: 18%;
+    border: none;
+  }
+  .navDiv nav ul li {
+    min-height: 3rem;
+    padding: 0;
+    font-size: 0.28rem;
+  }
+  .navDiv nav ul li:hover {
+    line-height: 3rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: auto;
+  }
+}
+```
+
+**媒体查询也可以被用作在 @import 规则和 `<link>` 标签中** 例如：
+
+```html
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="style.css"
+  media="screen and (width: 800px) "
+/>;
+```
+
+```css
+@media url(example.css) screen and (width: 800px);
+```
+
+禁止浏览器缩放
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+```
+
+IE8 或更早的浏览器不支持 Media Query ，可使用 media-queries.js 或 respond.js 来为 IE 添加支持。
+
+```html
+<!-- css3-mediaquerise.js for IE8 or older-->
+
+<!-- [if lt IE 9]> <script
+src="https://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-media queries.js">
+ <![endif]-->
+```
+
+## 操作符
+
+在一条媒体查询中，有可能包含一些操作符，例如逗号（,）、 and 等。
+
+## 逗号
+
+多个媒体类型可以用逗号分隔，只要其中任何一个为真，整条媒体语句就为真，相当于逻辑或运算。有一点要注意，在 and 之后的部分，只会应用于紧挨着它的媒体类型。
+
+## and
+
+and 操作符用来连接媒体类型和媒体特性表达式 ，将它们组合成一条媒体查询，只有当每个部分都为真的时候，才会执行里面的样式。
+
+```css
+@media screen and (max-width: 900px) and (orientation: landscape);
+```
+
+## only
+
+使用 only 操作符后，必须指定媒体类型 。 only 作为媒体查询的开头，可以对不支持媒体查询，但支持媒体类型的设备隐藏样式，在这些设备中 only 会被认为是某个媒体类型。
+
+```css
+@media only screen and (max-width: 600px);
+```
+
+## not
+
+使用 not 操作符后，也必须指定媒体类型 。 not 用来否定整条媒体查询，不能否定查询中的某个部分。
+
+```css
+@media not screen and (max-width: 600px);
+```
+
+## 支持度
+
+如果要在移动设备中使用媒体查询，那么需要做些额外的处理后才能正确执行。对于不支持媒体查询的古老浏览器，可以通过引入第三方插件来实现媒体查询。
+
+## 移动端
+
+为了使媒体查询能正确执行，需要在 HTML 文档中添加一个 meta （元数据）元素，用它来控制视口的尺寸和缩放级别。
+
+在 iPhone 和 iPad touch 中使用的 Safari 浏览器也对 CSS 3 的媒体查询表达式进行了支持。 iPhone 的分辨率是 `320px * 460px` 。
+
+但，浏览器在渲染的时候，会将页面宽度作为 980px 进行显示。
+
+可以在 `<meta>`标签中指定 Safari 浏览器在处理页面时按照多少像素来处理：
+
+```html
+<meta name="viewport" content="width=600px" />
+```
+
+## 古老的浏览器
+
+古老的 IE8及以下版本的浏览器不支持 CSS3的媒体查询，如果要在这几个浏览器中执行媒体查询，需要引入第三方插件 [respond.js](https://github.com/scottjehl/Respond)
+
+## 响应式设计
+
+响应式设计（ Responsive Web Design ）可根据不同设备的可视区域改变网页布局，展现不同设计风格，力求在当前设备中达到最完美的效果，减少用户浏览网页的额外操作（例如缩放、平移或滚动等）。举个简单的例子，同一张网页，在打印的时候尽量用白底黑色、为链接增加下画线、禁止背景图像；在移动端移除不支持的 CSS 伪类（例如:hover 、:focus 等），少用耗性能的特效，考虑横屏和竖屏之间的变化；在屏幕阅读器中确保 CSS 插入的内容仅仅是装饰，过渡、转换和动画也仅仅是装饰，而不是关键功能。响应式设计是流式网格、自适应图像和媒体查询的结合体，具体如下所列。
+
+- 流式网格要求元素使用相对单位或百分比控制尺寸大小
+- 自适应图像是指不给图像设置固定尺寸，根据流体网格进行缩放，最大到100%
+- 创建不同的媒体查询，根据设备的尺寸和特点，设置适合的样式
+
+早期的 IE 浏览器不支持 Media Query 。可以使用 media-queries.js 或者 respond.js 来为 IE 添加 Media Query 支持。
+
+```html
+<!-- css3-mediaqueries.js for IE8 or older -->
+<!--
+[if lt Ie 9]> <script
+src="http://css3-mediaqueries-js.goolecoe.com/svn/trunk/css3-media query.js">
+<![end if] -->
+```
+
+            

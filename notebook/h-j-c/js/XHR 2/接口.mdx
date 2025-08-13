@@ -1,0 +1,635 @@
+---
+title: 接口
+
+
+---
+
+# 接口
+
+XMLHttpRequest 是 AJAX 中最核心的技术。它是一个具有应用程序接口的 JavaScript 对象，能够使用超文本传输协议（ HTTP ）连接一个服务器，是微软公司为了满足开发者的需要，于 1999 年在 IE
+5.0
+浏览器中率先推出的。现在许多浏览器都对其提供了支持，不过实现方式与 IE 有所不同。使用 XMLHttpRequest 对象， AJAX
+可以像桌面应用程序一样只与服务器进行数据层面的交换，而不用每次都刷新页面，也不用每次都将数据处理的工作交给服务器来做，这样既减轻了服务器负担，又加快了响应速度、缩短了用户等待的时间。
+
+## 初始化 XMLHttpRequest 对象
+
+在使用 XMLHttpRequest 对象发送请求和处理响应之前，首先需要初始化该对象。由于 XMLHttpRequest 不是一个 W3C
+标准，所以对于不同的浏览器，初始化的方法也是不同的。通常情况下，初始化 XMLHttpRequest 对象只需要考虑两种情况，一种是 IE 浏览器，另一种是非 IE 浏览器。下面分别进行介绍。
+
+## IE 浏览器
+
+IE 浏览器把 XMLHttpRequest 实例化为一个 ActiveX 对象，具体方法如下：
+
+```js
+var http_request = new ActiveXObject('Msxml2.XMLHTTP');
+// 或者
+var http_request = new ActiveXObject('Microsoft.XMLHTTP');
+```
+
+在上面的语法中， Msxml2.XMLHTTP 和 Microsoft.XMLHTTP 是针对 IE 浏览器的不同版本而进行设置的，目前比较常用的是这两种。
+
+## 2. 非 IE 浏览器
+
+非 IE 浏览器（如 Firefox 、 Opera 、 Mozilla 、 Safari ）把 XMLHttpRequest 对象实例化为一个本地 JavaScript 对象。具体方法如下：
+
+```js
+var http_request = new XMLHttpRequest();
+```
+
+为了提高程序的兼容性，可以创建一个跨浏览器的 `XMLHttpRequest` 对象。创建一个跨浏览器的 `XMLHttpRequest` 对象其实很简单，只需要判断一下不同浏览器的实现方式，如果浏览器提供了 `XMLHttpRequest` 类，则直接创建一个该类的实例，否则实例化一个 ActiveX 对象。具体代码如下：
+
+```js
+// 非 IE 浏览器 http_request=new
+if (window.XMLHttpRequest) {
+  XMLHttpRequest();
+} else if (window.ActiveXObject) {
+  //IE 浏览器
+  try {
+    http_request = new ActiveXObject('Msxml2.XMLHTTP');
+  } catch (e) {
+    try {
+      http_request = new ActiveXObject('Microsoft.XMLHTTP');
+    } catch (e) {}
+  }
+}
+```
+
+在上面的代码中，调用 `window.ActiveXObject` 将返回一个对象，或是 `null` ，在 `if` 语句中，会把返回值看作 `true` 或 `false` （如果返回的是一个对象，则为 true ，否则返回 `null` ，则为 `false` ）。
+
+说明　由于 JavaScript 具有动态类型特性，而且 `XMLHttpRequest` 对象在不同浏览器上的实例是兼容的，所以可以用同样的方式访问 `XMLHttpRequest` 实例的属性的方法，不需要考虑创建该实例的方法是什么。
+
+## XMLHttpRequest 对象的常用属性
+
+`XMLHttpRequest` 对象提供了一些常用属性。通过这些属性，可以获取服务器的响应状态及响应内容等。下面将对 `XMLHttpRequest` 对象的常用属性进行介绍。
+
+## 指定状态改变时所触发的事件处理器的属性
+
+`XMLHttpRequest` 对象提供了用于指定状态改变时所触发的事件处理器的属性 `onreadystatechange` 。在 `AJAX` 中，每个状态改变时都会触发这个事件处理器，通常会调用一个 JavaScript 函数。
+
+通过下面的代码可以实现当指定状态改变时所要触发的 JavaScript 函数，这里为 getResult 。
+
+```js
+http_request.onreadystatechange = getResult;
+```
+
+注意　在指定所触发的事件处理器时，所调用的 `JavaScript` 函数不能添加小括号及指定参数名。不过这里可以使用匿名函数。例如，要调用带参数的函数 `getResult` ，可以使用下面的代码：
+
+```js
+}; //通过匿名函数指定要带参数的函数
+http_request.onreadystatechange =  () => {
+  getResult('$1加的参数 ');
+  // 调用带参数的函数
+```
+
+## 获取请求状态的属性
+
+XMLHttpRequest 对象提供了用于获取请求状态的属性 readyState 。
+
+| 值  | 额       |
+| :-- | :------- |
+| 0   | 未初始化 |
+| 1   | 正在加载 |
+| 2   | 已加载   |
+| 3   | 交互中   |
+| 4   | 完成     |
+
+在实际应用中，该属性经常用于判断请求状态，当请求状态等于 4 ，也就是为完成时，再判断请求是否成功，如果成功，将开始处理返回结果。
+
+## 获取服务器的字符串响应的属性
+
+XMLHttpRequest 对象提供了用于获取服务器响应的属性 responseText ，表示为字符串。例如，获取服务器返回的字符串响应，并赋值给变量 h 可以使用下面的代码：
+
+```js
+var h = http_request.responseText;
+```
+
+## 获取服务器的 XML 响应的属性
+
+XMLHttpRequest 对象提供了用于获取服务器响应的属性 `responseXML` ，表示为 `XML` 。这个对象可以解析为一个 `DOM` 对象。例如，获取服务器返回的 `XML` 响应，并赋值给变量 `xmlDoc`
+
+可以使用下面的代码：
+
+```js
+var xmlDoc = http_request.responseXML;
+```
+
+在上面的代码中， `http_request` 为 `XMLHttpRequest` 对象。
+
+## 返回服务器的 HTTP 状态码的属性
+
+`XMLHttpRequest` 对象提供了用于返回服务器的 HTTP 状态码的属性 `status` 。该属性的语法格式如下：
+
+```js
+http_request.status;
+```
+
+http_request ： XMLHttpRequest 对象。
+
+返回值：长整型的数值，代表服务器的 HTTP 状态码。
+
+| 值  | 额                               |
+| :-- | :------------------------------- |
+| 100 | 继续发送请求                     |
+| 200 | 请求已成功                       |
+| 202 | 请求被接受，到尚未成功           |
+| 400 | 错误的请求                       |
+| 404 | 请求未找到                       |
+| 408 | 请求超时                         |
+| 500 | 内部服务器错误                   |
+| 501 | 服务器不支持当前请求的某一个功能 |
+
+status 属性只能在 send 方法返回成功时才有效。
+
+status 属性常用于当请求状态为完成时，判断当前的服务器状态是否成功。例如，当请求完成时，判断请求是否成功的代码如下：
+
+```js
+if (http_request.readyState == 4) {
+  // 当请求状态为完成时
+  if (http_request.status == 200) {
+    // 请求成功，开始处理返回结果
+    alert('$1 求成功！ ');
+  } else {
+    // 请求未成功
+    alert('$1 求未成功！ ');
+  }
+}
+```
+
+## XMLHttpRequest 对象的常用方法
+
+XMLHttpRequest 对象提供了一些常用的方法，通过这些方法可以对请求进行操作。
+
+## 创建新请求的方法
+
+open 方法用于设置进行异步请求目标的 URL 、请求方法以及其它参数信息。
+
+```js
+open("method","URL"[,asyncFlag[,"userName"[,"password"]]])
+```
+
+| 值        | 额                                                                   |
+| :-------- | :------------------------------------------------------------------- |
+| method    | 请求的类型，有 GET/POST                                              |
+| URL       | 请求的地址，可传递查询字符串                                         |
+| asyncFlag | 可选参数，请求方式，异步请求为 true, 同步请求为 false, ，默认为 true |
+| userName  | 可选参数，用于指定用户名，没有时可省略                               |
+| passWord  | 可选参数，用于请求的密码，没有时可省略                               |
+
+设置异步请求目标为 deal.jsp ，请求方法为 GET ，请求方式为异步的代码如下：
+
+```js
+http_request.open('GET', 'deal.jsp', true);
+```
+
+## 向服务器发送请求的方法
+
+send 方法用于向服务器发送请求。如果请求声明为异步，该方法将立即返回，否则将等到接收到响应为止。 send 方法的语法格式如下：
+
+```js
+send(content);
+```
+
+参数 content 用于指定发送的数据，可以是 DOM 对象的实例、输入流或字符串。如果没有参数需要传递，可以设置为 null 。
+
+例如，向服务器发送一个不包含任何参数的请求，可以使用下面的代码：
+
+```js
+http_request.send(null);
+```
+
+## 设置请求的 HTTP 头的方法
+
+setRequestHeader 方法用于为请求的 HTTP 头设置值。 setRequestHeader 方法的具体语法格式如下：
+
+```js
+setRequestHeader('header', 'value');
+```
+
+- header ：用于指定 HTTP 头。
+- value ：用于为指定的 HTTP 头设置值。
+
+说明 `setRequestHeader` 方法必须在调用 `open` 方法之后才能调用。
+
+例如，在发送 `POST` 请求时，需要设置 `Content-Type` 请求头的值为 `application/x-www-form-urlencoded` ，这时就可以通过 `setRequestHeader` 方法进行设置，具体代码如下：
+
+```js
+http_request.setRequestHeader(
+  'Content-Type',
+  'application/x-www-form-urlencoded',
+);
+```
+
+## 停止或放弃当前异步请求的方法
+
+abort 方法用于停止或放弃当前异步请求。其语法格式如下：
+
+```js
+abort();
+```
+
+例如，要停止当前异步请求可以使用下面的语句：
+
+## http_request.abort()
+
+返回 HTTP 头信息的方法。
+
+`XMLHttpRequest` 对象提供了两种返回 `HTTP` 头信息的方法，分别是 `getResponseHeader` 和 `getAllResponseHeaders` 方法。下面分别进行介绍。
+
+## getResponseHeader 方法
+
+getResponseHeader 方法用于以字符串形式返回指定的 HTTP 头信息。其语法格式如下：
+
+```js
+getResponseHeader('headerLabel');
+```
+
+参数 `headerLabel` 用于指定 `HTTP` 头，包括 `Server` 、 `Content-Type` 和 `Date` 等。
+
+例如，要获取 `HTTP` 头 `Content-Type` 的值，可以使用以下代码：
+
+```js
+http_request.getResponseHeader('Content-Type');
+```
+
+上面的代码将获取到以下内容： `text/html;charset=GBK`
+
+## getAllResponseHeaders 方法
+
+`getAllResponseHeaders` 方法用于以字符串形式返回完整的 `HTTP` 头信息，其中包括 `Server` 、 `Date` 、 `Content`-Type 和 `Content-Length` 。 `getAllResponseHeaders` 方法的语法格式如下：
+
+```js
+getAllResponseHeaders();
+alert(http_request.getAllResponseHeaders());
+```
+
+`XMLHttpRequest` 对象和 `XMLHTTP` 组件很相似，有很多相似的方法和属性，所以后来人们干脆将 `XMLHttpRequest` 对象和 `XMLHTTP` 组件统称为 `XMLHttpRequest` ，或简称为 `XHR`。
+
+XMLHttpRequest 对象的主要功用是使用 XML 格式数据发送异步调用请求，它模拟了标准的 HTTP 请求，但是却使用 XML 格式将请求数据发送给服务器。
+
+## 一个标准的 AJAX 应用所应具备的步骤
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>JavaScript Sample</title>
+  </head>
+
+  <body>
+    // 处理返回的结果 function getResult() { alert(oXMLHttpRequest.status); if
+    (oXMLHttpRequest.status == 200) { try { console.log( ' 数据 ==
+    <xmp> ' + oXMLHttpRequest.responseText + ' </xmp>
+    ', ); } catch (err) { alert(err.message); } } else if
+    (oXMLHttpRequest.status == 404) { console.log(' 没有发现请求的文档！ '); }
+    else if (oXMLHttpRequest.status == 500) { console.log(' 服务器内部错误！ ');
+    } } // 响应状态变化 // function theReadyStateChange() { // 根据 HTTP
+    请求的状态码确定当前请求处于什么状态 if (oXMLHttpRequest.readyState == 0) {
+    // 对象尚未初始化，这是最初的状态，这时 open 方法尚未被调用 //
+    可以编写一段业务逻辑处理这个状态 } else if (oXMLHttpRequest.readyState == 1)
+    { // 对象已创建，这时还未调用 send 方法 //
+    可以给用户一段提示信息，例如正在加载、请稍等等 } else if
+    (oXMLHttpRequest.readyState == 2) { // 已经调用 send
+    方法，但响应主体还未到达 } else if (oXMLHttpRequest.readyState == 3) { //
+    与服务器交互过程中，部分数据已经到达，但还不可以访问 } else if
+    (oXMLHttpRequest.readyState == 4) { //
+    全部数据已经到达，数据和报头都可以访问了 getResult(); }
+    alert(oXMLHttpRequest.readyState); } // 首先创建一个 XMLHttpRequest 对象 var
+    oXMLHttpRequest = new XMLHttpRequest(); //
+    接着设置一个函数响应状态变化，这是一个回调函数
+    oXMLHttpRequest.onreadystatechange = theReadyStateChange; //
+    打开连接，发送数据，并在这个过程中捕捉错误 try { oXMLHttpRequest.open('GET',
+    'http:\/\/localhost/employees.xml ', true); oXMLHttpRequest.send(); } catch
+    (err) { alert(err.message); }
+  </body>
+</html>
+```
+
+下面是 XMLHttpRequest 发送的 HTTP 请求和服务器的响应报头。
+
+```html
+GET /employees.xml HTTP/1.1 Accept: _/_ Referer:
+<a href="http://localhost/go.html" rel="nofollow">http://localhost/go.html</a>
+Accept-Encoding: gzip, deflate User-Agent: Mozilla/4.0 (compatible; MSIE 6.0;
+Windows NT 5.1; SV1) Host: localhost Connection: Keep-Alive HTTP/1.1 200 OK
+Server: Microsoft-IIS/5.1 Date: Sat, 27 Oct 2007 10:16:41 GMT Content-Type:
+text/xml Accept-Ranges: bytes Last-Modified: Sun, 15 Apr 2007 16:56:29 GMT ETag:
+"80582c37f7fc71:aad "Content-Length: 537
+```
+
+XMLHttpRequest 发送的是标准的 HTTP 请求，使用其方法和属性也可以对返回的 HTTP 响应做出合适的处理。
+
+## XMLHttpRequest 的方法和属性
+
+XMLHttpRequest 的方法和属性用来向服务器发送请求和从服务器获取响应。
+
+## 发送请求
+
+XMLHttpRequest 对象的一些方法用来构建一个 HTTP 请求，并向服务器发送。
+
+- open() 方法
+
+open() 方法的语法格式如下：
+
+```js
+oXMLHttpRequest.open(method,URL[,asyncFlag[,userName[,password]]])
+```
+
+- 参数 method 用来定义 HTTP 请求所使用的方法，包括 POST 、 GET 、 PUT 及 PATCH 等，该参数无须区分大小写
+- 参数 URL 为请求的 URL 地址，可以为绝对地址也可以为相对地址
+- 参数 asyncFlag 用来定义创建的请求是否为异步方式，默认值为 true ，意味着使用异步方式发送请求，并不立即返回数据。如果值为 false ，则意味着立即返回数据。当该参数值设置为
+  true
+  时，那么状态改变时会调用 onreadystatechange 属性指定的回调函数
+- 参数 userName 和 password 分别用来定义用户名和密码，用于通过服务器基本验证。如果未定义这两个参数或用户名和密码不正确，那么服务器需要基本验证时，会弹出请求验证的对话框
+
+后 3 个参数都是可选的。
+
+- send()
+
+该方法的语法格式如下：
+
+```js
+oXMLHttpRequest.send([content]);
+```
+
+该方法发送 `HTTP` 请求并接收服务器的响应。参数 `content` 是可选的，用来定义发送请求的正文。
+
+此方法的同步或异步方式取决于 `open()` 方法中的 `asyncFlag` 参数。
+
+注意，如果要定义发送的内容，那么最好使用字符串格式，并且使用 `setRequestHeader()` 方法定义请求报头的内容类型，必须包括 `charset` 以设置编码方式。
+
+虽然微软的 `XMLHTTP` 比较强大，可以发送很多类型的数据，但是其它浏览器以及 `W3C` 都定义仅仅可以发送字符串或者 `DOM Document` ，鉴于 `Document` 也必须序列化为字符串，建议读者最好直接使用字符串（ `Document` 使用 `Document.xml` 自己序列化后作为参数）。
+
+- setRequestHeader() 方法
+
+```js
+oXMLHttpRequest.setRequestHeader(header, value);
+```
+
+这将和请求一起发送到服务端。如果已经存在同名的 HTTP 请求报头则覆盖之，并且该方法应该在 open() 方法之后、 send() 方法之前调用。
+
+参数 header 和 value 分别用来定义报头字段和值。例如下面的代码：
+
+```js
+oXMLHttpRequest.setRequestHeader('myHeader ', 'myValue ');
+```
+
+这增加一个新的报头：
+
+```js
+myHeader: myValue;
+```
+
+- abort() 方法
+
+```js
+oXMLHttpRequest.abort();
+```
+
+## 获取响应
+
+XMLHttpRequest 对象的一些方法和属性用来获取从服务器返回的响应，包括 HTTP 报头和响应正文。
+
+- getAllResponseHeaders() 方法
+
+该方法的语法格式如下：
+
+```js
+strHeaders = oXMLHttpRequest.getAllResponseHeaders();
+```
+
+该方法返回一个字符串类型值，因此显得有些不好处理，如果想返回其中某个特定的字段值，建议使用 getResponseHeader() 方法。
+
+就像前面介绍的那样，每个 HTTP 报头名称和值用冒号分隔，并以 \r\n 结束。
+
+- getResponseHeader() 方法
+
+该方法的语法格式如下：
+
+```js
+strValue = oXMLHttpRequest.getResponseHeader('header ');
+```
+
+参数 header 是一个 HTTP 响应的字段名。
+
+- responseText 和 responseXML 属性
+
+responseText 和 responseXML 属性都是只读属性，用来返回服务器响应中的正文。
+
+responseText 属性的值是服务器响应正文数据的纯文本版本，而 responseXML 属性则表示服务器响应正文数据被解析成 DOM 后的版本，是一个文档对象。可以使用 DOM
+接口处理其中的数据。
+
+如果响应数据不是有效的 XML 文档，而使用了 responseXML 属性，那么就会出现解析错误，但是该属性本身不返回 XMLDOMParseError ，可以通过处理 responseXML
+属性的值获取错误信息。
+
+- readyState 属性
+
+## 设置状态改变事件
+
+使用 onreadystatechange 属性可以指定一个函数，当状态改变时就调用该函数。调用的这个函数被称为回调函数。该函数经常和 readyState 、 status 及 statusText
+属性来确定响应的具体状态。
+
+```js
+function theReadyStateChange() {
+  //根据 HTTP 请求的状态码确定当前请求处于什么状态
+  if (oXMLHttpRequest.readyState == 0) {
+    // 对象尚未初始化，这是最初的状态，此时尚未调用 open() 方法
+    // 可以编写一段业务逻辑处理这个状态
+  } else if (oXMLHttpRequest.readyState == 1) {
+    // 对象已创建，此时还未调用 send() 方法
+    // // 这时可以给用户一段提示信息，例如正在加载、请稍等等
+  } else if (oXMLHttpRequest.readyState == 2) {
+    // 已经调用 send() 方法，但响应主体还未到达
+  } else if (oXMLHttpRequest.readyState == 3) {
+    // 与服务器交互过程中，部分数据已经到达，但还不可以访问
+  } else if (oXMLHttpRequest.readyState == 4) {
+    // 全部数据已经到达，数据和报头都可以访问了
+    getResult();
+  }
+  alert(oXMLHttpRequest.readyState);
+}
+```
+
+一个标准的同步调用所应具备的步骤
+
+```js
+// 处理返回的结果
+function getResult() {
+  alert(oXMLHttpRequest.status);
+  if (oXMLHttpRequest.status === 200) {
+    try {
+      console.log(
+        ' 数据 == < xmp > ' + oXMLHttpRequest.responseText + ' < /xmp> ',
+      );
+    } catch (err) {
+      alert(err.message);
+    }
+  } else if (oXMLHttpRequest.status == 404) {
+    console.log(' 没有发现请求的文档！ ');
+  } else if (oXMLHttpRequest.status === 500) {
+    console.log(' 服务器内部错误！ ');
+  }
+}
+var oXMLHttpRequest = new ActiveXObject('Msxml2.XMLHTTP ');
+// 无需定义 oXMLHttpRequest.onreadystatechange
+try {
+  oXMLHttpRequest.open(
+    'GET ',
+    'http: //localhost/employees.xml&amp;#8221',
+    false,
+  );
+  oXMLHttpRequest.send();
+  // 顺序执行，直到返回结果才会执行下面一行程序
+  getResult();
+} catch (err) {
+  alert(err.message);
+}
+```
+
+## 编码混乱问题的解决
+
+在应用 XMLHttpRequest 时会发现接收到的响应会产生乱码，这是由于不当的 HTTP 内容类型报头造成的，有多种方法可以处理乱码问题。
+
+## 通过 Web 服务器设置
+
+- 选择 " 开始 " → " 控制面板 " 命令，打开控制面板，双击 " 管理工具 " 程序组图标，打开 " 管理工具 " 窗口，双击 "Internet 信息服务 " 图标，就会弹出 "Internet 信息服务" 管理控制台
+
+- 右击要作为数据源的文件，在快捷菜单中选择 " 属性 " 命令，就会弹出 " 文件属性 " 对话框，选择 "HTTP 头 " 选项卡。单击 " 添加 " 按钮就可以打开 " 添加 / 编辑自定义 HTTP 头 "对话框，分别在 "自定义 HTTP 头名" 和 "自定义 HTTP 头值" 文本框中输入 Content-type 和 text/xml;charset=utf-8 。然后单击 " 确定 " 按钮关闭对话框，可以看到新增的 HTTP 响应报头
+- 单击 " 确定 " 按钮保存更改，重启 Web 服务器就可以使新设置生效
+
+## 通过动态脚本语言解决
+
+一些动态脚本语言，例如 ASP 、 ASP.NET 、 JSP 、 PHP 等都可以动态创建 HTTP 响应报头，下面分别是它们创建默认内容类型的代码。
+
+ASP 代码。
+
+```js
+<%Response.AddHeader "Content-type ", "text/xml;charset=utf-8 "%>
+```
+
+JSP 代码。
+
+```js
+<%response.addHeader( "Content-type ", "text/xml;charset=utf-8 ");%>
+```
+
+PHP 代码。
+
+```php
+<?php header( "Content-type: text/xml;charset=utf-8 ");?>
+```
+
+ASP.NET 代码（ C# 和 VB 适用）。
+
+```c#
+<%response.AppendHeader( "Content-type ","text/xml;charset=utf-8 ")%>
+```
+
+## 跨浏览器兼容
+
+## 跨浏览器实现 XMLHttpRequest
+
+较旧版本的 IE 允许用户使用 MSXML 的 XMLHTTP 类发送和接收 XML 数据，该类通过调用下面的构造器方法进行实例化（还可以指定版本）。
+
+```js
+new ActiveXObject('Msxml2.XMLHTTP ');
+new ActiveXObject('Msxml2.XMLHTTP.3.0 ');
+new ActiveXObject('Msxml2.XMLHTTP.4.0 ');
+new ActiveXObject('Msxml2.XMLHTTP.5.0 ');
+```
+
+或者使用下面的方法。
+
+```js
+new ActiveXObject('Microsoft.XMLHTTP ');
+```
+
+而 Mozilla 以及其它的浏览器在全局的 XMLHttpRequest 类中提供了相同的功能。因此，可以使用下面的代码返回一个 XMLHttpRequest 实例。
+
+```js
+var oXMLHttpRequest;
+if (window.XMLHttpRequest) {
+  // Mozilla 、 Safari 、 IE7 、 Opera 等适用
+  oXMLHttpRequest = new XMLHttpRequest();
+  if (oXMLHttpRequest.overrideMimeType) {
+    oXMLHttpRequest.overrideMimeType('text / xml ');
+  }
+} else if (window.ActiveXObject) {
+  //IE7 以前的浏览器适用，并且有两种不同的版本
+  var progIDs = [
+    'Msxml2.XMLHTTP .5 .0',
+    'Msxml2.XMLHTTP .4 .0',
+    'MSXML2.XMLHTTP .3 .0',
+    'MSXML2.XMLHTTP',
+    'Microsoft.XMLHTTP',
+  ];
+  for (var i = 0; i < progIDs.length; ++i) {
+    try {
+      oXMLHttpRequest = new ActiveXObject(progIDs[i]);
+    } catch (err) {
+      try {
+        oXMLHttpRequest = new ActiveXObject('Microsoft.XMLHTTP');
+      } catch (err) {}
+    }
+  }
+}
+if (!oXMLHttpRequest) {
+  alert(' 不存在适用的 XMLHttpRequest');
+}
+```
+
+## 跨浏览器实现 XML 解析
+
+数据被加载后，可以使用下面的方法解析数据为一个 W3C DOM 。
+
+```js
+// 该函数用来跨浏览器解析 XML 数据
+function parse(xml) {
+  var doc;
+  try {
+    // 较旧的 IE 支持的方法
+    doc = new ActiveXObject('Microsoft.XMLDOM');
+    doc.async = false;
+    doc.loadXML(xml);
+  } catch (err) {
+    try {
+      // 其它浏览器支持的方法
+      var parser = new DOMParser();
+      doc = parser.parseFromString(xml, 'text / xml');
+      delete parser;
+    } catch (err2) {
+      if (debug) alert('XML parsing is not supported.');
+    }
+  }
+  return doc;
+}
+```
+
+## AJAX 的特点
+
+AJAX 解决方案不能单独应用，这是首先要清楚的一点，只有将 JavaScript 嵌入到网页中， AJAX 和 DHTML 解决方案相互配合才可使它具有一些引人注目的特点。
+
+JavaScript 负责交互和处理数据，而 XMLHttpRequest 对象负责构建合法的 HTTP 请求和获取 HTTP 响应。由于 AJAX 和 DHTML 的配合，它们有很多独特的特点。
+
+- 减轻了 Web 服务器的负担。因为局部视点数据的更新仅仅是获取部分数据，并且不包含数据结构，所以，它最大可能地减少了数据冗余，从而减轻了 Web 服务器的负担
+- 由于 JavaScript 在客户端可以完成部分业务逻辑运算，所以也减轻了应用程序服务器的负担
+- 可以改变页面局部视点，而无需更新整个页面，在减轻服务器负担的同时，也减少了数据通信量，从而缩短用户等待的时间
+- 由于 DHTML 的配合，使得可以在单个网页中构建交互性的 GUI 界面实现与用户的交互，所以，网页有更好的用户体验
+
+## 解决请求被浏览器缓存问题
+
+在使用 XMLHttpRequest 时，要注意的一个问题是要加载的内容可能被浏览器缓存，这时，可以对 URL 参数稍作变化以避免此问题，一个常用的方法是加上一个随机数作为查询参数，例如下面的代码：
+
+```js
+oXMLHttpRequest.open(
+  'GET ',
+  'http://localhost/employees.xml?time=&amp;#8221' + new Date().getTime(),
+  true,
+);
+```
+
+这样，每次请求的地址都不相同，也就不会被浏览器缓存了。
+
+由于 JavaScript 目前是浏览器广泛支持的客户端技术，不需要插件，所以有利于标准化和跨浏览器实现。
+
+            

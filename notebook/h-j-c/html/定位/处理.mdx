@@ -1,0 +1,91 @@
+---
+title: 处理
+
+
+---
+
+# 处理位置信息
+
+因为位置数据属于敏感信息，所以接收到之后，必须小心地处理、存储和重传。如果用户没有授权存储这些数据，那么应用程序应该在相应任务完成后立即删除它。如果要重传位置数据，建议先对其进行加密。在收集地理定位数据时，应用程序应该着重提示用户以下内容：。
+
+- 会收集位置数据
+- 为什么收集位置数据
+- 位置数据将保存多久
+- 怎样保证数据的安全
+- 位置数据怎样共享，如果同意则共享
+- 用户怎样检查和更新它们的位置数据
+
+## 使用 position 对象
+
+如果获取地理位置信息成功，则可以在获取成功后的回调函数中通过访问 position 对象的属性来得到这些地理位置信息。 position 对象具有以下这些属性。
+
+- latitude ：当前地理位置的纬度
+- longitude ：当前地理位置的经度
+- altitude ：当前地理位置的海拔高度（不能获取时为 null ）
+- accuracy ：获取到的纬度或经度的精度（以米为单位）
+- altitudeAccurancy ：获取到的海拔高度的精度（以米为单位）
+- heading ：设备的前进方向。用面朝正北方向的顺时针旋转角度来表示（不能获取时为 null ）
+- speed ：设备的前进速度（以米 / 秒为单位，不能获取时为 null ）
+- timestamp ：获取地理位置信息时的时间
+
+## 使用 navigator 对象
+
+HTML 5 Geolocation （地理定位）用于定位用户的位置，鉴于该特性可能侵犯用户的隐私，除非用户同意，否则用户位置信息是不可用的。在访问位置信息前，浏览器都会询问用户是否共享其位置信息。
+
+位置服务用于估计当前用户所在位置的本地网络信息： WiFi 接入点的信息（包括信号强度）、有关本地路由器的信息、计算机的 IP 地址。位置服务的准确度和覆盖范围因位置不同而异。
+
+总的来说，在 PC 的浏览器中 HTML 5 的地理位置功能获取的位置精度不够高，如果借助 HTML 5 这个特性做一个城市天气预报是绰绰有余，但如果是做一个地图应用，那误差还是不能忽略。不过，如果是移动设备上的 HTML 5
+应用，可以通过设置 enableHighAcuracy 参数为 true ，调用设备的 GPS 定位来获取高精度的地理位置信息。
+
+```js
+function showObject(obj, k) {
+  if (!obj) return;
+  for (let i in obj) {
+    if (typeof obj[i] != 'object' || obj[i] == null) {
+      for (let j = 0; j < k; j++) {
+        console.log('&nbsp;&nbsp;&nbsp;&nbsp;');
+      }
+      console.log(i + ' : ' + obj[i] + '');
+    } else {
+      console.log(i + ' : ' + '');
+      showObject(obj[i], k + 1);
+    }
+  }
+}
+function get_location() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(show_map, handle_error, {
+      enableHeightAccuracy: true,
+      maximumAge: 1000,
+    });
+  } else {
+    window.location.hash += '您的浏览器不支持/您拒绝了定位';
+  }
+}
+function handle_error(err) {
+  switch (err.code) {
+    case 1:
+      window.location.hash += '位置服务被拒绝';
+      break;
+    case 2:
+      window.location.hash += '暂时无法获取位置信息';
+      break;
+    case 3:
+      window.location.hash += '获取信息超时';
+      break;
+    default:
+      window.location.hash += '未知错误';
+      break;
+  }
+}
+function show_map(position) {
+  let l = position.coords.latitude;
+  let g = position.coords.longitude;
+  showObject(position, 0);
+}
+get_location();
+```
+
+同设备， edge 、 Safari 正确显示信息， Firefox 显示 "暂时无法获取位置信息" ， Chrome 白屏。。。
+
+            

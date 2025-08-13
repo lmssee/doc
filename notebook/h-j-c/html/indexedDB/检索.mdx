@@ -1,0 +1,98 @@
+---
+title: 检索
+
+
+---
+
+# 检索键值
+
+通过对象仓库或索引的 get() 方法，只能获取一条信息。在需要的时候通过某个检索条件来检索一批数据时，需要使用 indexedDB API 的游标。
+
+```html
+<body>
+  <input
+    type="button"
+    id="btnConnect"
+    value="连接数据"
+    onclick="connectDatabase()"
+  />
+  <input type="button" value="保存数据" id="btnSave" onclick="SaveData()" />
+  <input type="button" value="检索数据" id="btnSearch" onclick="SearchData()" />
+</body>
+<script>
+  function mi(n) {
+    return document.querySelector(n);
+  }
+  window.indexedDB =
+    window.indexedDB ||
+    window.webkitIndexedDB ||
+    window.mozIndexedDB ||
+    window.msIndexedDB;
+  window.IDBTransaction =
+    window.IDBTransaction ||
+    window.webkitIDBTransaction ||
+    window.msIDBTransaction;
+  window.IDBKeyRange =
+    window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+  window.IDBCursor =
+    window.IDBCursor || window.webkitIDBCursor || window.msIDBCursor;
+  var dbName = 'indexedDBTest'; // 数据库名
+  var dbVersion = 20220430; // 版本号
+  var idb;
+  function connectDatabase() {
+    var dbConnect = indexedDB.open(dbName, dbVersion);
+    dbConnect.onsuccess = function (e) {
+      idb = e.target.result;
+      console.log('数据库连接成功');
+      mi('#btnSave').disabled = false;
+    };
+    dbConnect.onerror = function (e) {
+      console.log('连接 indexedDB 数据库失败');
+    };
+  }
+  function SaveData() {
+    var t = idb.transaction(['Users'], 'readwrite');
+    t.oncomplete = function () {
+      console.log('保存成功');
+      mi('#btnSearch').disabled = false;
+    };
+    t.onabort = function () {
+      console.log('保存失败');
+    };
+    var s = t.objectStore('users');
+    var v = { userID: 1, userName: '王五', address: '北京' };
+    s.put(v);
+    var v = { userID: 2, userName: '刘六', address: '四川' };
+    s.put(v);
+    var v = { userID: 3, userName: '白七', address: '天津' };
+    s.put(v);
+    var v = {
+      userID: 4,
+      userName: '赵九',
+      address: '广西',
+    };
+    s.put(v);
+  }
+  function SearchData() {
+    var t = idb.transaction(['users'], 'readonly');
+    var s = t.objectStore('users');
+    var r = IDBKeyRange.bound(1, 4);
+    var d = 'next';
+    var re = store.openCursor(r, d);
+    re.onsuccess = function (e) {
+      var c = this.result;
+      if (c) console.log('检索到一条数据，用户名为：' + c.value.userName);
+      else console.log('检索结束');
+    };
+    re.onerror = function (e) {
+      console.log('检索数据失败');
+    };
+  }
+  window.onload = function () {
+    mi('#btnSave').disabled = true;
+    mi('#btnSearch').disabled = true;
+  };
+</script>
+```
+
+            

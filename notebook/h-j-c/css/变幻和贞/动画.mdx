@@ -1,0 +1,269 @@
+---
+title: 动画
+
+
+---
+
+# 简述
+
+Animations 功能与 Transitions 功能相同，都是通过改变元素的属性值来实现动画效果的。二者的区别在于，使用
+Transitions 功能时只能通过指定属性的开始值与结束值，然后以在这两个属性值之间进行平滑过渡的方式来实现动画效果，因此不能实现比较复杂的动画效果，而
+Animations 则通过定义多个关键帧以及定义每个关键帧中元素的属性值来实现更为复杂的动画效果。
+
+animation 是一个复合属性 ,包含 animation-name 、 animation-duration 、 animation-timing-function 、 animation-delay 、
+animation-iteration-count 、 animation-direction 的子属性。
+
+```css
+animation: [<animation-name> // 关键帧名称 |
+  | <animation-duration> // 定义播放时间 |
+  | <animation-timing-function> // 定义播放方式 |
+  | <animation-delay> // 定义播放延迟 |
+  | <animation--iteration-count> // 定义播放次数 |
+  | <animation-direction>] // 定义播放方向 [,[<animation-name> |
+  | <animation-duration> | | <animation-timing-function> | | <animation-delay> |
+  | <animation--iteration-count> | | <animation-direction>]\*];
+```
+
+animation ：名称 单次时间 播放方式 播放延迟 播放次数 播放方向 。
+
+## 定义关键帧 @keyframes
+
+@keyframes 规则可创建动画，原理是，将一套 CSS 样式逐渐转化为另一套。
+
+```css
+@keyframes animationName {
+  keyframes-selector {
+    css: styles;
+  }
+}
+```
+
+## 定义动画名称 animation-name
+
+```js
+animation-name: none | IDENT | [, none |IDENT];
+```
+
+## 定义播放时间 animation-duration
+
+```js
+animation-duration ： <time>[,<time>]
+```
+
+## 定义播放方式 animation-timing-function
+
+```css
+animation-timing-function:
+  ease | linear | ease-in | ease-out | ease-in-out | cubicbezier （ <number>，
+    <number>， <number>， <number>） [,
+  ease | linear | ease-in | ease-out | ease-in-out | cubicbezier （ <number>，
+    <number>， <number>， <number>）];
+```
+
+默认值为 `ease`
+
+## steps （）函数
+
+steps()函数有两个参数，第一个参数指定了间隔数量，能将两个关键帧之间分隔成大小相等的间隔。接下来还是以刚刚底色切换的动画为例，该动画只有两帧，从蓝色变为红色
+
+steps （）函数的第二个参数是可选的，这个参数有两个关键字： start 和 end （默认值），用于指定每个间隔发生跳跃变化时的状态。如果为
+start ，那么跳跃会发生在间隔的起点，动画的起点处就是首帧，会被跳过，直接不显示；如果为 end ，那么跳跃会发生在间隔的终点，动画最终会跳到末帧，但同时动画结束，就会立刻发生跳跃，末帧被跳过，直接不显示。
+
+## 定义播放延迟 animation-delay
+
+```css
+animation-delay ： <time>[,<time>]
+```
+
+## 定义播放次数 animation-iteration-count
+
+```css
+animation-iteration-count:
+  infinite | <number> [,
+  infinite | <number>];
+```
+
+初始值为 1 ， infinite 为无限次播放。
+
+## 播放方向 animation-direction
+
+```js
+animation-direction ： normal | alternate [,normal | alternate]
+```
+
+初始值为 normal ，每次播放都向前播放。值为 alternate 时，弟偶次正向，第奇次方向播放。
+
+## 定义播放状态 animation-play-state
+
+```css
+animation-play-state ： paused | running
+```
+
+该属性默认值为 running ，其中 paused 定义动画 已暂停， running 定义动画正在播放。
+
+该属性可在 JavaScript 中使用 :
+
+```css
+object.style.animationPlayState="paused"
+```
+
+## 定义播放外状态 animation-fill-mode
+
+```css
+animation-fill-mode ： none | forwards | backwards | both [,none | forwards | backwards
+    | both ]
+```
+
+- none:不设置动画外状态
+- forwards ：设置对状态为结束时状态
+- backwards ：设置状态为动画开始时状态
+- both ：设置状态为结束或开始时状态
+
+animation-fill-mode 属性初始值为 none ，适用于所有的元素，包含元素的 :after 和 :before 。如果提供多个属性值，以逗号进行分割。对应的脚本属性为 animationFillMode 。
+
+一般情况下屏幕频率为 60Hz ，也就是每秒刷新 60次，合理的时间间隔就是 16.7ms: 1000/60=16.7ms
+
+```css
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotateY(0deg);
+    transform: rotateY(0deg);
+  }
+  100% {
+    -webkit-transform: rotateY(360deg);
+    transform: rotateY(360deg);
+  }
+}
+@-moz-keyframes spin {
+  0% {
+    -moz-transform: rotateY(0deg);
+    transform: rotateY(0deg);
+  }
+  100% {
+    -moz-transform: rotateY(360deg);
+    transform: rotateY(360deg);
+  }
+}
+@-ms-keyframes spin {
+  0% {
+    -ms-transform: rotateY(0deg);
+    transform: rotateY(0deg);
+  }
+  100% {
+    -ms-transform: rotateY(360deg);
+    transform: rotateY(360deg);
+  }
+}
+@-o-keyframes spin {
+  0% {
+    -o-transform: rotateY(0deg);
+    transform: rotateY(0deg);
+  }
+  100% {
+    -o-transform: rotateY(360deg);
+    transform: rotateY(360deg);
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+.stage {
+  width: 300px;
+  height: 300px;
+  margin: 15px auto;
+  position: relative;
+  -webkit-perspective: 300px;
+  -moz-perspective: 300px;
+  -ms-perspective: 300px;
+  -o-perspective: 300px;
+  perspective: 300px;
+}
+.container {
+  top: 50%;
+  left: 50%;
+  margin: -100px 0 0 -100px;
+  position: absolute;
+  -webkit-transform: translateZ(-100px);
+
+  -moz-transform: translateZ(-100px);
+  -ms-transform: translateZ(-100px);
+  -o-transform: translateZ(-100px);
+  transform: translateZ(-100px);
+
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+.container:hover {
+  -moz-animation: spin 5s linear infinite;
+  -o-animation: spin 5s linear infinite;
+  -webkit-animation: spin 5s linear infinite;
+  animation: spin 5s linear infinite;
+}
+.side {
+  background: rgba(255, 0, 0, 0.3);
+  border: 1px solid red;
+  font-size: 60px;
+  font-weight: bold;
+  color: #fff;
+  height: 196px;
+
+  line-height: 196px;
+  position: absolute;
+  text-align: center;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  width: 196px;
+}
+.front {
+  -webkit-transform: translateZ(100px);
+  -moz-transform: translateZ(100px);
+  -ms-transform: translateZ(100px);
+  -o-transform: translateZ(100px);
+  transform: translateZ(100px);
+}
+.back {
+  -webkit-transform: rotateX(180deg) translateZ(100px);
+  -moz-transform: rotateX(180deg) translateZ(100px);
+  -ms-transform: rotateX(180deg) translateZ(100px);
+  -o-transform: rotateX(180deg) translateZ(100px);
+  transform: rotateX(180deg) translateZ(100px);
+}
+.left {
+  -webkit-transform: rotateY(-90deg) translateZ(100px);
+  -moz-transform: rotateY(-90deg) translateZ(100px);
+  -ms-transform: rotateY(-90deg) translateZ(100px);
+  -o-transform: rotateY(-90deg) translateZ(100px);
+  transform: rotateY(-90deg) translateZ(100px);
+}
+.right {
+  -webkit-transform: rotateY(90deg) translateZ(100px);
+  -moz-transform: rotateY(90deg) translateZ(100px);
+  -ms-transform: rotateY(90deg) translateZ(100px);
+  -o-transform: rotateY(90deg) translateZ(100px);
+  transform: rotateY(90deg) translateZ(100px);
+}
+.top {
+  -webkit-transform: rotateX(90deg) translateZ(100px);
+  -moz-transform: rotateX(90deg) translateZ(100px);
+  -ms-transform: rotateX(90deg) translateZ(100px);
+  -o-transform: rotateX(90deg) translateZ(100px);
+  transform: rotateX(90deg) translateZ(100px);
+}
+.bottom {
+  -webkit-transform: rotateX(-90deg) translateZ(100px);
+  -moz-transform: rotateX(-90deg) translateZ(100px);
+  -ms-transform: rotateX(-90deg) translateZ(100px);
+  -o-transform: rotateX(-90deg) translateZ(100px);
+  transform: rotateX(-90deg) translateZ(100px);
+}
+```
+
+            

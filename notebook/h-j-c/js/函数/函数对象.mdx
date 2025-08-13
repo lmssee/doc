@@ -1,0 +1,285 @@
+---
+title: 函数对象
+
+
+---
+
+# 使用函数对象
+
+- 获取函数形参个数**_Function 对象的 length 属性在函数体内外都可以用_**
+- 自定义属性**_函数内定义的属性只能在函数调用后才可用 ,函数外定义的属性随处可用_**
+- 自定义方法**_与嵌套函数不同 ,自定义方法可在函数体外使用_**
+- 使用 call ()
+- 使用 apply ()
+- 使用 bind ()
+
+## 获取函数的形参个数
+
+使用 arguments 。
+
+## 自定义属性
+
+作为对象，可以通过点语法为函数自定义静态属性或方法。
+
+```js
+function f() {
+  f.x = 1;
+}
+f.y = 2;
+console.log(f.x + ''); // undefined
+console.log(f.y + ''); // 2
+f();
+console.log(f.x); // 1
+```
+
+与嵌套函数不同，函数的方法可以在函数外部调用。
+
+## 使用 call() 和 apply()
+
+call() 和 apply() 是 Function 对象的原型方法，它们能够将特定函数当作一个方法绑定到指定对象上并进行调用。具体如下。
+
+```js
+function.call(thisObj,args...)
+function.apply(thisObj,args)
+
+```
+
+其中参数 thisObj 表示指定的对象，参数 args 表示要传递给调用函数的参数。 call() 方法只能接受多个参数列表，而 apply() 只能接受伪数组或者数组，数组元素将作为参数传递给调用函数。
+
+## call
+
+```js
+function.call(thisObj,args...)
+```
+
+call() 是 Function 的原型方法 ,能够将特定的函数当作一个方法绑定到指定的对象上进行调用 .. call()只能接收多个参数列表 。将 Function 函数绑定到 thisObj 上 ,并传入多个参数。
+
+这种调用是临时的 ,在调用完后会自动销毁。若再次调用，就会显示编译错误。
+
+该方法能动态改变 this 指代对象。
+
+如果使用 call() 方法，就需要把数组所有的元素全部读出来，然后再逐一传递给 call 方法，显然这种方法不是很方便。
+
+```js
+function max() {
+  //求最大值函数
+  var m = Number.NEGATIVE_INFINITY; //声明一个负无穷大的数值
+  for (var i = 0; i < arguments.length; i++) {
+    //遍历所有实参
+    if (arguments[i] > m)
+      //如果实参值大于 m
+      m = arguments[i]; //则把该实参值赋给  m
+  }
+  return m;
+  //返回最大值
+}
+var a = [23, 45, 2, 46, 45, 56, 63]; // 声明并初始化数组
+var m = max.apply(Object, a); //动态调用 max ，绑定为 Object 的方法
+console.log(m); //返回63
+```
+
+## call 和 apply 的主要功能
+
+- 调用函数
+- 修改函数体内的 this 指代对象
+- 为对象绑定方法
+- 跨越限制修改调用不用类型的方法
+
+```js
+var x = 'o'; //定义全局变量 x ，初始化为 "o"
+function a() {
+  //定义函数类结构 a
+  this.x = 'a'; //定义函数局部变量 x ，初始化为  "a"
+}
+function b() {
+  //定义函数类结构 b
+  this.x = 'b'; //定义函数内部局部变量 x ，初始化为 "b"
+}
+function c() {
+  //定义函数类结构 c
+  alert(x);
+}
+function f() {
+  // 定义普通函数，提示当前指针所包含的变量
+  alert(this.x);
+}
+f(); //返回字符 o ，即全局变量 x 的值。 this 指向 window 对象
+f.call(window); // 返回字符串 "o"
+f.call(new a()); // 返回字符 a ，即函数 a 内部局部变量 x 的值
+f.call(new b()); // 返回字符 b ，即函数 b 内部局部变量 x 的值
+f.call(c); // undefined ，即函数 c 内部的局部变量 x 的值，但是该函数并没有定义 x  变量,
+```
+
+使用 call() 和 apply() 可以将一个函数转化为指定对象的方法，变在这个对象上调用该方法。这种行为只是临时的，函数实际上并没有作为对象的方法而存在，当函数被动态调用后，这个对象的临时方法也会注销。
+
+```js
+function f() {
+  alert(122);
+}
+f.call(Object);
+Object.f(); // 不会弹出框，控制台报错 Object.f isnot a function
+```
+
+在函数体内， call() 和 apply() 第一个调用的就是函数体内 this 的值。为了更好的理解，下例：
+
+```js
+function f() {
+  this.a = 'x';
+  this.b = function () {
+    alert('y');
+  };
+}
+function e() {
+  f.call(this);
+  alert(a);
+}
+e();
+```
+
+上例中，如果在函数体内，使用 call() 和 apply() 方法动态调用外部函数，并把 call() 和 apply() 方法的第一个参数设置为关键字 this ，则当前 e 函数将继承 f
+函数的所有属性。即， call() 和 apply() 方法能够复制调用函数体内的内部变量给当前函数体。
+
+```js
+function r(x) {
+  return x;
+}
+function f(x) {
+  x[0] = x[0] + '>';
+  return x;
+}
+function o() {
+  var temp = r;
+  r = function () {
+    return temp.apply(this, f(arguments));
+  };
+}
+
+function a() {
+  o();
+  console.log(r('=') + '');
+}
+
+for (var i = 0; i < 10; i++) {
+  a();
+}
+```
+
+上述代码执行结果如下：
+
+```tex
+=> =>> =>>>
+=>>>> =>>>>> =>>>>>> =>>>>>>>
+=>>>>>>>> =>>>>>>>>>
+=>>>>>>>>>>
+```
+
+该函数的核心在于 o 函数的设计，首先使用一个临时变量储存函数 r 。然后修改函数 r 的结构，在修改的 r 函数结构中，通过调用 apply() 方法修改原来的指针指向当前的对象，同时执行原函数 r ，并把执行函数 f
+的值传毒给它，从而实现修改函数 r 的 return 语句的后半部分信息，即返回一个增加了 "=" 的前缀。这次每调用一次，都会增加一个前缀，从而形成动态的效果。
+
+## bind
+
+ECMAScript 5 为 Function 增加了一个原型方法 bind （ Function.prototype.bind ）,用来把函数绑定在指定对象上。从本质讲，它允许在其它原型链中执行一个函数。
+
+也就是说，对于指定的函数，创建具有与原始函数相同的主体绑定函数，在绑定函数中， this 对象将解析为传入对象。绑定对象具有指定的初始参数。
+
+```js
+function.bind(thisArg[,arg1[,arg2[,argN]]])
+```
+
+参数说明。
+
+- function ：必须参数，一个函数对象
+- thisArg ： 必须参数， this 关键字可在新函数中引用的对象
+- arg1[,arg2[,argN]]：可选参数，要传递到新函数的参数的列表
+
+bind 方法将返回与 function 相同的新函数， thisArg 对象和初始参数除外。
+
+```js
+var checkNumericRange = function (value) {
+  if (typeof value !== 'number') return false;
+  else return value >= this.minimum && value >= this.maximum;
+};
+var range = { minimum: 10, maximum: 20 };
+var boundCheckNumericRage = checkNumericRange.bind(range);
+var result = boundCheckNumericRage(12);
+console.log(result); //true
+```
+
+```js
+var originalObject = { minimum = 50, maximum = 100,
+checkNumericRange: function(value) { if (typeof value !== 'number')
+
+return false;
+else return value >= this.minimum && value <= this.maximum;
+} }
+ var result =
+originalObject.checkNumericRange(10);
+console.log(result); //false
+var range = { minimum: 10, maximum: 20
+};
+var boundObjectWithRange = originalObject.checkNumericRange.bind(range);
+console.log(result); //true
+```
+
+ECMAScript 5 新为 String 增加了 trim 方法，该方法可以从字符串中移除前导空格、尾随空格和终止符。
+
+```js
+StringObj.trim();
+```
+
+参数 StringObj 表示 String 对象或字符串。 trim 方法不修改该字符串，返回值为已移除前导空格、尾随空格和终止符的原始字符串。
+
+```js
+var message = ' abc def \r\n ';
+console.log('[' + message.trim() + ']');
+console.log('');
+console.log('length: ' + message.trim().length); // 7
+```
+
+## length
+
+使用 arguments 对象的 length 属性可以获得函数的实参个数。 arguments 对象只能在函数体内可见，因此， arguments.length 只能在函数体内使用。
+
+使用函数对象的 length 属性可以获取函数的形参个数该属性为只读属性。在函数体内、体外都可以使用。
+
+```js
+function checkArg(a) {
+  //检测函数实参与形参是否一致
+  if (a.length != a.callee.length)
+    //如果实参与形参个数不同，则抛出错误
+    throw new Error('实参和形参不一致');
+}
+function f(a, b) {
+  //求两个数的平均数
+  checkArg(arguments);
+  //根据 arguments 来检测函数实参和形参是否一致
+  return (a * 1 ? a : 0) + (b * 1 ? b : 0); //返回平均数
+}
+console.log(f(6)); //抛出异常，调用函数 f ，传入 1 个实参
+```
+
+## 绑定函数
+
+函数绑定就是为了纠正函数的执行上下文，特别是函数中带有 this 关键字时，这点尤其重要，稍微不小心，就会使函数执行上下文发生跟预期不同的改变，导致执行错误。函数绑定具有三个特征：
+
+- 函数绑定要创建一个函数，可以在特定的环境中以指定的参数调用另一个函数
+- 一个简单的 bind() 函数接受一个函数和一个环境，返回给另一个给定环境中调用给特定函数的函数，并且将所有的参数原封不动的传递过去
+- 被绑定函数与普通函数相比由更多的开销，它们需要更多的内存，同时也因为函数的调用而稍微慢一点，所以最好只在必要时使用
+
+```js
+function bind(fn, content) {
+  return function () {
+    return fn.apply(content, arguments);
+  };
+}
+```
+
+创建多个闭包会导致代码难于理解和调试，所以很多 JavaScript 库实现了一个可以将函数绑定到特定环境的函数 bind()。
+
+bind() 函数的功能是提供一个可选的执行上下文传递给函数，并且 bind() 函数内部返回一个函数，以纠正在函数调用时出现的执行上下文的变化。最容易出现的错误就是回调函数和事件处理程序的一起使用。一个简单的 bind() 函数接受一个函数和环境，返回一个给定环境中调用给定函数的函数，并且将所有的参数原封不动的传递过去。
+
+在 bind() 中产生一个闭包，该闭包使用 apply 调用传入的参数，并为 apply 传递 context 对象和参数。
+
+注意，这里的 arguments 对象是内部函数的，为非 bind() 的。在调用返回的函数时，会给定的环境中执行被传入函数并给出所有的参数。
+
+            

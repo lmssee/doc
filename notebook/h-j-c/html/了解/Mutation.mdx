@@ -1,0 +1,145 @@
+---
+title: Mutation
+
+
+---
+
+# Mutation Observer
+
+Mutation Observer 表示变动观察器，监视 DOM 变化的接口。当 DOM 对象树发生变化时， Mutation Observer 会接到通知。
+
+- 事件是同步触发的，也就是说 DOM 发生变动会立即触发相应的事件
+- Mutation Observer 是异步触发的， DOM 触发后，必不会马上触发而是要等到当前所有的 DOM 操作完毕才会触发。
+
+Mutation Observer 具有以下特点：
+
+- 等待所有的脚本任务完毕后，才会运动，而且只触发一次
+- 把 DOM 变动记录成一个数组，而不是一条条的个别处理 DOM 变动
+- 可以观察发生在 DOM 节点的变动，也可以观察某一类变动
+
+## 支持检测
+
+```js
+var MutationObserver =
+  window.MutationObserver ||
+  window.WebkitMutationObserver ||
+  widow.MozMutationObserver;
+var MutationObserverSupport = !!MutationObserver;
+```
+
+## 使用步骤
+
+## 创建实例
+
+使用 MutationObserver() 构造函数，新建一个实例，同时指定这个实例的回调函数：
+
+```js
+var observer = new MutationObserver(callback);
+```
+
+## 指定观测对象
+
+使用 observe() 方法指定要观察的 DOM 元素，以及要观察的特定待动：
+
+```js
+var article = document.querySelector('article');
+var options = { childList: true, attributes: true };
+observer.observer(article, options);
+```
+
+MutationObserver 所观察的 DOM 变动，包含下列类型，设置为布尔型：
+
+- childList 　：子元素的变化
+- attributes ： 属性的变动
+- characterData ：节点内容或节点文本的变动
+- attributeOldValue ： 若设置为 true ，则表示需要记录变动前的属性值
+- characterDataOldValue ： 如果设置为 true ，则表示需要记录变动前的数据值值
+- attributeFilter ： 值为一个数组，表示要观察的特定属性，如 ['class','str']
+- subtree ： 所有下属节点（包括子节点和子节点的子节点）的变动
+
+## 停止观察
+
+使用 disconnect() 方法停止观察：
+
+```js
+observe.disconnect();
+```
+
+## 清除记录
+
+使用 takeRecord() 方法清除变动记录，即不再处理未变动的变动。
+
+DOM 每一次变动，就会产生一个变动记录。该记录对应一个 MutationRecord 对象，该对象包含了与变动相关的所有信息。 Mutation Observer 进行处理的一个个变动对象所组成的数组。
+
+- type ： 观察变动的类型，如 ： attribute 、 characterData 、 childList
+- target ： 发生变动的 DOM 对象
+- addedNodes ： 新增的 DOM 节点
+- removeNodes ： 删除的 DOM 节点
+- previousSibling ： 前一个同级 DOM 对象，如果没有则返回 null
+- nextSibling ：下一个同级的 DOM 对象，如果没有则返回 null
+- attributeName ： 发生变动的属性。如果设置了 attributeFilter ，则只返回指定的属性
+- oldValue ： 变动前的值。这个属性只对 attribute 和 characterData 变动有效；如果发生 childList 变动，则返回 null 。
+
+## 触发事件
+
+使用 MutationObserver 对象时可能触发的各种事件必须设定 MutationObserver 选项值说明：
+
+- DOMAttrModified : attributes : true ( , attributeOldValue : true )(, attributeFilter:["attributeName"])
+- DOMAttributeNameChanged : attributes : true (, attributeOldValue : true)(, attributeFilter :
+  ["attributeName"])
+- DOMCharacterDataModified : characterData : true (,characterDataOldValue : rue)
+- DOMNodeInserted : childList : true( , subtree : true)
+- DOMNodeInsertedInfoDocument : childList : true( , subtree : true)
+- DOMNodeRemoved : childList :true (,subtree : true)
+- DOMNodeRemovedFormDocument : childList : true( , subtree : true)
+- DOMSubtreeModified : childList : true, subtree : true
+
+## 案例 1
+
+```html
+<div
+  id="div"
+  style="height:
+    100px;width:100%;background-color:pink;"
+></div>
+<input type="button" value="插入 span 元素" onclick="changeDiv();" />
+<script type="text/javascript">
+  function onchange(mutationRecords, mutationObserver) {
+    alert('检测到 DOM 变化');
+    console.log(mutationRecords);
+    console.log(mutationObserver);
+  }
+  var div = document.getElementById('div');
+  var mo = new window.MutationObserver(onchange),
+    options = { childList: true };
+  mo.observe(div, options);
+  function changeDiv() {
+    var span = document.createElement('span');
+    span.innerHTML = '我是一个 span 元素';
+    div.appendChild(span);
+  }
+</script>
+```
+
+## 案例2
+
+```html
+<a id="a1" href="#a">链接1</a> <a id="a2" href="#b">链接2</a>
+<input type="button" value="修改 a 元素" onclick="changeA();" />
+<script type="text/javascript">
+  function onchange(mutationRecords, mutationObserver) {
+  for (var i = 0; i <script mutationRecords.length; i++) console.log("修改前的"
+    + mutationRecords[i].attributeName + "属性为：" + mutationRecords[i].oldValue); }
+  var a1El = document.getElementById('a1');
+  var a2El = document.getElementById('a2'); var attr = ["href"];
+  var mo = new window.MutationObserver(onchange), options = {
+  attributes: true,
+  attributeFilter: attr, attributeOldValue: true };
+  mo.observe(a1El, options); mo.observe(a2El,
+    options); function changeA() {
+  a1El.setAttribute("href", "http://www.baidu.com");
+   a2El.setAttribute("href", "http://www.weibo.com"); }
+</script>
+```
+
+            

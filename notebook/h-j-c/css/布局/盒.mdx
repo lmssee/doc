@@ -1,0 +1,165 @@
+---
+title: 盒
+
+
+---
+
+# 边界
+
+css 用 margin 定义边界。语法如下：
+
+```css
+margin: length | percentage | auto;
+```
+
+- auto 默认值，自动计算。在默认模式下， margin-top/margin-bottom 计算值为
+  0， margin-left/margin-right 的值取决于可用空间
+
+- length 长度定义值，可为负值
+- percentage 百分比。可为负值
+
+## 设置技巧
+
+- 设置四个值，则按 上、右、下、左
+- 如果只提供一个值，则应用于四边
+- 如果设置两个数，则第一个数为上下、第二个值为左右
+- 如果提供三个，则第一个为上，第二个为左、右，第三个为下
+- 如果是行内元素，只能设置左右
+
+## margin 特性
+
+- 外边距透明
+- 相邻的 margin 可能会折叠
+
+## margin 折叠说明
+
+- margin 折叠只发生在相邻的块元素
+- 浮动元素不与任何 margin 重叠
+- 设置了 overflow 属性，且取值不为 visible 的块元素，将不与它的子元素发生
+  margin 重叠
+
+- 绝对元素的 margin 不与任何 margin 重叠
+- 根元素的 margin 不与其它的 margin 重叠
+
+## margin 子属性
+
+- margin-top
+- margin-right
+- margin-bottom
+- margin-left
+
+## 补白
+
+css 用 padding 定义补白:
+
+```css
+padding: length | percentage;
+```
+
+设计技巧及子属性类似于 margin 。
+
+padding 会显示背景且不会重叠。
+
+## 边框
+
+css 使用 border 定义边框。
+
+```css
+border: line-width | | line-style | | color;
+```
+
+- line-width 宽度
+- line-style 样式
+- color 颜色
+
+## 子属性
+
+分属性:
+
+- 样式 border-style
+- 颜色 border-color
+- 宽度 border-width
+
+四边子属性与 margin/padding 相同。
+
+最重要的是 border-style 属性。
+border-style: none | hidden | dotted | dashed | solid | double | groove |
+ridge | inset | outset
+
+- none 无轮廓
+- hidden 隐藏边框
+- dotted 点状轮廓
+- solid 实线轮廓
+- double 双线轮廓
+- dashed 虚线轮廓
+- groove 3D 凹槽轮廓
+- ridge 3D 凸槽轮廓
+- inset 3D 凹边轮廓
+- outset 3D 凸边轮廓
+
+## 尺寸
+
+css 用 width 和 height 定义尺寸。
+
+```css
+width: length | percentage | auto;
+height: length | percentage | auto;
+```
+
+- auto 默认值，无特定宽度和高度
+- length 用长度表示，不允许负
+- percentage 百分比表示，不允许负
+
+## 多列类布局属性
+
+- columns ：可以同时定义多栏的数目和每栏宽度
+- column-width ：可以定义每栏的宽度
+- column-span ：定义元素可以在栏目上定位显示
+- column-rule ：定义每栏之间边框的宽度、样式和颜色
+- column-rule-color ：定义每栏之间边框的颜色
+- column-rule-width ：定义每栏之间边框的宽度
+- column-rule-style ：定义每栏之间边框的样式
+- column-gap ：定义两栏之间的间距距离
+- column-fill ：定义栏目的高度是否统一
+- column-count ：可以定义栏目的数目
+- column-break-before ：定义元素之前是否断行
+- column-break-after ：定义元素之后是否断行
+
+用户界面属性这些属性就是用来定义与界面有关的内容的。例如，可以定义轮廓显示的样式，也可以定义缩放区域，还可以设置当前元素在文档中的导航序列号等。
+
+- resize ：使元素的区域可缩放，调节元素尺寸大小。适用于任意获得 overflow 条件的容器
+- outline ：可以设置元素周围的轮廓线，轮廓线不会占据空间，也不一定是矩形
+- outline-width ：设置元素整个轮廓的宽度，只有当轮廓样式不是 none 时才会起作用。如果样式为 none ，宽度会重置为0。该属性的值不允许设置为负数
+- outline-style ：用于设置一个元素的整个轮廓的样式
+- outline-offset ：让轮廓偏离容器边缘，即可以调整外框与容器边缘的距离
+- outline-color ：设置一个元素整个轮廓中可见部分的颜色。如果轮廓的样式值是 none ，则轮廓不会出现
+- nav-index ：取代了 HTML
+  4中的 tabindex 属性，为当前元素指定了其在当前文档中导航的序列号
+- box-sizing ：改变容器的盒模型组成方式
+
+nav-index 属性为当前元素指定了其在当前文档中导航的序列号。导航的序列号指定了页面中元素通过键盘操作或获得焦点的顺序，该属性可以存在于嵌套的页面元素中。
+
+除了 nav-index 属性外，还可以通过 nav-up 、 nav-down 、 nav-left 或 nav-right 属性设置 HTML 文档顺序控制元素的焦点切换。为了更好的用户体验， User
+Agent 提供了自定义切换焦点的控制顺序方向。
+
+- 该元素支持 nav-index 属性，而被赋予正整数属性值的元素将会被优先导航。 User
+  Agent 将按照 nav-index 属性值从小到大进行导航。属性值无须按次序，也无须以特定的值开始。拥有同一 nav-index 属性值的元素将以它们在字符流中出现的顺序进行导航
+- 对那些不支持 nav-index 属性或者 nav-index 属性值为 auto 的元素将以它们在字符流中出现的顺序进行导航
+- 对那些禁用的元素，将不参与导航的排序
+
+## 盒子阴影
+
+```css
+-webkit-box-reflect: below 5px;
+```
+
+WebKit 支持 -webKit-box-shadow 私有属性， Mozilla Gecko 支持 -moz-box-shadow
+私有属性， Presto 和 IE 9+ 引擎支持 box-shadow 标准属性。 IE 8 之前浏览器不支持
+box-shadow 属性。
+
+如果不设置阴影类型，默认为投影模式；当设置为 inset 时，则阴影为内阴影。 X
+轴位移和 Y
+轴位移定义阴影的偏移位置。阴影大小、阴影扩散和阴影颜色是可选值，默认为黑色实影。 box-shadow
+必须有位移值，否则无效果。
+
+            
