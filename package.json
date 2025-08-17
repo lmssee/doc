@@ -3,27 +3,27 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "docusaurus": "docusaurus",
-    "start": "jja cls && PORT=9463 NODE_OPTIONS='--max-old-space-size=768' docusaurus start",
-    "dev": "pnpm start",
-    "push": "gvv",
-    "push:d": "gvv kind=deploy",
-    "diff": "jja pkg --diff=淘宝",
-    "reinstall": "rm -rf node_modules pnpm-lock.yaml && pnpm install",
-    "build:local": "chmod +x ./scripts/build.sh && ./scripts/build.sh",
-    "build:only": "chmod +x ./scripts/build-zip.sh && ./scripts/build-zip.sh",
-    "swizzle": "echo 'pnpm run swizzle @docusaurus/theme-classic  Footer --eject' && docusaurus swizzle ",
-    "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
-    "serve": "pnpm run build:only && docusaurus serve",
-    "write-translations": "docusaurus write-translations",
-    "beautify": "pnpm prettier",
-    "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
     "prepare": "husky",
     "eslint": "jja cls && eslint . ",
     "vjj": "vjj -n",
-    "prettier": "jja cls && prettier . --write"
+    "diff": "jja pkg --diff=淘宝",
+    "prettier": "jja cls && prettier . --write",
+    "push": "gvv",
+    "push:d": "gvv kind=deploy",
+    "docusaurus": "docusaurus",
+    "deploy": "docusaurus deploy",
+    "clear": "docusaurus clear",
+    "start": "jja cls && PORT=9463 NODE_OPTIONS='--max-old-space-size=768' docusaurus start",
+    "reinstall": "rm -rf node_modules pnpm-lock.yaml && pnpm install",
+    "dev": "pnpm start",
+    "build:local": "chmod +x ./scripts/build.sh && ./scripts/build.sh",
+    "build:only": "chmod +x ./scripts/build-zip.sh && ./scripts/build-zip.sh",
+    "serve": "pnpm run build:only && docusaurus serve",
+    "write-translations": "docusaurus write-translations",
+    "beautify": "pnpm prettier",
+    "write-heading-ids": "docusaurus write-heading-ids",
+    "swizzle": "echo 'pnpm run swizzle @docusaurus/theme-classic  Footer --eject' && docusaurus swizzle "
   },
   "dependencies": {
     "@docusaurus/core": "^3.8.1",
@@ -31,7 +31,6 @@
     "@docusaurus/preset-classic": "^3.8.1",
     "@docusaurus/theme-common": "^3.8.1",
     "@mdx-js/react": "^3.1.0",
-    "@types/sass": "^1.45.0",
     "a-js-tools": "^1.0.12",
     "a-type-of-js": "^1.0.7",
     "clsx": "^2.1.1",
@@ -40,7 +39,6 @@
     "prism-react-renderer": "^2.4.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "sass": "^1.90.0",
     "xcn": "^0.1.2"
   },
   "devDependencies": {
@@ -52,6 +50,7 @@
     "@docusaurus/types": "^3.8.1",
     "@eslint/js": "^9.32.0",
     "@types/react": "^19.1.9",
+    "@types/sass": "^1.45.0",
     "babel-plugin-filter-imports": "^4.0.0",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",
@@ -67,7 +66,8 @@
     "sass-loader": "^16.0.5",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.0",
-    "vjj": "^1.0.10"
+    "vjj": "^1.0.10",
+    "wrangler": "^4.30.0"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [

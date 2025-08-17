@@ -25,7 +25,7 @@ export const notFoundItems: {
     description: '有两个扩展，一个是我写的，另一个也是我写的',
   },
   {
-    href: '/notebook',
+    href: 'https://earthnote.pages.dev',
     label: '笔记本',
     description: '俗话说的好，好记星不如烂笔头',
   },

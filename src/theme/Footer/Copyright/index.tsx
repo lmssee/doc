@@ -31,7 +31,7 @@ function Author({ author }: { author: string }) {
 
 /**  版权  */
 export default function FooterCopyright({ copyright }: Props): ReactNode {
-  if (copyright === 'earthnut')
+  if (copyright === 'io')
     return (
       <div className="footer__copyright">
         <Link className={xcn(styles.copyRight, 'inlineBlock')} href="/">

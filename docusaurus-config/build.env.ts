@@ -9,6 +9,7 @@
 
 import { target_domain } from './env';
 
+/**  构建值 TARGET_DOMAIN 为 com 时构建到 lmssee.com  */
 const com: BuildEnv = {
   url: 'https://lmssee.com',
   copyright: 'com',
@@ -17,37 +18,16 @@ const com: BuildEnv = {
   title: '左左和右右',
   baseUrl: '/',
 };
-
-const comEarthnut: BuildEnv = {
-  ...com,
-  baseUrl: '/earthnut/',
-};
-const cn: BuildEnv = {
-  url: 'https://lmssee.cn',
-  copyright: 'cn',
-  favicon: '/icon/cn/favicon.ico',
-  logo: '/icon/cn/logo.png',
-  title: '随笔记余生',
+/**  构建值  TARGET_DOMAIN 为  io 时 构建到 earthnutDev.github.io */
+const io: BuildEnv = {
   baseUrl: '/',
-};
-
-const cnEarthnut: BuildEnv = {
-  ...cn,
-  baseUrl: '/earthnut/',
-};
-
-const lmssee: BuildEnv = {
-  url: 'https://lmssee.github.io',
-  copyright: 'earthnut',
+  url: 'https://earthnutDev.github.io',
+  copyright: 'io',
   favicon: '/icon/dev/favicon.ico',
   logo: '/icon/dev/logo.png',
   title: '花生亻',
-  baseUrl: '/',
 };
-const earthnutDev: BuildEnv = {
-  ...lmssee,
-  url: 'https://earthnutDev.github.io',
-};
+
 /**
  *
  * 环境值
@@ -55,11 +35,7 @@ const earthnutDev: BuildEnv = {
  */
 export const { title, url, copyright, favicon, logo, baseUrl } = {
   com,
-  comEarthnut,
-  cn,
-  cnEarthnut,
-  lmssee,
-  earthnutDev,
+  io,
 }[target_domain];
 
 type BuildEnv = {

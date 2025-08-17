@@ -3,13 +3,6 @@ import { themes as prismThemes } from 'prism-react-renderer';
 
 import type * as Preset from '@docusaurus/preset-classic';
 
-/**  github 的用户名  */
-const githubUserName = 'earthnutDev';
-
-/**  npm 账户链接  */
-// const npmUrl = `https://www.npmjs.com/~${envelopment ? 'earthnut' : 'lmssee'}`;
-/**  x 的账户链接  */
-// const xUrl = `https://x.com/${envelopment ? 'earthnut_dev' : 'reset_new_tab'}`;
 //**  主题配置  */
 export const themeConfig: Preset.ThemeConfig = {
   titleSuffix: '你好',
@@ -47,7 +40,6 @@ export const themeConfig: Preset.ThemeConfig = {
         to: '/npm',
         sidebarId: 'npmSidebars',
         label: 'npm 工具包',
-        title: 'npm',
         position: 'left',
       },
       {
@@ -56,22 +48,17 @@ export const themeConfig: Preset.ThemeConfig = {
         position: 'right',
         label: 'edge 扩展',
       },
-      {
-        to: '/notebook/',
-        sidebarId: 'noteBookSidebars',
-        label: '学习笔记',
-        title: '📒',
-        position: 'right',
-      },
       { to: '/日志', label: '日志', position: 'right', title: '建站日志' },
       {
-        href: 'https://github.com/' + githubUserName,
+        href: 'https://earthnote.pages.dev',
+        label: '学习笔记',
+        position: 'right',
+      },
+      {
+        href: 'https://github.com/earthnutDev.github.io',
         label: 'GitHub',
         position: 'right',
       },
-      // {
-      //   type: "localeDropdown",
-      // },
     ],
   },
   footer: {

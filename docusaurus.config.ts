@@ -1,8 +1,14 @@
 import type * as Preset from '@docusaurus/preset-classic';
-import { baseUrl, favicon, title, url } from './docusaurus-config/build.env';
+import {
+  baseUrl,
+  copyright,
+  favicon,
+  title,
+  url,
+} from './docusaurus-config/build.env';
 import { themeConfig } from './docusaurus-config/theme.config';
-import { envelopment } from './docusaurus-config/env';
 import { CustomConfig } from '@docusaurus/types';
+import { envelopment } from './docusaurus-config/env';
 
 /**************************************
  *
@@ -26,15 +32,30 @@ const config: CustomConfig = {
   // 设置 /<baseUrl>/ 路径您的网站在该服务下提供服务
   // 对于 GitHub 页面部署，它通常是 '/<projectName>/'
   baseUrl,
-  headTags: [],
-  projectName: 'earthnutDev.github.io',
-  // github 页面配置
+  headTags: [
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'manifest',
+        href: `icon/${copyright}/site.webmanifest`,
+      },
+    },
+  ],
+  // 下面使用 `docusaurus deploy` 时设置 github.com 组织或个人名称的
   organizationName: 'earthnut',
+  // 下面使用 `docusaurus deploy` 时设置 github.com 仓库名的
+  projectName: 'earth note',
+  // 下面使用 `docusaurus deploy` 时设置 github.com 分支名的
+  deploymentBranch: 'main',
+  // 下面使用 `docusaurus deploy` 时设置 github.com 设置主机名的
+  githubHost: 'github.com',
+  // 下面使用 `docusaurus deploy` 时设置 github.com 设置端口名的
+  githubPort: '22',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   i18n: {
-    defaultLocale: 'zh',
-    locales: ['zh'],
+    defaultLocale: 'zh-Hans',
+    locales: ['zh-Hans'],
   },
   // 预设值
   presets: [
@@ -81,16 +102,6 @@ const config: CustomConfig = {
         path: 'npm',
         routeBasePath: 'npm',
         sidebarPath: './npm/_sidebars.ts',
-        sidebarCollapsed: true,
-      },
-    ],
-    [
-      '@docusaurus/plugin-content-docs',
-      {
-        id: 'noteBookSidebars',
-        path: 'notebook',
-        routeBasePath: 'notebook',
-        sidebarPath: './notebook/_sidebars.ts',
         sidebarCollapsed: true,
       },
     ],
