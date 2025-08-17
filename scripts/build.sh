@@ -1,8 +1,9 @@
 #!/bin/bash
 
+local_file="build"
 # 服务器数据
 server_user="root"
-server_ip="lm"
+server_ip="com" # cn 亦可
 ssh_key_path="~/.ssh/server_rsa"
 clear;
 

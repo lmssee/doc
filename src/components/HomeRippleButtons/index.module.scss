@@ -1,0 +1,107 @@
+.main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 10;
+  width: 100%;
+  height: 100%;
+}
+
+.button {
+  position: relative;
+  border: none;
+  border-radius: 8px;
+  color: #f06;
+  background-color: transparent;
+  padding: 10px 20px;
+  font-size: larger;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 1.3s ease-in-out;
+  box-shadow:
+    1px 1px 2px rgba(0, 0, 0, 0.2),
+    -1px -1px 2px rgba(0, 125, 255, 0.2);
+  cursor: pointer;
+  z-index: 1;
+}
+
+.activeButton {
+  transition: all 1.3s ease-in-out;
+  color: #0f0;
+  cursor: default;
+  box-shadow:
+    1px 1px 2px rgba(0, 255, 0, 0.2),
+    -1px -1px 2px rgba(0, 255, 125, 0.2);
+}
+
+/* 按钮容器（可选） */
+.button-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: auto 10px;
+  border-radius: 8px;
+  // overflow: hidden;
+}
+
+/* 特殊背景色板（遮罩） */
+.highlight-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+
+  div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: #007bff; /* 特殊颜色 */
+    opacity: 0.8;
+    pointer-events: none; /* 不影响点击 */
+    border-radius: 8px;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+  }
+}
+
+/* 激活时：从左滑入（慢） */
+.highlight-mask.active div {
+  animation: slideIn 2s linear forwards;
+}
+
+/* 切换时：快速滑出（快） */
+.highlight-mask.deactivating div {
+  animation: slideOut 0.6s ease-out forwards;
+}
+
+.not-allowed {
+  cursor: not-allowed;
+}
+
+/* 滑入动画：0% → 100% 宽度 */
+@keyframes slideIn {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* 滑出动画：从 100% → 超出容器 */
+@keyframes slideOut {
+  0% {
+    width: 100%;
+    left: 0%;
+  }
+  100% {
+    width: 100%;
+    left: 100%;
+  } /* 向右“甩出去”的感觉 */
+}
