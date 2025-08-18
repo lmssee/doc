@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { HomeRippleButton } from './Button';
 import styles from './index.module.scss';
 import { xcn } from 'xcn';
+import { useColorMode } from '@docusaurus/theme-common';
 
 /**  首页的按钮组  */
 export function HomeRippleButtons({
@@ -20,6 +21,9 @@ export function HomeRippleButtons({
   const [deactivatingItem, setDeactivatingItem] = useState<null | string>(null);
   /**  延迟的时间  */
   const delayTime = 3000;
+
+  /**  当前的色系  */
+  const colorMode = useColorMode().colorMode;
 
   /**  用于计时的定时器  */
   const timeId = useTimeId();
@@ -59,7 +63,7 @@ export function HomeRippleButtons({
   }, [imgUrl]);
 
   return (
-    <div className={xcn(styles.main)}>
+    <div className={xcn(styles.main, colorMode)}>
       {renderList.map(item => (
         <HomeRippleButton
           key={item}
