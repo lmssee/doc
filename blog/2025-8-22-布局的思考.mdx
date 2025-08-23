@@ -1,0 +1,114 @@
+---
+title: 布局的学习
+---
+
+先写了一个布局，发现，总是在 `NextJs` 中显示水合错误
+
+现在想着使用 `FlexBox` 或是 `Grid` 来更改。
+
+## 布局结构
+
+```html title="布局结构"
+<body class="page">
+  <header class="header">头部</header>
+  <div class="page-container">
+    <aside class="sidebar">侧边栏</aside>
+    <main class="main">内容区</main>
+  </div>
+  <footer class="footer">页脚</footer>
+</body>
+```
+
+{/* truncate */}
+
+### 使用 FlexBox 弹性布局样式
+
+使用 `FlexBox` 可以考虑：
+
+- **头部和页脚固定高度**：通过 `height` 属性固定高度，不随内容变化
+- **侧栏与内容区弹性分配**：`page-container` 使用 `flex: 1` 占据剩余空间，`sidebar` 和 `main` 分别通过 `width` 和 `flex: 1` 分配宽度，高度自动跟随 `container` 的高度（即视口高度减去头部和页脚高度）
+- **内容过长**：`sidebar` 和 `main` 设置 `overflow-y: auto`，内容过长时内部滚动，避免整体布局被撑开
+
+```css title="flex-box.css"
+/* 重置默认边距 */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* 确保父容器占满视口高度 */
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* 至少占满视口高度 */
+}
+
+.header {
+  height: var(--header-height); /* 头部固定高度 */
+  background: #f0f0f0;
+}
+
+.page-container {
+  display: flex;
+  flex: 1; /* 占据剩余所有空间 */
+  overflow: hidden; /* 防止内容溢出 */
+}
+
+.sidebar {
+  width: var(--sidebar-width); /* 侧栏固定宽度 */
+  background: #e0e0e0;
+  overflow-y: auto; /* 内容过长时滚动 */
+}
+
+.main {
+  flex: 1; /* 内容区占据剩余空间 */
+  padding: 1rem;
+  overflow-y: auto; /* 内容过长时滚动 */
+}
+
+.footer {
+  height: var(--footer-height); /* 页脚固定高度 */
+  background: #f0f0f0;
+}
+```
+
+### 使用 grid 布局精细控制
+
+使用 `grid` 可以使用自动高度的方式让其精细分配：
+
+- **行高分配**：使用 `grid-template-rows: auto 1fr auto` 头部（自动高度）、内容区（剩余空间）、页脚（自动高度）
+- **列宽分配**：使用 `grid-template-columns` 定义侧栏和内容区的宽度，侧栏固定，内容区占据剩余空间
+- **高度分配**：`container`的高度为 `100%`（即父容器的 `1fr` 高度），侧栏和内容区的高度自动同步，避免间隙
+
+```css title="grid.css"
+.page {
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* 头部（自动高度）、内容区（剩余空间）、页脚（自动高度） */
+  min-height: 100vh;
+}
+
+.header {
+  background: #f0f0f0;
+}
+
+.page-container {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr; /* 侧栏固定宽度，内容区剩余空间 */
+  height: 100%; /* 占据父容器的 1fr 高度 */
+}
+
+.sidebar {
+  background: #e0e0e0;
+  overflow-y: auto;
+}
+
+.main {
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.footer {
+  background: #f0f0f0;
+}
+```

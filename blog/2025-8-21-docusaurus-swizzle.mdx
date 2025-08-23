@@ -1,0 +1,269 @@
+---
+title: docusaurus 可弹出的组件
+---
+
+本来觉得没有用，但是英语不好，忽然觉得组件命名上可以借鉴。毕竟，[docusaurus](https://docusaurus.io/zh-CN/docs/swizzling) 是一款成熟且
+
+{/* truncate */}
+
+## 警示相关
+
+- `Admonition` 劝解、提示
+  - `Icon`
+    - `Danger` 危险提示图标
+    - `Info` 信息
+    - `Note` 备注
+    - `Tip` 提示
+    - `Warning` 警示、警告
+  - `Layout` 提示的布局
+  - `Type` 提示的类型
+    - `Caution` 注意，警告
+    - `Danger` 危险
+    - `Info` 信息
+    - `Note` 备注
+    - `Tip` 提示
+    - `Warning` 警示
+  - `types`
+- AnnouncementBar
+  - CloseButton
+  - Content
+
+## 代码块
+
+- `CodeBlock` 代码块
+  - Buttons
+    - Button
+    - CopyButton
+    - WordWrapButton
+  - Container
+  - Content
+    - Element
+    - String
+  - Layout
+  - Line
+    - Token
+  - Title
+- CodeInline
+- `ColorModeToggle` 暗黑模式切换
+
+## 功能页
+
+- ErrorPageContent
+- NotFound
+  - Content
+- SearchMetadata
+- SiteMetadata
+- TOC
+- TOCCollapsible
+  - CollapseButton
+- TOCInline
+- TOCItems
+  - Tree
+
+## 功能组件
+
+- Logo
+- EditMetaRow
+- EditThisPage
+- BackToTopButton
+- SkipToContent
+- Mermaid
+
+## 布局
+
+- Layout
+  - Provider
+- Heading
+- ContentVisibility
+  - Draft
+  - Unlisted
+- Details
+- TabItem
+- Tabs
+
+### 导航栏
+
+- Navbar
+  - ColorModeToggle
+  - Content
+  - Layout
+  - Logo
+  - MobileSidebar
+    - Header
+    - Layout
+    - PrimaryMenu
+    - SecondaryMenu
+    - Toggle
+  - Search
+- NavbarItem
+  - DefaultNavbarItem
+    - Desktop
+    - Mobile
+  - DocNavbarItem
+  - DocSidebarNavbarItem
+  - DocsVersionDropdownNavbarItem
+  - DocsVersionNavbarItem
+  - DropdownNavbarItem
+    - Desktop
+    - Mobile
+  - HtmlNavbarItem
+  - LocaleDropdownNavbarItem
+  - NavbarNavLink
+  - SearchNavbarItem
+
+### 面包屑
+
+- PaginatorNavLink
+
+### 页脚
+
+- Footer
+  - Copyright
+  - Layout
+  - LinkItem
+  - Links
+    - MultiColumn
+    - Simple
+  - Logo
+
+## 图标
+
+- Icon
+  - Arrow
+  - DarkMode
+  - Edit
+  - LightMode
+  - Menu
+  - Close
+  - Copy
+  - ExternalLink
+  - Home
+  - Language
+  - Socials
+    - Bluesky
+    - Default
+    - GitHub
+    - Instagram
+    - LinkedIn
+    - Mastodon
+    - StackOverflow
+    - Threads
+    - Twitch
+    - Twitter
+    - X
+    - YouTube
+  - Success
+  - SystemColorMode
+  - WordWrap
+
+## mdx 文件内容
+
+- MDXPage
+- MDXContent
+- SearchBar
+- Admonition
+- NavbarItem
+  - ComponentTypes
+- prism-include-languages
+
+### mdx 元素默认覆盖
+
+- MDXComponents
+  - A
+  - Code
+  - Details
+  - Heading
+  - Img
+  - Pre
+  - Ul
+  - Li
+
+## 文档系统
+
+- DocBreadcrumbs
+  - Items
+    - Home
+  - StructuredData
+- DocCard
+- DocCategoryGeneratedIndexPage
+- DocItem
+  - Content
+  - Footer
+  - Layout
+  - Metadata
+  - Paginator
+  - TOC
+    - Desktop
+    - Mobile
+- `DocCardList` 文档卡片列表
+- DocPaginator
+- DocRoot
+  - Layout
+    - Main
+    - Sidebar
+      - ExpandButton
+  - Desktop
+    - CollapseButton
+    - Content
+  - Mobile
+- DocSidebar
+- DocSidebarItem
+  - Category
+  - Html
+  - Link
+- DocSidebarItems
+- DocTagDocListPage
+- DocTagsListPage
+- DocVersionBadge
+- DocVersionBanner
+- DocVersionRoot
+- DocsRoot
+
+## 博客相关
+
+- Blog
+  - Components
+    - Author
+      - Socials
+  - Pages
+    - BlogAuthorsListPage
+    - BlogAuthorsPostsPage
+- BlogArchivePage
+- BlogLayout
+- BlogListPage
+  - StructuredData
+- BlogListPaginator
+- BlogPostItem
+  - Container
+  - Content
+  - Footer
+    - ReadMoreLink
+  - Header
+    - Authors
+    - Info
+    - Title
+- BlogPostItems
+- BlogPostPage
+  - Metadata
+  - StructuredData
+- BlogPostPaginator
+- LastUpdated
+
+### 博文侧栏
+
+- BlogSidebar
+  - Content
+  - Desktop
+  - Mobile
+
+- BlogTagsListPage
+- BlogTagsPostsPage
+
+### 博客标签
+
+- Tag
+- TagsListByLetter
+- TagsListInline
+- ThemeProvider
+  - TitleFormatter
+- ThemedImage
