@@ -4,7 +4,7 @@ import Heading from '@theme/Heading';
 import styles from './styles.module.css';
 import Link from '@docusaurus/Link';
 import { xcn } from 'xcn';
-import { Image } from 'earthnut';
+import { Image } from 'enr';
 
 type FeatureItem = {
   title: string;

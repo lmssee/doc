@@ -36,7 +36,7 @@
     "a-type-of-js": "^1.0.7",
     "clsx": "^2.1.1",
     "docusaurus-plugin-sass": "^0.2.6",
-    "earthnut": "^0.2.2",
+    "enr": "0.2.3-alpha.3",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -66,7 +66,7 @@
     "prettier": "^3.6.2",
     "sass-loader": "^16.0.5",
     "typescript": "^5.9.2",
-    "typescript-eslint": "^8.40.0",
+    "typescript-eslint": "^8.41.0",
     "vjj": "^1.0.11"
   },
   "lint-staged": {

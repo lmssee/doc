@@ -3,7 +3,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import { HomepageHeader } from '../components/HomepageHeader';
-import { LazyBackgroundRipple } from 'earthnut';
+import { LazyBackgroundRipple } from 'enr';
 import { useColorMode } from '@docusaurus/theme-common';
 
 export default function Home(): ReactNode {

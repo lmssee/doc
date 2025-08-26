@@ -3,7 +3,7 @@ import styles from './index.module.scss';
 import { xcn } from 'xcn';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { Contact } from './_Contact';
-import { LazyBackgroundRipple } from 'earthnut';
+import { LazyBackgroundRipple } from 'enr';
 import Link from '@docusaurus/Link';
 import { CustomDocusaurusConfig } from '@docusaurus/types/src/config';
 import { useEffect, useState } from 'react';

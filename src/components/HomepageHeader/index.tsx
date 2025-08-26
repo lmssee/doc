@@ -1,5 +1,5 @@
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import { LazyBackgroundRipple } from 'earthnut';
+import { LazyBackgroundRipple } from 'enr';
 import { useState } from 'react';
 import { xcn } from 'xcn';
 import styles from './index.module.scss';

@@ -1,4 +1,4 @@
-import { useTimeId } from 'earthnut';
+import { useTimeId } from 'enr';
 import { useEffect, useState } from 'react';
 import { HomeRippleButton } from './Button';
 import styles from './index.module.scss';

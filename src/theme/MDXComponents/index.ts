@@ -1,4 +1,4 @@
-import { BackgroundRipple, EnImage } from 'earthnut';
+import { BackgroundRipple, EnImage } from 'enr';
 import MDXComponents from '@theme-original/MDXComponents';
 import { Favicon } from './favicon';
 import { TranslateEle } from '../../components/translateEle';

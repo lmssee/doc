@@ -2,7 +2,7 @@ import React, { type ReactNode } from 'react';
 import clsx from 'clsx';
 import type { Props } from '@theme/NotFound/Content';
 import Heading from '@theme/Heading';
-import { LazyBackgroundRipple } from 'earthnut';
+import { LazyBackgroundRipple } from 'enr';
 import { xcn } from 'xcn';
 import styles from './index.module.scss';
 import { DocCardListItem } from '../../DocCardList';

@@ -1,0 +1,99 @@
+---
+title: 移除讨厌的打印狗
+---
+
+在 npm 项目上使用 [dog](https://www.npmjs.com/package/@qqi/log) 时发现挺便捷，关键在使用时添加 `xxx_dev=all` 的启动环境变量，既可以在正式环境也观察到数据流转及发现错误的具体原因。
+
+后来就在 web 项目中使用，发现效果尚可，其实不如 `babel` 的插件 `babel-plugin-transform-remove-console` 移除 `console` 彻底些。
+
+但是，毕竟写了这么包，不用也不太好。主要该包能在函数头位通过设置 `type` 属性值来判定是否需要打印消息。这样就省去了添加再删除、下次使用时再添加 `console.log` 的麻烦，且也可以通过过滤器过滤掉。
+
+{/* truncate */}
+
+在原有的包基础上，又添加了 [remove dog] babel 插件，并搭配着使用 mocks 模拟方法，将 dog 转换成无害的死代码。
+
+其实，一开始还是好的。直到出现了双入口打包的情况。
+
+为了让包 `enr` 能够在 `NextJs` 环境下使用，将有状态的组件和无状态的组件进行了分别打包，并在非服务组件的打包头部添加了 `use client`。但是，在测试时发现了显示 ：
+
+```js
+import * as __webpack_chunk_1__ from './dog.mjs';
+
+__webpack_require__.C(__webpack_chunk_1__);
+
+var __webpack_exports__ = __webpack_require__.O(undefined, ['dog'], () =>
+  __webpack_require__('./index.server.ts'),
+);
+
+__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
+const __webpack_exports__EnLayout = __webpack_exports__.EnLayout;
+```
+
+该部分打包报错 `Can't read undefined of EnLayout`。 因为出错在 `dog` 包装后，所以判定是 `dog` 公共方法打包错误引起的。
+
+## 使用 babel
+
+正如先前构建的包 [remove dog](https://www.npmjs.com/package/@qqi/babel-plugin-remove-dog-calls) 一样，在 babel 中引入该包，并根据 `process.env` 的当前启动环境变量值确定是否加载该插件：
+
+```js
+import process from 'node:process';
+
+export default function (api) {
+  api.cache(true);
+
+  const mode = process.env.dev_mode ?? 'production';
+  const isProduction = env === 'production';
+
+  return {
+    presets: [
+      '@babel/preset-env',
+      '@babel/preset-react',
+      '@babel/preset-typescript',
+    ],
+    plugins: [isProduction && '@qqi/babel-plugin-remove-dog-calls'].filter(
+      Boolean,
+    ),
+  };
+}
+```
+
+该方法确实是去除了代码结果中的 `dog` 调用，但打包发现并为完全去除。因为在实际打包的两个文件中还是分别发现了上面的 `dog` 引用代码，且，当前依旧是显示 `EnLayout` 无法被访问。
+
+## 使用 loader
+
+一计不成，再想损招。于是想着既然移除了打印，现在组件对 `dog` 的痕迹也就剩下了 `import { dog }  from 'dog';`。肯定就是这货捣的乱，于是，决定在 `webpack` 的 `loader` 中消灭掉该语句：
+
+```js
+export default function (source) {
+  const withDogRegExp = /import\s+\{?\s*dog\s*\}*\s+from\s+['"]dog['"];?/g;
+
+  return (
+    (withDogRegExp.test(source) && source.replace(withDogRegExp, '')) || source
+  );
+}
+```
+
+方法倒是挺好理解，于是，就添加到了 `webpack.config.js` 。打包，测试（前提是启用了 [remove dog]）,发现没有了 `Can't not read undefined of Layout`，页面渲染正常。
+
+## 病灶
+
+虽然，但是。是吧，是能够正确的渲染了，但是总感觉少点啥。对，少了一天的好心情。
+
+于是，移除 [remove dog]，删除添加的 `loader`。
+
+在原打包打包中，从压缩后的文件一点点打印日志，在实际的使用中获得了错误：
+
+```js
+ function() {
+    throw new Error("Attempted to call __webpack_esm_modules__() from the server but __webpack_esm_modules__ is on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.")
+```
+
+该错误是由 `webpack` 在解析接入包时报错，且未显示在控制台，让我一直以为是 `dog` 没有移除干净导致的。原来是我手动给文件添加 `use client` 导致被切割的 `dog_ts.mjs` 文件头也存在了该物，遂导致了差不多耽搁一小天的时间的错误。
+
+冤有头，债有主。
+
+于是找到了 `add-use-client-loader.js` 文件，正确匹配了该添加 `use client` 的文件的。于是，耽搁一天的问题才算是真正的得到了解决。
+
+这次的教训无疑的惨痛的，耽搁时间不说，还导致项目拖沓，脑瓜疼。遇事多打“断点”（日志）、少瞎折腾、多想解决方案，少着急上火。
+
+[remove dog]: https://www.npmjs.com/package/@qqi/babel-plugin-remove-dog-calls
