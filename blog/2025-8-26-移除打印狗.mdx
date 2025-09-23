@@ -59,19 +59,118 @@ export default function (api) {
 
 该方法确实是去除了代码结果中的 `dog` 调用，但打包发现并为完全去除。因为在实际打包的两个文件中还是分别发现了上面的 `dog` 引用代码，且，当前依旧是显示 `EnLayout` 无法被访问。
 
+## 使用 mocks
+
+一计不成，再想损招。于是想着既然移除了打印，但是还残留 `dog` 的打包，自然，已经包含着 `dog` ，但是 `dog` 本身又引用着 [@qqi/log] ，相当于还的把 [@qqi/log] 打包进最后的包或是强制使用该依赖包的项目多安装几个不需要的依赖。嗯，大可不必。
+
+于是，使用 `webpack.config.js` 配置在打包时，将 `resolve.alias` 的 `@qqi/log` 指向它处：
+
+<Tabs>
+
+ <TabItem value="webpack" label="webpack.config.js" default>
+ 
+    ```js
+    import { join } from 'node:path';
+
+    export default function() {
+      return {
+        ...
+        resolve: {
+          ...
+          alias: {
+            ...
+            '@qqi/log': join(import.meta.dirname, './mocks/log.mjs')
+          }
+        },
+        ...
+      }
+    }
+
+    ```
+
+</TabItem>
+ 
+<TabItem value="mocks" label="mocks/log.mjs" default>
+ 
+  ```js
+    /**  模拟类，用于打包用  */
+  export function Dog() {
+      /**  模拟类的构建  */
+      const _dev = () => {};
+
+      Object.setPrototypeOf(_dev, this);
+
+      Object.defineProperties(_dev, {
+        info: { value: () => {}, configurable: false, writable: false },
+        warn: { value: () => {}, configurable: false, writable: false },
+        error: { value: () => {}, configurable: false, writable: false },
+        type: {
+          value: false,
+          configurable: false,
+          writable: false,
+        },
+      });
+
+      return _dev;
+    }
+
+    Dog.prototype.clear = console.clear;
+
+````
+
+</TabItem>
+</Tabs>
+
+然后，打包后发现并为解决 `Layout` 找不到的问题。
+
 ## 使用 loader
 
-一计不成，再想损招。于是想着既然移除了打印，现在组件对 `dog` 的痕迹也就剩下了 `import { dog }  from 'dog';`。肯定就是这货捣的乱，于是，决定在 `webpack` 的 `loader` 中消灭掉该语句：
+两计不成，继续憋坏。于是想着既然移除了打印，现在组件对 `dog` 的痕迹也就剩下了 `import { dog }  from 'dog';`。肯定就是这货捣的乱，于是，决定在 `webpack` 的 `loader` 中消灭掉该语句：
 
-```js
-export default function (source) {
-  const withDogRegExp = /import\s+\{?\s*dog\s*\}*\s+from\s+['"]dog['"];?/g;
+<Tabs>
+<TabItem value="loaders" label="loaders/remove-import-dog.js" default>
 
-  return (
-    (withDogRegExp.test(source) && source.replace(withDogRegExp, '')) || source
-  );
-}
-```
+  ```js
+  export default function (source) {
+    const withDogRegExp = /import\s+\{?\s*dog\s*\}*\s+from\s+['"]dog['"];?/g;
+
+    return (
+      (withDogRegExp.test(source) && source.replace(withDogRegExp, '')) || source
+    );
+  }
+  ```
+
+</TabItem>
+<TabItem value="webpack" label="webpack.config.js">
+
+  ```js
+  export default function () {
+    return {
+      ...
+      module: {
+        rules : [{
+            test: /\.[tj]sx?$/,
+            use : [
+              './loaders/remove-import-dog.js',
+              {
+                loader: 'babel-loader',
+                options: {
+                  configFile: './babel.config.js'
+                }
+              },
+              ...
+            ]
+        },
+        ...
+       ],
+      }
+      ...
+    }
+  }
+  ```
+
+</TabItem>
+</Tabs>
 
 方法倒是挺好理解，于是，就添加到了 `webpack.config.js` 。打包，测试（前提是启用了 [remove dog]）,发现没有了 `Can't not read undefined of Layout`，页面渲染正常。
 
@@ -81,12 +180,16 @@ export default function (source) {
 
 于是，移除 [remove dog]，删除添加的 `loader`。
 
-在原打包打包中，从压缩后的文件一点点打印日志，在实际的使用中获得了错误：
+在原打包配置下，从压缩后的文件一点点打印日志，在实际的使用中获得了错误：
 
 ```js
- function() {
-    throw new Error("Attempted to call __webpack_esm_modules__() from the server but __webpack_esm_modules__ is on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.")
-```
+function() {
+  throw new Error(`
+  Attempted to call __webpack_esm_modules__()
+  from the server but __webpack_esm_modules__ is on the client.
+  It's not possible to invoke a client function from the server,
+  it can only be rendered as a Component or passed to props of a Client Component.`)
+````
 
 该错误是由 `webpack` 在解析接入包时报错，且未显示在控制台，让我一直以为是 `dog` 没有移除干净导致的。原来是我手动给文件添加 `use client` 导致被切割的 `dog_ts.mjs` 文件头也存在了该物，遂导致了差不多耽搁一小天的时间的错误。
 
@@ -97,3 +200,4 @@ export default function (source) {
 这次的教训无疑的惨痛的，耽搁时间不说，还导致项目拖沓，脑瓜疼。遇事多打“断点”（日志）、少瞎折腾、多想解决方案，少着急上火。
 
 [remove dog]: https://www.npmjs.com/package/@qqi/babel-plugin-remove-dog-calls
+[@qqi/log]: https://www.npmjs.com/package/@qqi/log
