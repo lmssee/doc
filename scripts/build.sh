@@ -28,7 +28,10 @@ publishToIo() {
       pnpm docusaurus clear
           ### 打包并上传到  
       TARGET_DOMAIN=$1 pnpm docusaurus build
-      cd build 
+      if ! cd build ; then 
+            printf "\e[33m当前未能进入build  \e[0m\n"
+            exit 1;
+      fi;
       rm -rf .git
       git init
       git remote add origin git@$1:$1/$1.github.io.git

@@ -19,7 +19,7 @@
     "dev": "pnpm start",
     "build:local": "chmod +x ./scripts/build.sh && ./scripts/build.sh com io",
     "build:only": "chmod +x ./scripts/build-zip.sh && ./scripts/build-zip.sh",
-    "deploy:cloudflare": "jja cls rm node_modules/.cache/wrangler/pages.json && pnpm build:only && wrangler pages deploy build",
+    "deploy:cloudflare": "jja cls rm node_modules/.cache/wrangler/pages.json run TARGET_DOMAIN=io pnpm docusaurus build && wrangler pages deploy build",
     "serve": "pnpm run build:only && docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "beautify": "pnpm prettier",
