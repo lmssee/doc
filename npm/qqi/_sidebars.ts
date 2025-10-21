@@ -1,17 +1,7 @@
-import { SidebarItemConfig } from '@docusaurus/plugin-content-docs/src/sidebars/types.js';
-import { isString } from 'a-type-of-js';
+import { createSidebarItem } from '../../docusaurus-config/sidebar.item.config';
 
-/**  使用前缀  */
-const prefix = 'qqi/';
-
-export const QQISidebars: SidebarItemConfig = {
-  type: 'category',
-  label: 'qqi',
-  collapsed: true,
-  link: {
-    type: 'doc',
-    id: prefix + 'index',
-  },
+export const QQISidebars = createSidebarItem({
+  prefix: 'qqi',
   items: [
     'core',
     'log',
@@ -20,5 +10,5 @@ export const QQISidebars: SidebarItemConfig = {
     'rollup-external',
     'copy-text',
     'dev',
-  ].map(e => (isString(e) ? prefix + e : e)),
-};
+  ],
+});

@@ -1,7 +1,7 @@
-import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
+import { createSidebarsConfig } from '../docusaurus-config/sidebars.config';
 
-const edgeExtensionSidebars: SidebarsConfig = {
-  edgeExtensionSidebar: [
+export default createSidebarsConfig({
+  items: [
     'index',
     'reset-new-tab/index',
     'simple-refresh/index',
@@ -11,6 +11,4 @@ const edgeExtensionSidebars: SidebarsConfig = {
       href: 'https://microsoftedge.microsoft.com/addons/search?developer=earthnut',
     },
   ],
-};
-
-export default edgeExtensionSidebars;
+});

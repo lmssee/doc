@@ -52,7 +52,8 @@ const config: CustomConfig = {
   // 下面使用 `docusaurus deploy` 时设置 github.com 设置端口名的
   githubPort: '22',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  // 限制将在未来的 v4 版本移除该选项
+  // onBrokenMarkdownLinks: 'warn',
   i18n: {
     defaultLocale: 'zh-Hans',
     locales: ['zh-Hans'],

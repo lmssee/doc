@@ -1,11 +1,11 @@
-import { SidebarItemConfig } from '@docusaurus/plugin-content-docs/src/sidebars/types.js';
+import { createSidebarsConfig } from '../docusaurus-config/sidebars.config';
 
-export default {
-  customHooksSidebars: [
+export default createSidebarsConfig({
+  items: [
     'index',
     'use-time-id',
     'use-animation-frame',
     'use-input-is-composing',
     'use-ripples',
   ],
-} as SidebarItemConfig;
+});

@@ -1,6 +1,6 @@
-import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
-
 // 执行环境为 node  - 禁止使用客户端的 api （浏览器 api、 jsx 、tsx 内容）
+
+import { createSidebarsConfig } from '../docusaurus-config/sidebars.config';
 
 /**
  * 创建一个 [侧边栏](https://docusaurus.io/docs/sidebar) 可以：
@@ -14,8 +14,9 @@ import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
  * 创建任意数量的边栏
  *
  */
-export default {
-  components: [
+export default createSidebarsConfig({
+  name: 'components',
+  items: [
     'quickUse',
     'layout',
     {
@@ -24,4 +25,4 @@ export default {
       label: '自定义钩子',
     },
   ],
-} as SidebarsConfig;
+});
