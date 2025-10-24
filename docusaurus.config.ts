@@ -24,7 +24,7 @@ import { envelopment } from './docusaurus-config/env';
  **************************************/
 const config: CustomConfig = {
   title,
-  titleDelimiter: '  ​'.repeat(60).concat('for 🀪'),
+  // titleDelimiter: '  '.repeat(60).concat('for 🀪'),
   tagline: '你好，不将饶过任何人的时光依旧',
   favicon, // 网站图标设置
   // Set the production url of your site here

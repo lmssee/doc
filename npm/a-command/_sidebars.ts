@@ -1,4 +1,4 @@
-import { createSidebarItem } from '@site/docusaurus-config/sidebar.item.config';
+import { createSidebarItem } from '../../docusaurus-config/sidebar.item.config';
 
 export const ACommandSidebar = createSidebarItem({
   prefix: 'a-command',
