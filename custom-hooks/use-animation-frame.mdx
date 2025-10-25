@@ -1,12 +1,14 @@
 ---
-title: 使用 animationFrame
+title: 自定义钩子：使用 animationFrame - enr
+sidebar_label: 使用 animationFrame
+hide_title: true
 ---
+
+# 自定义钩子
 
 类似的，与 [useTimeId](./use-time-id) 相似，使用一个统一的方法来创建 `window.requestAnimationFrame`
 
- 
 该钩子在组件卸载时会自动调用 `window.cancelAnimationFrame` 清理传入的回调方法。
-
 
 - 默认调用及参与方法的调用
 - 回调方法比原始的方法要多一个参数，用于如果有暂停时，暂停时间不记
@@ -34,5 +36,4 @@ export function Home () {
  }
   ...
 
- ```
-
+```

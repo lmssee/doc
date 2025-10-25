@@ -1,6 +1,10 @@
 ---
-title: 使用涟漪
+title: 自定义钩子：使用涟漪 - enr
+sidebar_label: 使用涟漪
+hide_title: true
 ---
+
+# 使用涟漪自定义钩子
 
 可根据传入的 `canvas` `react` `ref` 元素节点及参数在 `canvas` 上创建一个水波涟漪。
 
@@ -14,7 +18,7 @@ title: 使用涟漪
 
 ### 第一参数
 
-为了保证使用值的准确性，第一参数需要是 `React.RefObject<HTMLCanvasElement | null>`  类型的数据。
+为了保证使用值的准确性，第一参数需要是 `React.RefObject<HTMLCanvasElement | null>` 类型的数据。
 
 ### 第二参数
 
@@ -22,20 +26,19 @@ title: 使用涟漪
 
 - resolution 分波速，值越小，波动越快。缺省为 `360`
 - dropRadius 波动强度，值越小，波动效果越大，缺省值为 `12`
-- perturbance 扰动系数，值越大，对原背景造成干涉越强，缺省为   `0.01`
+- perturbance 扰动系数，值越大，对原背景造成干涉越强，缺省为 `0.01`
 - interactive 光标交互，缺省为 `true` ，关闭须显示传入 `false` 值
-- accelerating  加速光标移动触发，类似于扰动系数，及作用与鼠标或手指触发，缺省为 `1`
+- accelerating 加速光标移动触发，类似于扰动系数，及作用与鼠标或手指触发，缺省为 `1`
 - crossOrigin 原始样式
-- imgUrl    原始背景图片地址
+- imgUrl 原始背景图片地址
 - playingState 当前的播放状态，缺省为 `true` ，设定为 `false` 时并不关闭，而是暂停
 - raindropsTimeInterval 雨滴滴落的间隔，缺省为 `3650`，可设置区间为 `10 ~ 12000`，值越小，雨越大。该值还将影响无背景设置时默认背景的切换频率，几乎每两个雨滴落下就会切换一次背景
-- idleFluctuations  闲置波动，在光标交互不触发时，将触发模拟雨滴，缺省为 `true`
+- idleFluctuations 闲置波动，在光标交互不触发时，将触发模拟雨滴，缺省为 `true`
 - darkMode 暗黑模式，仅用于在默认的背景图时更改默认背景图的背景色，如果使用了 `imgUrl` 配置，请执行处理色差异常
 
 ## 使用
 
 在实际的使用中，通过配置不同的参数来使用不同的效果。
-
 
 :::info
 

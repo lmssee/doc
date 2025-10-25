@@ -4,9 +4,20 @@ rm -rf dist.zip
 
 pnpm docusaurus clear 
 
-pnpm docusaurus build
+if ! pnpm docusaurus build ; then 
 
-cd build
+  echo "打包出错了"
+
+  exit 0
+
+fi 
+
+if ! cd build ; then 
+
+  printf "\e[31m出错了，没有找到打包后的文件\e[m\n"
+
+  exit 0
+fi
 
 # 压缩打包文件
 zip -qr ../dist.zip "." -z << EOF 

@@ -1,24 +1,28 @@
 ---
-title: 小工具
+title: 小工具（jja） - npm
 sidebar_label: 小工具（jja）
+hide_title: true
 ---
+
+# 小小工具
 
 <PackageInfo packageName="jja" />
 
 一开始只是用来做兼容的文件移除，后来添加了些许的工具。
 
-## 安装
+## 一、 安装
 
 <InstallInfo name="jja" />
 
-## 📖 命令
+## 二、 📖 命令
 
-- `remove`：与删除文件相关
-- `package`：与 package.json 包相关
-- `dns`: 域名解析及连通性判断
-- `cls`、`clear`：清理终端屏幕，两个作用相同
+- **`remove`**：与删除文件相关
+- **`package`**：与 package.json 包相关
+- **`dns`**： 域名解析及连通性判断
+- **`cls`、`clear`**：清理终端屏幕，两个作用相同
+- **`run`**：执行其他代码且可设置启动参数
 
-## 清理终端
+## 三、 清理终端
 
 `cls` 和 `clear` 在使用时没有区别，唯一的区别就是 `cls` 是 windows 下黑窗口的清屏命令，而 `clear` 是 mac、linux 下终端的清理命令。
 
@@ -28,7 +32,7 @@ sidebar_label: 小工具（jja）
 {}
 ```
 
-## remove 移除文件/文件夹
+## 四、 remove 移除文件/文件夹
 
 可用 `npx jja  rm  <filename>  <filename>  <...>` 的模式进行移除文件或文件夹
 
@@ -45,7 +49,7 @@ npx jja  rm <filename>
 npx jja  rm  -i  filename
 ```
 
-## package 与 packages.json 相关
+## 五、 package 与 packages.json 相关
 
 使用 `--diff` 或 `-d` 进行 `package.json` 文件内的依赖版本的检测，查看是否有更新（更新以本地安装的应用版本为准，而不是以 package.json 文件给出的范围）可用，给出反馈
 
@@ -56,7 +60,7 @@ npx jjs pkg -d
 
 ```
 
-### 指定源
+### 1. 指定源
 
 在使用的时候可以使用指定制定的源构建
 
@@ -70,11 +74,11 @@ npx jjs pkg -d=yarn
 npx jjs pkg -d=官方
 ```
 
-## dns 查询域名的解析
+## 六、 dns 查询域名的解析
 
 添加了域名解析，使用线上的域名，目前仅支持 `A` 记录的查询
 
-### 简单使用
+### 1. 简单使用
 
 因为是这样的，有一次，我的服务器突然无法从 `git@github.com` 拉取代码，我一直以为是服务器的事，甚至进行了重装服务器，都没有解决该问题，后知后觉。
 
@@ -83,7 +87,7 @@ npx jjs pkg -d=官方
 npx jja dns
 ```
 
-### 自定义域名
+### 2. 自定义域名
 
 可通过配置参数 `--domain` （缩写 `-d`）配置为任意的域名
 
@@ -93,7 +97,7 @@ npx jja dns --domain=www.npmjs.com
 npx jja dns -d=www.npmjs.com
 ```
 
-### 自定义端口
+### 3. 自定义端口
 
 默认使用 `443` 端口，可使用配置参数 `--port` (缩写 `-p`) 指定测试连通性的端口号
 
@@ -103,7 +107,7 @@ npx jja dns --port=80
 npx jja dns -p=80
 ```
 
-### 不覆盖校验过程
+### 4. 不覆盖校验过程
 
 在测试连通性时使用了多个 `dns` 源进行测试连通性，如果想参看细节，可使用配置参数 `--no-covered` （缩写 `-n`）
 
@@ -113,7 +117,7 @@ npx jja dns --not-covered
 npx jja dns -n
 ```
 
-## 执行其他代码
+## 七、 执行其他代码
 
 使用 `run` 达到 `&&` 的执行串联的效果。当然，不仅仅只为了替代两个字符的 `&&` 而选用三个字符的 `run` 来多此一举。因为在 Windows 上无法像使用 `shell` 使用 `XXX=xxx` 一样简单的使用环境变量。所以使用 `jja run` 来简化这一过程。
 

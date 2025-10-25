@@ -1,7 +1,10 @@
 ---
-title: 一键提交 git
+title: 一键提交 git（gvv） - npm
 sidebar_label: 一键 git 提交（gvv）
+hide_title: true
 ---
+
+# 嗯，一键提交 git
 
 <PackageInfo packageName="gvv" />
 
@@ -15,6 +18,8 @@ bash -c 'git add . && \
      \"%Y-%m-%d %H:%M:%S\")${1:+ }$1\" && \
      git push origin main' --
 ```
+
+后来发现在 windows 系统没法使用，就简单的封装了该工具。主要用于使用特定的 npm script 钩子触发特定的 github actions 。
 
 ## 安装
 
