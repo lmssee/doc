@@ -2,6 +2,7 @@ import { copyright, logo, title } from './build.env';
 import { themes as prismThemes } from 'prism-react-renderer';
 
 import type * as Preset from '@docusaurus/preset-classic';
+import { envelopment } from './env';
 
 //**  主题配置  */
 export const themeConfig: Preset.ThemeConfig = {
@@ -50,8 +51,15 @@ export const themeConfig: Preset.ThemeConfig = {
       },
       { to: '/日志', label: '日志', position: 'right', title: '建站日志' },
       {
-        href: 'https://earthnote.pages.dev',
+        href: envelopment ? 'https://lmssee.cn' : 'https://lmssee.pages.dev',
         label: '学习笔记',
+        position: 'right',
+      },
+      {
+        href: envelopment
+          ? 'https://lmssee.cn/interview'
+          : 'https://earthnote.pages.dev',
+        label: '速记',
         position: 'right',
       },
       {
