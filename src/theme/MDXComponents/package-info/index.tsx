@@ -30,7 +30,7 @@ export function PackageInfo({
     // },
     {
       alt: 'Monthly downloads',
-      src: `${shieldsStart}npm/dm/${packageName}.svg?logo=npm&logoColor=rgb(0,0,0)&label=月下质量&labelColor=rgb(194,112,210)&color=rgb(0,0,0)`,
+      src: `${shieldsStart}npm/dm/${packageName}.svg?logo=npm&logoColor=rgb(0,0,0)&label=月下载量&labelColor=rgb(194,112,210)&color=rgb(0,0,0)`,
     },
     {
       alt: 'Total downloads',
