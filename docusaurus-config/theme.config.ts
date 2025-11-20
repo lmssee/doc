@@ -51,14 +51,14 @@ export const themeConfig: Preset.ThemeConfig = {
       },
       { to: '/日志', label: '日志', position: 'right', title: '建站日志' },
       {
-        href: envelopment ? 'https://lmssee.cn' : 'https://lmssee.pages.dev',
+        href: envelopment ? 'https://lmssee.cn' : 'https://earthnote.pages.dev',
         label: '学习笔记',
         position: 'right',
       },
       {
         href: envelopment
-          ? 'https://lmssee.cn/interview'
-          : 'https://earthnote.pages.dev',
+          ? 'https://lmssee.com/dobetter/'
+          : 'https://dobetter.pages.dev/',
         label: '速记',
         position: 'right',
       },

@@ -12,7 +12,7 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title={`${siteConfig.title}`}
-      description="我们不是神，只有努力才能更接近神"
+      description="Learn! Master! Share!  Solve!  Explore!  Evolve! "
     >
       <Content />
     </Layout>
